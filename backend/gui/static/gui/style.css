@@ -1,0 +1,366 @@
+/* Set the background image and adjust opacity */
+body {
+    background-size: cover;
+    /* Adjust the size (percentage) as needed */
+    background-position: center;
+    background-attachment: fixed;
+    opacity: 1;
+    /* Adjust the opacity as needed (0.0 - 1.0) */
+    filter: alpha(opacity=80);
+    /* For IE8 and earlier */
+    background: rgb(0, 0, 0);
+}
+
+p {
+    position: relative;
+}
+
+
+.containerino {
+    background: rgb(20, 40, 100);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: #649bd6 solid 1px;
+    flex-direction: column-reverse;
+    margin: 0px 100px 10px 100px;
+}
+
+.overdiv {
+    position: relative;
+    width: 90%;
+    border-radius: 10px;
+    border: #649bd6 dotted 1px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ebe4d4;
+    margin-top: 2%;
+
+}
+
+.imagediv {
+    padding: 1em 0em 0em 0em;
+
+}
+
+.imagediv img {
+    border-radius: 20px;
+}
+
+.filterdiv {
+    position: relative;
+    width: 90%;
+    border-radius: 10px;
+    border: #649bd6 dotted 1px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: #ebe4d4;
+    margin-top: 2%;
+
+}
+
+
+.tablediv {
+    margin: 1% 1% 1% 1%;
+    max-width: 100%;
+    width: 90%;
+    overflow: auto;
+    background: rgb(41, 43, 158);
+    border: solid black 3px;
+    border-radius: 20px;
+}
+
+table {
+    margin: 0% 0% 5% 0%;
+    overflow: auto;
+    width: 80%;
+    border-collapse: collapse;
+    border: 1px solid #0056b3;
+}
+
+th,
+td {
+    border: 1px solid #fff;
+    text-align: left;
+    padding: 8px;
+    color: black;
+    background-color: #ebe4d4;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+
+header {
+    /* Adjust the size (percentage) as needed */
+    width: auto;
+    background-position: center;
+    opacity: 1;
+    /* Adjust the opacity as needed (0.0 - 1.0) */
+    filter: alpha(opacity=80);
+    /* For IE8 and earlier */
+    background-color: #ebe4d4;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0px 0px 0px 0px;
+}
+
+h1 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin: 1rem;
+}
+
+h2 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+p {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+form {
+    width: 60%;
+}
+
+/* Style the form container */
+.form-containerino {
+    width: 90%;
+    background-color: #ebe4d4;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    margin-top: 3%;
+    position: relative;
+}
+
+/* Style the labels */
+label {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.wrong_input {
+    border: red, dotted, 2px;
+    color: red;
+}
+
+.wrong_input input[type="text"] {
+    border: 2px solid #ff6347;
+    padding: 5px;
+    width: 50%;
+    margin: 8px 0;
+    font-size: large;
+}
+
+.wrong_input input[type="checkbox"] {
+    border: 2px solid #ff6347;
+    padding: 5px;
+    width: 50%;
+    margin: 8px 0;
+    font-size: large;
+}
+
+.wrong_input select {
+    border: 2px solid #ff6347;
+    padding: 5px;
+    width: 50%;
+    margin: 8px 0;
+    font-size: large;
+}
+
+/* Style the file input fields */
+input[type="file"] {
+    border: 1px solid #aaa;
+    padding: 5px;
+    width: 50%;
+    margin: 8px 0;
+    font-size: large
+}
+
+input[type="text"],
+input[type="number"] {
+    border: 1px solid #aaa;
+    padding: 5px;
+    width: 50%;
+    margin: 8px 0;
+    font-size: large;
+}
+
+input[disabled="true"] {
+    border: 1px solid #aaa;
+    padding: 5px;
+    margin: 8px 0;
+    width: 50%;
+    font-size: large;
+    background: rgb(163, 157, 157);
+}
+
+
+
+.input-group {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5px, 0px, 0px, 0px;
+    padding: 0px, 1px, 1px, 1px;
+    width: 50%;
+}
+
+
+/* CUSTOM CHECKBOX */
+.checko {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.checko input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: whitesmoke;
+    border: 1px solid #aaa;
+}
+
+/* On mouse-over, add a grey background color */
+.checko:hover input~.checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.checko input:checked~.checkmark {
+    background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.checko input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.checko .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+/* END OF CUSTOM CHECKBOX*/
+
+
+
+select {
+    border: 1px solid #aaa;
+    padding: 5px;
+    width: 50%;
+    margin: 8px 0;
+    font-size: large;
+}
+
+.text_center {
+    display: flex;
+
+}
+
+
+/* Style the select fields */
+select.form-control {
+    width: 50%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style the form submission button */
+button[type="submit"] {
+    background-color: #2222ff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+a[role=button] {
+    background-color: #0056b3;
+}
+
+/* Style the form submission button on hover */
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.required {
+    color: purple;
+}
+
+
+.messages {
+    padding: 1px;
+    margin-top: 10px;
+}
+
+/* Styles for different message tags */
+.error {
+    color: #ff6347;
+    background-color: #f7e9e9;
+    /* Green hue background color */
+    border: 1px solid #b84242;
+    /* Green border color */
+    /* Red color for error messages */
+}
+
+.success {
+    color: #008000;
+    background-color: #e9f7ef;
+    /* Green hue background color */
+    border: 1px solid #42b883;
+    /* Green border color */
+    /* Green color for success messages */
+}
+
+
+ul {
+    list-style-type: none;
+}

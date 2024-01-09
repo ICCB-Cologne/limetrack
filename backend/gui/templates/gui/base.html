@@ -1,0 +1,59 @@
+<html lang="en">
+
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+
+  {# Include FontAwesome; required for icon display #}
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+    <!-- CSS only -->
+    {% load static %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'gui/style.css' %}">
+    
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+
+    
+    {{ form.media }}
+
+</head>
+
+<body>  
+    <header>
+        
+        {% load static %}
+        <div class="imagediv">
+        <img src="{% static 'gui/SATURN3_Logo_RGB.jpg' %}" alt="Saturn3 Logo" width=300px>
+        </div>
+
+        {% block header%}
+
+        {% endblock%}
+        <ul class="nav nav-underline">
+            <li class="nav-item">
+              <a class="nav-link" id ="nav-home-tab" href={% url "config" %}>Sample Tracking</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href={% url "all_samples" %}> All Samples</a>
+              </li>
+            <li class="nav-item">
+              <a class="nav-link" href={% url "dashboard" %}> Dashboard </a>
+            </li>
+          </ul>
+          
+
+
+    </header>
+    {% block content %}
+    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+pg_data/
+.idea
+.DS_Store
+node_modules
+**/__pycache__
+gui/migrations/*.py
+!gui/migrations/__init__.py
+db.sqlite3
+files/
+venv/

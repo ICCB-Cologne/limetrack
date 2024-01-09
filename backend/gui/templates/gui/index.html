@@ -1,0 +1,123 @@
+{% extends './base.html' %}
+
+{% block title%}
+🪐 Saturn3 - Sample Tracking
+{% endblock title%}
+
+{% block header %}
+<h1>
+  Sample Tracking 
+</h1>
+{% endblock header %}
+
+
+
+{% block content %}
+<div class="containerino">
+
+  <form action={% url "config" %} method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-containerino">
+      <h2> Formular 📝</h2>
+      
+      {% for field in form %}
+
+        {# IF THERE'S BEEN A SUBMISSION #}
+        {% if messages %} 
+          {% if field.name in form.errors %}
+            <p class="wrong_input"> 
+              {{field.label_tag}}
+              
+              {# custom check box #}
+              {% if field.name == "corresponding_organoid" %}
+                <label class="checko"> 
+                  {{field}}
+                <span class="checkmark">  </span>
+                </label>
+              
+              {# other input #}
+              {% else %}
+                {{field}}
+              {% endif %}
+              {{field.help_text}} 
+              
+            <ul class="messages">
+              {% for message in messages %}
+                {%if field.name == message.extra_tags %} 
+                <li class=" {{ message.tags }} " > {{ message }} </li>
+                {%endif%}
+              {% endfor %}
+            </ul>
+          </p>
+          {% else %}
+          <p> {{field.label_tag}} 
+              {% if field.name == "corresponding_organoid" %}
+                <label class="checko"> 
+                  {{field}}
+                  <span class="checkmark">  </span>
+                </label>
+              {% else %}
+                {{field}}
+              {% endif %} </p>
+          {% endif %}
+            
+          {#  NO MESSAGES / NO FROM SUBMITTED #}
+        {% else %} 
+      
+          <p> {{field.label_tag}}
+            {% if field.name == "corresponding_organoid" %}
+              <label class="checko"> 
+                {{field}}
+              <span class="checkmark">  </span>
+              </label>
+            {% else %}
+              {{field}}
+            {% endif %}
+            {{field.help_text}} </p>
+
+        {% endif %} 
+      {% endfor %}
+      <!-- END OF FORM -->
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+      <!-- GENERAL MESSAGES -->
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          {% if message.extra_tags == "general" %}       
+            <li {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+  </form>
+  <form action={% url "upload" %} method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-containerino">
+      <h2> CSV File Upload:</h2>
+        {{upload_form.as_p}}
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary" id="endofpage">
+          Submit
+        </button>
+      </div>
+        {% if messages %}
+          {%for message in messages%}
+
+            {% if message.extra_tags == "file" %}
+            <ul class="messages">
+            <li class=" {{ message.tags }} " > {{ message }} </li>
+            </ul>
+            {% endif %}
+            {% endfor %}
+        
+        {% endif %}
+      
+    </div>
+    
+  </form>
+</div>
+{% endblock content %}
