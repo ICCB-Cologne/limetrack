@@ -7,10 +7,11 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.db import models
 from django.urls import reverse
 from django.forms import Field
-from .forms import SampleForm, UploadForm, FilterForm, DateForm
+from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm
 from typing import Any
 from .models import HistopathologicalSample
 import csv
+from django.contrib.auth import authenticate, login
 
 import pandas as pd
 
@@ -19,6 +20,13 @@ import pandas as pd
 
 class SampleTrackingView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if not request.user.is_authenticated:
+            messages.error(request, "Geh wo Du wohnsch, " +
+                           str(request.user) + "!")
+            context = {
+                'form': LoginForm()
+            }
+            return render(request, 'gui/login.html', context=context)
         template_name = 'gui/index.html'
         context = {
             'form': SampleForm(),
@@ -195,28 +203,19 @@ def some_streaming_csv_view(request):
 
 class LoginView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        template_name = 'gui/all_samples.html'
-        samples = HistopathologicalSample.objects.all()
-        fields_and_values_list = [
-            [(field.name, getattr(instance, field.name))
-             for field in instance._meta.fields]
-            for instance in samples
-        ]
+        template_name = 'gui/login.html'
         context = {
-            'samples': fields_and_values_list,
+            'form': LoginForm()
         }
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        template_name = 'gui/all_samples.html'
-        filtered_fields = request.POST
-        samples = HistopathologicalSample.objects.all()
-        fields_and_values_list = [
-            [(field.name, getattr(instance, field.name)) if filtered_fields[field.name] else None
-             for field in instance._meta.fields]
-            for instance in samples]
-        context = {
-            'samples': fields_and_values_list,
-        }
-        return render(request, template_name, context=context)
+        user_name = request.POST["user_name"]
+        pw = request.POST["password"]
+        user = authenticate(request, username=user_name, password=pw)
+        if user is None:
+            return HttpResponseRedirect(request.path_info)
+        else:
+            login(request, user)
+            return HttpResponseRedirect(reverse("config"))

@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.contrib.auth import views as auth_views
 
 from backend.gui.views import SampleTrackingView, FilteredSamplesView, AllSamplesView, some_streaming_csv_view, UploadView, DashBoardView, LoginView
 
