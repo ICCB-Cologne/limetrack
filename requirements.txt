@@ -6,7 +6,7 @@ attrs==23.1.0
 Brotli==1.1.0
 certifi==2023.7.22
 charset-normalizer==3.3.0
-Django==4.2.5
+Django==5.0.1
 django-tempus-dominus==5.1.2.17
 et-xmlfile==1.1.0
 frozenlist==1.4.0

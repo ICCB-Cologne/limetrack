@@ -1,6 +1,6 @@
-import django.utils.timezone
-from django.db import models
 from datetime import datetime
+from django.db import models
+from django.db.models import F
 from django.core.exceptions import ValidationError
 
 SITE_CHOICES = [
@@ -111,16 +111,17 @@ def zero_to_a_hundred(value):
 
 
 class HistopathologicalSample(models.Model):
-    # django automatically adds a primary key
-    # id = models.BigAutoField(primary_key=True)
-    CHARFIELD_MAXLEN = 50
 
-    # recruiter
+    def generate_patient_id(self):
+        return self.patient_identifier + self.recruiting_site
+
+    CHARFIELD_MAXLEN = 50
+    ### recruiter ###
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES)
     patient_identifier = models.CharField(
         max_length=5, help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)", validators=[validate_alphanumeric])
-    # patient = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
+    # patient = models.CharField( max_length=CHARFIELD_MAXLEN)  # skip for prototype
     died = models.DateField(null=True, blank=True)
     # tissue_name = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
     # used_in = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
@@ -138,11 +139,11 @@ class HistopathologicalSample(models.Model):
     grading = models.CharField(max_length=CHARFIELD_MAXLEN, choices=GRADING)
     # histology_subtype = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
 
-    # TUM Pathology
+    ### TUM Pathology ###
     tumor_cell_content = models.CharField(
         max_length=CHARFIELD_MAXLEN, blank=True, validators=[zero_to_a_hundred])
 
-    # SPL
+    ### SPL ###
     spl_received = models.DateField(
         null=True, blank=True, verbose_name="SPL received")
     spl_status = models.CharField(
@@ -150,7 +151,7 @@ class HistopathologicalSample(models.Model):
     spl_sequencing_type = models.CharField(
         max_length=CHARFIELD_MAXLEN, blank=True, choices=SPL_SEQUENCING_TYPES, name="SPL sequencing type")
 
-    # scLab
+    ### scLab ###
     sclab_received = models.DateField(
         null=True, blank=True, verbose_name="scLab received")
     sclab_extraction_date = models.DateField(null=True,
@@ -168,7 +169,7 @@ class HistopathologicalSample(models.Model):
     sclab_pool = models.IntegerField(null=True,
                                      blank=True, name="scLab pool")
 
-    # LB
+    ### LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                        blank=True, name="LB analyte type", choices=LB_ANALYTE_TYPES)
     lb_sampling_date = models.DateField(null=True,
