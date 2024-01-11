@@ -42,8 +42,8 @@
     </header>
     
     <div class="sticky-top" >
-
-    <div class="d-flex justify-content-center bg-black">
+      <div> </div>
+    <div class="d-flex justify-content-center bg-dark ">
     <ul class="nav nav-underline">
       <li class="nav-item">
         <a class="nav-link" id ="nav-home-tab" href={% url "config" %}>Sample Tracking</a>
@@ -55,6 +55,32 @@
         <a class="nav-link" href={% url "dashboard" %}> Dashboard </a>
       </li>
     </ul>
+
+    <div class="dropdown d-flex justify-content-center">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+        User
+      </button>
+      <form class="dropdown-menu p-4">
+        <div class="mb-3">
+          <label for="exampleDropdownFormEmail2" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="exampleDropdownFormEmail2" placeholder="email@example.com">
+        </div>
+        <div class="mb-3">
+          <label for="exampleDropdownFormPassword2" class="form-label">Password</label>
+          <input type="password" class="form-control" id="exampleDropdownFormPassword2" placeholder="Password">
+        </div>
+        <div class="mb-3">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="dropdownCheck2">
+            <label class="form-check-label" for="dropdownCheck2">
+              Remember me
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Sign in</button>
+      </form>
+    </div>
+
    </div>
 
   <div class="navi-container">
