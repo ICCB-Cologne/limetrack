@@ -7,7 +7,7 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.db import models
 from django.urls import reverse
 from django.forms import Field
-from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL
+from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM
 from typing import Any
 from .models import HistopathologicalSample
 import csv
@@ -28,8 +28,16 @@ class SampleTrackingView(TemplateView):
             }
             return render(request, 'gui/login.html', context=context)
 
-        if request.user.groups.filter(name='SPL GANG GANG').exists():
+        if request.user.groups.filter(name='SPL').exists():
             form = SampleFormSPL()
+        elif request.user.groups.filter(name='TUM').exists():
+            form = SampleFormTUM()
+        elif request.user.groups.filter(name='ScLab').exists():
+            form = SampleFormScLab()
+        elif request.user.groups.filter(name='LB').exists():
+            form = SampleFormLB()
+        elif request.user.groups.filter(name='recruiter').exists():
+            form = SampleForm()
         else:
             form = SampleForm()
 

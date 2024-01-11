@@ -1,20 +1,46 @@
-/* Set the background image and adjust opacity */
+header {
+    width: auto;
+    background-position: center;
+    opacity: 1;
+    filter: alpha(opacity=80);
+    background-color: #ebe4d4;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0px 0px 0px 0px;
+}
+
 body {
     background-size: cover;
-    /* Adjust the size (percentage) as needed */
     background-position: center;
     background-attachment: fixed;
     opacity: 1;
-    /* Adjust the opacity as needed (0.0 - 1.0) */
     filter: alpha(opacity=80);
-    /* For IE8 and earlier */
     background: rgb(0, 0, 0);
+}
+
+
+h1 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin: 1rem;
+}
+
+h2 {
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 p {
     position: relative;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Contains links for navigating inside the form */
 .navi-container {
     position: relative;
     top: 10em;
@@ -23,6 +49,7 @@ p {
     height: 0%;
 }
 
+/* main container */
 .containerino {
     background: rgb(20, 40, 100);
     display: flex;
@@ -33,6 +60,7 @@ p {
     margin: 0px 100px 10px 100px;
 }
 
+/* for all_samples_overview  to contain containers*/
 .overdiv {
     position: relative;
     width: 90%;
@@ -47,15 +75,7 @@ p {
 
 }
 
-.imagediv {
-    padding: 1em 0em 0em 0em;
-
-}
-
-.imagediv img {
-    border-radius: 20px;
-}
-
+/* for all_samples_overview  to contain filter buttons/options */
 .filterdiv {
     position: relative;
     width: 90%;
@@ -67,8 +87,18 @@ p {
     align-items: center;
     background-color: #ebe4d4;
     margin-top: 2%;
+}
+
+
+.imagediv {
+    padding: 1em 0em 0em 0em;
 
 }
+
+.imagediv img {
+    border-radius: 20px;
+}
+
 
 
 .tablediv {
@@ -102,40 +132,6 @@ th {
     background-color: #f2f2f2;
 }
 
-
-header {
-    /* Adjust the size (percentage) as needed */
-    width: auto;
-    background-position: center;
-    opacity: 1;
-    /* Adjust the opacity as needed (0.0 - 1.0) */
-    filter: alpha(opacity=80);
-    /* For IE8 and earlier */
-    background-color: #ebe4d4;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 0px 0px 0px 0px;
-}
-
-h1 {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    margin: 1rem;
-}
-
-h2 {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-p {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 5px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-}
 
 
 form {
@@ -219,7 +215,8 @@ input[disabled="true"] {
     background: rgb(163, 157, 157);
 }
 
-.form-control .datetimepicker-input[disabled="true"] {
+/* make datepicker grey if disabled */
+.form-control:disabled {
     border: 1px solid #aaa;
     padding: 5px;
     margin: 8px 0;
@@ -237,7 +234,7 @@ input[disabled="true"] {
 }
 
 
-/* CUSTOM CHECKBOX */
+/* CUSTOM CHECKBOX (so much code for such a small thing ... ) */
 .checko {
     display: block;
     position: relative;
@@ -270,6 +267,16 @@ input[disabled="true"] {
     border: 1px solid #aaa;
 }
 
+.checko:disabled .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: rgb(163, 157, 157);
+    border: 1px solid #aaa;
+}
+
 /* On mouse-over, add a grey background color */
 .checko:hover input~.checkmark {
     background-color: #ccc;
@@ -286,6 +293,8 @@ input[disabled="true"] {
     position: absolute;
     display: none;
 }
+
+
 
 /* Show the checkmark when checked */
 .checko input:checked~.checkmark:after {
@@ -316,6 +325,16 @@ select {
     margin: 8px 0;
     font-size: large;
 }
+
+select[disabled="true"] {
+    border: 1px solid #aaa;
+    padding: 5px;
+    margin: 8px 0;
+    width: 50%;
+    font-size: large;
+    background: rgb(163, 157, 157);
+}
+
 
 .text_center {
     display: flex;

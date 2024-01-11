@@ -13,13 +13,15 @@
 {% block navi%}
 <div class="col-5">
   <div id="list-example" class="list-group">
-    <a class="list-group-item list-group-item-action" href="#id_recruiting_site">Recruiting Site</a>
-    <a class="list-group-item list-group-item-action" href="#list-item-2">SPL</a>
-    <a class="list-group-item list-group-item-action" href="#list-item-3">ScLab</a>
-    <a class="list-group-item list-group-item-action" href="#list-item-4">LB</a>
+    <a class="list-group-item list-group-item-action" href="#top_of_form" >Recruiting Site </a>
+    <a class="list-group-item list-group-item-action" href="#sampling_date">TUM</a>
+    <a class="list-group-item list-group-item-action" href="#tumor_cell_content">SPL</a>
+    <a class="list-group-item list-group-item-action" href="#pl_sequencing_type">ScLab</a>
+    <a class="list-group-item list-group-item-action" href="#lb_analyte_type">LB</a>
   </div>
 </div>
 {%endblock navi%}
+
 
 {% block content %}
 <div class="containerino">
@@ -27,14 +29,18 @@
   <form action={% url "config" %} method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
-      <h2> Formular 📝</h2>
+      <h2 id="top_of_form"> Form 📝</h2>
       
       {% for field in form %}
+
+       {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, LB analyte type"%}
+      <hr>
+       {%endif%}
 
         {# IF THERE'S BEEN A SUBMISSION #}
         {% if messages %} 
           {% if field.name in form.errors %}
-            <p class="wrong_input"> 
+            <p class="wrong_input" id="{{field.name}}"> 
               {{field.label_tag}}
               
               {# custom check box #}
@@ -59,7 +65,8 @@
             </ul>
           </p>
           {% else %}
-          <p> {{field.label_tag}} 
+          <p id="{{ field.name }}"> 
+            {{field.label_tag}} 
               {% if field.name == "corresponding_organoid" %}
                 <label class="checko"> 
                   {{field}}
@@ -73,7 +80,7 @@
           {#  NO MESSAGES / NO FROM SUBMITTED #}
         {% else %} 
       
-          <p> {{field.label_tag}}
+          <p id="{{ field.name }}">  {{field.label_tag}}
             {% if field.name == "corresponding_organoid" %}
               <label class="checko"> 
                 {{field}}
@@ -132,9 +139,13 @@
 
 <script>
   function autoFillPatient(val) {
-    
+
     var x = document.getElementById("id_SATURN3 Sample Code");
     x.setAttribute("value", val);
+
+  }
+
+  function markP(){
 
   }
 </script>

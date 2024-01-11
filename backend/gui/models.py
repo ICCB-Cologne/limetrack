@@ -126,7 +126,7 @@ class HistopathologicalSample(models.Model):
     # tissue_name = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
     # used_in = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
     saturn3_sample_code = models.CharField(
-        max_length=CHARFIELD_MAXLEN, name="SATURN3 Sample Code", help_text="S3+Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+        max_length=CHARFIELD_MAXLEN, verbose_name="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
     sampling_date = models.DateField()
     tissue_type = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=TISSUE_TYPES)
@@ -147,9 +147,9 @@ class HistopathologicalSample(models.Model):
     spl_received = models.DateField(
         null=True, blank=True, verbose_name="SPL received")
     spl_status = models.CharField(
-        max_length=CHARFIELD_MAXLEN, blank=True, choices=SPL_STATUS_CHOICES, name="SPL status")
+        max_length=CHARFIELD_MAXLEN, blank=True, choices=SPL_STATUS_CHOICES, verbose_name="SPL status")
     spl_sequencing_type = models.CharField(
-        max_length=CHARFIELD_MAXLEN, blank=True, choices=SPL_SEQUENCING_TYPES, name="SPL sequencing type")
+        max_length=CHARFIELD_MAXLEN, blank=True, choices=SPL_SEQUENCING_TYPES, verbose_name="SPL sequencing type")
 
     ### scLab ###
     sclab_received = models.DateField(
@@ -157,31 +157,31 @@ class HistopathologicalSample(models.Model):
     sclab_extraction_date = models.DateField(null=True,
                                              blank=True, verbose_name="scLab extraction date")
     sclab_nuclei_yield = models.IntegerField(null=True,
-                                             blank=True, name="scLab nuclei yield")
+                                             blank=True, verbose_name="scLab nuclei yield")
     sclab_nuclei_size = models.IntegerField(null=True,
-                                            blank=True, name="scLab nuclei size [µm]")
+                                            blank=True, verbose_name="scLab nuclei size [µm]")
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                    blank=True, name="scLab status")
+                                    blank=True, verbose_name="scLab status")
     sclac_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                             blank=True, name="scLab sequencing type")
+                                             blank=True, verbose_name="scLab sequencing type")
     sclab_sorting = models.BooleanField(null=True,
-                                        blank=True, name="scLab sorting")
+                                        blank=True, verbose_name="scLab sorting")
     sclab_pool = models.IntegerField(null=True,
-                                     blank=True, name="scLab pool")
+                                     blank=True, verbose_name="scLab pool")
 
     ### LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                       blank=True, name="LB analyte type", choices=LB_ANALYTE_TYPES)
+                                       blank=True, verbose_name="LB analyte type", choices=LB_ANALYTE_TYPES)
     lb_sampling_date = models.DateField(null=True,
                                         blank=True, verbose_name="LB sampling date")
     lb_received = models.DateField(null=True,
                                    blank=True, verbose_name="LB received")
     lb_sample_volume = models.IntegerField(null=True,
-                                           blank=True, name="LB sample volume [ml]")
+                                           blank=True, verbose_name="LB sample volume [ml]")
     lb_date_of_isolation = models.DateField(null=True,
                                             blank=True, verbose_name="LB date of isolation")
     lb_total_isolated_cfdna = models.IntegerField(null=True,
-                                                  blank=True, name="LB total isolated cfDNA [ng]")
+                                                  blank=True, verbose_name="LB total isolated cfDNA [ng]")
 
     lb_status = models.CharField(max_length=CHARFIELD_MAXLEN, blank=True,
-                                 name="LB status", choices=LB_STATUS_CHOICES)
+                                 verbose_name="LB status", choices=LB_STATUS_CHOICES)
