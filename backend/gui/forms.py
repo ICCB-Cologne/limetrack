@@ -14,6 +14,7 @@ class SampleForm(ModelForm):
         # fields must be replaced in production by a list of all fields due to security reasons
         fields = "__all__"
         widgets = {
+            'recruiting_site': forms.Select(attrs={'onchange': "autoFillPatient(this.value)"}),
             'died': DatePicker(options={}, attrs={"input_group": False}),
             'sampling_date': DatePicker(options={}, attrs={"input_group": False}),
             'spl_received': DatePicker(options={}, attrs={"input_group": False}),
@@ -35,14 +36,14 @@ class SampleFormSPL(ModelForm):
         fields = "__all__"
         widgets = {
             'patient_identifier': forms.TextInput(attrs={'disabled': "true"}),
-            'died': DatePicker(options={}, attrs={"input_group": False}),
-            'sampling_date': DatePicker(options={}, attrs={"input_group": False}),
+            'died': DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
+            'sampling_date': DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
             'spl_received': DatePicker(options={}, attrs={"input_group": False}),
-            'sclab_received': DatePicker(options={}, attrs={"input_group": False}),
-            'sclab_extraction_date': DatePicker(options={}, attrs={"input_group": False}),
-            'lb_sampling_date': DatePicker(options={}, attrs={"input_group": False}),
-            'lb_received': DatePicker(options={}, attrs={"input_group": False}),
-            'lb_date_of_isolation': DatePicker(options={}, attrs={"input_group": False})
+            'sclab_received': DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
+            'sclab_extraction_date': DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
+            'lb_sampling_date': DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
+            'lb_received': DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
+            'lb_date_of_isolation': DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"})
         }
 
 

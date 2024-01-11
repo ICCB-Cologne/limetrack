@@ -197,6 +197,7 @@ input[type="file"] {
     font-size: large
 }
 
+/* Style the different input fields */
 input[type="text"],
 input[type="number"],
 input[type="password"] {
@@ -207,6 +208,8 @@ input[type="password"] {
     font-size: large;
 }
 
+
+/* Make input fields grey if disabled */
 input[disabled="true"] {
     border: 1px solid #aaa;
     padding: 5px;
@@ -216,8 +219,16 @@ input[disabled="true"] {
     background: rgb(163, 157, 157);
 }
 
+.form-control .datetimepicker-input[disabled="true"] {
+    border: 1px solid #aaa;
+    padding: 5px;
+    margin: 8px 0;
+    width: 50%;
+    font-size: large;
+    background: rgb(163, 157, 157);
+}
 
-
+/* container surrounding datetimepickers */
 .input-group {
     font-family: Arial, Helvetica, sans-serif;
     margin: 5px, 0px, 0px, 0px;
