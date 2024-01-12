@@ -3,6 +3,9 @@ from django.db import models
 from django.db.models import F
 from django.core.exceptions import ValidationError
 
+
+CHARFIELD_MAXLEN = 50
+
 SITE_CHOICES = [
     ("Freiburg", "Freiburg"),
     ("Essen", "Essen"),
@@ -115,7 +118,6 @@ class HistopathologicalSample(models.Model):
     def generate_patient_id(self):
         return self.patient_identifier + self.recruiting_site
 
-    CHARFIELD_MAXLEN = 50
     ### recruiter ###
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES)

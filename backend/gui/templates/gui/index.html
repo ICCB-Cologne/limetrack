@@ -16,7 +16,7 @@
     <a class="list-group-item list-group-item-action" href="#top_of_form" >Recruiting Site </a>
     <a class="list-group-item list-group-item-action" href="#sampling_date">TUM</a>
     <a class="list-group-item list-group-item-action" href="#tumor_cell_content">SPL</a>
-    <a class="list-group-item list-group-item-action" href="#pl_sequencing_type">ScLab</a>
+    <a class="list-group-item list-group-item-action" href="#spl_sequencing_type">ScLab</a>
     <a class="list-group-item list-group-item-action" href="#lb_analyte_type">LB</a>
   </div>
 </div>
@@ -33,7 +33,7 @@
       
       {% for field in form %}
 
-       {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, LB analyte type"%}
+       {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, lb_analyte_type"%}
       <hr>
        {%endif%}
 
@@ -140,7 +140,7 @@
 <script>
   function autoFillPatient(val) {
 
-    var x = document.getElementById("id_SATURN3 Sample Code");
+    var x = document.getElementById("id_saturn3_sample_code");
     x.setAttribute("value", val);
 
   }

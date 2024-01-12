@@ -1,7 +1,9 @@
 from django import forms
+from django.db import models
 from django.forms import ModelForm
-from .models import HistopathologicalSample
+from .models import HistopathologicalSample, SITE_CHOICES, CHARFIELD_MAXLEN, TISSUE_TYPES, INTERVENTION_TYPES, LOCALISATION_CHOICE, GRADING
 from tempus_dominus.widgets import DatePicker
+# documentation https://github.com/FlipperPA/django-tempus-dominus
 
 all_fields = [
     "recruiting_site",
@@ -50,6 +52,28 @@ class SampleForm(ModelForm):
         fields = all_fields
 
         widgets = {
+            'died': DatePicker(options={}, attrs={"input_group": False}),
+            'sampling_date': DatePicker(options={}, attrs={"input_group": False}),
+            'spl_received': DatePicker(options={}, attrs={"input_group": False}),
+            'sclab_received': DatePicker(options={}, attrs={"input_group": False}),
+            'sclab_extraction_date': DatePicker(options={}, attrs={"input_group": False}),
+            'lb_sampling_date': DatePicker(options={}, attrs={"input_group": False}),
+            'lb_received': DatePicker(options={}, attrs={"input_group": False}),
+            'lb_date_of_isolation': DatePicker(options={}, attrs={"input_group": False}),
+        }
+
+
+class SampleFormRec(ModelForm):
+    # died = forms.DateField(widget=DatePicker())
+    required_css_class = "required"
+    error_css_class = "error-field"
+
+    class Meta:
+        model = HistopathologicalSample
+        # fields must be replaced in production by a list of all fields due to security reasons
+        fields = all_fields
+
+        widgets = {
             'recruiting_site': forms.Select(attrs={'onchange': "autoFillPatient(this.value)"}),
             'died': DatePicker(options={}, attrs={"input_group": False}),
             'sampling_date': DatePicker(options={}, attrs={"input_group": False}),
@@ -84,6 +108,24 @@ class SampleFormTUM(ModelForm):
     # died = forms.DateField(widget=DatePicker())
     required_css_class = "required"
 
+    # set disabled fields on not required
+    recruiting_site = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
+    saturn3_sample_code = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+    sampling_date = forms.DateField(required=False, widget=DatePicker(
+        options={}, attrs={"input_group": False, 'disabled': "true"}))
+    tissue_type = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=TISSUE_TYPES))
+    type_of_intervention = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=INTERVENTION_TYPES))
+    localisation = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=LOCALISATION_CHOICE))
+    corresponding_organoid = forms.BooleanField(required=False, widget=forms.CheckboxInput(
+        attrs={'disabled': "true"}), help_text="generated from the same biopsy/tissue piece")
+    grading = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=GRADING))
+
     fields = all_fields
 
     class Meta:
@@ -94,19 +136,11 @@ class SampleFormTUM(ModelForm):
 
             # disabled
 
-            'recruiting_site': forms.Select(attrs={'disabled': "true"}),
             # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"}) always needed(?),
             # "patient", skip for prototype
             "died": DatePicker(options={}, attrs={'disabled': "true", "input_group": False}),
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
-            "saturn3_sample_code": forms.TextInput(attrs={'disabled': "true", "input_group": False}),
-            "sampling_date": DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
-            "tissue_type": forms.Select(attrs={'disabled': "true"}),
-            "type_of_intervention": forms.Select(attrs={'disabled': "true"}),
-            "localisation": forms.Select(attrs={'disabled': "true"}),
-            "corresponding_organoid": forms.CheckboxInput(attrs={'disabled': "true"}),
-            "grading": forms.Select(attrs={'disabled': "true"}),
 
             "spl_received": DatePicker(attrs={'disabled': "true", "input_group": False}),
             "spl_status": forms.Select(attrs={'disabled': "true"}),

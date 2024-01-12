@@ -7,7 +7,7 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.db import models
 from django.urls import reverse
 from django.forms import Field
-from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM
+from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
 from typing import Any
 from .models import HistopathologicalSample
 import csv
@@ -37,7 +37,7 @@ class SampleTrackingView(TemplateView):
         elif request.user.groups.filter(name='LB').exists():
             form = SampleFormLB()
         elif request.user.groups.filter(name='recruiter').exists():
-            form = SampleForm()
+            form = SampleFormRec()
         else:
             form = SampleForm()
 
@@ -55,8 +55,17 @@ class SampleTrackingView(TemplateView):
         # patient_combination = request.POST['patient_identifier'] + \
         #     request.POST['recruiting_site']
         # rest_of_sample = SampleForm(patient=patient_combination)
+        patient_identifier = request.POST["patient_identifier"]
+
+        # TUM
+        if request.user.groups.filter(name='TUM').exists():
+            return self.handle_tum_form(
+                patient_identifier=patient_identifier, request=request)
+        else:
+            pass
 
         form: SampleForm = SampleForm(request.POST)
+
         if form.is_valid():
 
             form.save()
@@ -75,6 +84,34 @@ class SampleTrackingView(TemplateView):
                     messages.success(
                         request, "basst", extra_tags=field)
             error_message = 'Submission unsuccessful!' + form.errors.as_text()
+            return render(request, 'gui/index.html', context={'form': form,
+                                                              'upload_form': UploadForm()
+                                                              })
+
+    def handle_tum_form(self, patient_identifier, request):
+        """
+        TODO: try to handle different groups with a wrapper
+        """
+        form = SampleFormTUM(request.POST)
+        tumor_cell_content = request.POST["tumor_cell_content"]
+
+        if form.is_valid():
+            messages.success(
+                request, 'Submission successful!', extra_tags="general")
+            try:
+                HistopathologicalSample.objects.filter(
+                    patient_identifier=patient_identifier).update(tumor_cell_content=tumor_cell_content)
+                return HttpResponseRedirect(request.path_info)
+            except:
+                # TODO: Error message with info that the input patient identifier doesnt exist
+                messages.error(request, 'Submission unsuccessful!',
+                               extra_tags="general")
+                return render(request, 'gui/index.html', context={'form': form,
+                                                                  'upload_form': UploadForm()
+                                                                  })
+        else:
+            messages.error(request, 'Submission unsuccessful!',
+                           extra_tags="general")
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
                                                               })
