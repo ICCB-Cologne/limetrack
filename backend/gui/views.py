@@ -21,7 +21,7 @@ import pandas as pd
 class SampleTrackingView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not request.user.is_authenticated:
-            messages.error(request, "No access for user:  " +
+            messages.error(request, "No access for User:  " +
                            str(request.user) + "!")
             context = {
                 'form': LoginForm()
@@ -146,9 +146,21 @@ class UploadView(TemplateView):
         first_error = True
         for index, row in df.iterrows():
             data = {
-                "patient": row["Patient"], "identifier": "12", "patient_identifier": row["PID"], "data_sequencing_data_release": "2", "date": "12", "died": 0, "grading": "1", "localisation": "123",
-                "histology_subtype": "ef", "recruiting_site": "Freiburg", "tissue_name": "asd", "sequencing_type": "sad", "reviewed_and_processed_by": "rwer", "reviewed_and_processed_by_sequencing": "34",
-                "used_in": "lplp", "tissue_type": "W", "type_intervention": "ppp", "tumor_cell_content": "Sads", "spl_status": "asdsad", "tumor_cell_content_bioinf": "KKKD"
+                "recruting_site": row["Recruting Site"], "patient_identifier": row["Patient Identifier"],
+                "died": row["Died"],  "saturn3_sample_code": row["SATURN3 Sample Code"],
+                "sampling_date": row["Sampling Date"], "tissue_type": row["Tissue Type"],
+                "type_of_intervention": row["Type of Intervention"], "localisation": row["Localisation"],
+                "corresponding_organoid": row["Corresponding Organoid"], "grading": row["Grading"],
+                "tumor_cell_content": row["Tumor Cell Content"], "spl_received": row["SPL Received"],
+                "spl_status": row["SPL Status"], "spl_sequencing_type": row["SPL Sequencing Type"],
+                "sclab_recveived": row["scLab Received"], "sclab_extraction_date": row["scLab Extraction Date"],
+                "sclab_nuclei_yield": row["scLab Nuclei Yield"], "sclab_nuclei_size": row["scLab Nuclei Size [µm]"],
+                "sclab_status": row["scLab Status"], "sclab_sequencing_type": row["scLab Sequencing Type"],
+                "sclab_sorting": row["scLab Sorting"], "sclab_pool": row["scLab Pool"],
+                "lb_analyte_type": row["LB analyte type"], "lb_sampling_date": row["LB Sampling Date"],
+                "lb_received": row["LB Received"], "lb_sample_volume": row["LB Sample Volume [ml]"],
+                "lb_total_isolated_cfdna": row["LB Total Isolated cfDNA [ng]"], "lb_status": row["LB Status"],
+                # "patient": row["Patient"], tissue_name : row["Tissue Name"], "used_in" : row[Used in], "histology_subtype": row["Histology Subtype"],
             }
 
             form = SampleForm(data)
