@@ -11,6 +11,7 @@
 {% endblock header %}
 
 {% block navi%}
+{# navigation across the form #}
 <div class="col-5">
   <div id="list-example" class="list-group">
     <a class="list-group-item list-group-item-action" href="#top_of_form" >Recruiting Site </a>
@@ -32,60 +33,73 @@
       <h2 id="top_of_form"> Form 📝</h2>
       
       {% for field in form %}
-
+       {# splitting the form visually in sections for the different user groups #}
        {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, lb_analyte_type"%}
       <hr>
        {%endif%}
 
         {# IF THERE'S BEEN A SUBMISSION #}
         {% if messages %} 
+          {# highlight errorneous field if there's been an error in the submissed form field #}
           {% if field.name in form.errors %}
             <p class="wrong_input" id="{{field.name}}"> 
               {{field.label_tag}}
               
-              {# custom check box #}
+              {# custom check box - felt cute, might delete later #}
               {% if field.name == "corresponding_organoid" %}
                 <label class="checko"> 
                   {{field}}
                 <span class="checkmark">  </span>
                 </label>
               
-              {# other input #}
+              {# normal input field #}
               {% else %}
                 {{field}}
               {% endif %}
               {{field.help_text}} 
               
-            <ul class="messages">
+              {# error message right below the respective field #}
+             <ul class="messages">
               {% for message in messages %}
                 {%if field.name == message.extra_tags %} 
                 <li class=" {{ message.tags }} " > {{ message }} </li>
                 {%endif%}
               {% endfor %}
             </ul>
-          </p>
+            </p>
+          
+          {# if there has been no error in the submitted form field #}
           {% else %}
           <p id="{{ field.name }}"> 
             {{field.label_tag}} 
+
+              {# custom check box - felt cute, might delete later #}
               {% if field.name == "corresponding_organoid" %}
                 <label class="checko"> 
                   {{field}}
                   <span class="checkmark">  </span>
                 </label>
+              
+              {# normal input field #}
               {% else %}
                 {{field}}
               {% endif %} </p>
+              {{field.help_text}}
           {% endif %}
             
-          {#  NO MESSAGES / NO FROM SUBMITTED #}
+        {#  NO MESSAGES / NO FROM SUBMITTED YET #}
         {% else %} 
       
           <p id="{{ field.name }}">  {{field.label_tag}}
+
+            {# custom check box - felt cute, might delete later #}
             {% if field.name == "corresponding_organoid" %}
               <label class="checko"> 
                 {{field}}
               <span class="checkmark">  </span>
               </label>
+
+             {# normal input field #}
             {% else %}
               {{field}}
             {% endif %}
@@ -110,6 +124,8 @@
       {% endif %}
     </div>
   </form>
+
+  {# UPLOAD FORM #}
   <form action={% url "upload" %} method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
@@ -137,6 +153,7 @@
   </form>
 </div>
 
+{# Testing a script that autofills a field with content of other fields #}
 <script>
   function autoFillPatient(val) {
 
@@ -145,9 +162,6 @@
 
   }
 
-  function markP(){
-
-  }
 </script>
 
 {% endblock content %}

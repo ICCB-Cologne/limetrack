@@ -42,13 +42,11 @@ all_fields = [
 
 
 class SampleForm(ModelForm):
-    # died = forms.DateField(widget=DatePicker())
     required_css_class = "required"
-    error_css_class = "error-field"
+    # error_css_class = "error-field"
 
     class Meta:
         model = HistopathologicalSample
-        # fields must be replaced in production by a list of all fields due to security reasons
         fields = all_fields
 
         widgets = {
@@ -64,13 +62,11 @@ class SampleForm(ModelForm):
 
 
 class SampleFormRec(ModelForm):
-    # died = forms.DateField(widget=DatePicker())
     required_css_class = "required"
-    error_css_class = "error-field"
+    # error_css_class = "error-field"
 
     class Meta:
         model = HistopathologicalSample
-        # fields must be replaced in production by a list of all fields due to security reasons
         fields = all_fields
 
         widgets = {
@@ -105,10 +101,9 @@ class SampleFormRec(ModelForm):
 
 
 class SampleFormTUM(ModelForm):
-    # died = forms.DateField(widget=DatePicker())
     required_css_class = "required"
 
-    # set disabled fields on not required
+    # set disabled required fields on not required
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
     saturn3_sample_code = forms.CharField(
@@ -126,11 +121,8 @@ class SampleFormTUM(ModelForm):
     grading = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=GRADING))
 
-    fields = all_fields
-
     class Meta:
         model = HistopathologicalSample
-        # fields must be replaced in production by a list of all fields due to security reasons
         fields = all_fields
         widgets = {
 
@@ -167,15 +159,11 @@ class SampleFormTUM(ModelForm):
 
 
 class SampleFormSPL(ModelForm):
-    # died = forms.DateField(widget=DatePicker())
     required_css_class = "required"
-
-    fields = all_fields
 
     class Meta:
         model = HistopathologicalSample
-        # fields must be replaced in production by a list of all fields due to security reasons
-        fields = "__all__"
+        fields = all_fields
         widgets = {
             'spl_received': DatePicker(options={}, attrs={"input_group": False}),
 
@@ -219,20 +207,17 @@ class SampleFormSPL(ModelForm):
 
 
 class SampleFormScLab(ModelForm):
-    # died = forms.DateField(widget=DatePicker())
     required_css_class = "required"
-
-    fields = all_fields
 
     class Meta:
         model = HistopathologicalSample
-        # fields must be replaced in production by a list of all fields due to security reasons
-        fields = "__all__"
+
+        fields = all_fields
         widgets = {
             'sclab_received': DatePicker(options={}, attrs={"input_group": False}),
             'sclab_extraction_date': DatePicker(options={}, attrs={"input_group": False}),
 
-
+            # disabled
             'recruiting_site': forms.Select(attrs={'disabled': "true"}),
             # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"}) always needed(?),
             # "patient", skip for prototype
@@ -265,15 +250,11 @@ class SampleFormScLab(ModelForm):
 
 
 class SampleFormLB(ModelForm):
-    # died = forms.DateField(widget=DatePicker())
     required_css_class = "required"
-
-    fields = all_fields
 
     class Meta:
         model = HistopathologicalSample
-        # fields must be replaced in production by a list of all fields due to security reasons
-        fields = "__all__"
+        fields = all_fields
         widgets = {
             'lb_sampling_date': DatePicker(options={}, attrs={"input_group": False}),
             'lb_received': DatePicker(options={}, attrs={"input_group": False}),

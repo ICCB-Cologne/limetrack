@@ -51,10 +51,6 @@ class SampleTrackingView(TemplateView):
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
 
-        # Generate auto-filled fields
-        # patient_combination = request.POST['patient_identifier'] + \
-        #     request.POST['recruiting_site']
-        # rest_of_sample = SampleForm(patient=patient_combination)
         patient_identifier = request.POST["patient_identifier"]
 
         # TUM
@@ -90,7 +86,8 @@ class SampleTrackingView(TemplateView):
 
     def handle_tum_form(self, patient_identifier, request):
         """
-        TODO: try to handle different groups with a wrapper
+        TODO: try to handle different groups with a wrapper maybe?
+        a function of this size for every sort of form seems unreasonable
         """
         form = SampleFormTUM(request.POST)
         tumor_cell_content = request.POST["tumor_cell_content"]
@@ -142,6 +139,9 @@ class UploadView(TemplateView):
         return HttpResponseRedirect(reverse("config"))
 
     def handle_file(self, file, request):
+        """
+        TODO: needs to be adapted to the different sorts of forms / group memberships
+        """
         df = pd.read_csv(file, sep=";")
         first_error = True
         for index, row in df.iterrows():
