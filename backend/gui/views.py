@@ -21,7 +21,7 @@ import pandas as pd
 class SampleTrackingView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not request.user.is_authenticated:
-            messages.error(request, "Geh wo Du wohnsch, " +
+            messages.error(request, "No access for user:  " +
                            str(request.user) + "!")
             context = {
                 'form': LoginForm()
