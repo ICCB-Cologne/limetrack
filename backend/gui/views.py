@@ -75,7 +75,7 @@ class SampleTrackingView(TemplateView):
 
         patient_identifier = request.POST["patient_identifier"]
         if form.is_valid():
-            return handle_form(form, patient_identifier, request.POST, request)
+            return handle_form(form, patient_identifier, request.POST, request, "general")
 
         # if form is not valid: return the form with input and highlight errors red
         else:
@@ -94,25 +94,25 @@ class SampleTrackingView(TemplateView):
                                                               })
 
 
-def handle_form(form, patient_identifier, data, request):
+def handle_form(form, patient_identifier, data, request, tag):
     """
     Updates existing patient records (if group membership is not recruiter)
     or creates new patient records.
+
+    variables:
+    tag = 'general' or 'file' indicating if it's submission by uploading a file or filling the form
 
     """
     if request.user.groups.filter(name='SPL').exists():
         spl_received = data["spl_received"]
         spl_status = data["spl_status"]
-        spl_sequencing_type = request.POST["spl_sequencing_type"]
+        spl_sequencing_type = data["spl_sequencing_type"]
         if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
             HistopathologicalSample.objects.filter(
                 patient_identifier=patient_identifier).update(spl_received=spl_received, spl_status=spl_status, spl_sequencing_type=spl_sequencing_type)
-            messages.success(
-                request, 'Submission successful!', extra_tags="general")
-            return HttpResponseRedirect(request.path_info)
         else:
             messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
-                           extra_tags="general")
+                           extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
                                                               })
@@ -122,12 +122,9 @@ def handle_form(form, patient_identifier, data, request):
         if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
             HistopathologicalSample.objects.filter(
                 patient_identifier=patient_identifier).update(tumor_cell_content=tumor_cell_content)
-            messages.success(
-                request, 'Submission successful!', extra_tags="general")
-            return HttpResponseRedirect(request.path_info)
         else:
             messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
-                           extra_tags="general")
+                           extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
                                                               })
@@ -147,12 +144,9 @@ def handle_form(form, patient_identifier, data, request):
                     sclab_received=sclab_received, sclab_extraction_date=sclab_extraction_date, sclab_nuclei_yield=sclab_nuclei_yield,
                     sclab_nuclei_size=sclab_nuclei_size, sclab_status=sclab_status, sclac_sequencing_type=sclac_sequencing_type,
                     sclab_sorting=sclab_sorting, sclab_pool=sclab_pool)
-            messages.success(
-                request, 'Submission successful!', extra_tags="general")
-            return HttpResponseRedirect(request.path_info)
         else:
             messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
-                           extra_tags="general")
+                           extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
                                                               })
@@ -172,28 +166,25 @@ def handle_form(form, patient_identifier, data, request):
                     lb_analyte_type=lb_analyte_type, lb_sampling_date=lb_sampling_date, lb_received=lb_received,
                     lb_sample_volume=lb_sample_volume, lb_date_of_isolation=lb_date_of_isolation, lb_total_isolated_cfdna=lb_total_isolated_cfdna,
                     lb_status=lb_status)
-            messages.success(
-                request, 'Submission successful!', extra_tags="general")
-            return HttpResponseRedirect(request.path_info)
         else:
             messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
-                           extra_tags="general")
+                           extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
                                                               })
 
     elif request.user.groups.filter(name='recruiter').exists():
         form.save()
-        messages.success(
-            request, 'Submission successful!', extra_tags="general")
-        return HttpResponseRedirect(request.path_info)
 
     # TODO: check if user is admin
     else:
         form.save()
-        messages.success(
-            request, 'Submission successful!', extra_tags="general")
+
+    if tag == "general":
+        messages.success(request, 'Submission successful!', extra_tags=tag)
         return HttpResponseRedirect(request.path_info)
+    else:
+        return
 
 
 class DashBoardView(TemplateView):
@@ -229,20 +220,21 @@ class UploadView(TemplateView):
             return render(request, 'gui/login.html', context=context)
 
         upload_form = UploadForm(request.POST, request.FILES)
-        if upload_form.is_valid:
-            self.handle_file(request.FILES["file"], request)
+        if upload_form.is_valid():
+            return self.handle_file(request.FILES["file"], request)
 
+        messages.error(request, "File upload failed!", extra_tags="file")
         return HttpResponseRedirect(reverse("config"))
 
     def handle_file(self, file, request):
         """
         TODO: needs to be adapted to the different sorts of forms / group memberships
         """
-        df = pd.read_csv(file, sep=";")
+        df = pd.read_csv(file, sep=";", keep_default_na=False)
         first_error = True
         for index, row in df.iterrows():
             data = {
-                "recruting_site": row["Recruting Site"], "patient_identifier": row["Patient Identifier"],
+                "recruiting_site": row["Recruiting Site"], "patient_identifier": row["Patient Identifier"],
                 "died": row["Died"],  "saturn3_sample_code": row["SATURN3 Sample Code"],
                 "sampling_date": row["Sampling Date"], "tissue_type": row["Tissue Type"],
                 "type_of_intervention": row["Type of Intervention"], "localisation": row["Localisation"],
@@ -274,19 +266,22 @@ class UploadView(TemplateView):
                 form = SampleForm(data)
 
             if form.is_valid():
-                handle_form(form, data["patient_identifier"], data, request)
-                messages.success(
-                    request, 'File upload successful!', extra_tags="file")
+                handle_form(
+                    form, data["patient_identifier"], data, request, "file")
             else:
                 if first_error == True:
                     first_error = False
                     messages.error(
-                        request, "File upload fail!", extra_tags="file")
+                        request, "File upload failed!", extra_tags="file")
 
                 msg = "Error in data of patient with identifier: " + \
                     str(row["PID"]) + " " + str(form.errors.as_data())
                 messages.error(
                     request, msg, extra_tags="file")
+                return HttpResponseRedirect(request.path_info)
+
+        messages.success(request, "File upload successful!", extra_tags="file")
+        return HttpResponseRedirect(request.path_info)
 
 
 class AllSamplesView(TemplateView):

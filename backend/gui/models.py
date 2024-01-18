@@ -122,7 +122,7 @@ class HistopathologicalSample(models.Model):
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES)
     patient_identifier = models.CharField(
-        max_length=5, help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)", validators=[validate_alphanumeric])
+        max_length=5, help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)", validators=[validate_alphanumeric])  # set this to primary key?
     # patient = models.CharField( max_length=CHARFIELD_MAXLEN)  # skip for prototype
     died = models.DateField(null=True, blank=True)
     # tissue_name = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
