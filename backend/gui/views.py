@@ -232,6 +232,7 @@ class UploadView(TemplateView):
         """
         df = pd.read_csv(file, sep=";", keep_default_na=False)
         first_error = True
+        valid_forms = []
         for index, row in df.iterrows():
             data = {
                 "recruiting_site": row["Recruiting Site"], "patient_identifier": row["Patient Identifier"],
@@ -266,6 +267,9 @@ class UploadView(TemplateView):
                 form = SampleForm(data)
 
             if form.is_valid():
+                # alternatively append ever valid form to valid_forms
+                # and process them only if all forms were valid after the for loop
+
                 handle_form(
                     form, data["patient_identifier"], data, request, "file")
             else:
@@ -275,7 +279,8 @@ class UploadView(TemplateView):
                         request, "File upload failed!", extra_tags="file")
 
                 msg = "Error in data of patient with identifier: " + \
-                    str(row["PID"]) + " " + str(form.errors.as_data())
+                    str(row["Patient Identifier"]) + \
+                    "\n" + str(form.errors.as_text())
                 messages.error(
                     request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
