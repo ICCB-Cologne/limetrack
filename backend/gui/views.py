@@ -50,24 +50,32 @@ class SampleTrackingView(TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if not request.user.is_authenticated:
+            messages.error(request, "No access for User:  " +
+                           str(request.user) + "!")
+            context = {
+                'form': LoginForm()
+            }
+            return render(request, 'gui/login.html', context=context)
+
+        if request.user.groups.filter(name='SPL').exists():
+            form = SampleFormSPL(request.POST)
+        elif request.user.groups.filter(name='TUM').exists():
+            form = SampleFormTUM(request.POST)
+        elif request.user.groups.filter(name='ScLab').exists():
+            form = SampleFormScLab(request.POST)
+        elif request.user.groups.filter(name='LB').exists():
+            form = SampleFormLB(request.POST)
+        elif request.user.groups.filter(name='recruiter').exists():
+            form = SampleFormRec(request.POST)
+        else:
+            form = SampleForm(request.POST)
 
         patient_identifier = request.POST["patient_identifier"]
-
-        # TUM
-        if request.user.groups.filter(name='TUM').exists():
-            return self.handle_tum_form(
-                patient_identifier=patient_identifier, request=request)
-        else:
-            pass
-
-        form: SampleForm = SampleForm(request.POST)
-
         if form.is_valid():
+            return self.handle_form(form, patient_identifier, form, request)
 
-            form.save()
-            messages.success(
-                request, 'Submission successful!', extra_tags="general")
-            return HttpResponseRedirect(request.path_info)
+        # if form is not valid: return the form with input and highlight errors red
         else:
             messages.error(request, 'Submission unsuccessful!',
                            extra_tags="general")
@@ -79,10 +87,59 @@ class SampleTrackingView(TemplateView):
                 else:
                     messages.success(
                         request, "basst", extra_tags=field)
-            error_message = 'Submission unsuccessful!' + form.errors.as_text()
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
                                                               })
+
+    def handle_form(self, form, patient_identifier, request):
+        """
+        Updates existing patient records (if group membership is not recruiter)
+        or creates new patient records.
+
+        """
+        if request.user.groups.filter(name='SPL').exists():
+            spl_received = request.POST("spl_received")
+            spl_status = request.POST("spl_status")
+            spl_sequencing_type = request.POST("spl_sequencing_type")
+            try:
+                HistopathologicalSample.objects.filter(
+                    patient_identifier=patient_identifier).update(spl_received=spl_received, spl_status=spl_status, spl_sequencing_type=spl_sequencing_type)
+                messages.success(
+                    request, 'Submission successful!', extra_tags="general")
+                return HttpResponseRedirect(request.path_info)
+            except:
+                messages.error(request, 'Submission unsuccessful!',
+                               extra_tags="general")
+                return render(request, 'gui/index.html', context={'form': form,
+                                                                  'upload_form': UploadForm()
+                                                                  })
+
+        elif request.user.groups.filter(name='TUM').exists():
+            tumor_cell_content = request.POST["tumor_cell_content"]
+            try:
+                HistopathologicalSample.objects.filter(
+                    patient_identifier=patient_identifier).update(tumor_cell_content=tumor_cell_content)
+                messages.success(
+                    request, 'Submission successful!', extra_tags="general")
+                return HttpResponseRedirect(request.path_info)
+            except:
+                messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+                               extra_tags="general")
+                return render(request, 'gui/index.html', context={'form': form,
+                                                                  'upload_form': UploadForm()
+                                                                  })
+
+        elif request.user.groups.filter(name='ScLab').exists():
+            pass
+        elif request.user.groups.filter(name='LB').exists():
+            pass
+        elif request.user.groups.filter(name='recruiter').exists():
+            form.save()
+            messages.success(
+                request, 'Submission successful!', extra_tags="general")
+            return HttpResponseRedirect(request.path_info)
+        else:
+            pass
 
     def handle_tum_form(self, patient_identifier, request):
         """
