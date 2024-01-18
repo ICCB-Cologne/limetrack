@@ -75,7 +75,7 @@ class SampleTrackingView(TemplateView):
 
         patient_identifier = request.POST["patient_identifier"]
         if form.is_valid():
-            return self.handle_form(form, patient_identifier, request)
+            return handle_form(form, patient_identifier, request.POST, request)
 
         # if form is not valid: return the form with input and highlight errors red
         else:
@@ -93,106 +93,107 @@ class SampleTrackingView(TemplateView):
                                                               'upload_form': UploadForm()
                                                               })
 
-    def handle_form(self, form, patient_identifier, request):
-        """
-        Updates existing patient records (if group membership is not recruiter)
-        or creates new patient records.
 
-        """
-        if request.user.groups.filter(name='SPL').exists():
-            spl_received = request.POST["spl_received"]
-            spl_status = request.POST["spl_status"]
-            spl_sequencing_type = request.POST["spl_sequencing_type"]
-            if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
-                HistopathologicalSample.objects.filter(
-                    patient_identifier=patient_identifier).update(spl_received=spl_received, spl_status=spl_status, spl_sequencing_type=spl_sequencing_type)
-                messages.success(
-                    request, 'Submission successful!', extra_tags="general")
-                return HttpResponseRedirect(request.path_info)
-            else:
-                messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
-                               extra_tags="general")
-                return render(request, 'gui/index.html', context={'form': form,
-                                                                  'upload_form': UploadForm()
-                                                                  })
+def handle_form(form, patient_identifier, data, request):
+    """
+    Updates existing patient records (if group membership is not recruiter)
+    or creates new patient records.
 
-        elif request.user.groups.filter(name='TUM').exists():
-            tumor_cell_content = request.POST["tumor_cell_content"]
-            if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
-                HistopathologicalSample.objects.filter(
-                    patient_identifier=patient_identifier).update(tumor_cell_content=tumor_cell_content)
-                messages.success(
-                    request, 'Submission successful!', extra_tags="general")
-                return HttpResponseRedirect(request.path_info)
-            else:
-                messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
-                               extra_tags="general")
-                return render(request, 'gui/index.html', context={'form': form,
-                                                                  'upload_form': UploadForm()
-                                                                  })
-
-        elif request.user.groups.filter(name='ScLab').exists():
-            sclab_received = request.POST["sclab_received"]
-            sclab_extraction_date = request.POST["sclab_extraction_date"]
-            sclab_nuclei_yield = request.POST["sclab_nuclei_yield"]
-            sclab_nuclei_size = request.POST["sclab_nuclei_size"]
-            sclab_status = request.POST["sclab_status"]
-            sclac_sequencing_type = request.POST["sclac_sequencing_type"]
-            sclab_sorting = request.POST["sclab_sorting"]
-            sclab_pool = request.POST["sclab_pool"]
-            if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
-                HistopathologicalSample.objects.filter(
-                    patient_identifier=patient_identifier).update(
-                        sclab_received=sclab_received, sclab_extraction_date=sclab_extraction_date, sclab_nuclei_yield=sclab_nuclei_yield,
-                        sclab_nuclei_size=sclab_nuclei_size, sclab_status=sclab_status, sclac_sequencing_type=sclac_sequencing_type,
-                        sclab_sorting=sclab_sorting, sclab_pool=sclab_pool)
-                messages.success(
-                    request, 'Submission successful!', extra_tags="general")
-                return HttpResponseRedirect(request.path_info)
-            else:
-                messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
-                               extra_tags="general")
-                return render(request, 'gui/index.html', context={'form': form,
-                                                                  'upload_form': UploadForm()
-                                                                  })
-
-        elif request.user.groups.filter(name='LB').exists():
-            lb_analyte_type = request.POST["lb_analyte_type"]
-            lb_sampling_date = request.POST["lb_sampling_date"]
-            lb_received = request.POST["lb_received"]
-            lb_sample_volume = request.POST["lb_sample_volume"]
-            lb_date_of_isolation = request.POST["lb_date_of_isolation"]
-            lb_total_isolated_cfdna = request.POST["lb_total_isolated_cfdna"]
-            lb_status = request.POST["lb_status"]
-
-            if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
-                HistopathologicalSample.objects.filter(
-                    patient_identifier=patient_identifier).update(
-                        lb_analyte_type=lb_analyte_type, lb_sampling_date=lb_sampling_date, lb_received=lb_received,
-                        lb_sample_volume=lb_sample_volume, lb_date_of_isolation=lb_date_of_isolation, lb_total_isolated_cfdna=lb_total_isolated_cfdna,
-                        lb_status=lb_status)
-                messages.success(
-                    request, 'Submission successful!', extra_tags="general")
-                return HttpResponseRedirect(request.path_info)
-            else:
-                messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
-                               extra_tags="general")
-                return render(request, 'gui/index.html', context={'form': form,
-                                                                  'upload_form': UploadForm()
-                                                                  })
-
-        elif request.user.groups.filter(name='recruiter').exists():
-            form.save()
+    """
+    if request.user.groups.filter(name='SPL').exists():
+        spl_received = data["spl_received"]
+        spl_status = data["spl_status"]
+        spl_sequencing_type = request.POST["spl_sequencing_type"]
+        if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
+            HistopathologicalSample.objects.filter(
+                patient_identifier=patient_identifier).update(spl_received=spl_received, spl_status=spl_status, spl_sequencing_type=spl_sequencing_type)
             messages.success(
                 request, 'Submission successful!', extra_tags="general")
             return HttpResponseRedirect(request.path_info)
-
-        # TODO: check if user is admin
         else:
-            form.save()
+            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+                           extra_tags="general")
+            return render(request, 'gui/index.html', context={'form': form,
+                                                              'upload_form': UploadForm()
+                                                              })
+
+    elif request.user.groups.filter(name='TUM').exists():
+        tumor_cell_content = data["tumor_cell_content"]
+        if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
+            HistopathologicalSample.objects.filter(
+                patient_identifier=patient_identifier).update(tumor_cell_content=tumor_cell_content)
             messages.success(
                 request, 'Submission successful!', extra_tags="general")
             return HttpResponseRedirect(request.path_info)
+        else:
+            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+                           extra_tags="general")
+            return render(request, 'gui/index.html', context={'form': form,
+                                                              'upload_form': UploadForm()
+                                                              })
+
+    elif request.user.groups.filter(name='ScLab').exists():
+        sclab_received = data["sclab_received"]
+        sclab_extraction_date = data["sclab_extraction_date"]
+        sclab_nuclei_yield = data["sclab_nuclei_yield"]
+        sclab_nuclei_size = data["sclab_nuclei_size"]
+        sclab_status = data["sclab_status"]
+        sclac_sequencing_type = data["sclac_sequencing_type"]
+        sclab_sorting = data["sclab_sorting"]
+        sclab_pool = data["sclab_pool"]
+        if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
+            HistopathologicalSample.objects.filter(
+                patient_identifier=patient_identifier).update(
+                    sclab_received=sclab_received, sclab_extraction_date=sclab_extraction_date, sclab_nuclei_yield=sclab_nuclei_yield,
+                    sclab_nuclei_size=sclab_nuclei_size, sclab_status=sclab_status, sclac_sequencing_type=sclac_sequencing_type,
+                    sclab_sorting=sclab_sorting, sclab_pool=sclab_pool)
+            messages.success(
+                request, 'Submission successful!', extra_tags="general")
+            return HttpResponseRedirect(request.path_info)
+        else:
+            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+                           extra_tags="general")
+            return render(request, 'gui/index.html', context={'form': form,
+                                                              'upload_form': UploadForm()
+                                                              })
+
+    elif request.user.groups.filter(name='LB').exists():
+        lb_analyte_type = data["lb_analyte_type"]
+        lb_sampling_date = data["lb_sampling_date"]
+        lb_received = data["lb_received"]
+        lb_sample_volume = data["lb_sample_volume"]
+        lb_date_of_isolation = data["lb_date_of_isolation"]
+        lb_total_isolated_cfdna = data["lb_total_isolated_cfdna"]
+        lb_status = data["lb_status"]
+
+        if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
+            HistopathologicalSample.objects.filter(
+                patient_identifier=patient_identifier).update(
+                    lb_analyte_type=lb_analyte_type, lb_sampling_date=lb_sampling_date, lb_received=lb_received,
+                    lb_sample_volume=lb_sample_volume, lb_date_of_isolation=lb_date_of_isolation, lb_total_isolated_cfdna=lb_total_isolated_cfdna,
+                    lb_status=lb_status)
+            messages.success(
+                request, 'Submission successful!', extra_tags="general")
+            return HttpResponseRedirect(request.path_info)
+        else:
+            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+                           extra_tags="general")
+            return render(request, 'gui/index.html', context={'form': form,
+                                                              'upload_form': UploadForm()
+                                                              })
+
+    elif request.user.groups.filter(name='recruiter').exists():
+        form.save()
+        messages.success(
+            request, 'Submission successful!', extra_tags="general")
+        return HttpResponseRedirect(request.path_info)
+
+    # TODO: check if user is admin
+    else:
+        form.save()
+        messages.success(
+            request, 'Submission successful!', extra_tags="general")
+        return HttpResponseRedirect(request.path_info)
 
 
 class DashBoardView(TemplateView):
@@ -203,6 +204,13 @@ class DashBoardView(TemplateView):
 
 class UploadView(TemplateView):
     def get(self, request: HttpRequest):
+        if not request.user.is_authenticated:
+            messages.error(request, "No access for User:  " +
+                           str(request.user) + "!")
+            context = {
+                'form': LoginForm()
+            }
+            return render(request, 'gui/login.html', context=context)
         template_name = 'gui/index.html'
         context = {
             'form': SampleForm(),
@@ -212,7 +220,14 @@ class UploadView(TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest):
-        template_name = 'gui/index.html'
+        if not request.user.is_authenticated:
+            messages.error(request, "No access for User:  " +
+                           str(request.user) + "!")
+            context = {
+                'form': LoginForm()
+            }
+            return render(request, 'gui/login.html', context=context)
+
         upload_form = UploadForm(request.POST, request.FILES)
         if upload_form.is_valid:
             self.handle_file(request.FILES["file"], request)
@@ -244,8 +259,22 @@ class UploadView(TemplateView):
                 # "patient": row["Patient"], tissue_name : row["Tissue Name"], "used_in" : row[Used in], "histology_subtype": row["Histology Subtype"],
             }
 
-            form = SampleForm(data)
+            if request.user.groups.filter(name='SPL').exists():
+                form = SampleFormSPL(data)
+            elif request.user.groups.filter(name='TUM').exists():
+                form = SampleFormTUM(data)
+            elif request.user.groups.filter(name='ScLab').exists():
+                form = SampleFormScLab(data)
+            elif request.user.groups.filter(name='LB').exists():
+                form = SampleFormLB(data)
+            elif request.user.groups.filter(name='recruiter').exists():
+                form = SampleFormRec(data)
+            # TODO: check if user is admin
+            else:
+                form = SampleForm(data)
+
             if form.is_valid():
+                handle_form(form, data["patient_identifier"], data, request)
                 messages.success(
                     request, 'File upload successful!', extra_tags="file")
             else:
