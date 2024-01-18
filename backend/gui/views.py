@@ -73,7 +73,7 @@ class SampleTrackingView(TemplateView):
 
         patient_identifier = request.POST["patient_identifier"]
         if form.is_valid():
-            return self.handle_form(form, patient_identifier, form, request)
+            return self.handle_form(form, patient_identifier, request)
 
         # if form is not valid: return the form with input and highlight errors red
         else:
@@ -139,7 +139,10 @@ class SampleTrackingView(TemplateView):
                 request, 'Submission successful!', extra_tags="general")
             return HttpResponseRedirect(request.path_info)
         else:
-            pass
+            form.save()
+            messages.success(
+                request, 'Submission successful!', extra_tags="general")
+            return HttpResponseRedirect(request.path_info)
 
     def handle_tum_form(self, patient_identifier, request):
         """
