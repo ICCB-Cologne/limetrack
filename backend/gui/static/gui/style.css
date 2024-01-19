@@ -2,7 +2,6 @@ header {
     width: auto;
     background-position: center;
     opacity: 1;
-    filter: alpha(opacity=80);
     background-color: #ebe4d4;
     border-radius: 10px;
     display: flex;
@@ -16,9 +15,7 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    opacity: 1;
-    filter: alpha(opacity=80);
-    background: rgb(39, 34, 34);
+    background: rgb(20, 40, 100);
 }
 
 
@@ -55,9 +52,12 @@ p {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: #385573 solid 1px;
+    border: #385573 solid 0px;
     flex-direction: column-reverse;
     margin: 0px 100px 10px 100px;
+    border-image: linear-gradient(#142864, #272222);
+    border-width: 4px;
+    border-style: solid;
 }
 
 /* for all_samples_overview  to contain containers*/
