@@ -5,7 +5,8 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, Streami
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import requires_csrf_token
 from django.urls import reverse
-from .forms import SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
+from .forms import SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, \
+    SampleFormTUM, SampleFormRec
 from typing import Any
 from .models import HistopathologicalSample
 import csv
@@ -16,6 +17,23 @@ import pandas as pd
 
 # Create your views here.
 
+def get_form(group_name: str):
+    match group_name:
+        case 'spl':
+            form = SampleFormSPL()
+        case 'tum':
+            form = SampleFormTUM()
+        case 'sclab':
+            form = SampleFormScLab()
+        case 'lb':
+            form = SampleFormLB()
+        case 'recruiter':
+            form = SampleFormRec()
+        case _:
+            form = SampleForm()
+    return form
+
+
 class SampleTrackingView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not request.user.is_authenticated:
@@ -25,19 +43,8 @@ class SampleTrackingView(TemplateView):
             }
             return render(request, 'gui/login.html', context=context)
 
-        if request.user.groups.filter(name='SPL').exists():
-            form = SampleFormSPL()
-        elif request.user.groups.filter(name='TUM').exists():
-            form = SampleFormTUM()
-        elif request.user.groups.filter(name='ScLab').exists():
-            form = SampleFormScLab()
-        elif request.user.groups.filter(name='LB').exists():
-            form = SampleFormLB()
-        elif request.user.groups.filter(name='recruiter').exists():
-            form = SampleFormRec()
+        form = get_form(str(request.user.groups.first()).lower())
         # TODO: check if user is admin
-        else:
-            form = SampleForm()
 
         template_name = 'gui/index.html'
         context = {
@@ -55,19 +62,7 @@ class SampleTrackingView(TemplateView):
             }
             return render(request, 'gui/login.html', context=context)
 
-        if request.user.groups.filter(name='SPL').exists():
-            form = SampleFormSPL(request.POST)
-        elif request.user.groups.filter(name='TUM').exists():
-            form = SampleFormTUM(request.POST)
-        elif request.user.groups.filter(name='ScLab').exists():
-            form = SampleFormScLab(request.POST)
-        elif request.user.groups.filter(name='LB').exists():
-            form = SampleFormLB(request.POST)
-        elif request.user.groups.filter(name='recruiter').exists():
-            form = SampleFormRec(request.POST)
-        # TODO: check if user is admin
-        else:
-            form = SampleForm(request.POST)
+        form = get_form(str(request.user.groups.first()).lower())
 
         patient_identifier = request.POST["patient_identifier"]
         if form.is_valid():
@@ -75,10 +70,8 @@ class SampleTrackingView(TemplateView):
 
         # if form is not valid: return the form with input and highlight errors red
         else:
-            messages.error(request, 'Submission unsuccessful!',
-                           extra_tags="general")
+            messages.error(request, 'Submission unsuccessful!', extra_tags="general")
             for field in form.base_fields:
-                print(field)
                 if field in form.errors:
                     messages.error(
                         request, form.errors[field], extra_tags=field)
@@ -237,7 +230,7 @@ class UploadView(TemplateView):
         for index, row in df.iterrows():
             data = {
                 "recruiting_site": row["Recruiting Site"], "patient_identifier": row["Patient Identifier"],
-                "died": row["Died"],  "saturn3_sample_code": row["SATURN3 Sample Code"],
+                "died": row["Died"], "saturn3_sample_code": row["SATURN3 Sample Code"],
                 "sampling_date": row["Sampling Date"], "tissue_type": row["Tissue Type"],
                 "type_of_intervention": row["Type of Intervention"], "localisation": row["Localisation"],
                 "corresponding_organoid": row["Corresponding Organoid"], "grading": row["Grading"],
@@ -253,19 +246,7 @@ class UploadView(TemplateView):
                 # "patient": row["Patient"], tissue_name : row["Tissue Name"], "used_in" : row[Used in], "histology_subtype": row["Histology Subtype"],
             }
 
-            if request.user.groups.filter(name='SPL').exists():
-                form = SampleFormSPL(data)
-            elif request.user.groups.filter(name='TUM').exists():
-                form = SampleFormTUM(data)
-            elif request.user.groups.filter(name='ScLab').exists():
-                form = SampleFormScLab(data)
-            elif request.user.groups.filter(name='LB').exists():
-                form = SampleFormLB(data)
-            elif request.user.groups.filter(name='recruiter').exists():
-                form = SampleFormRec(data)
-            # TODO: check if user is admin
-            else:
-                form = SampleForm(data)
+            form = get_form(str(request.user.groups.first()).lower())
 
             if form.is_valid():
                 # alternatively append ever valid form to valid_forms
@@ -345,6 +326,7 @@ class Echo:
     """An object that implements just the write method of the file-like
     interface.
     """
+
     @staticmethod
     def write(value):
         """Write the value by returning it, instead of storing in a buffer."""
