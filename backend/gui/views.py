@@ -1,6 +1,7 @@
 from .forms import (
     SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM, 
-    SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm
+    SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm,
+    SearchForm
 )
 from .forms import (
     SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, 
@@ -15,17 +16,15 @@ from django.http import (
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
+from django.forms.models import model_to_dict
+from .models import HistopathologicalSample
 from .models import HistopathologicalSample
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse
 from django.forms import Field
-from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec, SearchForm
 from typing import Any
-from .models import HistopathologicalSample
 import csv
-from django.contrib.auth import authenticate, login
-from django.forms.models import model_to_dict
 
 import pandas as pd
 import csv
@@ -57,20 +56,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
         *args: Any, 
         **kwargs: Any
     ) -> HttpResponse:
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower())
-        if request.user.groups.filter(name='SPL').exists():
-            form = SampleFormSPL()
-        elif request.user.groups.filter(name='TUM').exists():
-            form = SampleFormTUM()
-        elif request.user.groups.filter(name='ScLab').exists():
-            form = SampleFormScLab()
-        elif request.user.groups.filter(name='LB').exists():
-            form = SampleFormLB()
-        elif request.user.groups.filter(name='recruiter').exists():
-            form = SampleFormRec()
-        # TODO: check if user is admin
-
         template_name = 'gui/index.html'
         context = {
             'form': form,
@@ -86,21 +72,9 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
         *args: Any, 
         **kwargs: Any
     ) -> HttpResponse:
-        if request.user.groups.filter(name='SPL').exists():
-            form = SampleFormSPL(request.POST)
-        elif request.user.groups.filter(name='TUM').exists():
-            form = SampleFormTUM(request.POST)
-        elif request.user.groups.filter(name='ScLab').exists():
-            form = SampleFormScLab(request.POST)
-        elif request.user.groups.filter(name='LB').exists():
-            form = SampleFormLB(request.POST)
-        elif request.user.groups.filter(name='recruiter').exists():
-            form = SampleFormRec(request.POST)
-        # TODO: check if user is admin
-        else:
-            form = SampleForm(request.POST)
-
+        form = get_form(str(request.user.groups.first()).lower())
         patient_identifier = request.POST["patient_identifier"]
+        
         if form.is_valid():
             return handle_form(
                 form, 
