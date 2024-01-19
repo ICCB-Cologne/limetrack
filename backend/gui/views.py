@@ -19,11 +19,8 @@ from django.views.generic import TemplateView
 from django.forms.models import model_to_dict
 from .models import HistopathologicalSample
 from django.contrib import messages
-from django.forms import ModelForm
 from django.shortcuts import render
 from django.urls import reverse
-from django.forms import Field
-from django.db import models
 from typing import Any
 import csv
 
