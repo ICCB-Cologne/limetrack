@@ -1,4 +1,8 @@
 from .forms import SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
+from .forms import (
+    SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab,
+    SampleFormTUM, SampleFormRec
+)
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,8 +13,6 @@ from .models import HistopathologicalSample
 from django.contrib import messages
 from django.shortcuts import render
 from django.urls import reverse
-from .forms import SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, \
-    SampleFormTUM, SampleFormRec
 from typing import Any
 import pandas as pd
 import csv
