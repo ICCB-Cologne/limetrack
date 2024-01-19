@@ -51,7 +51,14 @@ def get_form(group_name: str):
 
 
 class SampleTrackingView(LoginRequiredMixin, TemplateView):
+    def get(
+        self, 
+        request: HttpRequest, 
+        *args: Any, 
+        **kwargs: Any
+    ) -> HttpResponse:
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        form = get_form(str(request.user.groups.first()).lower())
         if request.user.groups.filter(name='SPL').exists():
             form = SampleFormSPL()
         elif request.user.groups.filter(name='TUM').exists():
@@ -73,7 +80,12 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(
+        self, 
+        request: HttpRequest, 
+        *args: Any, 
+        **kwargs: Any
+    ) -> HttpResponse:
         if request.user.groups.filter(name='SPL').exists():
             form = SampleFormSPL(request.POST)
         elif request.user.groups.filter(name='TUM').exists():
@@ -90,21 +102,42 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
 
         patient_identifier = request.POST["patient_identifier"]
         if form.is_valid():
-            return handle_form(form, patient_identifier, request.POST, request, "general")
+            return handle_form(
+                form, 
+                patient_identifier, 
+                request.POST, 
+                request, 
+                "general"
+            )
 
         # if form is not valid: return the form with input and highlight errors red
         else:
-            messages.error(request, 'Submission unsuccessful!', extra_tags="general")
+            messages.error(
+                request, 
+                'Submission unsuccessful!', 
+                extra_tags="general"
+            )
             for field in form.base_fields:
                 if field in form.errors:
                     messages.error(
-                        request, form.errors[field], extra_tags=field)
+                        request, 
+                        form.errors[field], 
+                        extra_tags=field
+                    )
                 else:
                     messages.success(
-                        request, "basst", extra_tags=field)
-            return render(request, 'gui/index.html', context={'form': form,
-                                                              'upload_form': UploadForm()
-                                                              })
+                        request, 
+                        "basst", 
+                        extra_tags=field
+                    )
+            return render(
+                request, 
+                'gui/index.html', 
+                context={
+                    'form': form,
+                    'upload_form': UploadForm()
+                }
+            )
 
 
 def handle_form(form, patient_identifier, data, request, tag):
