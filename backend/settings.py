@@ -80,8 +80,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / 'db.sqlite3'
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "saturn3samples",
+        "USER": "admin",
+        "PASSWORD": "admin",
+        "HOST": "db",  # set in docker-compose.yml
+        "PORT": "5432",  # default postgres port
     }
 }
 
@@ -133,3 +137,31 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "audit": {
+            "format": "{asctime} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "audit_log": {
+            "level": "INFO",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(BASE_DIR, "logs", "audit.log"),
+            "maxBytes": 500 * 1024**2,  # 500MB
+            "backupCount": 2,
+            "formatter": "audit",
+        },
+    },
+    "loggers": {
+        "s3sample": {
+            "handlers": ["audit_log"],
+            "level": "INFO",
+            "propagate": True,
+        },
+    },
+}

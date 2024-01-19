@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.forms import ModelForm
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
@@ -11,13 +12,15 @@ from typing import Any
 from .models import HistopathologicalSample
 import csv
 from django.contrib.auth import authenticate, login
-
 import pandas as pd
+import logging
 
-
+app_log = logging.getLogger("s3sample")
+# app_log.info('This log is starting')
 # Create your views here.
 
-def get_form(group_name: str):
+
+def get_form(group_name: str) -> ModelForm:
     match group_name:
         case 'spl':
             form = SampleFormSPL()
@@ -51,6 +54,7 @@ class SampleTrackingView(TemplateView):
             'form': form,
             'upload_form': UploadForm()
         }
+
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
@@ -66,6 +70,7 @@ class SampleTrackingView(TemplateView):
 
         patient_identifier = request.POST["patient_identifier"]
         if form.is_valid():
+            app_log.info(f'{request.user} added / edited data for patient {patient_identifier}')
             return handle_form(form, patient_identifier, request.POST, request, "general")
 
         # if form is not valid: return the form with input and highlight errors red
@@ -77,12 +82,14 @@ class SampleTrackingView(TemplateView):
                         request, form.errors[field], extra_tags=field)
                 else:
                     messages.success(
-                        request, "basst", extra_tags=field)
+                        request, "Success!", extra_tags=field)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
                                                               })
 
 
+# FIXME: @JG-IBSM kannst du das ggfs. aufhübschen oder wenigstens einmal durch ChatGPT jagen?
+# Type hinting etc. würde mich persönlich sehr glücklich machen :)
 def handle_form(form, patient_identifier, data, request, tag):
     """
     Updates existing patient records (if group membership is not recruiter)
