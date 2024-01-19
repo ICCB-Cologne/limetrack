@@ -65,7 +65,7 @@ p {
     position: relative;
     width: 90%;
     border-radius: 10px;
-    border: #649bd6 dotted 1px;
+    /* border: #649bd6 dotted 1px; */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -80,7 +80,7 @@ p {
     position: relative;
     width: 90%;
     border-radius: 10px;
-    border: #649bd6 dotted 1px;
+    /* border: #649bd6 dotted 1px; */
     display: flex;
     flex-direction: row;
     justify-content: center;
