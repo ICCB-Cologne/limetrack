@@ -7,11 +7,12 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.db import models
 from django.urls import reverse
 from django.forms import Field
-from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
+from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec, SearchForm
 from typing import Any
 from .models import HistopathologicalSample
 import csv
 from django.contrib.auth import authenticate, login
+from django.forms.models import model_to_dict
 
 import pandas as pd
 
@@ -45,7 +46,8 @@ class SampleTrackingView(TemplateView):
         template_name = 'gui/index.html'
         context = {
             'form': form,
-            'upload_form': UploadForm()
+            'upload_form': UploadForm(),
+            'search_form': SearchForm()
         }
         return render(request, template_name, context=context)
 
@@ -391,4 +393,79 @@ class LoginView(TemplateView):
             return HttpResponseRedirect(request.path_info)
         else:
             login(request, user)
+            return HttpResponseRedirect(reverse("config"))
+
+
+class SearchView(TemplateView):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if not request.user.is_authenticated:
+            messages.error(request, "No access for User:  " +
+                           str(request.user) + "!")
+            context = {
+                'form': LoginForm()
+            }
+            return render(request, 'gui/login.html', context=context)
+
+        if request.user.groups.filter(name='SPL').exists():
+            form = SampleFormSPL()
+        elif request.user.groups.filter(name='TUM').exists():
+            form = SampleFormTUM()
+        elif request.user.groups.filter(name='ScLab').exists():
+            form = SampleFormScLab()
+        elif request.user.groups.filter(name='LB').exists():
+            form = SampleFormLB()
+        elif request.user.groups.filter(name='Recruiter').exists():
+            form = SampleFormRec()
+        # TODO: check if user is admin
+        else:
+            form = SampleForm()
+
+        template_name = 'gui/index.html'
+        context = {
+            'form': form,
+            'upload_form': UploadForm(),
+            'search_form': SearchForm()
+        }
+        return render(request, template_name, context=context)
+
+    @method_decorator(requires_csrf_token)
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if not request.user.is_authenticated:
+            messages.error(request, "No access for User:  " +
+                           str(request.user) + "!")
+            context = {
+                'form': LoginForm()
+            }
+            return render(request, 'gui/login.html', context=context)
+
+        form = SearchForm(request.POST)
+        search = request.POST["search_field"]
+
+        if form.is_valid():
+            if HistopathologicalSample.objects.filter(patient_identifier=search).exists():
+                found_record = HistopathologicalSample.objects.get(
+                    patient_identifier=search)
+
+                model_dict = model_to_dict(found_record)
+                model_dict.pop("id")
+                form = SampleForm(model_dict)
+
+                messages.success(
+                    request, f"FOUND patient_identifier {search}", extra_tags="general")
+                template_name = 'gui/index.html'
+                context = {
+                    'form': form,
+                    'upload_form': UploadForm(),
+                    'search_form': SearchForm()
+                }
+                return render(request, template_name, context=context)
+
+            else:
+                messages.error(request, f"DID NOT FIND patient_identifier {search}",
+                               extra_tags="general")
+                return HttpResponseRedirect(reverse("config"))
+
+        else:
+            messages.error(request, 'Invalid input',
+                           extra_tags="general")
             return HttpResponseRedirect(reverse("config"))
