@@ -1,9 +1,12 @@
-from .forms import SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
-from .forms import (
-    SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab,
-    SampleFormTUM, SampleFormRec
-)
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
+from .forms import (
+    SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM, 
+    SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm
+)
+from .forms import (
+    SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, 
+    SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
+)
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
