@@ -1,13 +1,27 @@
+from .forms import (
+    SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM,
+    SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm
+)
+from .forms import (
+    SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL,
+    SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec,
+    SearchForm
+)
+from django.views.decorators.csrf import requires_csrf_token
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import (
+    HttpRequest, HttpResponse, HttpResponseRedirect,
+    StreamingHttpResponse
+)
+from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate, login
+from django.views.generic import TemplateView
+from .models import HistopathologicalSample
 from django.contrib import messages
 from django.shortcuts import render
-from django.views.generic import TemplateView
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import requires_csrf_token
-from django.db import models
 from django.urls import reverse
 from django.forms import Field
-from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec, SearchForm
+
 from typing import Any
 from .models import HistopathologicalSample
 import csv
@@ -15,33 +29,37 @@ from django.contrib.auth import authenticate, login
 from django.forms.models import model_to_dict
 
 import pandas as pd
+import csv
 
 
 # Create your views here.
 
-class SampleTrackingView(TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_authenticated:
-            messages.error(request, "No access for User:  " +
-                           str(request.user) + "!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
-
-        if request.user.groups.filter(name='SPL').exists():
+def get_form(group_name: str):
+    match group_name:
+        case 'spl':
             form = SampleFormSPL()
-        elif request.user.groups.filter(name='TUM').exists():
+        case 'tum':
             form = SampleFormTUM()
-        elif request.user.groups.filter(name='ScLab').exists():
+        case 'sclab':
             form = SampleFormScLab()
-        elif request.user.groups.filter(name='LB').exists():
+        case 'lb':
             form = SampleFormLB()
-        elif request.user.groups.filter(name='recruiter').exists():
+        case 'recruiter':
             form = SampleFormRec()
-        # TODO: check if user is admin
-        else:
+        case _:
             form = SampleForm()
+    return form
+
+
+class SampleTrackingView(LoginRequiredMixin, TemplateView):
+    def get(
+        self,
+        request: HttpRequest,
+        *args: Any,
+        **kwargs: Any
+    ) -> HttpResponse:
+        form = get_form(str(request.user.groups.first()).lower())
+        # TODO: check if user is admin
 
         template_name = 'gui/index.html'
         context = {
@@ -52,48 +70,52 @@ class SampleTrackingView(TemplateView):
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_authenticated:
-            messages.error(request, "No access for User:  " +
-                           str(request.user) + "!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
-
-        if request.user.groups.filter(name='SPL').exists():
-            form = SampleFormSPL(request.POST)
-        elif request.user.groups.filter(name='TUM').exists():
-            form = SampleFormTUM(request.POST)
-        elif request.user.groups.filter(name='ScLab').exists():
-            form = SampleFormScLab(request.POST)
-        elif request.user.groups.filter(name='LB').exists():
-            form = SampleFormLB(request.POST)
-        elif request.user.groups.filter(name='recruiter').exists():
-            form = SampleFormRec(request.POST)
-        # TODO: check if user is admin
-        else:
-            form = SampleForm(request.POST)
+    def post(
+        self,
+        request: HttpRequest,
+        *args: Any,
+        **kwargs: Any
+    ) -> HttpResponse:
+        form = get_form(str(request.user.groups.first()).lower())
 
         patient_identifier = request.POST["patient_identifier"]
         if form.is_valid():
-            return handle_form(form, patient_identifier, request.POST, request, "general")
+            return handle_form(
+                form,
+                patient_identifier,
+                request.POST,
+                request,
+                "general"
+            )
 
         # if form is not valid: return the form with input and highlight errors red
         else:
-            messages.error(request, 'Submission unsuccessful!',
-                           extra_tags="general")
+            messages.error(
+                request,
+                'Submission unsuccessful!',
+                extra_tags="general"
+            )
             for field in form.base_fields:
-                print(field)
                 if field in form.errors:
                     messages.error(
-                        request, form.errors[field], extra_tags=field)
+                        request,
+                        form.errors[field],
+                        extra_tags=field
+                    )
                 else:
                     messages.success(
-                        request, "basst", extra_tags=field)
-            return render(request, 'gui/index.html', context={'form': form,
-                                                              'upload_form': UploadForm()
-                                                              })
+                        request,
+                        "basst",
+                        extra_tags=field
+                    )
+            return render(
+                request,
+                'gui/index.html',
+                context={
+                    'form': form,
+                    'upload_form': UploadForm()
+                }
+            )
 
 
 def handle_form(form, patient_identifier, data, request, tag):
@@ -111,9 +133,11 @@ def handle_form(form, patient_identifier, data, request, tag):
         spl_sequencing_type = data["spl_sequencing_type"]
         if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
             HistopathologicalSample.objects.filter(
-                patient_identifier=patient_identifier).update(spl_received=spl_received, spl_status=spl_status, spl_sequencing_type=spl_sequencing_type)
+                patient_identifier=patient_identifier).update(spl_received=spl_received, spl_status=spl_status,
+                                                              spl_sequencing_type=spl_sequencing_type)
         else:
-            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+            messages.error(request, f'Submission unsuccessful! No patient with patient_identifier'
+                                    f'{str(patient_identifier)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
@@ -125,7 +149,8 @@ def handle_form(form, patient_identifier, data, request, tag):
             HistopathologicalSample.objects.filter(
                 patient_identifier=patient_identifier).update(tumor_cell_content=tumor_cell_content)
         else:
-            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+            messages.error(request, f'Submission unsuccessful! No patient with patient_identifier'
+                                    f'{str(patient_identifier)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
@@ -143,11 +168,14 @@ def handle_form(form, patient_identifier, data, request, tag):
         if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
             HistopathologicalSample.objects.filter(
                 patient_identifier=patient_identifier).update(
-                    sclab_received=sclab_received, sclab_extraction_date=sclab_extraction_date, sclab_nuclei_yield=sclab_nuclei_yield,
-                    sclab_nuclei_size=sclab_nuclei_size, sclab_status=sclab_status, sclac_sequencing_type=sclac_sequencing_type,
-                    sclab_sorting=sclab_sorting, sclab_pool=sclab_pool)
+                sclab_received=sclab_received, sclab_extraction_date=sclab_extraction_date,
+                sclab_nuclei_yield=sclab_nuclei_yield,
+                sclab_nuclei_size=sclab_nuclei_size, sclab_status=sclab_status,
+                sclac_sequencing_type=sclac_sequencing_type,
+                sclab_sorting=sclab_sorting, sclab_pool=sclab_pool)
         else:
-            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+            messages.error(request, f'Submission unsuccessful! No patient with patient_identifier'
+                                    f'{str(patient_identifier)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
@@ -165,11 +193,13 @@ def handle_form(form, patient_identifier, data, request, tag):
         if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
             HistopathologicalSample.objects.filter(
                 patient_identifier=patient_identifier).update(
-                    lb_analyte_type=lb_analyte_type, lb_sampling_date=lb_sampling_date, lb_received=lb_received,
-                    lb_sample_volume=lb_sample_volume, lb_date_of_isolation=lb_date_of_isolation, lb_total_isolated_cfdna=lb_total_isolated_cfdna,
-                    lb_status=lb_status)
+                lb_analyte_type=lb_analyte_type, lb_sampling_date=lb_sampling_date, lb_received=lb_received,
+                lb_sample_volume=lb_sample_volume, lb_date_of_isolation=lb_date_of_isolation,
+                lb_total_isolated_cfdna=lb_total_isolated_cfdna,
+                lb_status=lb_status)
         else:
-            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+            messages.error(request, f'Submission unsuccessful! No patient with patient_identifier'
+                                    f'{str(patient_identifier)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
@@ -189,21 +219,14 @@ def handle_form(form, patient_identifier, data, request, tag):
         return
 
 
-class DashBoardView(TemplateView):
-    def get(self, request: HttpRequest):
+class DashBoardView(LoginRequiredMixin, TemplateView):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/dashboard.html'
         return render(request, template_name)
 
 
-class UploadView(TemplateView):
-    def get(self, request: HttpRequest):
-        if not request.user.is_authenticated:
-            messages.error(request, "No access for User:  " +
-                           str(request.user) + "!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
+class UploadView(LoginRequiredMixin, TemplateView):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/index.html'
         context = {
             'form': SampleForm(),
@@ -213,14 +236,6 @@ class UploadView(TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest):
-        if not request.user.is_authenticated:
-            messages.error(request, "No access for User:  " +
-                           str(request.user) + "!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
-
         upload_form = UploadForm(request.POST, request.FILES)
         if upload_form.is_valid():
             return self.handle_file(request.FILES["file"], request)
@@ -234,11 +249,10 @@ class UploadView(TemplateView):
         """
         df = pd.read_csv(file, sep=";", keep_default_na=False)
         first_error = True
-        valid_forms = []
         for index, row in df.iterrows():
             data = {
                 "recruiting_site": row["Recruiting Site"], "patient_identifier": row["Patient Identifier"],
-                "died": row["Died"],  "saturn3_sample_code": row["SATURN3 Sample Code"],
+                "died": row["Died"], "saturn3_sample_code": row["SATURN3 Sample Code"],
                 "sampling_date": row["Sampling Date"], "tissue_type": row["Tissue Type"],
                 "type_of_intervention": row["Type of Intervention"], "localisation": row["Localisation"],
                 "corresponding_organoid": row["Corresponding Organoid"], "grading": row["Grading"],
@@ -254,19 +268,7 @@ class UploadView(TemplateView):
                 # "patient": row["Patient"], tissue_name : row["Tissue Name"], "used_in" : row[Used in], "histology_subtype": row["Histology Subtype"],
             }
 
-            if request.user.groups.filter(name='SPL').exists():
-                form = SampleFormSPL(data)
-            elif request.user.groups.filter(name='TUM').exists():
-                form = SampleFormTUM(data)
-            elif request.user.groups.filter(name='ScLab').exists():
-                form = SampleFormScLab(data)
-            elif request.user.groups.filter(name='LB').exists():
-                form = SampleFormLB(data)
-            elif request.user.groups.filter(name='recruiter').exists():
-                form = SampleFormRec(data)
-            # TODO: check if user is admin
-            else:
-                form = SampleForm(data)
+            form = get_form(str(request.user.groups.first()).lower())
 
             if form.is_valid():
                 # alternatively append ever valid form to valid_forms
@@ -275,14 +277,12 @@ class UploadView(TemplateView):
                 handle_form(
                     form, data["patient_identifier"], data, request, "file")
             else:
-                if first_error == True:
-                    first_error = False
+                if first_error:
                     messages.error(
                         request, "File upload failed!", extra_tags="file")
 
-                msg = "Error in data of patient with identifier: " + \
-                    str(row["Patient Identifier"]) + \
-                    "\n" + str(form.errors.as_text())
+                msg = f"Error in data of patient with identifier: {str(row['Patient Identifier'])}\n" \
+                      f"{str(form.errors.as_text())}"
                 messages.error(
                     request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
@@ -291,7 +291,7 @@ class UploadView(TemplateView):
         return HttpResponseRedirect(request.path_info)
 
 
-class AllSamplesView(TemplateView):
+class AllSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
@@ -315,7 +315,7 @@ class AllSamplesView(TemplateView):
         return HttpResponseRedirect(request.path_info)
 
 
-class FilteredSamplesView(TemplateView):
+class FilteredSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
@@ -348,6 +348,7 @@ class Echo:
     """An object that implements just the write method of the file-like
     interface.
     """
+
     @staticmethod
     def write(value):
         """Write the value by returning it, instead of storing in a buffer."""
