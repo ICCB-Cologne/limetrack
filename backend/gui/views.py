@@ -11,24 +11,19 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
     HttpRequest, HttpResponse, HttpResponseRedirect, 
-    StreamingHttpResponse
+    StreamingHttpResponse, QueryDict
 )
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
 from django.forms.models import model_to_dict
 from .models import HistopathologicalSample
-from .models import HistopathologicalSample
 from django.contrib import messages
 from django.forms import ModelForm
 from django.shortcuts import render
-from django.views.generic import TemplateView
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import requires_csrf_token
-from django.db import models
 from django.urls import reverse
 from django.forms import Field
+from django.db import models
 from typing import Any
 import csv
 
@@ -40,38 +35,23 @@ app_log = logging.getLogger("s3sample")
 # app_log.info('This log is starting')
 # Create your views here.
 
-
-def get_form(group_name: str) -> ModelForm:
+def get_form(
+    group_name: str, 
+    data: QueryDict=None
+):
     match group_name:
         case 'spl':
-            form = SampleFormSPL()
+            form = SampleFormSPL(data=data)
         case 'tum':
-            form = SampleFormTUM()
+            form = SampleFormTUM(data=data)
         case 'sclab':
-            form = SampleFormScLab()
+            form = SampleFormScLab(data=data)
         case 'lb':
-            form = SampleFormLB()
+            form = SampleFormLB(data=data)
         case 'recruiter':
-            form = SampleFormRec()
+            form = SampleFormRec(data=data)
         case _:
-            form = SampleForm()
-    return form
-
-
-def get_form(group_name: str):
-    match group_name:
-        case 'spl':
-            form = SampleFormSPL()
-        case 'tum':
-            form = SampleFormTUM()
-        case 'sclab':
-            form = SampleFormScLab()
-        case 'lb':
-            form = SampleFormLB()
-        case 'recruiter':
-            form = SampleFormRec()
-        case _:
-            form = SampleForm()
+            form = SampleForm(data=data)
     return form
 
 
@@ -86,7 +66,8 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
         template_name = 'gui/index.html'
         context = {
             'form': form,
-            'upload_form': UploadForm()
+            'upload_form': UploadForm(),
+            'search_form': SearchForm()
         }
 
         return render(request, template_name, context=context)
@@ -98,7 +79,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
         *args: Any, 
         **kwargs: Any
     ) -> HttpResponse:
-        form = get_form(str(request.user.groups.first()).lower())
+        form = get_form(str(request.user.groups.first()).lower(), request.POST)
         patient_identifier = request.POST["patient_identifier"]
         
         if form.is_valid():
@@ -118,6 +99,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
                 'Submission unsuccessful!', 
                 extra_tags="general"
             )
+        
             for field in form.base_fields:
                 if field in form.errors:
                     messages.error(
@@ -419,4 +401,49 @@ class LoginView(TemplateView):
             return HttpResponseRedirect(request.path_info)
         else:
             login(request, user)
+            return HttpResponseRedirect(reverse("config"))
+
+class SearchView(LoginRequiredMixin, TemplateView):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:       
+        form = get_form(str(request.user.groups.first()).lower())
+        template_name = 'gui/index.html'
+        context = {
+            'form': form,
+            'upload_form': UploadForm(),
+            'search_form': SearchForm()
+        }
+        return render(request, template_name, context=context)
+
+    @method_decorator(requires_csrf_token)
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        form = SearchForm(request.POST)
+        search = request.POST["search_field"]
+
+        if form.is_valid():
+            if HistopathologicalSample.objects.filter(patient_identifier=search).exists():
+                found_record = HistopathologicalSample.objects.get(
+                    patient_identifier=search)
+
+                model_dict = model_to_dict(found_record)
+                model_dict.pop("id")
+                form = SampleForm(model_dict)
+
+                messages.success(
+                    request, f"FOUND patient_identifier {search}", extra_tags="general")
+                template_name = 'gui/index.html'
+                context = {
+                    'form': form,
+                    'upload_form': UploadForm(),
+                    'search_form': SearchForm()
+                }
+                return render(request, template_name, context=context)
+
+            else:
+                messages.error(request, f"DID NOT FIND patient_identifier {search}",
+                            extra_tags="general")
+                return HttpResponseRedirect(reverse("config"))
+
+        else:
+            messages.error(request, 'Invalid input',
+                        extra_tags="general")
             return HttpResponseRedirect(reverse("config"))
