@@ -5,6 +5,12 @@ Prototype for sampling tracking tasks
 Docker
 
 ## Setup
+
+### Clean Volume On Reboot
+
 `docker compose -f docker-compose.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate`
 
+### Persist Volumes Ob Reboot
+
+`docker compose -f docker-compose.yml -f docker-compose-develop.yml up --remove-orphans`
 
