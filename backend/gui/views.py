@@ -1,4 +1,3 @@
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from .forms import (
     SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM, 
     SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm
@@ -9,6 +8,10 @@ from .forms import (
 )
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import (
+    HttpRequest, HttpResponse, HttpResponseRedirect, 
+    StreamingHttpResponse
+)
 from django.utils.decorators import method_decorator
 from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
