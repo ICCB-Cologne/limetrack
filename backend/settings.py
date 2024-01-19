@@ -137,7 +137,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 ]
-
+LOGIN_URL = "/login/"
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,

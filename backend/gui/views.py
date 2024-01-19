@@ -1,3 +1,24 @@
+from .forms import (
+    SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM, 
+    SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm,
+    SearchForm
+)
+from .forms import (
+    SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, 
+    SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
+)
+from django.views.decorators.csrf import requires_csrf_token
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import (
+    HttpRequest, HttpResponse, HttpResponseRedirect, 
+    StreamingHttpResponse
+)
+from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate, login
+from django.views.generic import TemplateView
+from django.forms.models import model_to_dict
+from .models import HistopathologicalSample
+from .models import HistopathologicalSample
 from django.contrib import messages
 from django.forms import ModelForm
 from django.shortcuts import render
@@ -5,15 +26,15 @@ from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import requires_csrf_token
+from django.db import models
 from django.urls import reverse
-from .forms import SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, \
-    SampleFormTUM, SampleFormRec
+from django.forms import Field
 from typing import Any
-from .models import HistopathologicalSample
 import csv
-from django.contrib.auth import authenticate, login
+
 import pandas as pd
 import logging
+import csv
 
 app_log = logging.getLogger("s3sample")
 # app_log.info('This log is starting')
@@ -37,18 +58,31 @@ def get_form(group_name: str) -> ModelForm:
     return form
 
 
-class SampleTrackingView(TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_authenticated:
-            messages.error(request, f"No access for User: {str(request.user)}!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
+def get_form(group_name: str):
+    match group_name:
+        case 'spl':
+            form = SampleFormSPL()
+        case 'tum':
+            form = SampleFormTUM()
+        case 'sclab':
+            form = SampleFormScLab()
+        case 'lb':
+            form = SampleFormLB()
+        case 'recruiter':
+            form = SampleFormRec()
+        case _:
+            form = SampleForm()
+    return form
 
+
+class SampleTrackingView(LoginRequiredMixin, TemplateView):
+    def get(
+        self, 
+        request: HttpRequest, 
+        *args: Any, 
+        **kwargs: Any
+    ) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower())
-        # TODO: check if user is admin
-
         template_name = 'gui/index.html'
         context = {
             'form': form,
@@ -58,34 +92,53 @@ class SampleTrackingView(TemplateView):
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_authenticated:
-            messages.error(request, f"No access for User: {str(request.user)}!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
-
+    def post(
+        self, 
+        request: HttpRequest, 
+        *args: Any, 
+        **kwargs: Any
+    ) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower())
-
         patient_identifier = request.POST["patient_identifier"]
+        
         if form.is_valid():
             app_log.info(f'{request.user} added / edited data for patient {patient_identifier}')
-            return handle_form(form, patient_identifier, request.POST, request, "general")
+            return handle_form(
+                form, 
+                patient_identifier, 
+                request.POST, 
+                request, 
+                "general"
+            )
 
         # if form is not valid: return the form with input and highlight errors red
         else:
-            messages.error(request, 'Submission unsuccessful!', extra_tags="general")
+            messages.error(
+                request, 
+                'Submission unsuccessful!', 
+                extra_tags="general"
+            )
             for field in form.base_fields:
                 if field in form.errors:
                     messages.error(
-                        request, form.errors[field], extra_tags=field)
+                        request, 
+                        form.errors[field], 
+                        extra_tags=field
+                    )
                 else:
                     messages.success(
-                        request, "Success!", extra_tags=field)
-            return render(request, 'gui/index.html', context={'form': form,
-                                                              'upload_form': UploadForm()
-                                                              })
+                        request, 
+                        "Success!", 
+                        extra_tags=field
+                    )
+            return render(
+                request, 
+                'gui/index.html', 
+                context={
+                    'form': form,
+                    'upload_form': UploadForm()
+                }
+            )
 
 
 # FIXME: @JG-IBSM kannst du das ggfs. aufhübschen oder wenigstens einmal durch ChatGPT jagen?
@@ -191,20 +244,14 @@ def handle_form(form, patient_identifier, data, request, tag):
         return
 
 
-class DashBoardView(TemplateView):
+class DashBoardView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/dashboard.html'
         return render(request, template_name)
 
 
-class UploadView(TemplateView):
+class UploadView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_authenticated:
-            messages.error(request, f"No access for User: {str(request.user)}!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
         template_name = 'gui/index.html'
         context = {
             'form': SampleForm(),
@@ -214,13 +261,6 @@ class UploadView(TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest):
-        if not request.user.is_authenticated:
-            messages.error(request, f"No access for User: {str(request.user)}!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
-
         upload_form = UploadForm(request.POST, request.FILES)
         if upload_form.is_valid():
             return self.handle_file(request.FILES["file"], request)
@@ -276,7 +316,7 @@ class UploadView(TemplateView):
         return HttpResponseRedirect(request.path_info)
 
 
-class AllSamplesView(TemplateView):
+class AllSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
@@ -300,7 +340,7 @@ class AllSamplesView(TemplateView):
         return HttpResponseRedirect(request.path_info)
 
 
-class FilteredSamplesView(TemplateView):
+class FilteredSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
