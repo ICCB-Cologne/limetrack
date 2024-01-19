@@ -1,30 +1,22 @@
+from .forms import SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
+from django.views.decorators.csrf import requires_csrf_token
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.contrib.auth import authenticate, login
+from django.views.generic import TemplateView
+from .models import HistopathologicalSample
 from django.contrib import messages
 from django.shortcuts import render
-from django.views.generic import TemplateView
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import requires_csrf_token
 from django.urls import reverse
-from .forms import SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
 from typing import Any
-from .models import HistopathologicalSample
-import csv
-from django.contrib.auth import authenticate, login
-
 import pandas as pd
+import csv
 
 
-# Create your views here.
 
-class SampleTrackingView(TemplateView):
+class SampleTrackingView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_authenticated:
-            messages.error(request, f"No access for User: {str(request.user)}!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
-
         if request.user.groups.filter(name='SPL').exists():
             form = SampleFormSPL()
         elif request.user.groups.filter(name='TUM').exists():
@@ -48,13 +40,6 @@ class SampleTrackingView(TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_authenticated:
-            messages.error(request, f"No access for User: {str(request.user)}!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
-
         if request.user.groups.filter(name='SPL').exists():
             form = SampleFormSPL(request.POST)
         elif request.user.groups.filter(name='TUM').exists():
@@ -191,20 +176,14 @@ def handle_form(form, patient_identifier, data, request, tag):
         return
 
 
-class DashBoardView(TemplateView):
+class DashBoardView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/dashboard.html'
         return render(request, template_name)
 
 
-class UploadView(TemplateView):
+class UploadView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        if not request.user.is_authenticated:
-            messages.error(request, f"No access for User: {str(request.user)}!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
         template_name = 'gui/index.html'
         context = {
             'form': SampleForm(),
@@ -214,13 +193,6 @@ class UploadView(TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest):
-        if not request.user.is_authenticated:
-            messages.error(request, f"No access for User: {str(request.user)}!")
-            context = {
-                'form': LoginForm()
-            }
-            return render(request, 'gui/login.html', context=context)
-
         upload_form = UploadForm(request.POST, request.FILES)
         if upload_form.is_valid():
             return self.handle_file(request.FILES["file"], request)
@@ -288,7 +260,7 @@ class UploadView(TemplateView):
         return HttpResponseRedirect(request.path_info)
 
 
-class AllSamplesView(TemplateView):
+class AllSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
@@ -312,7 +284,7 @@ class AllSamplesView(TemplateView):
         return HttpResponseRedirect(request.path_info)
 
 
-class FilteredSamplesView(TemplateView):
+class FilteredSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
