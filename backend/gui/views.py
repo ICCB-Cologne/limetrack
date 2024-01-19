@@ -4,7 +4,6 @@ from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import requires_csrf_token
-from django.db import models
 from django.urls import reverse
 from django.forms import Field
 from .forms import SampleForm, UploadForm, FilterForm, DateForm, LoginForm, SampleFormSPL, SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec, SearchForm
@@ -22,8 +21,7 @@ import pandas as pd
 class SampleTrackingView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not request.user.is_authenticated:
-            messages.error(request, "No access for User:  " +
-                           str(request.user) + "!")
+            messages.error(request, f"No access for User: {str(request.user)}!")
             context = {
                 'form': LoginForm()
             }
@@ -54,8 +52,7 @@ class SampleTrackingView(TemplateView):
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not request.user.is_authenticated:
-            messages.error(request, "No access for User:  " +
-                           str(request.user) + "!")
+            messages.error(request, f"No access for User: {str(request.user)}!")
             context = {
                 'form': LoginForm()
             }
@@ -111,9 +108,11 @@ def handle_form(form, patient_identifier, data, request, tag):
         spl_sequencing_type = data["spl_sequencing_type"]
         if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
             HistopathologicalSample.objects.filter(
-                patient_identifier=patient_identifier).update(spl_received=spl_received, spl_status=spl_status, spl_sequencing_type=spl_sequencing_type)
+                patient_identifier=patient_identifier).update(spl_received=spl_received, spl_status=spl_status,
+                                                              spl_sequencing_type=spl_sequencing_type)
         else:
-            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+            messages.error(request, f'Submission unsuccessful! No patient with patient_identifier'
+                                    f'{str(patient_identifier)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
@@ -125,7 +124,8 @@ def handle_form(form, patient_identifier, data, request, tag):
             HistopathologicalSample.objects.filter(
                 patient_identifier=patient_identifier).update(tumor_cell_content=tumor_cell_content)
         else:
-            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+            messages.error(request, f'Submission unsuccessful! No patient with patient_identifier'
+                                    f'{str(patient_identifier)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
@@ -143,11 +143,14 @@ def handle_form(form, patient_identifier, data, request, tag):
         if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
             HistopathologicalSample.objects.filter(
                 patient_identifier=patient_identifier).update(
-                    sclab_received=sclab_received, sclab_extraction_date=sclab_extraction_date, sclab_nuclei_yield=sclab_nuclei_yield,
-                    sclab_nuclei_size=sclab_nuclei_size, sclab_status=sclab_status, sclac_sequencing_type=sclac_sequencing_type,
-                    sclab_sorting=sclab_sorting, sclab_pool=sclab_pool)
+                sclab_received=sclab_received, sclab_extraction_date=sclab_extraction_date,
+                sclab_nuclei_yield=sclab_nuclei_yield,
+                sclab_nuclei_size=sclab_nuclei_size, sclab_status=sclab_status,
+                sclac_sequencing_type=sclac_sequencing_type,
+                sclab_sorting=sclab_sorting, sclab_pool=sclab_pool)
         else:
-            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+            messages.error(request, f'Submission unsuccessful! No patient with patient_identifier'
+                                    f'{str(patient_identifier)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
@@ -165,11 +168,13 @@ def handle_form(form, patient_identifier, data, request, tag):
         if HistopathologicalSample.objects.filter(patient_identifier=patient_identifier).exists():
             HistopathologicalSample.objects.filter(
                 patient_identifier=patient_identifier).update(
-                    lb_analyte_type=lb_analyte_type, lb_sampling_date=lb_sampling_date, lb_received=lb_received,
-                    lb_sample_volume=lb_sample_volume, lb_date_of_isolation=lb_date_of_isolation, lb_total_isolated_cfdna=lb_total_isolated_cfdna,
-                    lb_status=lb_status)
+                lb_analyte_type=lb_analyte_type, lb_sampling_date=lb_sampling_date, lb_received=lb_received,
+                lb_sample_volume=lb_sample_volume, lb_date_of_isolation=lb_date_of_isolation,
+                lb_total_isolated_cfdna=lb_total_isolated_cfdna,
+                lb_status=lb_status)
         else:
-            messages.error(request, 'Submission unsuccessful! No patient with patient_identifier ' + str(patient_identifier) + " found.",
+            messages.error(request, f'Submission unsuccessful! No patient with patient_identifier'
+                                    f'{str(patient_identifier)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm()
@@ -190,16 +195,15 @@ def handle_form(form, patient_identifier, data, request, tag):
 
 
 class DashBoardView(TemplateView):
-    def get(self, request: HttpRequest):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/dashboard.html'
         return render(request, template_name)
 
 
 class UploadView(TemplateView):
-    def get(self, request: HttpRequest):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         if not request.user.is_authenticated:
-            messages.error(request, "No access for User:  " +
-                           str(request.user) + "!")
+            messages.error(request, f"No access for User: {str(request.user)}!")
             context = {
                 'form': LoginForm()
             }
@@ -214,8 +218,7 @@ class UploadView(TemplateView):
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest):
         if not request.user.is_authenticated:
-            messages.error(request, "No access for User:  " +
-                           str(request.user) + "!")
+            messages.error(request, f"No access for User: {str(request.user)}!")
             context = {
                 'form': LoginForm()
             }
@@ -234,7 +237,6 @@ class UploadView(TemplateView):
         """
         df = pd.read_csv(file, sep=";", keep_default_na=False)
         first_error = True
-        valid_forms = []
         for index, row in df.iterrows():
             data = {
                 "recruiting_site": row["Recruiting Site"], "patient_identifier": row["Patient Identifier"],
@@ -275,14 +277,12 @@ class UploadView(TemplateView):
                 handle_form(
                     form, data["patient_identifier"], data, request, "file")
             else:
-                if first_error == True:
-                    first_error = False
+                if first_error:
                     messages.error(
                         request, "File upload failed!", extra_tags="file")
 
-                msg = "Error in data of patient with identifier: " + \
-                    str(row["Patient Identifier"]) + \
-                    "\n" + str(form.errors.as_text())
+                msg = f"Error in data of patient with identifier: {str(row['Patient Identifier'])}\n" \
+                      f"{str(form.errors.as_text())}"
                 messages.error(
                     request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
