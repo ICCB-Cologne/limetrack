@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
-from backend.gui.views import SampleTrackingView, FilteredSamplesView, AllSamplesView, some_streaming_csv_view, UploadView, DashBoardView, LoginView, SearchView
+from backend.gui.views import SampleTrackingView, FilteredSamplesView, AllSamplesView, some_streaming_csv_view, UploadView, DashBoardView, LoginView, SearchView, log_out
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -30,5 +30,6 @@ urlpatterns = [
     path("upload/", UploadView.as_view(), name="upload"),
     path("dashboard/", DashBoardView.as_view(), name="dashboard"),
     path("login/", LoginView.as_view(), name="login"),
+    path("logout/", log_out, name="logout"),
     path("search/", SearchView.as_view(), name="search"),
 ]

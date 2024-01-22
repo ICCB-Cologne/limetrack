@@ -1,20 +1,21 @@
 from .forms import (
-    SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM, 
+    SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM,
     SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm,
     SearchForm
 )
 from .forms import (
-    SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL, 
+    SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL,
     SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
 )
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
-    HttpRequest, HttpResponse, HttpResponseRedirect, 
+    HttpRequest, HttpResponse, HttpResponseRedirect,
     StreamingHttpResponse, QueryDict
 )
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.contrib.auth import authenticate, login
 from django.views.generic import TemplateView
 from django.forms.models import model_to_dict
 from .models import HistopathologicalSample
@@ -32,9 +33,10 @@ app_log = logging.getLogger("s3sample")
 # app_log.info('This log is starting')
 # Create your views here.
 
+
 def get_form(
-    group_name: str, 
-    data: QueryDict=None
+    group_name: str,
+    data: QueryDict = None
 ):
     match group_name:
         case 'spl':
@@ -54,9 +56,9 @@ def get_form(
 
 class SampleTrackingView(LoginRequiredMixin, TemplateView):
     def get(
-        self, 
-        request: HttpRequest, 
-        *args: Any, 
+        self,
+        request: HttpRequest,
+        *args: Any,
         **kwargs: Any
     ) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower())
@@ -71,48 +73,49 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(
-        self, 
-        request: HttpRequest, 
-        *args: Any, 
+        self,
+        request: HttpRequest,
+        *args: Any,
         **kwargs: Any
     ) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower(), request.POST)
         patient_identifier = request.POST["patient_identifier"]
-        
+
         if form.is_valid():
-            app_log.info(f'{request.user} added / edited data for patient {patient_identifier}')
+            app_log.info(
+                f'{request.user} added / edited data for patient {patient_identifier}')
             return handle_form(
-                form, 
-                patient_identifier, 
-                request.POST, 
-                request, 
+                form,
+                patient_identifier,
+                request.POST,
+                request,
                 "general"
             )
 
         # if form is not valid: return the form with input and highlight errors red
         else:
             messages.error(
-                request, 
-                'Submission unsuccessful!', 
+                request,
+                'Submission unsuccessful!',
                 extra_tags="general"
             )
-        
+
             for field in form.base_fields:
                 if field in form.errors:
                     messages.error(
-                        request, 
-                        form.errors[field], 
+                        request,
+                        form.errors[field],
                         extra_tags=field
                     )
                 else:
                     messages.success(
-                        request, 
-                        "Success!", 
+                        request,
+                        "Success!",
                         extra_tags=field
                     )
             return render(
-                request, 
-                'gui/index.html', 
+                request,
+                'gui/index.html',
                 context={
                     'form': form,
                     'upload_form': UploadForm()
@@ -381,6 +384,13 @@ def some_streaming_csv_view(request):
     )
 
 
+def log_out(request: HttpRequest):
+    print("Hullo -----------Yasdsadasdas")
+    logout(request)
+    print("Hullo -----------Y___Y_Y__Y__- ")
+    return HttpResponseRedirect(reverse("config"))
+
+
 class LoginView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/login.html'
@@ -400,8 +410,9 @@ class LoginView(TemplateView):
             login(request, user)
             return HttpResponseRedirect(reverse("config"))
 
+
 class SearchView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:       
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower())
         template_name = 'gui/index.html'
         context = {
@@ -437,10 +448,10 @@ class SearchView(LoginRequiredMixin, TemplateView):
 
             else:
                 messages.error(request, f"DID NOT FIND patient_identifier {search}",
-                            extra_tags="general")
+                               extra_tags="general")
                 return HttpResponseRedirect(reverse("config"))
 
         else:
             messages.error(request, 'Invalid input',
-                        extra_tags="general")
+                           extra_tags="general")
             return HttpResponseRedirect(reverse("config"))
