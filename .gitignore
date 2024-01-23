@@ -8,3 +8,4 @@ backend/gui/migrations/*.py
 db.sqlite3
 files/
 venv/
+logs/

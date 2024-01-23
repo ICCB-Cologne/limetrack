@@ -1,7 +1,7 @@
 from django import forms
 from django.db import models
 from django.forms import ModelForm
-from .models import HistopathologicalSample, SITE_CHOICES, CHARFIELD_MAXLEN, TISSUE_TYPES, INTERVENTION_TYPES, LOCALISATION_CHOICE, GRADING
+from .models import HistopathologicalSample, SITE_CHOICES, SEX_CHOICES, CHARFIELD_MAXLEN, TISSUE_TYPES, INTERVENTION_TYPES, LOCALISATION_CHOICE, GRADING
 from tempus_dominus.widgets import DatePicker
 # documentation https://github.com/FlipperPA/django-tempus-dominus
 
@@ -9,6 +9,7 @@ all_fields = [
     "recruiting_site",
     "patient_identifier",
     # "patient", skip for prototype
+    "sex",
     "died",
     # "tissue_name", skip for prototype
     # "used_in", skip for prototype
@@ -106,6 +107,8 @@ class SampleFormTUM(ModelForm):
     # set disabled required fields on not required
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
+    sex = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
     saturn3_sample_code = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
     sampling_date = forms.DateField(required=False, widget=DatePicker(
@@ -166,6 +169,8 @@ class SampleFormSPL(ModelForm):
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
     saturn3_sample_code = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+    sex = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
     sampling_date = forms.DateField(required=False, widget=DatePicker(
         options={}, attrs={"input_group": False, 'disabled': "true"}))
     tissue_type = forms.CharField(
@@ -187,19 +192,11 @@ class SampleFormSPL(ModelForm):
 
             # disabled:
 
-            'recruiting_site': forms.Select(attrs={'disabled': "true"}),
             # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"}) always needed(?),
             # "patient", skip for prototype
             "died": DatePicker(options={}, attrs={'disabled': "true", "input_group": False}),
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
-            "saturn3_sample_code": forms.TextInput(attrs={'disabled': "true", "input_group": False}),
-            "sampling_date": DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
-            "tissue_type": forms.Select(attrs={'disabled': "true"}),
-            "type_of_intervention": forms.Select(attrs={'disabled': "true"}),
-            "localisation": forms.Select(attrs={'disabled': "true"}),
-            "corresponding_organoid": forms.CheckboxInput(attrs={'disabled': "true"}),
-            "grading": forms.Select(attrs={'disabled': "true"}),
 
             "tumor_cell_content": forms.NumberInput(attrs={'disabled': "true"}),
 
@@ -232,6 +229,8 @@ class SampleFormScLab(ModelForm):
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
     saturn3_sample_code = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+    sex = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
     sampling_date = forms.DateField(required=False, widget=DatePicker(
         options={}, attrs={"input_group": False, 'disabled': "true"}))
     tissue_type = forms.CharField(
@@ -254,19 +253,11 @@ class SampleFormScLab(ModelForm):
             'sclab_extraction_date': DatePicker(options={}, attrs={"input_group": False}),
 
             # disabled
-            'recruiting_site': forms.Select(attrs={'disabled': "true"}),
             # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"}) always needed(?),
             # "patient", skip for prototype
             "died": DatePicker(options={}, attrs={'disabled': "true", "input_group": False}),
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
-            "saturn3_sample_code": forms.TextInput(attrs={'disabled': "true", "input_group": False}),
-            "sampling_date": DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
-            "tissue_type": forms.Select(attrs={'disabled': "true"}),
-            "type_of_intervention": forms.Select(attrs={'disabled': "true"}),
-            "localisation": forms.Select(attrs={'disabled': "true"}),
-            "corresponding_organoid": forms.CheckboxInput(attrs={'disabled': "true"}),
-            "grading": forms.Select(attrs={'disabled': "true"}),
 
             "tumor_cell_content": forms.NumberInput(attrs={'disabled': "true"}),
 
@@ -293,6 +284,8 @@ class SampleFormLB(ModelForm):
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
     saturn3_sample_code = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+    sex = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
     sampling_date = forms.DateField(required=False, widget=DatePicker(
         options={}, attrs={"input_group": False, 'disabled': "true"}))
     tissue_type = forms.CharField(
@@ -316,19 +309,11 @@ class SampleFormLB(ModelForm):
 
             # disabled:
 
-            'recruiting_site': forms.Select(attrs={'disabled': "true"}),
             # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"}) always needed(?),
             # "patient", skip for prototype
             "died": DatePicker(options={}, attrs={'disabled': "true", "input_group": False}),
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
-            "saturn3_sample_code": forms.TextInput(attrs={'disabled': "true", "input_group": False}),
-            "sampling_date": DatePicker(options={}, attrs={"input_group": False, 'disabled': "true"}),
-            "tissue_type": forms.Select(attrs={'disabled': "true"}),
-            "type_of_intervention": forms.Select(attrs={'disabled': "true"}),
-            "localisation": forms.Select(attrs={'disabled': "true"}),
-            "corresponding_organoid": forms.CheckboxInput(attrs={'disabled': "true"}),
-            "grading": forms.Select(attrs={'disabled': "true"}),
 
             "tumor_cell_content": forms.NumberInput(attrs={'disabled': "true"}),
 

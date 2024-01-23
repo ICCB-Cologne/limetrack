@@ -93,10 +93,11 @@ LB_STATUS_CHOICES = [
     ("sequencing successful", "sequencing successful"),
 ]
 
-
-def validate_even(value):
-    if int(value) % 2 != 0:
-        raise ValidationError("Schaise hier!!!!!")
+SEX_CHOICES = {
+    ("f", "f"),
+    ("m", "m"),
+    ("d", "d")
+}
 
 
 def validate_alphanumeric(value):
@@ -124,6 +125,7 @@ class HistopathologicalSample(models.Model):
     patient_identifier = models.CharField(
         max_length=5, help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)", validators=[validate_alphanumeric])  # set this to primary key?
     # patient = models.CharField( max_length=CHARFIELD_MAXLEN)  # skip for prototype
+    sex = models.CharField(max_length=CHARFIELD_MAXLEN, choices=SEX_CHOICES)
     died = models.DateField(null=True, blank=True)
     # tissue_name = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
     # used_in = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
