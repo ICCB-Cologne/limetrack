@@ -440,6 +440,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
                     request, f"FOUND saturn3_sample_code {search}", extra_tags="general")
                 template_name = 'gui/index.html'
                 context = {
+                    'search': True,
                     'form': form,
                     'upload_form': UploadForm(),
                     'search_form': SearchForm()

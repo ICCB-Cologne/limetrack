@@ -23,7 +23,6 @@ from backend.gui.views import SampleTrackingView, FilteredSamplesView, AllSample
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", SampleTrackingView.as_view(), name="config"),
-    path("#endofpage", SampleTrackingView.as_view(), name="endofpage"),
     path("samples/", AllSamplesView.as_view(), name="all_samples"),
     path("samples/filtered", FilteredSamplesView.as_view(), name="filtered_samples"),
     path("csv/", some_streaming_csv_view, name="csv"),
