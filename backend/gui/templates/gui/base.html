@@ -20,11 +20,7 @@
         integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
         crossorigin="anonymous"></script>
 
-    {% if search %}
-      <script defer>         
-        window.location.href = '#start-of-form';
-      </script>
-    {% endif %}
+    {% block head_scripts %} {%endblock%}
     
     {{ form.media }}
  
@@ -62,7 +58,6 @@
       </li>
     </ul>
 
-    {# Yet not functioning dropdown menu for logout #}
     <div class="dropdown d-flex justify-content-center">
       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
         User

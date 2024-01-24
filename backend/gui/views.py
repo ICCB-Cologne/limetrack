@@ -386,9 +386,7 @@ def some_streaming_csv_view(request):
 
 
 def log_out(request: HttpRequest):
-    print("Hullo -----------Yasdsadasdas")
     logout(request)
-    print("Hullo -----------Y___Y_Y__Y__- ")
     return HttpResponseRedirect(reverse("config"))
 
 

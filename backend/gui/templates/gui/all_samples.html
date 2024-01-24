@@ -77,28 +77,30 @@
 
   {% endblock content %}
 
-<script>
-  function submitForm(id) {
-    const form = document.getElementById('id-form');
-
-    // Clear existing inputs
-    form.innerHTML = '';
-
-    // Add CSRF token input
-    const csrfTokenInput = document.createElement('input');
-    csrfTokenInput.type = 'hidden';
-    csrfTokenInput.name = 'csrfmiddlewaretoken';
-    csrfTokenInput.value = '{{ csrf_token }}';
-    form.appendChild(csrfTokenInput);
-
-    // Add ID input
-    const idInput = document.createElement('input');
-    idInput.type = 'hidden';
-    idInput.name = 'id';
-    idInput.value = id;
-    form.appendChild(idInput);
-
-    // Submit the form
-    form.submit();
-  }
-</script>
+{% block head_scripts%}
+  <script>
+    function submitForm(id) {
+      const form = document.getElementById('id-form');
+  
+      // Clear existing inputs
+      form.innerHTML = '';
+  
+      // Add CSRF token input
+      const csrfTokenInput = document.createElement('input');
+      csrfTokenInput.type = 'hidden';
+      csrfTokenInput.name = 'csrfmiddlewaretoken';
+      csrfTokenInput.value = '{{ csrf_token }}';
+      form.appendChild(csrfTokenInput);
+  
+      // Add ID input
+      const idInput = document.createElement('input');
+      idInput.type = 'hidden';
+      idInput.name = 'id';
+      idInput.value = id;
+      form.appendChild(idInput);
+  
+      // Submit the form
+      form.submit();
+    }
+  </script>
+  {% endblock head_scripts%}
