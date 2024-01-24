@@ -371,4 +371,4 @@ class LoginForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    search_field = forms.CharField()
+    search_field = forms.CharField(label="Search for SATURN3 Sample Code")

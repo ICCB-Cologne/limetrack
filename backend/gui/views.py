@@ -428,16 +428,16 @@ class SearchView(LoginRequiredMixin, TemplateView):
         search = request.POST["search_field"]
 
         if form.is_valid():
-            if HistopathologicalSample.objects.filter(patient_identifier=search).exists():
+            if HistopathologicalSample.objects.filter(saturn3_sample_code=search).exists():
                 found_record = HistopathologicalSample.objects.get(
-                    patient_identifier=search)
+                    saturn3_sample_code=search)
 
                 model_dict = model_to_dict(found_record)
                 model_dict.pop("id")
                 form = SampleForm(model_dict)
 
                 messages.success(
-                    request, f"FOUND patient_identifier {search}", extra_tags="general")
+                    request, f"FOUND saturn3_sample_code {search}", extra_tags="general")
                 template_name = 'gui/index.html'
                 context = {
                     'form': form,
@@ -447,7 +447,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
                 return render(request, template_name, context=context)
 
             else:
-                messages.error(request, f"DID NOT FIND patient_identifier {search}",
+                messages.error(request, f"DID NOT FIND saturn3_sample_code {search}",
                                extra_tags="general")
                 return HttpResponseRedirect(reverse("config"))
 
