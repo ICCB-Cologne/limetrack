@@ -237,7 +237,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
         template_name = 'gui/index.html'
         context = {
             'form': SampleForm(),
-            'upload_form': UploadForm()
+            'upload_form': UploadForm(),
+            'search_form': SearchForm()
         }
         return render(request, template_name, context=context)
 
@@ -424,17 +425,19 @@ class SearchView(LoginRequiredMixin, TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        form = SearchForm(request.POST)
+        search_form = SearchForm(request.POST)
         search = request.POST["search_field"]
 
-        if form.is_valid():
+        if search_form.is_valid():
             if HistopathologicalSample.objects.filter(saturn3_sample_code=search).exists():
                 found_record = HistopathologicalSample.objects.get(
                     saturn3_sample_code=search)
 
                 model_dict = model_to_dict(found_record)
                 model_dict.pop("id")
-                form = SampleForm(model_dict)
+
+
+                form = get_form(str(request.user.groups.first()).lower(), model_dict)
 
                 messages.success(
                     request, f"FOUND saturn3_sample_code {search}", extra_tags="general")

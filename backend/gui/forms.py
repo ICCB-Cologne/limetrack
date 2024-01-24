@@ -104,13 +104,13 @@ class SampleFormRec(ModelForm):
 class SampleFormTUM(ModelForm):
     required_css_class = "required"
 
-    # set disabled required fields on not required
+    # set disabled required recruiter fields on not required
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
+    patient_identifier = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
     sex = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
-    saturn3_sample_code = forms.CharField(
-        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
     sampling_date = forms.DateField(required=False, widget=DatePicker(
         options={}, attrs={"input_group": False, 'disabled': "true"}))
     tissue_type = forms.CharField(
@@ -164,11 +164,11 @@ class SampleFormTUM(ModelForm):
 class SampleFormSPL(ModelForm):
     required_css_class = "required"
 
-    # set disabled required fields on not required
+    # set disabled required recruiter fields on not required
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
-    saturn3_sample_code = forms.CharField(
-        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+    patient_identifier = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
     sex = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
     sampling_date = forms.DateField(required=False, widget=DatePicker(
@@ -224,11 +224,11 @@ class SampleFormSPL(ModelForm):
 class SampleFormScLab(ModelForm):
     required_css_class = "required"
 
-    # set disabled required fields on not required
+    # set disabled required recruiter fields on not required
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
-    saturn3_sample_code = forms.CharField(
-        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+    patient_identifier = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
     sex = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
     sampling_date = forms.DateField(required=False, widget=DatePicker(
@@ -279,11 +279,11 @@ class SampleFormScLab(ModelForm):
 class SampleFormLB(ModelForm):
     required_css_class = "required"
 
-    # set disabled required fields on not required
+    # set disabled required recruiter fields on not required
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'onchange': "autoFillPatient(this.value)", 'disabled': "true"}, choices=SITE_CHOICES))
-    saturn3_sample_code = forms.CharField(
-        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), label="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+    patient_identifier = forms.CharField(
+        max_length=CHARFIELD_MAXLEN, required=False, widget=forms.TextInput(attrs={'disabled': "true"}), help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
     sex = forms.CharField(
         max_length=CHARFIELD_MAXLEN, required=False, widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
     sampling_date = forms.DateField(required=False, widget=DatePicker(
