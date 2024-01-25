@@ -3,8 +3,6 @@ pg_data/
 .DS_Store
 node_modules
 **/__pycache__/
-backend/gui/migrations/*.py
-!backend/gui/migrations/__init__.py
 db.sqlite3
 files/
 venv/
