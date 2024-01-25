@@ -3,10 +3,6 @@ from .forms import (
     SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm,
     SearchForm
 )
-from .forms import (
-    SampleForm, UploadForm, FilterForm, LoginForm, SampleFormSPL,
-    SampleFormLB, SampleFormScLab, SampleFormTUM, SampleFormRec
-)
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
@@ -21,7 +17,9 @@ from django.forms.models import model_to_dict
 from .models import HistopathologicalSample
 from django.contrib import messages
 from django.shortcuts import render
+from django.forms import ModelForm
 from django.urls import reverse
+
 from typing import Any
 import csv
 
@@ -117,6 +115,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
                 request,
                 'gui/index.html',
                 context={
+                    'jump_to' : "form",
                     'form': form,
                     'upload_form': UploadForm(),
                     'search_form': SearchForm()
@@ -126,7 +125,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
 
 # FIXME: @JG-IBSM kannst du das ggfs. aufhübschen oder wenigstens einmal durch ChatGPT jagen?
 # Type hinting etc. würde mich persönlich sehr glücklich machen :)
-def handle_form(form, sat3_code, data, request, tag):
+def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: HttpRequest, tag: str):
     """
     Updates existing patient records (if group membership is not recruiter)
     or creates new patient records.
@@ -139,58 +138,79 @@ def handle_form(form, sat3_code, data, request, tag):
         spl_received = data["spl_received"]
         spl_status = data["spl_status"]
         spl_sequencing_type = data["spl_sequencing_type"]
+
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+            
             HistopathologicalSample.objects.filter(
-                saturn3_sample_code=sat3_code).update(spl_received=spl_received, spl_status=spl_status,
-                                                              spl_sequencing_type=spl_sequencing_type)
+                    saturn3_sample_code=sat3_code).update(
+                        spl_received=spl_received,
+                        spl_status=spl_status,
+                        spl_sequencing_type=spl_sequencing_type)
         else:
-            messages.error(request, f'Submission unsuccessful! No record with saturn3_sample_code'
-                                    f'{str(sat3_code)} found.',
-                           extra_tags=tag)
-            return render(request, 'gui/index.html', context={'form': form,
-                                                              'upload_form': UploadForm(),
-                                                              'search_form': SearchForm()
-                                                              })
+            messages.error(request, 
+                            f'Submission unsuccessful! No record with saturn3_sample_code'
+                            f'{str(sat3_code)} found.',
+                            extra_tags=tag)
+            return render(request, 
+                          'gui/index.html', 
+                          context={'form': form, 
+                                   'upload_form': UploadForm(),
+                                   'search_form': SearchForm(),
+                                   'jump_to' : 'form'})
 
     elif request.user.groups.filter(name='TUM').exists():
         tumor_cell_content = data["tumor_cell_content"]
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-            HistopathologicalSample.objects.filter(
-                 saturn3_sample_code=sat3_code).update(tumor_cell_content=tumor_cell_content)
-        else:
-            messages.error(request, f'Submission unsuccessful! No record with saturn3_sample_code'
-                                    f'{str(sat3_code)} found.',
-                           extra_tags=tag)
-            return render(request, 'gui/index.html', context={'form': form,
-                                                              'upload_form': UploadForm(),
-                                                              'search_form': SearchForm()
-                                                              })
 
-    elif request.user.groups.filter(name='ScLab').exists():
+        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+
+            HistopathologicalSample.objects.filter(
+                 saturn3_sample_code=sat3_code).update(
+                     tumor_cell_content=tumor_cell_content)
+        else:
+            messages.error(request,
+                            f'Submission unsuccessful! No record with saturn3_sample_code'
+                            f'{str(sat3_code)} found.',
+                            extra_tags=tag)
+            return render(request,
+                          'gui/index.html',
+                          context={'form': form,
+                                   'upload_form': UploadForm(),
+                                   'search_form': SearchForm(),
+                                   "jump_to" : "form"})
+
+    elif request.user.groups.filter(name='scLab').exists():
         sclab_received = data["sclab_received"]
         sclab_extraction_date = data["sclab_extraction_date"]
         sclab_nuclei_yield = data["sclab_nuclei_yield"]
         sclab_nuclei_size = data["sclab_nuclei_size"]
         sclab_status = data["sclab_status"]
         sclac_sequencing_type = data["sclac_sequencing_type"]
-        sclab_sorting = data["sclab_sorting"]
+        sclab_sorting = None if data["sclab_sorting"] == "unknown" else data["sclab_sorting"]
         sclab_pool = data["sclab_pool"]
+
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+            
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
-                sclab_received=sclab_received, sclab_extraction_date=sclab_extraction_date,
-                sclab_nuclei_yield=sclab_nuclei_yield,
-                sclab_nuclei_size=sclab_nuclei_size, sclab_status=sclab_status,
-                sclac_sequencing_type=sclac_sequencing_type,
-                sclab_sorting=sclab_sorting, sclab_pool=sclab_pool)
+                    sclab_received=sclab_received,
+                    sclab_extraction_date=sclab_extraction_date,
+                    sclab_nuclei_yield=sclab_nuclei_yield,
+                    sclab_nuclei_size=sclab_nuclei_size,
+                    sclab_status=sclab_status,
+                    sclac_sequencing_type=sclac_sequencing_type,
+                    sclab_sorting=sclab_sorting,
+                    sclab_pool=sclab_pool)
         else:
-            messages.error(request, f'Submission unsuccessful! No record with saturn3_sample_code'
-                                    f'{str(sat3_code)} found.',
+            messages.error(request, 
+                           f'Submission unsuccessful! No record with saturn3_sample_code'
+                           f'{str(sat3_code)} found.',
                            extra_tags=tag)
-            return render(request, 'gui/index.html', context={'form': form,
-                                                              'upload_form': UploadForm(),
-                                                                'search_form': SearchForm()
-                                                              })
+            return render(request,
+                          'gui/index.html',
+                          context={'form': form,
+                                   'upload_form': UploadForm(),
+                                   'search_form': SearchForm(),
+                                   "jump_to" : "form"})
 
     elif request.user.groups.filter(name='LB').exists():
         lb_analyte_type = data["lb_analyte_type"]
@@ -204,20 +224,25 @@ def handle_form(form, sat3_code, data, request, tag):
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
-                lb_analyte_type=lb_analyte_type, lb_sampling_date=lb_sampling_date, lb_received=lb_received,
-                lb_sample_volume=lb_sample_volume, lb_date_of_isolation=lb_date_of_isolation,
-                lb_total_isolated_cfdna=lb_total_isolated_cfdna,
-                lb_status=lb_status)
+                    lb_analyte_type=lb_analyte_type,
+                    lb_sampling_date=lb_sampling_date,
+                    lb_received=lb_received,
+                    lb_sample_volume=lb_sample_volume,
+                    lb_date_of_isolation=lb_date_of_isolation,
+                    lb_total_isolated_cfdna=lb_total_isolated_cfdna,
+                    lb_status=lb_status)
         else:
             messages.error(request, f'Submission unsuccessful! No record with saturn3_sample_code'
                                     f'{str(sat3_code)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
                                                               'upload_form': UploadForm(),
-                                                                'search_form': SearchForm()
+                                                              'search_form': SearchForm(),
+                                                              'jump_to' : "form"
                                                               })
 
-    elif request.user.groups.filter(name='recruiter').exists():
+    elif request.user.groups.filter(name='Recruiter').exists():
+        # maybe check if record already exists and deny creating of new record
         form.save()
 
     # TODO: check if user is admin
@@ -225,9 +250,11 @@ def handle_form(form, sat3_code, data, request, tag):
         form.save()
 
     if tag == "general":
+        # if form's been input by using the webpages form
         messages.success(request, 'Submission successful!', extra_tags=tag)
         return HttpResponseRedirect(request.path_info)
     else:
+        # if a CSV file's been submitted (handle_file handles the return) 
         return
 
 
@@ -446,7 +473,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
                     request, f"FOUND saturn3_sample_code {search}", extra_tags="general")
                 template_name = 'gui/index.html'
                 context = {
-                    'search': True,
+                    'jump_to': "form",
                     'form': form,
                     'upload_form': UploadForm(),
                     'search_form': SearchForm()

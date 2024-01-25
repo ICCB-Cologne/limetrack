@@ -1,6 +1,5 @@
 from datetime import datetime
 from django.db import models
-from django.db.models import F
 from django.core.exceptions import ValidationError
 
 
@@ -130,7 +129,14 @@ class HistopathologicalSample(models.Model):
     # tissue_name = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
     # used_in = models.CharField(max_length=CHARFIELD_MAXLEN) skip for prototype
     saturn3_sample_code = models.CharField(
-        max_length=CHARFIELD_MAXLEN, verbose_name="SATURN3 Sample Code", help_text="S3 + Entity - Patient Identifier - Sampling Timepoint - Tissue Type + Order Number - Storage Format - Analyte Type + Order Number")
+        max_length=CHARFIELD_MAXLEN,
+        verbose_name="SATURN3 Sample Code",
+        help_text="S3 + Entity - \
+            Patient Identifier - \
+            Sampling Timepoint - \
+            Tissue Type + Order Number - \
+            Storage Format - Analyte Type \
+            + Order Number")
     sampling_date = models.DateField()
     tissue_type = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=TISSUE_TYPES)
@@ -185,7 +191,10 @@ class HistopathologicalSample(models.Model):
     lb_date_of_isolation = models.DateField(null=True,
                                             blank=True, verbose_name="LB date of isolation")
     lb_total_isolated_cfdna = models.IntegerField(null=True,
-                                                  blank=True, verbose_name="LB total isolated cfDNA [ng]")
+                                                  blank=True,
+                                                  verbose_name="LB total isolated cfDNA [ng]")
 
-    lb_status = models.CharField(max_length=CHARFIELD_MAXLEN, blank=True,
-                                 verbose_name="LB status", choices=LB_STATUS_CHOICES)
+    lb_status = models.CharField(max_length=CHARFIELD_MAXLEN,
+                                 blank=True,
+                                 verbose_name="LB status",
+                                 choices=LB_STATUS_CHOICES)
