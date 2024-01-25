@@ -190,7 +190,7 @@ class HistopathologicalSample(models.Model):
                                                   size [µm]")
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                     blank=True, verbose_name="scLab status")
-    sclac_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
+    sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True,
                                              verbose_name="scLab\
                                                   sequencing type")

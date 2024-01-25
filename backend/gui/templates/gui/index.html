@@ -40,7 +40,7 @@
           {% if field.name in form.errors %}
             <p class="wrong_input" id="{{field.name}}"> 
               {{field.label_tag}}
-              
+                
               {# custom check box - felt cute, might delete later #}
               {% if field.name == "corresponding_organoid" %}
                 <label class="checko"> 

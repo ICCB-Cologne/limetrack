@@ -31,7 +31,7 @@ all_fields = [
     "sclab_nuclei_yield",
     "sclab_nuclei_size",
     "sclab_status",
-    "sclac_sequencing_type",
+    "sclab_sequencing_type",
     "sclab_sorting",
     "sclab_pool",
     "lb_analyte_type",

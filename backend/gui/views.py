@@ -81,13 +81,22 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
         form = get_form(str(request.user.groups.first()).lower(), request.POST)
         saturn3_sample_code = request.POST["saturn3_sample_code"]
 
+        
+
+        print(form.data)
+        print(form.base_fields)
+        
+
         if form.is_valid():
+            print("---------VALID--------")
+            print(form.cleaned_data)
+            data = form.cleaned_data
             app_log.info(
                 f'{request.user} added / edited data for patient {saturn3_sample_code}')
             return handle_form(
                 form,
                 saturn3_sample_code,
-                request.POST,
+                data,
                 request,
                 "general"
             )
@@ -182,15 +191,15 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
 
     elif request.user.groups.filter(name='scLab').exists():
 
-
+        
         sclab_received = None if data["sclab_received"] == "" else data["sclab_received"]
         sclab_extraction_date = None if data["sclab_extraction_date"] == "" else data["sclab_extraction_date"]
-        sclab_nuclei_yield = data["sclab_nuclei_yield"]
-        sclab_nuclei_size = data["sclab_nuclei_size"]
+        sclab_nuclei_yield = None if data["sclab_nuclei_yield"] == "" else data["sclab_nuclei_yield"]
+        sclab_nuclei_size = None if data["sclab_nuclei_size"]  == "" else data["sclab_nuclei_size"] 
         sclab_status = data["sclab_status"]
-        sclac_sequencing_type = data["sclab_sequencing_type"]
+        sclab_sequencing_type = data["sclab_sequencing_type"]
         sclab_sorting = None if data["sclab_sorting"] == "unknown" or data["sclab_sorting"] == "" else data["sclab_sorting"]
-        sclab_pool = data["sclab_pool"]
+        sclab_pool = None if  data["sclab_pool"]   == "" else  data["sclab_pool"]
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
@@ -201,7 +210,7 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
                 sclab_nuclei_yield=sclab_nuclei_yield,
                 sclab_nuclei_size=sclab_nuclei_size,
                 sclab_status=sclab_status,
-                sclac_sequencing_type=sclac_sequencing_type,
+                sclab_sequencing_type=sclab_sequencing_type,
                 sclab_sorting=sclab_sorting,
                 sclab_pool=sclab_pool)
         else:
@@ -315,11 +324,13 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
             form = get_form(str(request.user.groups.first()).lower(), data)
 
+
             if form.is_valid():
                 # alternatively append every valid form to valid_forms
                 # and process them only if all forms were valid after the for loop
+                form_data = form.cleaned_data
                 handle_form(
-                    form, data["saturn3_sample_code"], data, request, "file")
+                    form, data["saturn3_sample_code"], form_data, request, "file")
             else:
                 if first_error:
                     messages.error(
