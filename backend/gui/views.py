@@ -82,14 +82,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
         saturn3_sample_code = request.POST["saturn3_sample_code"]
 
         
-
-        print(form.data)
-        print(form.base_fields)
-        
-
         if form.is_valid():
-            print("---------VALID--------")
-            print(form.cleaned_data)
             data = form.cleaned_data
             app_log.info(
                 f'{request.user} added / edited data for patient {saturn3_sample_code}')
@@ -323,7 +316,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
             }
 
             form = get_form(str(request.user.groups.first()).lower(), data)
-
 
             if form.is_valid():
                 # alternatively append every valid form to valid_forms

@@ -56,7 +56,7 @@ GRADING = [
     ("G3", "G3")
 ]
 
-SPL_STATUS_CHOICES = [
+STATUS_CHOICES = [
     ("RNA failed", "RNA failed"),
     ("DNA failed", "DNA failed"),
     ("sequencing failed", "sequencing failed"),
@@ -73,6 +73,13 @@ SPL_SEQUENCING_TYPES = [
     ("WGS/RNA", "WGS/RNA"),
     ("WES", "WES"),
     ("WES/RNA", "WES/RNA")
+]
+
+SCLAB_SEQUENCING_TYPES = [
+    ("Multiome (RNA/ATAC)", "Multiome (RNA/ATAC)"),
+    ("RNA", "RNA"),
+    ("DNA", "DNA"),
+    ("ATAC", "ATAC"),
 ]
 
 LB_ANALYTE_TYPES = [
@@ -166,7 +173,7 @@ class HistopathologicalSample(models.Model):
     spl_status = models.CharField(
         max_length=CHARFIELD_MAXLEN,
         blank=True,
-        choices=SPL_STATUS_CHOICES,
+        choices=STATUS_CHOICES,
         verbose_name="SPL status")
     spl_sequencing_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,
@@ -189,11 +196,13 @@ class HistopathologicalSample(models.Model):
                                             verbose_name="scLab nuclei\
                                                   size [µm]")
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                    blank=True, verbose_name="scLab status")
+                                    blank=True, verbose_name="scLab status",
+                                    choices=STATUS_CHOICES)
     sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True,
                                              verbose_name="scLab\
-                                                  sequencing type")
+                                                  sequencing type",
+                                                  choices=SCLAB_SEQUENCING_TYPES)
     sclab_sorting = models.BooleanField(null=True,
                                         blank=True,
                                         verbose_name="scLab sorting")
