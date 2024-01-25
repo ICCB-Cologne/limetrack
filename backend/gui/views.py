@@ -135,7 +135,7 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
 
     """
     if request.user.groups.filter(name='SPL').exists():
-        spl_received = data["spl_received"]
+        spl_received =  None if data["spl_received"] == "" else data["spl_received"]
         spl_status = data["spl_status"]
         spl_sequencing_type = data["spl_sequencing_type"]
 
@@ -179,12 +179,14 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
                                    "jump_to" : "form"})
 
     elif request.user.groups.filter(name='scLab').exists():
-        sclab_received = data["sclab_received"]
-        sclab_extraction_date = data["sclab_extraction_date"]
+
+
+        sclab_received = None if data["sclab_received"] == "" else data["sclab_received"]
+        sclab_extraction_date = None if data["sclab_extraction_date"] == "" else data["sclab_extraction_date"]
         sclab_nuclei_yield = data["sclab_nuclei_yield"]
         sclab_nuclei_size = data["sclab_nuclei_size"]
         sclab_status = data["sclab_status"]
-        sclac_sequencing_type = data["sclac_sequencing_type"]
+        sclac_sequencing_type = data["sclab_sequencing_type"]
         sclab_sorting = None if data["sclab_sorting"] == "unknown" else data["sclab_sorting"]
         sclab_pool = data["sclab_pool"]
 
@@ -214,10 +216,10 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
 
     elif request.user.groups.filter(name='LB').exists():
         lb_analyte_type = data["lb_analyte_type"]
-        lb_sampling_date = data["lb_sampling_date"]
-        lb_received = data["lb_received"]
+        lb_sampling_date = None if data["lb_sampling_date"] == "" else data["lb_sampling_date"]
+        lb_received = None if data["lb_received"] == "" else data["lb_received"]
         lb_sample_volume = data["lb_sample_volume"]
-        lb_date_of_isolation = data["lb_date_of_isolation"]
+        lb_date_of_isolation = None if data["lb_date_of_isolation"] == "" else data["lb_date_of_isolation"]
         lb_total_isolated_cfdna = data["lb_total_isolated_cfdna"]
         lb_status = data["lb_status"]
 
@@ -299,7 +301,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 "corresponding_organoid": row["Corresponding Organoid"], "grading": row["Grading"],
                 "tumor_cell_content": row["Tumor Cell Content"], "spl_received": row["SPL Received"],
                 "spl_status": row["SPL Status"], "spl_sequencing_type": row["SPL Sequencing Type"],
-                "sclab_recveived": row["scLab Received"], "sclab_extraction_date": row["scLab Extraction Date"],
+                "sclab_received": row["scLab Received"], "sclab_extraction_date": row["scLab Extraction Date"],
                 "sclab_nuclei_yield": row["scLab Nuclei Yield"], "sclab_nuclei_size": row["scLab Nuclei Size [µm]"],
                 "sclab_status": row["scLab Status"], "sclab_sequencing_type": row["scLab Sequencing Type"],
                 "sclab_sorting": row["scLab Sorting"], "sclab_pool": row["scLab Pool"],
