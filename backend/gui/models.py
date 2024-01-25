@@ -5,7 +5,6 @@ from django.core.exceptions import ValidationError
 CHARFIELD_MAXLEN = 50
 
 SITE_CHOICES = [
-    ("Freiburg", "Freiburg"),
     ("Essen", "Essen"),
     ("Heidelberg", "Heidelberg"),
     ("Frankfurt", "Frankfurt"),
@@ -45,7 +44,7 @@ LOCALISATION_CHOICE = [
     ("Liver", "Liver"),
     ("Brain", "Brain"),
     ("Lung", "Lung"),
-    ("Thorax wall", "Thorax wall"),
+    ("Thorax Wall", "Thorax Wall"),
     ("Pleura Punctate", "Pleura Punctate"),
     ("Ascites", "Ascites"),
     ("Blood", "Blood")

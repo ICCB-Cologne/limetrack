@@ -187,7 +187,7 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
         sclab_nuclei_size = data["sclab_nuclei_size"]
         sclab_status = data["sclab_status"]
         sclac_sequencing_type = data["sclab_sequencing_type"]
-        sclab_sorting = None if data["sclab_sorting"] == "unknown" else data["sclab_sorting"]
+        sclab_sorting = None if data["sclab_sorting"] == "unknown" or data["sclab_sorting"] == "" else data["sclab_sorting"]
         sclab_pool = data["sclab_pool"]
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
