@@ -99,8 +99,7 @@ LB_STATUS_CHOICES = [
 
 SEX_CHOICES = {
     ("f", "f"),
-    ("m", "m"),
-    ("d", "d")
+    ("m", "m")
 }
 
 

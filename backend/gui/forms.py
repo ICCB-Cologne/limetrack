@@ -105,7 +105,7 @@ class SampleFormRec(ModelForm):
                 'disabled': "true"}),
             "sclab_nuclei_size": forms.NumberInput(attrs={'disabled': "true"}),
             "sclab_status": forms.TextInput(attrs={'disabled': "true"}),
-            "sclac_sequencing_type": forms.TextInput(attrs={
+            "sclab_sequencing_type": forms.TextInput(attrs={
                 'disabled': "true"}),
             "sclab_sorting": forms.NullBooleanSelect(attrs={
                 'disabled': "true"}),
@@ -202,7 +202,7 @@ class SampleFormTUM(ModelForm):
                 'disabled': "true"}),
             "sclab_nuclei_size": forms.NumberInput(attrs={'disabled': "true"}),
             "sclab_status": forms.TextInput(attrs={'disabled': "true"}),
-            "sclac_sequencing_type": forms.TextInput(attrs={
+            "sclab_sequencing_type": forms.TextInput(attrs={
                 'disabled': "true"}),
             "sclab_sorting": forms.NullBooleanSelect(attrs={
                 'disabled': "true"}),
@@ -295,7 +295,7 @@ class SampleFormSPL(ModelForm):
             "sclab_nuclei_yield": forms.NumberInput(attrs={'disabled': "true"}),
             "sclab_nuclei_size": forms.NumberInput(attrs={'disabled': "true"}),
             "sclab_status": forms.TextInput(attrs={'disabled': "true"}),
-            "sclac_sequencing_type": forms.TextInput(attrs={'disabled': "true"}),
+            "sclab_sequencing_type": forms.TextInput(attrs={'disabled': "true"}),
             "sclab_sorting": forms.NullBooleanSelect(attrs={'disabled': "true"}),
             "sclab_pool": forms.NumberInput(attrs={'disabled': "true"}),
 

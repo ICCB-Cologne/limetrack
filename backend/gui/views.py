@@ -152,7 +152,7 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
                 spl_sequencing_type=spl_sequencing_type)
         else:
             messages.error(request,
-                           f'Submission unsuccessful! No record with saturn3_sample_code'
+                           f'Submission unsuccessful! No record with saturn3_sample_code '
                            f'{str(sat3_code)} found.',
                            extra_tags=tag)
             return render(request,
@@ -172,7 +172,7 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
                 tumor_cell_content=tumor_cell_content)
         else:
             messages.error(request,
-                           f'Submission unsuccessful! No record with saturn3_sample_code'
+                           f'Submission unsuccessful! No record with saturn3_sample_code '
                            f'{str(sat3_code)} found.',
                            extra_tags=tag)
             return render(request,
@@ -208,7 +208,7 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
                 sclab_pool=sclab_pool)
         else:
             messages.error(request,
-                           f'Submission unsuccessful! No record with saturn3_sample_code'
+                           f'Submission unsuccessful! No record with saturn3_sample_code '
                            f'{str(sat3_code)} found.',
                            extra_tags=tag)
             return render(request,
@@ -238,7 +238,7 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
                 lb_total_isolated_cfdna=lb_total_isolated_cfdna,
                 lb_status=lb_status)
         else:
-            messages.error(request, f'Submission unsuccessful! No record with saturn3_sample_code'
+            messages.error(request, f'Submission unsuccessful! No record with saturn3_sample_code '
                                     f'{str(sat3_code)} found.',
                            extra_tags=tag)
             return render(request, 'gui/index.html', context={'form': form,
@@ -249,7 +249,22 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
 
     elif request.user.groups.filter(name='Recruiter').exists():
         # maybe check if record already exists and deny creating of new record
-        form.save()
+        if tag == "general":
+            form.save()
+        else:
+            HistopathologicalSample.objects.create(
+                recruiting_site = data["recruiting_site"],
+                patient_identifier = data["patient_identifier"],
+                sex = data["sex"],
+                died = data["died"],
+                saturn3_sample_code = data["saturn3_sample_code"],
+                sampling_date = data["sampling_date"],
+                tissue_type = data["tissue_type"],
+                type_of_intervention = data["type_of_intervention"],
+                localisation = data["localisation"],
+                corresponding_organoid = data["corresponding_organoid"],
+                grading = data["grading"]
+            )
 
     # TODO: check if user is admin
     else:
@@ -261,7 +276,6 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
         return HttpResponseRedirect(request.path_info)
     else:
         # if a CSV file's been submitted (handle_file handles the return) 
-        messages.success(request, 'File upload successful!', extra_tags=tag)
         return
 
 
@@ -295,7 +309,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
         """
         TODO: needs to be adapted to the different sorts of forms / group memberships
         """
-        df = pd.read_csv(file, sep=";", keep_default_na=False)
+        df = pd.read_csv(file, sep=",", keep_default_na=False)
         first_error = True
         for index, row in df.iterrows():
             data = {
@@ -323,7 +337,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 # alternatively append every valid form to valid_forms
                 # and process them only if all forms were valid after the for loop
                 form_data = form.cleaned_data
-                response = handle_form(
+                handle_form(
                     form, data["saturn3_sample_code"], form_data, request, "file")
             else:
                 if first_error:
@@ -334,7 +348,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 messages.error(
                     request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
-
+        
+        messages.success(request, 'File upload successful!', extra_tags="file")
         return HttpResponseRedirect(request.path_info)
 
 

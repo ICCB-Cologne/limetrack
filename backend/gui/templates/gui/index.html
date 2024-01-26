@@ -40,7 +40,7 @@
           {% if field.name in form.errors %}
             <p class="wrong_input" id="{{field.name}}"> 
               {{field.label_tag}}
-                
+
               {# custom check box - felt cute, might delete later #}
               {% if field.name == "corresponding_organoid" %}
                 <label class="checko"> 
@@ -150,13 +150,12 @@
   <form action={% url "upload" %} method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
-      <h2> CSV File Upload: </h2>
-      
-        <a href="/csv_template/" class="btn btn-primary" role="button"> Download template</a>
-      
+      <h2> CSV File Upload  </h2>
       
         {{upload_form.as_p}}
+        <a href="/csv_template/" class="btn btn-primary" role="button"> Download template</a>
       <div class="text-center">
+        
         <button type="submit" class="btn btn-primary" id="end-of-page">
           Submit
         </button>
@@ -179,7 +178,7 @@
 </div>
 
 {# Testing a script that autofills a field with content of other fields #}
-<script>
+{% comment %} <script>
   function autoFillPatient(val) {
 
     var x = document.getElementById("id_saturn3_sample_code");
@@ -187,7 +186,7 @@
 
   }
 
-</script>
+</script> {% endcomment %}
 
 {% endblock content %}
 
