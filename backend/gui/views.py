@@ -261,6 +261,7 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
         return HttpResponseRedirect(request.path_info)
     else:
         # if a CSV file's been submitted (handle_file handles the return) 
+        messages.success(request, 'File upload successful!', extra_tags=tag)
         return
 
 
@@ -273,8 +274,9 @@ class DashBoardView(LoginRequiredMixin, TemplateView):
 class UploadView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/index.html'
+        form = get_form(str(request.user.groups.first()).lower())
         context = {
-            'form': SampleForm(),
+            'form': form,
             'upload_form': UploadForm(),
             'search_form': SearchForm()
         }
@@ -321,7 +323,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 # alternatively append every valid form to valid_forms
                 # and process them only if all forms were valid after the for loop
                 form_data = form.cleaned_data
-                handle_form(
+                response = handle_form(
                     form, data["saturn3_sample_code"], form_data, request, "file")
             else:
                 if first_error:
@@ -333,7 +335,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
 
-        messages.success(request, "File upload successful!", extra_tags="file")
         return HttpResponseRedirect(request.path_info)
 
 
