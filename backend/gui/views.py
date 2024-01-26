@@ -1,7 +1,7 @@
 from .forms import (
-    all_fields, SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM,
+    all_fields, all_field_verbose_names, SampleFormScLab, SampleFormRec, SampleFormSPL, SampleFormTUM,
     SampleFormLB, SampleForm, UploadForm, FilterForm, LoginForm,
-    SearchForm
+    SearchForm, SampleFormDataPaths
 )
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -49,6 +49,8 @@ def get_form(
             form = SampleFormLB(data=data)
         case 'recruiter':
             form = SampleFormRec(data=data)
+        case 'datapath':
+            form = SampleFormDataPaths(data=data)
         case _:
             form = SampleForm(data=data)
     return form
@@ -246,6 +248,25 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
                                                               'search_form': SearchForm(),
                                                               'jump_to': "form"
                                                               })
+        
+    elif request.user.groups.filter(name='Datapath').exists():
+        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+            print("CHECK-------------")
+            
+            HistopathologicalSample.objects.filter(
+                saturn3_sample_code=sat3_code).update(
+                    pools = data["pools"],
+                    scrna_r1 = data["scrna_r1"])
+        
+        else:
+            messages.error(request, f'Submission unsuccessful! No record with saturn3_sample_code '
+                                    f'{str(sat3_code)} found.',
+                           extra_tags=tag)
+            return render(request, 'gui/index.html', context={'form': form,
+                                                              'upload_form': UploadForm(),
+                                                              'search_form': SearchForm(),
+                                                              'jump_to': "form"
+                                                              })
 
     elif request.user.groups.filter(name='Recruiter').exists():
         # maybe check if record already exists and deny creating of new record
@@ -266,8 +287,12 @@ def handle_form(form: ModelForm, sat3_code: str, data: dict[str: Any], request: 
                 grading = data["grading"]
             )
 
+    
+
+
     # TODO: check if user is admin
     else:
+        print("NO CHECK-------------")
         form.save()
 
     if tag == "general":
@@ -327,7 +352,9 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 "sclab_sorting": row["scLab Sorting"], "sclab_pool": row["scLab Pool"],
                 "lb_analyte_type": row["LB analyte type"], "lb_sampling_date": row["LB Sampling Date"],
                 "lb_received": row["LB Received"], "lb_sample_volume": row["LB Sample Volume [ml]"],
+                "lb_date_of_isolation": row["LB Date of Isolation"],
                 "lb_total_isolated_cfdna": row["LB Total Isolated cfDNA [ng]"], "lb_status": row["LB Status"],
+                "pools": row["Pools"], "scrna_r1": row["scRNA R1"]
                 # "patient": row["Patient"], tissue_name : row["Tissue Name"], "used_in" : row[Used in], "histology_subtype": row["Histology Subtype"],
             }
 
@@ -362,6 +389,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
              for field in instance._meta.fields]
             for instance in samples
         ]
+
         filters = FilterForm()
         context = {
             'samples': fields_and_values_list,
@@ -421,7 +449,7 @@ def some_streaming_csv_view(request):
     """A view that streams a large CSV file."""
     samples = HistopathologicalSample.objects.all()
     fields_and_values_list = [
-        [(field.name, getattr(instance, field.name))
+        [(field.verbose_name, getattr(instance, field.name))
          for field in instance._meta.fields]
         for instance in samples
     ]
@@ -443,7 +471,7 @@ def csv_template_download(request):
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)
     return StreamingHttpResponse(
-        (writer.writerow(all_fields)),
+        (writer.writerow(all_field_verbose_names)),
         content_type="text/csv",
         headers={"Content-Disposition": 'attachment; filename="saturn3template.csv"'},
     )
