@@ -127,13 +127,15 @@ class HistopathologicalSample(models.Model):
     # recruiter ###
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES,
-        verbose_name= "Recruiting Site")
+        verbose_name="Recruiting Site")
+    # set this to primary key?
     patient_identifier = models.CharField(
         max_length=5,
-        help_text="5-digit SATURN3 pseudonym \
-              (by Treuhandstelle Freiburg)",
+        help_text="5-digit SATURN3 pseudonym"
+        " (by Treuhandstelle Freiburg)",
         validators=[validate_alphanumeric],
-        verbose_name="Patient Identifier")  # set this to primary key?
+        verbose_name="Patient Identifier")
+
     # patient = models.CharField( max_length=CHARFIELD_MAXLEN)
     # skip for prototype
     sex = models.CharField(max_length=CHARFIELD_MAXLEN, choices=SEX_CHOICES,
@@ -146,15 +148,17 @@ class HistopathologicalSample(models.Model):
     saturn3_sample_code = models.CharField(
         max_length=CHARFIELD_MAXLEN,
         verbose_name="SATURN3 Sample Code",
-        help_text="S3 + Entity - \
-            Patient Identifier - \
-            Sampling Timepoint - \
-            Tissue Type + Order Number - \
-            Storage Format - Analyte Type \
-            + Order Number")
+        help_text="S3 + Entity - "
+        "Patient Identifier - "
+        "Sampling Timepoint - "
+        "Tissue Type + Order Number - "
+        "Storage Format - Analyte Type "
+        "+ Order Number")
     sampling_date = models.DateField(verbose_name="Sampling Date")
     tissue_type = models.CharField(
-        max_length=CHARFIELD_MAXLEN, choices=TISSUE_TYPES, verbose_name="Tissue Type")
+        max_length=CHARFIELD_MAXLEN,
+        choices=TISSUE_TYPES,
+        verbose_name="Tissue Type")
     type_of_intervention = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=INTERVENTION_TYPES,
         verbose_name="Type of Intervention")
@@ -195,20 +199,23 @@ class HistopathologicalSample(models.Model):
         null=True, blank=True, verbose_name="scLab Received")
     sclab_extraction_date = models.DateField(null=True,
                                              blank=True,
-                                             verbose_name="scLab Extraction Date")
+                                             verbose_name="scLab "
+                                             "Extraction Date")
     sclab_nuclei_yield = models.IntegerField(null=True,
                                              blank=True,
                                              verbose_name="scLab Nuclei Yield")
     sclab_nuclei_size = models.IntegerField(null=True,
                                             blank=True,
-                                            verbose_name="scLab Nuclei Size [µm]")
+                                            verbose_name="scLab Nuclei"
+                                            " Size [µm]")
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                     blank=True, verbose_name="scLab Status",
                                     choices=STATUS_CHOICES)
     sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True,
-                                             verbose_name="scLab Sequencing Type",
-                                                  choices=SCLAB_SEQUENCING_TYPES)
+                                             verbose_name="scLab"
+                                             " Sequencing Type",
+                                             choices=SCLAB_SEQUENCING_TYPES)
     sclab_sorting = models.BooleanField(null=True,
                                         blank=True,
                                         verbose_name="scLab Sorting")
@@ -227,19 +234,21 @@ class HistopathologicalSample(models.Model):
                                    blank=True, verbose_name="LB Received")
     lb_sample_volume = models.IntegerField(null=True,
                                            blank=True,
-                                           verbose_name="LB Sample Volume [ml]")
+                                           verbose_name="LB Sample"
+                                           " Volume [ml]")
     lb_date_of_isolation = models.DateField(null=True,
                                             blank=True,
-                                            verbose_name="LB Date of Isolation")
+                                            verbose_name="LB Date "
+                                            "of Isolation")
     lb_total_isolated_cfdna = models.IntegerField(null=True,
                                                   blank=True,
-                                                  verbose_name="LB Total Isolated cfDNA [ng]")
+                                                  verbose_name="LB Total "
+                                                  "Isolated cfDNA [ng]")
 
     lb_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                  blank=True,
                                  verbose_name="LB Status",
                                  choices=LB_STATUS_CHOICES)
-
 
     # Datapaths ###
 
@@ -248,46 +257,45 @@ class HistopathologicalSample(models.Model):
                              null=True,
                              verbose_name="Pools")
     scrna_r1 = models.CharField(max_length=CHARFIELD_MAXLEN,
-                             blank=True,
-                             null=True,
-                             verbose_name="scRNA R1")
-    
-    # scrna_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
-    #                           blank=True,
-    #                           null=True,
-    #                           verbose_name="scRNA R2")
-    # scatac_r1 = models.CharField(max_length=CHARFIELD_MAXLEN,
-    #                           blank=True,
-    #                           null=True,
-    #                           verbose_name="scATAC R1")
-    
-    # scatac_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
-    #                           blank=True,
-    #                           null=True,
-    #                           verbose_name="scATAC R2")
-    
-    # scatac_i2 = models.CharField(max_length=CHARFIELD_MAXLEN,
-    #                           blank=True,
-    #                           null=True,
-    #                           verbose_name="scATAC I2")
-    
-    # wgs_r1 = models.CharField(max_length=CHARFIELD_MAXLEN,
-    #                           blank=True,
-    #                           null=True,
-    #                           verbose_name="WGS R1")
-    
-    
-    # wgs_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
-    #                           blank=True,
-    #                           null=True,
-    #                           verbose_name="WGS R2")
-    
-    # wgs_bam = models.CharField(max_length=CHARFIELD_MAXLEN,
-    #                           blank=True,
-    #                           null=True,
-    #                           verbose_name="WGS bam")
-    
-    # wgs_vcf = models.CharField(max_length=CHARFIELD_MAXLEN,
-    #                           blank=True,
-    #                           null=True,
-    #                           verbose_name="WGS vcf")
+                                blank=True,
+                                null=True,
+                                verbose_name="scRNA R1")
+
+    scrna_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
+                                blank=True,
+                                null=True,
+                                verbose_name="scRNA R2")
+    scatac_r1 = models.CharField(max_length=CHARFIELD_MAXLEN,
+                                 blank=True,
+                                 null=True,
+                                 verbose_name="scATAC R1")
+
+    scatac_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
+                                 blank=True,
+                                 null=True,
+                                 verbose_name="scATAC R2")
+
+    scatac_i2 = models.CharField(max_length=CHARFIELD_MAXLEN,
+                                 blank=True,
+                                 null=True,
+                                 verbose_name="scATAC I2")
+
+    wgs_r1 = models.CharField(max_length=CHARFIELD_MAXLEN,
+                              blank=True,
+                              null=True,
+                              verbose_name="WGS R1")
+
+    wgs_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
+                              blank=True,
+                              null=True,
+                              verbose_name="WGS R2")
+
+    wgs_bam = models.CharField(max_length=CHARFIELD_MAXLEN,
+                               blank=True,
+                               null=True,
+                               verbose_name="WGS bam")
+
+    wgs_vcf = models.CharField(max_length=CHARFIELD_MAXLEN,
+                               blank=True,
+                               null=True,
+                               verbose_name="WGS vcf")
