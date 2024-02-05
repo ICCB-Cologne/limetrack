@@ -241,7 +241,16 @@ def handle_form(form: ModelForm,
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
                     pools=data["pools"],
-                    scrna_r1=data["scrna_r1"])
+                    scrna_r1=data["scrna_r1"],
+                    scrna_r2=data["scrna_r2"],
+                    scatac_r1=data["scatac_r1"],
+                    scatac_r2=data["scatac_r2"],
+                    scatac_i2=data["scatac_i2"],
+                    wgs_r1=data["wgs_r1"],
+                    wgs_r2=data["wgs_r2"],
+                    wgs_bam=data["wgs_bam"],
+                    wgs_vcf=data["wgs_vcf"],
+                    )
         
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
