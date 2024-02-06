@@ -97,10 +97,10 @@ LB_STATUS_CHOICES = [
     ("sequencing successful", "sequencing successful"),
 ]
 
-SEX_CHOICES = {
+SEX_CHOICES = [
     ("f", "f"),
     ("m", "m")
-}
+]
 
 
 def validate_alphanumeric(value):
