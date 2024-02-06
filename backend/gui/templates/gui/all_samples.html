@@ -23,7 +23,8 @@
       <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
         Filter columns
       </button>
-      <form id="column-filter">
+      <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
+        {% csrf_token %}
       <ul class="dropdown-menu">
         {% for filter in filters %}
         <li class="dropdown-item"> 
@@ -31,8 +32,9 @@
         {{filter.label}} </li>
         {% endfor %}
       </ul>
-    </form>
-    <button> Apply  </button>
+    
+    <button type="submit"> Apply  </button>
+  </form>
   </div>
   </div>
     

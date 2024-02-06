@@ -89,6 +89,23 @@ all_fields = [
     "lb_status"
 ]
 
+recruiter_fields = [
+    "recruiting_site",
+    "patient_identifier",
+    # "patient", skip for prototype
+    "sex",
+    "died",
+    # "tissue_name", skip for prototype
+    # "used_in", skip for prototype
+    "saturn3_sample_code",
+    "sampling_date",
+    "tissue_type",
+    "type_of_intervention",
+    "localisation",
+    "corresponding_organoid",
+    "grading"
+]
+
 ocdf_fields = [
     "pools",
     "scrna_r1",
@@ -102,6 +119,53 @@ ocdf_fields = [
     "wgs_vcf"
 ]
 
+tum_fields = ["tumor_cell_content"]
+
+spl_fields = ["spl_received",
+              "spl_status",
+              "spl_sequencing_type"]
+
+sclab_fields = [
+    "sclab_received", 
+    "sclab_extraction_date", 
+    "sclab_nuclei_yield",
+    "sclab_nuclei_size",
+    "sclab_status",
+    "sclab_sequencing_type",
+    "sclab_sorting",
+    "sclab_pool"
+    ]
+
+lb_fields = [
+    "lb_analyte_type",
+    "lb_sampling_date",
+    "lb_received",
+    "lb_sample_volume",
+    "lb_date_of_isolation",
+    "lb_total_isolated_cfdna",
+    "lb_status"
+]
+
+ocdf_fields = [
+    "pools",
+    "scrna_r1",
+    "scrna_r2",
+    "scatac_r1",
+    "scatac_r2",
+    "scatac_i2",
+    "wgs_r1",
+    "wgs_r2",
+    "wgs_bam",
+    "wgs_vcf"
+]
+
+field_dict = {"recruiter" : recruiter_fields,
+              "ocdf" : ocdf_fields,
+              "tum" : tum_fields,
+              "spl" : spl_fields,
+              "sclab" : sclab_fields,
+              "lb" : lb_fields,
+              }
 
 class SampleForm(ModelForm):
     required_css_class = "required"
@@ -781,6 +845,15 @@ class FilterForm(forms.Form):
     data_sequencing_data_release = forms.BooleanField(initial=True)
     tumor_cell_content_bioinf = forms.BooleanField(initial=True)
     reviewed_and_processed_by_sequencing = forms.BooleanField(initial=True)
+
+class GroupFilterForm(forms.Form):
+    recruiter = forms.BooleanField(initial=True, required=False)
+    tum = forms.BooleanField(initial=True, required=False)
+    spl = forms.BooleanField(initial=True, required=False)
+    sclab = forms.BooleanField(initial=True, required=False)
+    lb = forms.BooleanField(initial=True, required=False)
+    ocdf = forms.BooleanField(initial=True, required=False)
+
 
 
 class LoginForm(forms.Form):

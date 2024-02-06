@@ -1,7 +1,7 @@
 from .forms import (
-    all_fields, all_field_verbose_names, SampleFormScLab, SampleFormRec,
+    all_fields, all_field_verbose_names, recruiter_fields, field_dict, SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
-    UploadForm, FilterForm, LoginForm,
+    UploadForm, FilterForm, LoginForm, GroupFilterForm,
     SearchForm, SampleFormDataPaths
 )
 from django.views.decorators.csrf import requires_csrf_token
@@ -362,6 +362,9 @@ class UploadView(LoginRequiredMixin, TemplateView):
         
         messages.success(request, 'File upload successful!', extra_tags="file")
         return HttpResponseRedirect(request.path_info)
+    
+class ConfirmSubmissionView(LoginRequiredMixin, TemplateView):
+    pass
 
 
 class AllSamplesView(LoginRequiredMixin, TemplateView):
@@ -374,7 +377,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
             for instance in samples
         ]
 
-        filters = FilterForm()
+        filters = GroupFilterForm()
         context = {
             'samples': fields_and_values_list,
             'filters': filters
@@ -394,26 +397,36 @@ class FilteredSamplesView(LoginRequiredMixin, TemplateView):
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
         fields_and_values_list = [
-            [(field.verbose_name, getattr(instance, field.name))
+            [(field.verbose_name, getattr(instance, field.name)) if field.name in recruiter_fields else (None, None)
              for field in instance._meta.fields]
             for instance in samples
         ]
+        filters = GroupFilterForm()
         context = {
             'samples': fields_and_values_list,
+            'filters': filters
         }
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/all_samples.html'
-        filtered_fields = request.POST
+        filtered_form = GroupFilterForm(request.POST)
+        if filtered_form.is_valid():
+            all_filters = []
+            for group in filtered_form.cleaned_data:
+                all_filters += field_dict[group] if filtered_form.cleaned_data[group] else []
+        
         samples = HistopathologicalSample.objects.all()
         fields_and_values_list = [
-            [(field.verbose_name, getattr(instance, field.name)) if filtered_fields[field.name] else None
+            [(field.verbose_name, getattr(instance, field.name)) if field.name in all_filters else (None, None)
              for field in instance._meta.fields]
-            for instance in samples]
+            for instance in samples
+            ]
+        
         context = {
             'samples': fields_and_values_list,
+            'filters': filtered_form
         }
         return render(request, template_name, context=context)
 
