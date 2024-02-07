@@ -6,6 +6,7 @@ from .models import (HistopathologicalSample,
                      LOCALISATION_CHOICE, GRADING)
 from tempus_dominus.widgets import DatePicker
 # documentation https://github.com/FlipperPA/django-tempus-dominus
+from .utils.fields import SampleCodeField
 
 all_field_verbose_names = [
     "Recruiting Site",
@@ -107,6 +108,7 @@ recruiter_fields = [
 ]
 
 ocdf_fields = [
+    "saturn3_sample_code",
     "pools",
     "scrna_r1",
     "scrna_r2",
@@ -119,13 +121,19 @@ ocdf_fields = [
     "wgs_vcf"
 ]
 
-tum_fields = ["tumor_cell_content"]
+tum_fields = [
+    "saturn3_sample_code",
+    "tumor_cell_content"
+    ]
 
-spl_fields = ["spl_received",
-              "spl_status",
-              "spl_sequencing_type"]
+spl_fields = [
+    "saturn3_sample_code",
+    "spl_received",
+    "spl_status",
+    "spl_sequencing_type"]
 
 sclab_fields = [
+    "saturn3_sample_code",
     "sclab_received", 
     "sclab_extraction_date", 
     "sclab_nuclei_yield",
@@ -137,6 +145,7 @@ sclab_fields = [
     ]
 
 lb_fields = [
+    "saturn3_sample_code",
     "lb_analyte_type",
     "lb_sampling_date",
     "lb_received",
@@ -147,6 +156,7 @@ lb_fields = [
 ]
 
 ocdf_fields = [
+    "saturn3_sample_code",
     "pools",
     "scrna_r1",
     "scrna_r2",
@@ -171,11 +181,15 @@ class SampleForm(ModelForm):
     required_css_class = "required"
     # error_css_class = "error-field"
 
+    #saturn3_sample_code = SampleCodeField(required=True)
+
     class Meta:
         model = HistopathologicalSample
         fields = all_fields + ocdf_fields
 
+        
         widgets = {
+
             'died': DatePicker(options={},
                                attrs={"input_group": False}),
             'sampling_date': DatePicker(options={},

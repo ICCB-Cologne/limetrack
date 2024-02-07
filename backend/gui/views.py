@@ -95,10 +95,11 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             **kwargs: Any
     ) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower(), request.POST)
-        saturn3_sample_code = request.POST["saturn3_sample_code"]
+        
 
         if form.is_valid():
             data = form.cleaned_data
+            saturn3_sample_code = data["saturn3_sample_code"]
             app_log.info(
                 f'{request.user} added / '
                 f'edited data for patient '
