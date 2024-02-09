@@ -76,10 +76,9 @@ p {
 
 /* for all_samples_overview  to contain filter buttons/options */
 .filterdiv {
-    position: relative;
-    width: 90%;
+    width: fit-content;
     border-radius: 10px;
-    /* border: #649bd6 dotted 1px; */
+    border: #649bd6 dotted 2px;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -121,6 +120,7 @@ table {
 
 th,
 td {
+    white-space: nowrap;
     border: 1px solid #fff;
     text-align: left;
     padding: 8px;

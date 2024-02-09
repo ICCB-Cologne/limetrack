@@ -1,5 +1,6 @@
+from django.http.response import HttpResponse as HttpResponse
 from .forms import (
-    all_fields, all_field_verbose_names, recruiter_fields, field_dict, SampleFormScLab, SampleFormRec,
+    all_fields, all_field_verbose_names, field_dict, SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, FilterForm, LoginForm, GroupFilterForm,
     SearchForm, SampleFormDataPaths
@@ -156,11 +157,12 @@ def handle_form(form: ModelForm,
                 tag: str):
     """
     Updates existing patient records (if group membership is not recruiter)
-    or creates new patient records.
+    or creates new patient records (if group membership is recruiter).
 
     variables:
-    tag = 'general' or 'file' indicating if it's submission by uploading
-    a file or filling the form
+    tag = 'general' or 'file' 
+    indicating if it's submission by uploading
+    a file or filling in the form
 
     """
     if request.user.groups.filter(name='SPL').exists():
@@ -373,7 +375,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
         fields_and_values_list = [
-            [(field.name, getattr(instance, field.name))
+            [(field.verbose_name, getattr(instance, field.name))
              for field in instance._meta.fields]
             for instance in samples
         ]
@@ -398,7 +400,7 @@ class FilteredSamplesView(LoginRequiredMixin, TemplateView):
         template_name = 'gui/all_samples.html'
         samples = HistopathologicalSample.objects.all()
         fields_and_values_list = [
-            [(field.verbose_name, getattr(instance, field.name)) if field.name in recruiter_fields else (None, None)
+            [(field.verbose_name, getattr(instance, field.name))
              for field in instance._meta.fields]
             for instance in samples
         ]
@@ -418,19 +420,21 @@ class FilteredSamplesView(LoginRequiredMixin, TemplateView):
             for group in filtered_form.cleaned_data:
                 all_filters += field_dict[group] if filtered_form.cleaned_data[group] else []
         
-        samples = HistopathologicalSample.objects.all()
-        fields_and_values_list = [
-            [(field.verbose_name, getattr(instance, field.name)) if field.name in all_filters else (None, None)
-             for field in instance._meta.fields]
-            for instance in samples
-            ]
         
-        context = {
-            'samples': fields_and_values_list,
-            'filters': filtered_form
-        }
-        return render(request, template_name, context=context)
-
+            samples = HistopathologicalSample.objects.all()
+            fields_and_values_list = [
+                [(field.verbose_name, getattr(instance, field.name)) if field.name in all_filters else (None, None)
+                for field in instance._meta.fields]
+                for instance in samples
+                ]
+            
+            context = {
+                'samples': fields_and_values_list,
+                'filters': filtered_form
+            }
+            return render(request, template_name, context=context)
+        
+        return HttpResponseRedirect(request.path_info)
 
 class Echo:
     """An object that implements just the write method of the file-like
@@ -474,6 +478,43 @@ def csv_template_download(request):
         headers={"Content-Disposition": 'attachment; filename="saturn3template.csv"'},
     )
 
+class FilteredDownloadView(LoginRequiredMixin, TemplateView):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return HttpResponseRedirect(reverse("all_samples"))
+
+    @method_decorator(requires_csrf_token)
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        pseudo_buffer = Echo()
+        writer = csv.writer(pseudo_buffer)
+
+        form = GroupFilterForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+            all_filters = []
+            for group in form.cleaned_data:
+                all_filters += field_dict[group] if form.cleaned_data[group] else []
+            print(all_filters)
+        
+            samples = HistopathologicalSample.objects.all()
+            fields_and_values_list = [
+                [(field.verbose_name, getattr(instance, field.name))
+                for field in instance._meta.fields if field.name in all_filters]
+                for instance in samples
+                ]
+            rows = []
+            headers = [i[0] for i in fields_and_values_list[0]]
+            rows.append(headers)
+            data = [[i[1] for i in sublist] for sublist in fields_and_values_list]
+            data.insert(0, headers)
+        
+            return StreamingHttpResponse(
+            (writer.writerow(row) for row in data),
+            content_type="text/csv",
+            headers={"Content-Disposition": 'attachment; filename="saturn3samples.csv"'},)
+        
+        print("LOL")
+        return HttpResponseRedirect(request.path_info)
+    
 
 def log_out(request: HttpRequest):
     logout(request)

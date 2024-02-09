@@ -32,9 +32,8 @@
         {{filter.label}} </li>
         {% endfor %}
       </ul>
-    
-    <button type="submit"> Apply  </button>
   </form>
+  <button class="btn btn-primary" onclick="lol()"> Apply  </button>
   </div>
   </div>
     
@@ -46,12 +45,14 @@
   <table>
     <thead>
       <tr>
+        {% if samples.0 %}
         {% for key, _ in samples.0 %}
           {% if key %}
             <th>{{ key }}</th>
           {% endif %}
         {% endfor %}
         <th>Action</th>
+        {%endif%}
       </tr>
     </thead>
     <tbody>
@@ -62,7 +63,7 @@
         <td>{{ value }}</td>
         {% endif %}
         {% endfor %}
-        <td>
+        <td>  
           <button type="button" onclick="submitForm({{ item.0.1 }})">Delete</button>
         </td>
       </tr>
@@ -74,6 +75,8 @@
 </div>
     <a href="/csv/" class="btn btn-primary" role="button"> Download</a>
     <br>
+    <button class="btn btn-primary" onclick="downloadWithFilter()"> Download filtered CSV </button>
+    <form  action={% url "filtered_download" %} method="post" id="filter-download">{% csrf_token %}</form>
 
 </div>
 
@@ -106,5 +109,57 @@
       // Submit the form
       form.submit();
     }
+
+    function downloadWithFilter(){
+      const form = document.getElementById('column-filter');
+      var formData = new FormData(form);
+      console.log(formData)
+
+      for (var [key, value] of formData) {
+        console.log(key, value)
+      }
+      
+      const downloadForm = document.getElementById('filter-download');
+      
+      
+      downloadForm.innerHTML = '';
+  
+      //Add CSRF token input
+      const csrfTokenInput = document.createElement('input');
+      csrfTokenInput.type = 'hidden';
+      csrfTokenInput.name = 'csrfmiddlewaretoken';
+      csrfTokenInput.value = '{{ csrf_token }}';
+      downloadForm.appendChild(csrfTokenInput); 
+      
+      const all_inputs = form.getElementsByTagName("input");
+
+      for (let i = 1; i < all_inputs.length; i++) {
+        var name = all_inputs[i].name;
+        if (formData.has(name)){
+          newInput = document.createElement('input');
+          newInput.type = "hidden";
+          newInput.name = name
+          newInput.value = "on"
+          console.log(newInput)
+          downloadForm.appendChild(newInput);
+        };
+      };
+
+      downloadForm.submit();
+
+    }
+    
+    function lol(){
+      console.log(filter_map)
+      filter_map.set("LOL", 0999)  
+      const form = document.getElementById('column-filter');
+      form.submit();
+    }
+
+  </script>
+
+  <script>
+    var filter_map = new Map()
+    filter_map.set("LOL", 12)
   </script>
   {% endblock head_scripts%}
