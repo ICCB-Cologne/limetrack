@@ -166,7 +166,7 @@ def handle_form(form: ModelForm,
 
     """
     if request.user.groups.filter(name='SPL').exists():
-        spl_received = None if data["spl_received"] == "" else data["spl_received"]
+        spl_received = data["spl_received"]
         spl_status = data["spl_status"]
         spl_sequencing_type = data["spl_sequencing_type"]
 
