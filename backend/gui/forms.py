@@ -361,55 +361,7 @@ class SampleFormTUM(ModelForm):
         }
 
 
-class SampleFormSPL(ModelForm):
-    required_css_class = "required"
-
-    # set disabled required recruiter fields on not required
-    recruiting_site = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={
-            'onchange': "autoFillPatient(this.value)",
-            'disabled': "true"}, choices=SITE_CHOICES))
-    patient_identifier = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.TextInput(attrs={'disabled': "true"}),
-        help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
-    sex = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=SEX_CHOICES))
-    sampling_date = forms.DateField(required=False, widget=DatePicker(
-        options={}, attrs={"input_group": False, 'disabled': "true"}))
-    tissue_type = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={
-            'disabled': "true"},
-            choices=TISSUE_TYPES))
-    type_of_intervention = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=INTERVENTION_TYPES))
-    localisation = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=LOCALISATION_CHOICE))
-    corresponding_organoid = forms.BooleanField(required=False,
-                                                widget=forms.CheckboxInput(
-                                                    attrs={
-                                                        'disabled': "true"}),
-                                                help_text="generated\
-                                                      from the same\
-                                                        biopsy/tissue piece")
-    grading = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=GRADING))
+class SampleFormSPL(SampleFormTUM):
 
     class Meta:
         model = HistopathologicalSample
@@ -479,66 +431,8 @@ class SampleFormSPL(ModelForm):
         }
 
 
-class SampleFormScLab(ModelForm):
-    required_css_class = "required"
-
-    # set disabled required recruiter fields on not required
-    recruiting_site = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={
-            'onchange': "autoFillPatient(this.value)",
-            'disabled': "true"},
-            choices=SITE_CHOICES))
-
-    patient_identifier = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.TextInput(attrs={
-            'disabled': "true"}),
-        help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
-
-    sex = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
-
-    sampling_date = forms.DateField(required=False,
-                                    widget=DatePicker(
-                                        options={},
-                                        attrs={
-                                            "input_group": False,
-                                            'disabled': "true"}))
-
-    tissue_type = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=TISSUE_TYPES))
-
-    type_of_intervention = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=INTERVENTION_TYPES))
-
-    localisation = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=LOCALISATION_CHOICE))
-
-    corresponding_organoid = forms.BooleanField(required=False,
-                                                widget=forms.CheckboxInput(
-                                                    attrs={
-                                                        'disabled': "true"}),
-                                                help_text="generated from"
-                                                " the same biopsy/tissue"
-                                                " piece")
-    grading = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=GRADING))
-
+class SampleFormScLab(SampleFormTUM):
+    
     class Meta:
         model = HistopathologicalSample
 
@@ -594,61 +488,7 @@ class SampleFormScLab(ModelForm):
         }
 
 
-class SampleFormLB(ModelForm):
-    required_css_class = "required"
-
-    # set disabled required recruiter fields on not required
-    recruiting_site = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={
-            'onchange': "autoFillPatient(this.value)",
-            'disabled': "true"}, choices=SITE_CHOICES))
-
-    patient_identifier = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.TextInput(attrs={
-            'disabled': "true"}),
-        help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
-
-    sex = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={
-            'disabled': "true"},
-            choices=SEX_CHOICES))
-
-    sampling_date = forms.DateField(required=False, widget=DatePicker(
-        options={}, attrs={"input_group": False, 'disabled': "true"}))
-
-    tissue_type = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=TISSUE_TYPES))
-
-    type_of_intervention = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=INTERVENTION_TYPES))
-
-    localisation = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=LOCALISATION_CHOICE))
-
-    corresponding_organoid = forms.BooleanField(
-        required=False,
-        widget=forms.CheckboxInput(attrs={'disabled': "true"}),
-        help_text="generated from"
-        " the same biopsy/tissue piece")
-
-    grading = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=GRADING))
+class SampleFormLB(SampleFormTUM):
 
     class Meta:
         model = HistopathologicalSample
@@ -705,60 +545,7 @@ class SampleFormLB(ModelForm):
         }
 
 
-class SampleFormDataPaths(ModelForm):
-    required_css_class = "required"
-
-    # set disabled required recruiter fields on not required
-    recruiting_site = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={
-            'onchange': "autoFillPatient(this.value)",
-            'disabled': "true"}, choices=SITE_CHOICES))
-
-    patient_identifier = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.TextInput(attrs={
-            'disabled': "true"}),
-        help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
-
-    sex = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={
-            'disabled': "true"}, choices=SEX_CHOICES))
-
-    sampling_date = forms.DateField(required=False, widget=DatePicker(
-        options={}, attrs={"input_group": False, 'disabled': "true"}))
-
-    tissue_type = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=TISSUE_TYPES))
-
-    type_of_intervention = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={
-            'disabled': "true"}, choices=INTERVENTION_TYPES))
-
-    localisation = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=LOCALISATION_CHOICE))
-
-    corresponding_organoid = forms.BooleanField(required=False,
-                                                widget=forms.CheckboxInput(
-                                                    attrs={
-                                                        'disabled': "true"}),
-                                                help_text="generated from "
-                                                "the same biopsy/tissue piece")
-    grading = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=GRADING))
+class SampleFormDataPaths(SampleFormTUM):
 
     class Meta:
         model = HistopathologicalSample

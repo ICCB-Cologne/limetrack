@@ -489,11 +489,9 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
 
         form = GroupFilterForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)
             all_filters = []
             for group in form.cleaned_data:
                 all_filters += field_dict[group] if form.cleaned_data[group] else []
-            print(all_filters)
         
             samples = HistopathologicalSample.objects.all()
             fields_and_values_list = [
@@ -512,7 +510,6 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
             content_type="text/csv",
             headers={"Content-Disposition": 'attachment; filename="saturn3samples.csv"'},)
         
-        print("LOL")
         return HttpResponseRedirect(request.path_info)
     
 
