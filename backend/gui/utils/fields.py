@@ -51,6 +51,10 @@ ANALYTE_TYPE = [
 
 
 class SampleCodeField(MultiValueField):
+    """
+    Supposed to split the Saturn3-Sample-Code field into 8 different fields
+    
+    """
     def __init__(self, **kwargs):
 
         fields = (

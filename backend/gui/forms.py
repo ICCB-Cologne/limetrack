@@ -218,8 +218,6 @@ class SampleFormRec(ModelForm):
         fields = all_fields
 
         widgets = {
-            'recruiting_site': forms.Select(attrs={
-                'onchange': "autoFillPatient(this.value)"}),
             'died': DatePicker(options={}, attrs={
                 "input_group": False}),
             'sampling_date': DatePicker(options={}, attrs={

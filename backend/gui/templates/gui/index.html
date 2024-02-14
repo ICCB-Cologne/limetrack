@@ -13,6 +13,11 @@
 {% block content %}
 <div class="containerino">
 
+  <button class="btn btn-primary bg-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="modalButton">
+    Submit with confirmation modal
+  </button>
+
+
   <form action={% url "config" %} method="post" enctype="multipart/form-data" id="start-of-form">
     {% csrf_token %}
     <div class="form-containerino">
@@ -108,9 +113,6 @@
       <div class="text-center">
         <button type="submit" class="btn btn-primary bg-primary">Submit</button>
         <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="modalButton">
-        Launch demo modal
-      </button>
       </div>
       
       <!-- GENERAL MESSAGES -->
@@ -186,7 +188,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Please check your inputs</h1>

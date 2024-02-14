@@ -5,20 +5,23 @@ var modalBody = document.getElementById("modalBody");
 // Get the button that opens the modal
 var btn = document.getElementById("modalButton");
 
-btn.onclick = function () {
-  modalBody.innerHTML = "";
-  form = document.getElementById("start-of-form");
-  formData = new FormData(form);
-  // output as an object
-  formDataObject = Object.fromEntries(formData);
-  console.log(formDataObject);
+const exampleModal = document.getElementById("exampleModal");
+if (exampleModal) {
+  exampleModal.addEventListener("show.bs.modal", (event) => {
+    form = document.getElementById("start-of-form");
+    formData = new FormData(form);
 
-  for (var pair of formData.entries()) {
-    console.log(pair[1]);
-    if (pair[0] != "csrfmiddlewaretoken") {
-      const newDiv = document.createElement("div");
-      newDiv.innerHTML = `<p> ${pair[0]} ---- ${pair[1]} </p>`;
-      modalBody.appendChild(newDiv);
+    // Update the modal's content.
+    modalBody.innerHTML = "";
+    //TODO: Boolean Fields need to be displayed if they are set on 'off' = False
+    for (var pair of formData.entries()) {
+      if (pair[0] != "csrfmiddlewaretoken") {
+        const newDiv = document.createElement("div");
+        newDiv.innerHTML = `<p> ${pair[0]} ---- ${pair[1]} </p>`;
+        modalBody.appendChild(newDiv);
+      }
     }
-  }
-};
+    modalTitle.textContent = `New message to ${recipient}`;
+    modalBodyInput.value = recipient;
+  });
+}
