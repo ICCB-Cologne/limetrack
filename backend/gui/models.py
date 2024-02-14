@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-
+import re
 
 CHARFIELD_MAXLEN = 200
 
@@ -115,6 +115,12 @@ def validate_alphanumeric(value):
 def zero_to_a_hundred(value):
     if type(value) is not int and int(value) < 0 or int(value) > 100:
         raise ValidationError("Value between 0 and 100")
+    
+def check_sat3_sample_code(string):
+    print(string)
+    regex = '^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMSXLNCFR]\\d+-[SVFPY]-[DRCWYTMLGHN]\\d+$'
+    if not re.search(regex, string):
+        raise ValidationError("No valid Saturn3 Sample Code")
 
 # Create your models here.
 
@@ -147,6 +153,7 @@ class HistopathologicalSample(models.Model):
     # skip for prototype
     saturn3_sample_code = models.CharField(
         max_length=CHARFIELD_MAXLEN,
+        validators=[check_sat3_sample_code],
         verbose_name="SATURN3 Sample Code",
         help_text="S3 + Entity - "
         "Patient Identifier - "
@@ -169,7 +176,7 @@ class HistopathologicalSample(models.Model):
         help_text="generated from the same biopsy/tissue piece",
         verbose_name="Corresponding Organoid")
     grading = models.CharField(max_length=CHARFIELD_MAXLEN, choices=GRADING,
-                               verbose_name="Grading")
+                               verbose_name="Grading", blank=True)
     # histology_subtype = models.CharField(max_length=CHARFIELD_MAXLEN)
     # skip for prototype
 

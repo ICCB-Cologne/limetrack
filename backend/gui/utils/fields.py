@@ -59,15 +59,15 @@ class SampleCodeField(MultiValueField):
             ),
             CharField(
                 error_messages={"incomplete": "Enter a 5-digit PID"},
-                validators=[validate_alphanumeric],
+                validators=[validate_alphanumeric], help_text="Saturn3 + Entity"
             ),
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
+            CharField(error_messages={"incomplete": "Enter integer"}),
 
             ChoiceField(
                 error_messages={"incomplete": "Select a value"},choices=TISSUE_TYPE
             ),
 
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
+            CharField(error_messages={"incomplete": "Enter integer"}),
 
             ChoiceField(
                 error_messages={"incomplete": "Select a value"}, choices=STORAGE_FORMAT
@@ -77,9 +77,10 @@ class SampleCodeField(MultiValueField):
                 error_messages={"incomplete": "Select a value"}, choices=ANALYTE_TYPE
             ),
 
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
+            CharField(error_messages={"incomplete": "Enter integer"}),
             
         )
+        
         super().__init__(
             fields=fields,
             require_all_fields=True,
@@ -91,8 +92,9 @@ class SampleCodeField(MultiValueField):
         string = ""
         for v in valid_values:
             string += str(v)
-            string += "-"
-        return string[:-2]
+            if valid_values.index(v) != 3 and valid_values.index(v) != 6:
+                string += "-"
+        return string[:-1]
 
 class SampleCodeWidget(MultiWidget):
 
@@ -100,12 +102,12 @@ class SampleCodeWidget(MultiWidget):
         widgets=[
             Select(attrs=attrs, choices=ENTITY),
             TextInput(attrs=attrs,),
-            NumberInput(attrs=attrs,),
+            TextInput(attrs=attrs,),
             Select(attrs=attrs, choices=TISSUE_TYPE), 
-            NumberInput(attrs=attrs),
+            TextInput(attrs=attrs),
             Select(choices=STORAGE_FORMAT),
             Select(choices=ANALYTE_TYPE),
-            NumberInput(attrs=attrs)]
+            TextInput(attrs=attrs)]
         
         super().__init__(widgets, attrs)
 
@@ -118,7 +120,6 @@ class SampleCodeWidget(MultiWidget):
             for i in splitted:
                 if i.isalnum():
                     res.append(i)
-            print(res)
             return res
         
         return [None] * 8

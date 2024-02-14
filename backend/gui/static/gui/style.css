@@ -440,3 +440,8 @@ footer{
     align-items: center;
     margin-top: auto;
 }
+
+.footerdiv{
+    display: flex;
+    flex-direction: row;
+}

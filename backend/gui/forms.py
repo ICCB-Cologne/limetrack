@@ -181,7 +181,7 @@ class SampleForm(ModelForm):
     required_css_class = "required"
     # error_css_class = "error-field"
 
-    #saturn3_sample_code = SampleCodeField(required=True)
+    # saturn3_sample_code = SampleCodeField(required=True)
 
     class Meta:
         model = HistopathologicalSample

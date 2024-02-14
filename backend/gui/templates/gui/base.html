@@ -16,9 +16,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     
     {% block head_scripts %} {%endblock%}
@@ -32,7 +29,7 @@
         
         {% load static %}
         <div class="imagediv">
-        <img src="{% static 'gui/SATURN3_Logo_RGB.jpg' %}" alt="Saturn3 Logo" width=300px>
+        <img src="{% static 'gui/img/SATURN3_Logo_RGB.jpg' %}" alt="Saturn3 Logo" width=300px>
         </div>
 
         {% block header%}
@@ -85,10 +82,28 @@
 
     
   <footer >
-    
-    <div> <p> Contact: <br/> Laura Godfrey: laura.godfrey@uk-essen.de <br/> Jonas Gassenschmidt: jonas.gassenschmidt@uniklinik-freiburg.de <p> </div>
-    <div> <p> Contributors: <br/>
-      Florian Heyl, Frederik Voigt, Jonas Gassenschmidt, Laura Godfrey, Lukas Heine </p></div>
+      <div class="card-group">
+          <div class=card text-bg-secondary mb-10 >
+              <div class="card-header">Contact
+              </div>
+              <div class="card-body">
+                  <p class="card-text"> Laura Godfrey: <br/> laura.godfrey@uk-essen.de <br/> <br/>  Jonas Gassenschmidt: jonas.gassenschmidt@uniklinik-freiburg.de </p> 
+              </div>
+              <div class="card-footer">
+                
+              </div>          
+            </div>
+          <div class=card text-bg-secondary mb-10 >
+            <div class="card-header">Contributors
+            </div>
+              <div class="card-body">
+                <p class="card-text"> Florian Heyl <br/> Frederik Voigt <br/> Jonas Gassenschmidt <br/> Laura Godfrey <br/> Lukas Heine </p> 
+              </div>
+              <div class="card-footer">
+                
+              </div>
+        </div>
+      </div>
   </footer>
   
     

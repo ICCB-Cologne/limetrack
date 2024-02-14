@@ -79,8 +79,8 @@
               {# normal input field #}
               {% else %}
                 {{field}}
-              {% endif %} </p>
-              {{field.help_text}}
+              {% endif %} 
+              {{field.help_text}}</p>
           {% endif %}
             
         {#  NO MESSAGES / NO FROM SUBMITTED YET #}
@@ -107,7 +107,12 @@
 
       <div class="text-center">
         <button type="submit" class="btn btn-primary bg-primary">Submit</button>
+        <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="modalButton">
+        Launch demo modal
+      </button>
       </div>
+      
       <!-- GENERAL MESSAGES -->
       {% if messages %}
       <ul class="messages">
@@ -177,6 +182,39 @@
   </form>
 </div>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Please check your inputs</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        Form:
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="confirmSubmission()" >Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% load static %}
+<script src="{% static 'gui/formConfirmModal.js' %}"></script>
+<script>
+  function confirmSubmission(){
+    const form = document.getElementById('start-of-form');
+    document.getElementById("exampleModal").style.display = "none";
+    form.submit();
+  }
+  
+</script>
+
 {# Testing a script that autofills a field with content of other fields #}
 {% comment %} <script>
   function autoFillPatient(val) {
@@ -185,7 +223,6 @@
     x.setAttribute("value", val);
 
   }
-
 </script> {% endcomment %}
 
 {% endblock content %}
