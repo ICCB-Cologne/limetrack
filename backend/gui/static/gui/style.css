@@ -7,7 +7,6 @@ header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin: 0px 0px 0px 0px;
 }
 
 body {
@@ -19,7 +18,6 @@ body {
     background: rgb(20, 40, 100);
     min-height: 100vh;
 }
-
 
 h1 {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -39,12 +37,11 @@ p {
     flex-direction: column;
 }
 
-
+/* nav tabs style when active */
 .active {
     background-color: #f6f6f6;
     color: rgb(11, 0, 212);
 }
-
 
 
 /* main container */
@@ -61,7 +58,7 @@ p {
     border-style: solid;
 }
 
-/* for all_samples_overview  to contain containers*/
+/* for all_samples_overview to contain containers */
 .overdiv {
     position: relative;
     width: 90%;
@@ -76,23 +73,22 @@ p {
 
 }
 
-/* for all_samples_overview  to contain filter buttons/options */
+/* for all_samples_overview to contain filter buttons/options */
 .filterdiv {
     width: fit-content;
     border-radius: 10px;
-    border: #649bd6 dotted 2px;
+    border: #649bd6 solid 2px;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     background-color: #ebe4d4;
-    margin-top: 2%;
+    margin-top: 1%;
 }
 
 
 .imagediv {
     padding: 2em 0em 0em 0em;
-
 }
 
 .imagediv img {
@@ -100,19 +96,18 @@ p {
 }
 
 
-
 .tablediv {
     margin: 1% 1% 1% 1%;
     max-width: 100%;
     width: 90%;
     overflow: auto;
-    background: rgb(50, 44, 89);
+    background: rgb(0, 0, 0);
     border: solid black 10px;
     border-radius: 20px;
     
 }
 
-table {
+.stripedtable {
     margin: 0% auto 5% auto;
     overflow: auto;
     width: 80%;
@@ -120,21 +115,44 @@ table {
     border: 1px solid #0056b3;
 }
 
-th,
-td {
-    white-space: nowrap;
-    border: 1px solid #fff;
-    text-align: left;
-    padding: 8px;
-    color: black;
+/* Table rows zebra style */
+.stripedtable tr:nth-child(even) {
+    background-color: #fff7f7;
+}
+
+.stripedtable tr:nth-child(odd) {
     background-color: #ebe4d4;
 }
 
-th {
-    background-color: #f2f2f2;
+.stripedtable th {
+    white-space: nowrap;
+    border-bottom:1px solid black;
+    text-align: left;
+    padding: 8px;
+    color: black;
+    background-color: #ffffff;
+}
+.stripedtable td {
+    white-space: nowrap;
+    border: 1px solid #ffffff;
+    text-align: left;
+    padding: 8px;
+    color: black;
 }
 
+/* Table inside confirmation modal */
+/* #modalBody tr {
+    background-color: #757575;
+}
+#modalBody td {
+    border-radius: 5px;
+} */
+/* 
+#modalBody div{
+    border: #272222 2px solid;
+} */
 
+/* All about forms */
 
 form {
     width: 90%;
@@ -157,6 +175,7 @@ label {
     margin-bottom: 4px;
 }
 
+/* error highlighting */
 .wrong_input {
     border: red, dotted, 2px;
     color: red;
@@ -206,9 +225,28 @@ input[type="password"] {
     font-size: large;
 }
 
-
 /* Make input fields grey if disabled */
 input[disabled="true"] {
+    opacity: 1;
+    border: 1px solid #aaa;
+    padding: 5px;
+    margin: 8px 0;
+    width: 50%;
+    font-size: large;
+    background: rgb(163, 157, 157);
+    color: grey;
+}
+
+select {
+    border: 1px solid #aaa;
+    padding: 5px;
+    width: 50%;
+    height: 2em;
+    margin: 8px 0;
+    font-size: large;
+}
+
+select[disabled="true"] {
     border: 1px solid #aaa;
     padding: 5px;
     margin: 8px 0;
@@ -216,6 +254,33 @@ input[disabled="true"] {
     font-size: large;
     background: rgb(163, 157, 157);
 }
+
+/* Style the select fields */
+select.form-control {
+    width: 50%;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* make datepicker grey if disabled */
+.form-control:disabled {
+    border: 1px solid #aaa;
+    padding: 5px;
+    margin: 8px 0;
+    width: 50%;
+    font-size: large;
+    background: rgb(163, 157, 157);
+}
+
+/* container surrounding datetimepickers */
+.input-group {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5px, 0px, 0px, 0px;
+    padding: 0px, 1px, 1px, 1px;
+    width: 50%;
+}
+
 
 /*
 #saturn3_sample_code{
@@ -237,26 +302,6 @@ input[disabled="true"] {
     width: fit-content;
     height: 2em;
 } */
-
-
-
-/* make datepicker grey if disabled */
-.form-control:disabled {
-    border: 1px solid #aaa;
-    padding: 5px;
-    margin: 8px 0;
-    width: 50%;
-    font-size: large;
-    background: rgb(163, 157, 157);
-}
-
-/* container surrounding datetimepickers */
-.input-group {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 5px, 0px, 0px, 0px;
-    padding: 0px, 1px, 1px, 1px;
-    width: 50%;
-}
 
 
 /* CUSTOM CHECKBOX (so much code for such a small thing ... ) */
@@ -341,43 +386,13 @@ input[disabled="true"] {
 
 /* END OF CUSTOM CHECKBOX*/
 
-
-
-select {
-    border: 1px solid #aaa;
-    padding: 5px;
-    width: 50%;
-    height: 2em;
-    margin: 8px 0;
-    font-size: large;
-}
-
-select[disabled="true"] {
-    border: 1px solid #aaa;
-    padding: 5px;
-    margin: 8px 0;
-    width: 50%;
-    font-size: large;
-    background: rgb(163, 157, 157);
-}
-
-
 .text_center {
     display: flex;
 
 }
 
-
-/* Style the select fields */
-select.form-control {
-    width: 50%;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
 /* Style the form submission button */
-button[type="submit"] {
+button[type="submit"]{
     background-color: #2222ff;
     color: #fff;
     padding: 10px 20px;
@@ -386,12 +401,26 @@ button[type="submit"] {
     cursor: pointer;
 }
 
+form button[type="button"]{
+    background-color: #2222ff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
 a[role=button] {
     background-color: #0056b3;
 }
 
 /* Style the form submission button on hover */
 button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+button[type="button"]:hover {
     background-color: #0056b3;
 }
 
@@ -423,7 +452,6 @@ button[type="submit"]:hover {
     /* Green border color */
     /* Green color for success messages */
 }
-
 
 ul {
     list-style-type: none;

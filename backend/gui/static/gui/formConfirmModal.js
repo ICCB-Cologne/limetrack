@@ -11,17 +11,39 @@ if (exampleModal) {
     form = document.getElementById("start-of-form");
     formData = new FormData(form);
 
+    labels = form.getElementsByTagName("label");
+    const labelNames = [];
+    for (let i = 0; i < labels.length; i++) {
+      labelNames.push(labels[i].innerHTML.slice(0, -1));
+    }
+    console.log(labelNames);
+
     // Update the modal's content.
     modalBody.innerHTML = "";
     //TODO: Boolean Fields need to be displayed if they are set on 'off' = False
+
+    const tablediv = document.createElement("div");
+    const table = document.createElement("table");
+    table.className = "stripedtable";
+    tablediv.appendChild(table);
+
+    const thead = document.createElement("thead");
+    const tbody = document.createElement("tbody");
+
     for (var pair of formData.entries()) {
       if (pair[0] != "csrfmiddlewaretoken") {
-        const newDiv = document.createElement("div");
-        newDiv.innerHTML = `<p> ${pair[0]} ---- ${pair[1]} </p>`;
-        modalBody.appendChild(newDiv);
+        var name = pair[0];
+        var value = pair[1];
+        row = document.createElement("tr");
+        row.className = "";
+        row.innerHTML = `
+          <td class=""> ${name} </td>
+          <td>${value}</td>`;
+        tbody.appendChild(row);
       }
+      modalBody.appendChild(tablediv);
     }
-    modalTitle.textContent = `New message to ${recipient}`;
-    modalBodyInput.value = recipient;
+    table.appendChild(thead);
+    table.appendChild(tbody);
   });
 }

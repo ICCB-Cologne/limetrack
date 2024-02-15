@@ -190,21 +190,21 @@ class SampleForm(ModelForm):
         
         widgets = {
 
-            'died': DatePicker(options={},
+            'died': DatePicker(options={"allowInputToggle" : True},
                                attrs={"input_group": False}),
-            'sampling_date': DatePicker(options={},
+            'sampling_date': DatePicker(options={"allowInputToggle" : True},
                                         attrs={"input_group": False}),
-            'spl_received': DatePicker(options={},
+            'spl_received': DatePicker(options={"allowInputToggle" : True},
                                        attrs={"input_group": False}),
-            'sclab_received': DatePicker(options={},
+            'sclab_received': DatePicker(options={"allowInputToggle" : True},
                                          attrs={"input_group": False}),
-            'sclab_extraction_date': DatePicker(options={},
+            'sclab_extraction_date': DatePicker(options={"allowInputToggle" : True},
                                                 attrs={"input_group": False}),
-            'lb_sampling_date': DatePicker(options={},
+            'lb_sampling_date': DatePicker(options={"allowInputToggle" : True},
                                            attrs={"input_group": False}),
-            'lb_received': DatePicker(options={},
+            'lb_received': DatePicker(options={"allowInputToggle" : True},
                                       attrs={"input_group": False}),
-            'lb_date_of_isolation': DatePicker(options={},
+            'lb_date_of_isolation': DatePicker(options={"allowInputToggle" : True},
                                                attrs={"input_group": False}),
         }
 
@@ -218,9 +218,9 @@ class SampleFormRec(ModelForm):
         fields = all_fields
 
         widgets = {
-            'died': DatePicker(options={}, attrs={
+            'died': DatePicker(options={"allowInputToggle" : True}, attrs={
                 "input_group": False}),
-            'sampling_date': DatePicker(options={}, attrs={
+            'sampling_date': DatePicker(options={"allowInputToggle" : True}, attrs={
                 "input_group": False}),
 
             # disabled
@@ -365,8 +365,9 @@ class SampleFormSPL(SampleFormTUM):
         model = HistopathologicalSample
         fields = all_fields
         widgets = {
-            'spl_received': DatePicker(options={},
-                                       attrs={"input_group": False}),
+            'spl_received': DatePicker(options={"allowInputToggle" : True},
+                                       attrs={"input_group": False,                                    
+                                              }),
 
             # disabled:
 
@@ -436,10 +437,10 @@ class SampleFormScLab(SampleFormTUM):
 
         fields = all_fields
         widgets = {
-            'sclab_received': DatePicker(options={}, attrs={
+            'sclab_received': DatePicker(options={"allowInputToggle" : True}, attrs={
                 "input_group": False}),
 
-            'sclab_extraction_date': DatePicker(options={}, attrs={
+            'sclab_extraction_date': DatePicker(options={"allowInputToggle" : True}, attrs={
                 "input_group": False}),
 
             # disabled
@@ -493,11 +494,11 @@ class SampleFormLB(SampleFormTUM):
         fields = all_fields
         widgets = {
 
-            'lb_sampling_date': DatePicker(options={},
+            'lb_sampling_date': DatePicker(options={"allowInputToggle" : True},
                                            attrs={"input_group": False}),
-            'lb_received': DatePicker(options={},
+            'lb_received': DatePicker(options={"allowInputToggle" : True},
                                       attrs={"input_group": False}),
-            'lb_date_of_isolation': DatePicker(options={},
+            'lb_date_of_isolation': DatePicker(options={"allowInputToggle" : True},
                                                attrs={"input_group": False}),
 
             # disabled:
