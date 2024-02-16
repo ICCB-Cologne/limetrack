@@ -14,27 +14,26 @@
 
 {% block content %}
 <div class="containerino">
-<div class="overdiv">
   <div class="overdiv">
     <h3> 
       Table: All Samples
     </h3>
-  <div class="filterdiv">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+    <div class="filterdiv">
+      <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
         Filter columns
       </button>
+      <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
       <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
         {% csrf_token %}
-      <ul class="dropdown-menu">
-        {% for filter in filters %}
-        <li class="dropdown-item"> 
-        {{filter}}
-        {{filter.label}} </li>
-        {% endfor %}
-      </ul>
-  </form>
-  <button class="btn btn-primary" onclick="applyFilter()"> Apply  </button>
-  </div>
+        <ul class="dropdown-menu">
+          {% for filter in filters %}
+          <li class="dropdown-item"> 
+            {{filter}}
+            {{filter.label}} 
+          </li>
+          {% endfor %}
+        </ul>
+      </form>
   </div>
     
     
@@ -73,7 +72,7 @@
 
   
 </div>
-    <a href="/csv/" class="btn btn-primary bg-primary" role="button"> Download</a>
+    <a href="/csv/" class="btn btn-primary bg-primary my-1" role="button"> Download</a>
     <br>
     <button class="btn btn-primary" onclick="downloadWithFilter()"> Download filtered CSV </button>
     <form  action={% url "filtered_download" %} method="post" id="filter-download">{% csrf_token %}</form>

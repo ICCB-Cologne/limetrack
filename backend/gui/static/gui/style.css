@@ -75,20 +75,6 @@ p {
 
 }
 
-/* for all_samples_overview to contain filter buttons/options */
-.filterdiv {
-    width: fit-content;
-    border-radius: 10px;
-    border: #649bd6 solid 2px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    background-color: #ebe4d4f8;
-    margin-top: 1%;
-}
-
-
 .imagediv {
     padding: 2em 0em 0em 0em;
 }
