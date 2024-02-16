@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
+
 header {
     width: auto;
     background-position: center;
@@ -164,7 +166,7 @@ form {
     background-color: #ebe4d4;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 8px 8px rgba(0, 0, 0, 0.2);
     margin-top: 3%;
     position: relative;
 }
@@ -428,6 +430,9 @@ button[type="button"]:hover {
     text-decoration-line: underline;
 }
 
+.required:after {
+    content: "*";
+}
 
 .messages {
     padding: 1px;
@@ -472,4 +477,15 @@ footer{
 .footerdiv{
     display: flex;
     flex-direction: row;
+}
+
+#top_of_form::after {
+
+    display: inline-block;
+    content: "";
+    vertical-align: -.125em;
+    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23333' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+
 }

@@ -18,7 +18,8 @@
   <form action={% url "config" %} method="post" enctype="multipart/form-data" id="start-of-form">
     {% csrf_token %}
     <div class="form-containerino">
-      <h2 id="top_of_form"> Form 📝</h2>
+      <h2 id="top_of_form"> Form <i class="bi bi-pencil-square"></i> </h2> 
+      <h8> Fields marked with * are mandatory. </h8>
       <!-- GENERAL MESSAGES -->
       {% if messages %}
       <ul class="messages">
@@ -133,7 +134,7 @@
   <form action={% url "search" %} method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
-      <h2> Edit Record 🔎</h2>
+      <h2> Edit Record <i class="bi bi-search"></i> </h2>
         {{search_form.as_p}}
       <div class="text-center">
         <button type="submit" class="btn btn-primary bg-primary" id="search-button">
@@ -158,7 +159,7 @@
   <form action={% url "upload" %} method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
-      <h2> CSV File Upload  </h2>
+      <h2> CSV File Upload <i class="bi bi-upload"></i> </h2>
       
         {{upload_form.as_p}}
         <a href="/csv_template/" class="btn btn-primary bg-primary" role="button"> Download template</a>

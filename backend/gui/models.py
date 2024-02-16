@@ -9,7 +9,6 @@ SITE_CHOICES = [
     ("Heidelberg", "Heidelberg"),
     ("Frankfurt", "Frankfurt"),
     ("Göttingen", "Göttingen"),
-    ("Heidelberg", "Heidelberg"),
     ("Köln", "Köln"),
     ("München", "München"),
     ("Augsburg", "Augsburg")
