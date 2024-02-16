@@ -1,135 +1,137 @@
+<!DOCTYPE html>
 <html lang="en">
 
 
-<head>
-    <title>{% block title %}{% endblock %}</title>
+  <head>
+      <title>{% block title %}{% endblock %}</title>
 
-  {# Include FontAwesome; required for icon display #}
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- CSS only -->
-    {% load static %}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="{% static 'gui/style.css' %}">
-    
-
-    <!-- JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    
-    {% block head_scripts %} {%endblock%}
-    
-    {{ form.media }}
- 
-</head>
-
-<body>  
-    <header>
-        
-        {% load static %}
-        <div class="imagediv">
-        <img src="{% static 'gui/img/SATURN3_Logo_RGB.jpg' %}" alt="Saturn3 Logo" width=300px>
-        </div>
-
-        {% block header%}
-
-        {% endblock%}
-
-
-
-    </header>
-    
-    {# Navigation across pages #}
-    <div class="sticky-top" >
-    <div class="d-flex justify-content-center bg-dark pt-1" id="my-NAV">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link active" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
-      </li>
-      <li class="nav-item">
-          <a class="nav-link bg-primary text-light"  href={% url "all_samples" %} id="all-samples-nav"> All Samples</a>
-        </li>
-       <li class="nav-item">
-        <a class="nav-link bg-primary text-light" href={% url "dashboard" %} id="dashboard-nav"> Dashboard </a>
-      </li> 
-    </ul>
-
-    <div class="dropdown d-flex justify-content-center">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-        User
-      </button>
-      <form class="dropdown-menu p-3">
-        <div class="mb-3">
-          <p> User name: {{ user }}</p>
-        </div>
-        
-        <a href="/logout/" class="btn btn-primary" role="button"> Log out</a>
-      </form>
+    {# Include FontAwesome; required for icon display #}
+      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+      <!-- CSS only -->
+      {% load static %}
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+      <link rel="stylesheet" href="{% static 'gui/style.css' %}">
       
+
+      <!-- JS, Popper.js, and jQuery -->
+      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+          crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+      
+      {% block head_scripts %} {%endblock%}
+      
+      {{ form.media }}
+
+  </head>
+
+  <body>  
+      <header>
+          
+          {% load static %}
+          <div class="imagediv">
+          <img src="{% static 'gui/img/SATURN3_Logo_RGB.jpg' %}" alt="Saturn3 Logo" width=300px>
+          </div>
+
+          {% block header%}
+
+          {% endblock%}
+
+
+
+      </header>
+      
+      {# Navigation across pages #}
+      <!-- <div class="sticky-top" >
+      <div class="d-flex justify-content-center bg-dark pt-1" id="my-NAV">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link bg-primary text-light"  href={% url "all_samples" %} id="all-samples-nav"> All Samples</a>
+          </li>
+        <li class="nav-item">
+          <a class="nav-link bg-primary text-light" href={% url "dashboard" %} id="dashboard-nav"> Dashboard </a>
+        </li> 
+      </ul>
+
+      <div class="dropdown d-flex justify-content-center">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+          User
+        </button>
+        <form class="dropdown-menu p-3">
+          <div class="mb-3">
+            <p> User name: {{ user }}</p>
+          </div>
+          
+          <a href="/logout/" class="btn btn-primary" role="button"> Log out</a>
+        </form>
+        
+      </div>
+
     </div>
 
-   </div>
 
-
-  </div>
-
-  
-    
-
-    {% block content %}
-    {% endblock %}
-
-    
-  <footer >
-      <div class="card-group">
-          <div class=card text-bg-secondary mb-10 >
-              <div class="card-header">Contact
-              </div>
-              <div class="card-body">
-                  <p class="card-text"> Laura Godfrey: <br/> laura.godfrey@uk-essen.de <br/> <br/>  Jonas Gassenschmidt: jonas.gassenschmidt@uniklinik-freiburg.de </p> 
-              </div>
-              <div class="card-footer">
-                
-              </div>          
-            </div>
-          <div class=card text-bg-secondary mb-10 >
-            <div class="card-header">Contributors
-            </div>
-              <div class="card-body">
-                <p class="card-text"> Florian Heyl <br/> Frederik Voigt <br/> Jonas Gassenschmidt <br/> Laura Godfrey <br/> Lukas Heine </p> 
-              </div>
-              <div class="card-footer">
-                
-              </div>
+    </div> -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div class="collapse navbar-collapse">
+        <div class="navbar-nav">
+          <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
+          <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">All Samples</a>
+          <a class="nav-item nav-link" href={% url "dashboard" %} id="dashboard-nav">Dashboard</a>
         </div>
       </div>
-  </footer>
-  
+    </nav>
+
     
+    {% block content %}
+    {% endblock %}
+    
+    <footer >
+        <div class="card-group">
+            <div class=card text-bg-secondary mb-10 >
+                <div class="card-header">Contact
+                </div>
+                <div class="card-body">
+                    <p class="card-text"> Laura Godfrey: <br/> laura.godfrey@uk-essen.de <br/> <br/>  Jonas Gassenschmidt: jonas.gassenschmidt@uniklinik-freiburg.de </p> 
+                </div>
+                <div class="card-footer">
+                  
+                </div>          
+              </div>
+            <div class=card text-bg-secondary mb-10 >
+              <div class="card-header">Contributors
+              </div>
+                <div class="card-body">
+                  <p class="card-text"> Florian Heyl <br/> Frederik Voigt <br/> Jonas Gassenschmidt <br/> Laura Godfrey <br/> Lukas Heine </p> 
+                </div>
+                <div class="card-footer">
+                  
+                </div>
+          </div>
+        </div>
+    </footer>
+
     <script>
-      // Script for highlighting navbar tabs
-      const currentUrl = window.location.pathname
-      console.log(currentUrl)
-      if (currentUrl.includes("/samples/")) {
-        document.getElementById("all-samples-nav").className = "nav-link active";
-        document.getElementById("sample-tracking-nav").className = "nav-link bg-primary text-light";
-        document.getElementById("dashboard-nav").className = "nav-link bg-primary text-light";
-      }
-      else if (currentUrl.includes("/dashboard/")){
-        document.getElementById("all-samples-nav").className = "nav-link bg-primary text-light";
-        document.getElementById("sample-tracking-nav").className = "nav-link bg-primary text-light";
-        document.getElementById("dashboard-nav").className = "nav-link active";
-      }
-      else {
-        document.getElementById("all-samples-nav").className = "nav-link bg-primary text-light";
-        document.getElementById("sample-tracking-nav").className = "nav-link active";
-        document.getElementById("dashboard-nav").className = "nav-link bg-primary text-light";
-      }
+      $(document).ready(function() {
+        let selected = null;
+        
+        switch (window.location.pathname) {
+          case "/samples/": 
+            selected = $("#all-samples-nav");
+            break;
+          case "/dashboard/":
+            selected = $("#dashboard-nav");
+            break;
+          case "/":
+            selected = $("#sample-tracking-nav");
+            break;
+        }
+        
+        selected.addClass("active");
+      });
     </script>
-
-</body>
-
-
+  </body>
 </html>

@@ -40,10 +40,10 @@ p {
 }
 
 /* nav tabs style when active */
-.active {
+/* .active {
     background-color: #f6f6f6;
     color: rgb(11, 0, 212);
-}
+} */
 
 
 /* main container */
@@ -399,9 +399,9 @@ form button[type="button"]{
 }
 
 
-a[role=button] {
+/* a[role=button] {
     background-color: #0056b3;
-}
+} */
 
 /* Style the form submission button on hover */
 button[type="submit"]:hover {
