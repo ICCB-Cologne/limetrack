@@ -12,4 +12,4 @@ Docker
 
 ### Persist Volumes On Reboot
 
-`docker compose -f docker-compose.yml -f docker-compose-develop.yml up --remove-orphans`
+`docker compose -f docker-compose.yml -f docker-compose-develop.yml up --remove-orphans`Ω
