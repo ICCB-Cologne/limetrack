@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
   <head>
-      <title>{% block title %}{% endblock %}</title>
-
-    {# Include FontAwesome; required for icon display #}
+      <title>Saturn3 - {% block title %}{% endblock %}</title>
+      
+      {# Include FontAwesome; required for icon display #}
       <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css">
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
       <!-- CSS only -->
       {% load static %}
+      
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
       <link rel="stylesheet" href="{% static 'gui/style.css' %}">
+      <link rel="shortcut icon" type="image/png" href="{% static 'gui/favicon.png' %}" >
       
 
       <!-- JS, Popper.js, and jQuery -->
@@ -42,45 +42,23 @@
 
       </header>
       
-      {# Navigation across pages #}
-      <!-- <div class="sticky-top" >
-      <div class="d-flex justify-content-center bg-dark pt-1" id="my-NAV">
-      <ul class="nav nav-tabs">
-        <li class="nav-item">
-          <a class="nav-link active" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link bg-primary text-light"  href={% url "all_samples" %} id="all-samples-nav"> All Samples</a>
-          </li>
-        <li class="nav-item">
-          <a class="nav-link bg-primary text-light" href={% url "dashboard" %} id="dashboard-nav"> Dashboard </a>
-        </li> 
-      </ul>
-
-      <div class="dropdown d-flex justify-content-center">
-        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-          User
-        </button>
-        <form class="dropdown-menu p-3">
-          <div class="mb-3">
-            <p> User name: {{ user }}</p>
-          </div>
-          
-          <a href="/logout/" class="btn btn-primary" role="button"> Log out</a>
-        </form>
-        
-      </div>
-
-    </div>
-
-
-    </div> -->
+    {# Navigation across pages #}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
       <div class="collapse navbar-collapse">
         <div class="navbar-nav">
           <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
           <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">All Samples</a>
           <a class="nav-item nav-link" href={% url "dashboard" %} id="dashboard-nav">Dashboard</a>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              User
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+              <li><p><b>{{ user }}</b></p></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="/logout/">Log out</a></li>
+            </ul>
+          </li>
         </div>
       </div>
     </nav>
