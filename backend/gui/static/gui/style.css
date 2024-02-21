@@ -344,6 +344,11 @@ select.form-control {
     border: none;
 }
 
+.btn:active:focus {
+    background-color: rgba(20,40,100,1.0);
+    border: none;
+}
+
 /* Styles for different message tags */
 .error {
     color: #ff6347;
