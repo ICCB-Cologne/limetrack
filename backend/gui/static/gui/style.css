@@ -1,5 +1,6 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
+
 header {
     width: auto;
     background-position: center;
@@ -9,16 +10,6 @@ header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background: rgba(20, 40, 100, 0.94);
-    min-height: 100vh;
 }
 
 h1 {
@@ -38,13 +29,6 @@ p {
     display: flex;
     flex-direction: column;
 }
-
-/* nav tabs style when active */
-.active {
-    background-color: #f6f6f6;
-    color: rgb(11, 0, 212);
-}
-
 
 /* main container */
 .containerino {
@@ -74,29 +58,6 @@ p {
     margin-top: 2%;
 
 }
-
-/* for all_samples_overview to contain filter buttons/options */
-.filterdiv {
-    width: fit-content;
-    border-radius: 10px;
-    border: #649bd6 solid 2px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    background-color: #ebe4d4f8;
-    margin-top: 1%;
-}
-
-
-.imagediv {
-    padding: 2em 0em 0em 0em;
-}
-
-.imagediv img {
-    border-radius: 20px;
-}
-
 
 .tablediv {
     margin: 1% 1% 1% 1%;
@@ -159,13 +120,15 @@ form {
     width: 90%;
 }
 
+.navbar {
+    background-color: rgba(20, 40, 100, 0.94);
+}
+
 /* Style the form container */
 .form-containerino {
     width: 100%;
-    background-color: #ebe4d4f8;
+    background-color: rgba(20, 40, 100, 0.03);
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 3px 8px 8px rgba(0, 0, 0, 0.2);
     margin-top: 3%;
     position: relative;
 }
@@ -415,39 +378,6 @@ select.form-control {
 
 }
 
-/* Style the form submission button */
-button[type="submit"]{
-    background-color: #2222ff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-form button[type="button"]{
-    background-color: #2222ff;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-
-a[role=button] {
-    background-color: #0056b3;
-}
-
-/* Style the form submission button on hover */
-button[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-button[type="button"]:hover {
-    background-color: #0056b3;
-}
-
 .required {
     text-decoration-line: underline;
 }
@@ -459,6 +389,21 @@ button[type="button"]:hover {
 .messages {
     padding: 1px;
     margin-top: 10px;
+}
+
+.btn {
+    background-color: rgba(20,40,100,0.7);
+    border: none;
+}
+
+.btn:hover {
+    background-color: rgba(20,40,100,0.9);
+    border: none;
+}
+
+.btn:active:focus {
+    background-color: rgba(20,40,100,1.0);
+    border: none;
 }
 
 /* Styles for different message tags */
@@ -486,14 +431,13 @@ ul {
 
 footer{
     width: auto;
-    border-top: rgb(52, 58, 64) 2rem solid;
     opacity: 1;
-    background-color: #ebe4d4f8;
+    background-color: rgba(20, 40, 100, 0.03);
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin-top: auto;
+    margin-top: 5%;
 }
 
 .footerdiv{
