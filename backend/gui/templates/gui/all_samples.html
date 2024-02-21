@@ -33,7 +33,6 @@ All Samples
         {% endfor %}
       </ul>
   </form>
-  <button class="btn btn-primary" onclick="applyFilter()"> Apply  </button>
 
   </div>
     
@@ -73,7 +72,7 @@ All Samples
 
   
 </div>
-    <a href="/csv/" class="btn btn-primary bg-primary my-1" role="button"> Download</a>
+    {% comment %} <a href="/csv/" class="btn btn-primary bg-primary my-1" role="button"> Download</a> {% endcomment %}
     <br>
     <button class="btn btn-primary" onclick="downloadWithFilter()"> Download filtered CSV </button>
     <form  action={% url "filtered_download" %} method="post" id="filter-download">{% csrf_token %}</form>

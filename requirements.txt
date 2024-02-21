@@ -38,3 +38,5 @@ whitenoise==6.5.0
 yarl==1.9.2
 zope.event==5.0
 zope.interface==6.1
+django_compressor==4.4
+django-libsass==0.9
