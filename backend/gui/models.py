@@ -136,8 +136,6 @@ class HistopathologicalSample(models.Model):
     # set this to primary key?
     patient_identifier = models.CharField(
         max_length=5,
-        help_text="5-digit SATURN3 pseudonym"
-        " (by Treuhandstelle Freiburg)",
         validators=[validate_alphanumeric],
         verbose_name="Patient Identifier")
 

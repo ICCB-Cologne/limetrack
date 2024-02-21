@@ -220,6 +220,12 @@ class SampleFormRec(ModelForm):
     # error_css_class = "error-field"
 
     saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="Saturn3 Sample Code")
+    patient_identifier = forms.CharField(
+        max_length=5,
+        widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
+                                      "data-placement" : "top",
+                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                                      'onchange': "autoFillPatient(this.value)"}))
 
     class Meta:
         model = HistopathologicalSample
@@ -271,6 +277,8 @@ class SampleFormRec(ModelForm):
 class SampleFormTUM(ModelForm):
     required_css_class = "required"
 
+    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="Saturn3 Sample Code")
+    
     # set disabled required recruiter fields on not required
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
@@ -280,10 +288,12 @@ class SampleFormTUM(ModelForm):
             'disabled': "true"},
             choices=SITE_CHOICES))
     patient_identifier = forms.CharField(
-        max_length=CHARFIELD_MAXLEN,
-        required=False,
-        widget=forms.TextInput(attrs={'disabled': "true"}),
-        help_text="5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)")
+        max_length=5, required=False,
+        widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
+                                      "data-placement" : "top",
+                                      "data-html" : "true",
+                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                                      'onchange': "autoFillPatient(this.value)"}))
     sex = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,

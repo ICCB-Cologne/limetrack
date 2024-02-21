@@ -50,12 +50,13 @@
                   {{field}}
                 <span class="checkmark">  </span>
                 </label>
-              
+                
               {# normal input field #}
               {% else %}
                 {{field}}
+                
               {% endif %}
-              {{field.help_text}} 
+              {{field.help_text}}
               
               {# error message right below the respective field #}
              <ul class="messages">
@@ -91,7 +92,7 @@
       
           <p id="{{ field.name }}">  {{field.label_tag}}
 
-            {{field.help_text}}
+            
             {# custom check box - felt cute, might delete later #}
             {% if field.name == "corresponding_organoid" %}
               <label class="checko"> 
@@ -104,6 +105,7 @@
              {% else %}
               {{field}}
             {% endif %}
+            {{field.help_text}}
             
              </p>
 
@@ -222,7 +224,7 @@
   
 </script>
 
-{# Testing a script that autofills a field with content of other fields #}
+{# a script that autofills a field with content of other fields #}
 <script>
   function autoFillPatient(val) {
 
