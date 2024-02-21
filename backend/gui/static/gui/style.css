@@ -32,16 +32,12 @@ p {
 
 /* main container */
 .containerino {
-    /* background: rgba(20, 40, 100, 0.783); */
     display: flex;
     justify-content: center;
     align-items: center;
     border: #385573 solid 0px;
     flex-direction: column-reverse;
     margin: 0px 100px 10px 100px;
-    border-image: linear-gradient(#142864, #272222);
-    border-width: 4px;
-    border-style: solid;
 }
 
 /* for all_samples_overview to contain containers */
@@ -139,9 +135,11 @@ form {
 /* Style the form container */
 .form-containerino {
     width: 100%;
-    background-color: rgba(20, 40, 100, 0.03);
+    background-color: rgba(20, 40, 100, 0.04);
     padding: 20px;
     margin-top: 3%;
+    border: 1px solid rgba(20, 40, 100, 0.1);
+    border-radius: 3px;
     position: relative;
 }
 
@@ -219,6 +217,7 @@ input[type="text"],
 input[type="number"],
 input[type="password"] {
     border: 1px solid #aaa;
+    border-radius: 3px;
     padding: 5px;
     width: 50%;
     margin: 8px 0;
@@ -239,6 +238,7 @@ input[disabled="true"] {
 
 select {
     border: 1px solid #aaa;
+    border-radius: 3px;
     padding: 5px;
     width: 50%;
     height: 2em;

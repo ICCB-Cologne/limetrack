@@ -29,7 +29,6 @@ import logging
 
 app_log = logging.getLogger("s3sample")
 
-
 # app_log.info('This log is starting')
 # Create your views here.
 
@@ -38,7 +37,7 @@ def get_form(
         group_name: str,
         data: QueryDict = None
 ):
-    match group_name:
+    match group_name.lower():
         case 'spl':
             form = SampleFormSPL(data=data)
         case 'tum':
@@ -96,7 +95,6 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             **kwargs: Any
     ) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower(), request.POST)
-        print(request.POST)
 
         if form.is_valid():
             data = form.cleaned_data
@@ -195,11 +193,12 @@ def handle_form(form: ModelForm,
         sclab_received = None if data["sclab_received"] == "" else data["sclab_received"]
         sclab_extraction_date = None if data["sclab_extraction_date"] == "" else data["sclab_extraction_date"]
         sclab_nuclei_yield = None if data["sclab_nuclei_yield"] == "" else data["sclab_nuclei_yield"]
-        sclab_nuclei_size = None if data["sclab_nuclei_size"]  == "" else data["sclab_nuclei_size"] 
+        sclab_nuclei_size = None if data["sclab_nuclei_size"] == "" else data["sclab_nuclei_size"]
         sclab_status = data["sclab_status"]
         sclab_sequencing_type = data["sclab_sequencing_type"]
-        sclab_sorting = None if data["sclab_sorting"] == "unknown" or data["sclab_sorting"] == "" else data["sclab_sorting"]
-        sclab_pool = None if  data["sclab_pool"]   == "" else  data["sclab_pool"]
+        sclab_sorting = None if data["sclab_sorting"] == "unknown" or data["sclab_sorting"] == "" else data[
+            "sclab_sorting"]
+        sclab_pool = None if data["sclab_pool"] == "" else data["sclab_pool"]
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
@@ -218,6 +217,8 @@ def handle_form(form: ModelForm,
 
     elif request.user.groups.filter(name='LB').exists():
         lb_analyte_type = data["lb_analyte_type"]
+        # @Jonas statements wie diese können vereinfacht werden, da leere Strings false returnen
+        # lb_sampling_date = None if not data["lb_sampling_date"] else data["lb_sampling_date"]
         lb_sampling_date = None if data["lb_sampling_date"] == "" else data["lb_sampling_date"]
         lb_received = None if data["lb_received"] == "" else data["lb_received"]
         lb_sample_volume = data["lb_sample_volume"]
@@ -237,24 +238,24 @@ def handle_form(form: ModelForm,
                 lb_status=lb_status)
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
-        
+
     elif request.user.groups.filter(name='Datapath').exists():
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-            
+
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
-                    pools=data["pools"],
-                    scrna_r1=data["scrna_r1"],
-                    scrna_r2=data["scrna_r2"],
-                    scatac_r1=data["scatac_r1"],
-                    scatac_r2=data["scatac_r2"],
-                    scatac_i2=data["scatac_i2"],
-                    wgs_r1=data["wgs_r1"],
-                    wgs_r2=data["wgs_r2"],
-                    wgs_bam=data["wgs_bam"],
-                    wgs_vcf=data["wgs_vcf"],
-                    )
-        
+                pools=data["pools"],
+                scrna_r1=data["scrna_r1"],
+                scrna_r2=data["scrna_r2"],
+                scatac_r1=data["scatac_r1"],
+                scatac_r2=data["scatac_r2"],
+                scatac_i2=data["scatac_i2"],
+                wgs_r1=data["wgs_r1"],
+                wgs_r2=data["wgs_r2"],
+                wgs_bam=data["wgs_bam"],
+                wgs_vcf=data["wgs_vcf"],
+            )
+
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
@@ -277,12 +278,11 @@ def handle_form(form: ModelForm,
                 grading=data["grading"]
             )
 
-
     # TODO: check if user is admin
     else:
         form.save()
 
-    if tag == "general":
+    if tag.lower() == "general":
         # if form's been input by using the webpages form
         messages.success(request, 'Submission successful!', extra_tags=tag)
         return HttpResponseRedirect(request.path_info)
@@ -295,7 +295,8 @@ class DashBoardView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/dashboard.html'
         return render(request, template_name)
-    
+
+
 class ContactView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/contact.html'
@@ -322,7 +323,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
         messages.error(request, "File upload failed!", extra_tags="file")
         return HttpResponseRedirect(reverse("config"))
 
-    def handle_file(self, file, request):
+    @staticmethod
+    def handle_file(file, request):
         """
         TODO: needs to be adapted to the different sorts of forms / group memberships
         """
@@ -347,7 +349,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 "lb_date_of_isolation": row["LB Date of Isolation"],
                 "lb_total_isolated_cfdna": row["LB Total Isolated cfDNA [ng]"], "lb_status": row["LB Status"],
                 "pools": row["Pools"], "scrna_r1": row["scRNA R1"]
-                # "patient": row["Patient"], tissue_name : row["Tissue Name"], "used_in" : row[Used in], "histology_subtype": row["Histology Subtype"],
             }
 
             form = get_form(str(request.user.groups.first()).lower(), data)
@@ -367,10 +368,11 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 messages.error(
                     request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
-        
+
         messages.success(request, 'File upload successful!', extra_tags="file")
         return HttpResponseRedirect(request.path_info)
-    
+
+
 class ConfirmSubmissionView(LoginRequiredMixin, TemplateView):
     pass
 
@@ -397,6 +399,9 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         delete_id = int(request.POST['id'])
         delete_instance = HistopathologicalSample.objects.get(id=delete_id)
         delete_instance.delete()
+        app_log.info(
+            f'{request.user} deleted'
+            f'{delete_instance.saturn3_sample_code}')
         return HttpResponseRedirect(request.path_info)
 
 
@@ -424,22 +429,22 @@ class FilteredSamplesView(LoginRequiredMixin, TemplateView):
             all_filters = []
             for group in filtered_form.cleaned_data:
                 all_filters += field_dict[group] if filtered_form.cleaned_data[group] else []
-        
-        
+
             samples = HistopathologicalSample.objects.all()
             fields_and_values_list = [
                 [(field.verbose_name, getattr(instance, field.name)) if field.name in all_filters else (None, None)
-                for field in instance._meta.fields]
+                 for field in instance._meta.fields]
                 for instance in samples
-                ]
-            
+            ]
+
             context = {
                 'samples': fields_and_values_list,
                 'filters': filtered_form
             }
             return render(request, template_name, context=context)
-        
+
         return HttpResponseRedirect(request.path_info)
+
 
 class Echo:
     """An object that implements just the write method of the file-like
@@ -483,12 +488,13 @@ def csv_template_download(request):
         headers={"Content-Disposition": 'attachment; filename="saturn3template.csv"'},
     )
 
+
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         return HttpResponseRedirect(reverse("all_samples"))
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> StreamingHttpResponse | HttpResponseRedirect:
         pseudo_buffer = Echo()
         writer = csv.writer(pseudo_buffer)
 
@@ -497,26 +503,26 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
             all_filters = []
             for group in form.cleaned_data:
                 all_filters += field_dict[group] if form.cleaned_data[group] else []
-        
+
             samples = HistopathologicalSample.objects.all()
             fields_and_values_list = [
                 [(field.verbose_name, getattr(instance, field.name))
-                for field in instance._meta.fields if field.name in all_filters]
+                 for field in instance._meta.fields if field.name in all_filters]
                 for instance in samples
-                ]
+            ]
             rows = []
             headers = [i[0] for i in fields_and_values_list[0]]
             rows.append(headers)
             data = [[i[1] for i in sublist] for sublist in fields_and_values_list]
             data.insert(0, headers)
-        
+
             return StreamingHttpResponse(
-            (writer.writerow(row) for row in data),
-            content_type="text/csv",
-            headers={"Content-Disposition": 'attachment; filename="saturn3samples.csv"'},)
-        
+                (writer.writerow(row) for row in data),
+                content_type="text/csv",
+                headers={"Content-Disposition": 'attachment; filename="saturn3samples.csv"'}, )
+
         return HttpResponseRedirect(request.path_info)
-    
+
 
 def log_out(request: HttpRequest):
     logout(request)
@@ -568,10 +574,6 @@ class SearchView(LoginRequiredMixin, TemplateView):
                 model_dict.pop("id")
 
                 form = get_form(str(request.user.groups.first()).lower(), model_dict)
-
-                # print("How dese mfs look like")
-                # print(model_dict)
-                # print(form)
 
                 messages.success(
                     request, f"FOUND saturn3_sample_code {search}", extra_tags="general")
