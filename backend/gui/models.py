@@ -127,7 +127,8 @@ class HistopathologicalSample(models.Model):
 
     def generate_patient_id(self):
         return self.patient_identifier + self.recruiting_site
-
+    
+    
     # recruiter ###
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES,
@@ -158,7 +159,8 @@ class HistopathologicalSample(models.Model):
         "Sampling Timepoint - "
         "Tissue Type + Order Number - "
         "Storage Format - Analyte Type "
-        "+ Order Number")
+        "+ Order Number",
+        unique=True)
     sampling_date = models.DateField(verbose_name="Sampling Date")
     tissue_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,

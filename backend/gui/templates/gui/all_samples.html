@@ -15,9 +15,7 @@ All Samples
 {% block content %}
 <div class="containerino">
   <div class="overdiv">
-    <h3> 
-      Table: All Samples
-    </h3>
+    <br>
     <div class="filterdiv">
       <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
         Filter columns
@@ -47,7 +45,11 @@ All Samples
         {% if samples.0 %}
         {% for key, _ in samples.0 %}
           {% if key %}
+            {% if key == "SATURN3 Sample Code" %}
+            <th class="absolutecol"> {{ key }} </th>
+            {% else %}
             <th>{{ key }}</th>
+            {% endif %}
           {% endif %}
         {% endfor %}
         <th>Action</th>
@@ -59,7 +61,11 @@ All Samples
       <tr>
         {% for key, value in item %}
         {% if key %}
-        <td>{{ value }}</td>
+            {% if key == "SATURN3 Sample Code" %}
+            <td class="absolutecol"> {{ value }} </td>
+            {% else %}
+            <td>{{ value }}</td>
+            {% endif %}
         {% endif %}
         {% endfor %}
         <td>  
@@ -73,10 +79,10 @@ All Samples
   
 </div>
     {% comment %} <a href="/csv/" class="btn btn-primary bg-primary my-1" role="button"> Download</a> {% endcomment %}
-    <br>
-    <button class="btn btn-primary" onclick="downloadWithFilter()"> Download filtered CSV </button>
+    
+    <button class="btn btn-primary" onclick="downloadWithFilter()"> Download as CSV </button>
     <form  action={% url "filtered_download" %} method="post" id="filter-download">{% csrf_token %}</form>
-
+    <br>
 </div>
 
 </div>

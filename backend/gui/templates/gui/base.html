@@ -36,7 +36,7 @@
           <div class="navbar-nav">
             <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
             <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">All Samples</a>
-            <a class="nav-item nav-link" href={% url "dashboard" %} id="dashboard-nav">Dashboard</a>
+            <a class="nav-item nav-link" href={% url "contact" %} id="contact-nav">Contact</a>
           </div>
           <div class="navbar-nav ms-auto">
             <div class="vr bg-light"></div>
@@ -60,28 +60,7 @@
     {% endblock %}
     
     <footer >
-        <div class="card-group">
-            <div class=card text-bg-secondary mb-10 >
-                <div class="card-header">Contact
-                </div>
-                <div class="card-body">
-                    <p class="card-text"> Laura Godfrey: <br/> laura.godfrey@uk-essen.de <br/> <br/>  Jonas Gassenschmidt: jonas.gassenschmidt@uniklinik-freiburg.de </p> 
-                </div>
-                <div class="card-footer">
-                  
-                </div>          
-              </div>
-            <div class=card text-bg-secondary mb-10 >
-              <div class="card-header">Contributors
-              </div>
-                <div class="card-body">
-                  <p class="card-text"> Florian Heyl <br/> Frederik Voigt <br/> Jonas Gassenschmidt <br/> Laura Godfrey <br/> Lukas Heine </p> 
-                </div>
-                <div class="card-footer">
-                  
-                </div>
-          </div>
-        </div>
+
     </footer>
 
     <script>
@@ -92,8 +71,8 @@
           case "/samples/": 
             selected = $("#all-samples-nav");
             break;
-          case "/dashboard/":
-            selected = $("#dashboard-nav");
+          case "/contact/":
+            selected = $("#contact-nav");
             break;
           case "/":
             selected = $("#sample-tracking-nav");

@@ -295,6 +295,11 @@ class DashBoardView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/dashboard.html'
         return render(request, template_name)
+    
+class ContactView(LoginRequiredMixin, TemplateView):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        template_name = 'gui/contact.html'
+        return render(request, template_name)
 
 
 class UploadView(LoginRequiredMixin, TemplateView):

@@ -70,6 +70,19 @@ p {
     
 }
 
+/* idea: fixing the saturn3-sample-code column in a position */
+/* .absolutecol {
+    
+}
+.absolutecol th:nth-child(even) {
+    background-color: #fff7f7;
+}
+
+.absolutecol th:nth-child(odd) {
+    background-color: #ebe4d4f8;
+} */
+
+
 .stripedtable {
     margin: 0% auto 5% auto;
     overflow: auto;
