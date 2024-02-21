@@ -186,7 +186,8 @@ class SampleForm(ModelForm):
         max_length=5,
         widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
                                       "data-placement" : "top",
-                                      "title" : "Tooltip on top"}))
+                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                                      'onchange': "autoFillPatient(this.value)"}))
 
     class Meta:
         model = HistopathologicalSample
@@ -217,6 +218,8 @@ class SampleForm(ModelForm):
 class SampleFormRec(ModelForm):
     required_css_class = "required"
     # error_css_class = "error-field"
+
+    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="Saturn3 Sample Code")
 
     class Meta:
         model = HistopathologicalSample
