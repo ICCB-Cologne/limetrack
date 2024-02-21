@@ -54,7 +54,7 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #ebe4d4f8;
+    background-color: rgba(20, 40, 100, 0.03);
     margin-top: 2%;
 
 }
@@ -64,9 +64,9 @@ p {
     max-width: 100%;
     width: 90%;
     overflow: auto;
-    background: rgb(0, 0, 0);
-    border: solid black 10px;
-    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.033);
+    border: solid white 3px;
+    border-radius: 10px;
     
 }
 
@@ -88,7 +88,6 @@ p {
     overflow: auto;
     width: 80%;
     border-collapse: collapse;
-    border: 1px solid #0056b3;
 }
 
 /* Table rows zebra style */
@@ -97,16 +96,16 @@ p {
 }
 
 .stripedtable tr:nth-child(odd) {
-    background-color: #ebe4d4f8;
+    background-color: #d4daebf8;
 }
 
 .stripedtable th {
     white-space: nowrap;
-    border-bottom:1px solid black;
     text-align: left;
     padding: 8px;
     color: black;
     background-color: #ffffff;
+    border-bottom:1px solid black;
 }
 .stripedtable td {
     white-space: nowrap;
