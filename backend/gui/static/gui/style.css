@@ -143,16 +143,15 @@ p {
 }
 
 /* Table inside confirmation modal */
-/* #modalBody tr {
-    background-color: #757575;
+#modalBody tr {
+    background-color: #ffffff;
 }
 #modalBody td {
     border-radius: 5px;
-} */
-/* 
-#modalBody div{
+}
+#modalBody table{
     border: #272222 2px solid;
-} */
+}
 
 /* All about forms */
 
@@ -170,6 +169,22 @@ form {
     margin-top: 3%;
     position: relative;
 }
+
+#main_form p {
+    position: relative;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+#main_form label {
+    width: 20%;
+    font-weight: bold;
+    padding-top: 1em;
+}
+
 
 /* Style the labels */
 label {
@@ -192,6 +207,14 @@ label {
 }
 
 .wrong_input input[type="checkbox"] {
+    border: 2px solid #ff6347;
+    padding: 5px;
+    width: 50%;
+    margin: 8px 0;
+    font-size: large;
+}
+
+.wrong_input input[type="number"] {
     border: 2px solid #ff6347;
     padding: 5px;
     width: 50%;
@@ -284,35 +307,34 @@ select.form-control {
 }
 
 
-/*
 #saturn3_sample_code{
     flex-direction: row;
 }
 
- #saturn3_sample_code label{
-    margin: 1% 1% 1% 0% ;
-}
 
 #saturn3_sample_code input{
-    margin-top: 1%;
-    width: 5%;
+    width: fit-content;
+    max-width: 5em;
+    height: 2em;
+}
+
+#saturn3_sample_code input[type="number"]{
+    width: fit-content;
+    max-width: 3em;
     height: 2em;
 }
 
 #saturn3_sample_code select{
-    margin-top: 1%;
     width: fit-content;
     height: 2em;
-} */
+}
 
 
 /* CUSTOM CHECKBOX (so much code for such a small thing ... ) */
 .checko {
     display: block;
     position: relative;
-    padding-left: 35px;
-    padding-bottom: 5px;
-    margin-bottom: 20px;
+    margin-top: 0.5rem;
     cursor: pointer;
     font-size: 22px;
     -webkit-user-select: none;
@@ -477,15 +499,4 @@ footer{
 .footerdiv{
     display: flex;
     flex-direction: row;
-}
-
-#top_of_form::after {
-
-    display: inline-block;
-    content: "";
-    vertical-align: -.125em;
-    background-image: url("data:image/svg+xml,<svg viewBox='0 0 16 16' fill='%23333' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
-    background-repeat: no-repeat;
-    background-size: 1rem 1rem;
-
 }

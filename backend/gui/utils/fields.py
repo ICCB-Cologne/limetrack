@@ -1,10 +1,15 @@
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from typing import Any
+from django.forms.boundfield import BoundField
 from django.forms.fields import MultiValueField, CharField, IntegerField, ChoiceField
-from django.forms import Select, MultiWidget, TextInput, NumberInput
+from django.forms import BaseForm, Field, Select, MultiWidget, TextInput, NumberInput
+from django.forms.renderers import BaseRenderer
 from django.forms.widgets import Widget
+from django.utils.safestring import SafeText
 from backend.gui.models import validate_alphanumeric
 import re
+from django.utils.functional import cached_property
+from django.forms.boundfield import BoundWidget
 
 ENTITY = [
     ("S3M", "S3M"),
@@ -57,21 +62,25 @@ class SampleCodeField(MultiValueField):
     """
     def __init__(self, **kwargs):
 
+        error_messages = {
+            "incomplete": "Enter a country calling code and a phone number.",
+        }
+
         fields = (
             ChoiceField(
-                error_messages={"incomplete": "Select a value"},choices=ENTITY
+                error_messages={"incomplete": "Select a value"}, choices=ENTITY
             ),
-            CharField(
+            CharField(max_length=5,
                 error_messages={"incomplete": "Enter a 5-digit PID"},
                 validators=[validate_alphanumeric], help_text="Saturn3 + Entity"
             ),
-            CharField(error_messages={"incomplete": "Enter integer"}),
+            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=1),
 
             ChoiceField(
-                error_messages={"incomplete": "Select a value"},choices=TISSUE_TYPE
+                error_messages={"incomplete": "Select a value"}, choices=TISSUE_TYPE
             ),
 
-            CharField(error_messages={"incomplete": "Enter integer"}),
+            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=1),
 
             ChoiceField(
                 error_messages={"incomplete": "Select a value"}, choices=STORAGE_FORMAT
@@ -81,24 +90,28 @@ class SampleCodeField(MultiValueField):
                 error_messages={"incomplete": "Select a value"}, choices=ANALYTE_TYPE
             ),
 
-            CharField(error_messages={"incomplete": "Enter integer"}),
+            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=1),
             
         )
         
         super().__init__(
+            error_messages=error_messages,
             fields=fields,
             require_all_fields=True,
             **kwargs,
-            widget=SampleCodeWidget())
+            )
         
 
     def compress(self, valid_values: list):
+        print(valid_values)
         string = ""
         for v in valid_values:
             string += str(v)
             if valid_values.index(v) != 3 and valid_values.index(v) != 6:
                 string += "-"
-        return string[:-1]
+        return string[:-1]        
+    
+
 
 class SampleCodeWidget(MultiWidget):
 
@@ -106,24 +119,47 @@ class SampleCodeWidget(MultiWidget):
         widgets=[
             Select(attrs=attrs, choices=ENTITY),
             TextInput(attrs=attrs,),
-            TextInput(attrs=attrs,),
+            NumberInput(attrs=attrs,),
             Select(attrs=attrs, choices=TISSUE_TYPE), 
-            TextInput(attrs=attrs),
+            NumberInput(attrs=attrs),
             Select(choices=STORAGE_FORMAT),
-            Select(choices=ANALYTE_TYPE),
-            TextInput(attrs=attrs)]
+            Select(choices=ANALYTE_TYPE),   
+            NumberInput(attrs=attrs)]
         
         super().__init__(widgets, attrs)
 
     def decompress(self, value: Any) -> Any | None:
-        if isinstance(value, str):
+        if isinstance(value, str) and value != "None-None-None-None-None-None-None-None":
+            print(value)
             splitted = re.split('-', value)
             print(splitted)
             res = []
-            i: str
-            for i in splitted:
-                if i.isalnum():
-                    res.append(i)
+            section: str
+            for section in splitted:
+                if section.isnumeric():
+                    res.append(int(section))
+                elif splitted.index(section) == 3 or splitted.index(section) == 5:
+                    res.append(section[0])
+                    res.append(int(section[1:]))
+                else:
+                    res.append(section)
+            print(res)
             return res
-        
         return [None] * 8
+    
+    def value_from_datadict(self, data: dict[str, Any], files, name: str) -> Any:
+        """
+        Handles the data dict coming from a submitted form or from the database
+        """
+        if "saturn3_sample_code" in data:
+            return self.decompress(data["saturn3_sample_code"])
+        decompressed_list = []
+        decompressed_list.append(data["saturn3_sample_code_0"])
+        decompressed_list.append(data["saturn3_sample_code_1"])
+        decompressed_list.append(data["saturn3_sample_code_2"])
+        decompressed_list.append(data["saturn3_sample_code_3"])
+        decompressed_list.append(data["saturn3_sample_code_4"])
+        decompressed_list.append(data["saturn3_sample_code_5"])
+        decompressed_list.append(data["saturn3_sample_code_6"])
+        decompressed_list.append(data["saturn3_sample_code_7"])
+        return decompressed_list

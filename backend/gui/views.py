@@ -96,7 +96,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             **kwargs: Any
     ) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower(), request.POST)
-        
+        print(request.POST)
 
         if form.is_valid():
             data = form.cleaned_data
@@ -563,6 +563,10 @@ class SearchView(LoginRequiredMixin, TemplateView):
                 model_dict.pop("id")
 
                 form = get_form(str(request.user.groups.first()).lower(), model_dict)
+
+                # print("How dese mfs look like")
+                # print(model_dict)
+                # print(form)
 
                 messages.success(
                     request, f"FOUND saturn3_sample_code {search}", extra_tags="general")

@@ -6,7 +6,7 @@ from .models import (HistopathologicalSample,
                      LOCALISATION_CHOICE, GRADING)
 from tempus_dominus.widgets import DatePicker
 # documentation https://github.com/FlipperPA/django-tempus-dominus
-from .utils.fields import SampleCodeField
+from .utils.fields import SampleCodeField, SampleCodeWidget
 
 all_field_verbose_names = [
     "Recruiting Site",
@@ -180,8 +180,13 @@ field_dict = {"recruiter" : recruiter_fields,
 class SampleForm(ModelForm):
     required_css_class = "required"
     # error_css_class = "error-field"
-
-    # saturn3_sample_code = SampleCodeField(required=True)
+    
+    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="Saturn3 Sample Code")
+    patient_identifier = forms.CharField(
+        max_length=5,
+        widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
+                                      "data-placement" : "top",
+                                      "title" : "Tooltip on top"}))
 
     class Meta:
         model = HistopathologicalSample

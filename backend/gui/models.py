@@ -116,7 +116,6 @@ def zero_to_a_hundred(value):
         raise ValidationError("Value between 0 and 100")
     
 def check_sat3_sample_code(string):
-    print(string)
     regex = '^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMSXLNCFR]\\d+-[SVFPY]-[DRCWYTMLGHN]\\d+$'
     if not re.search(regex, string):
         raise ValidationError("No valid Saturn3 Sample Code")

@@ -24,7 +24,7 @@ if (exampleModal) {
 
     const tablediv = document.createElement("div");
     const table = document.createElement("table");
-    table.className = "stripedtable";
+    table.className = "table table-light table-hover table-bordered";
     tablediv.appendChild(table);
 
     const thead = document.createElement("thead");
