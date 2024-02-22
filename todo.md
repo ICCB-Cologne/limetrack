@@ -10,8 +10,8 @@
 
 - change button size 
 - change button position at search and upload
-- input fields round
-- footer with link to contributor page
+- [x] input fields round
+- [x] User Logout change color of Dropdown 
 
 - Tabelle breiter machen
 

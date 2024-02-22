@@ -2,7 +2,7 @@ from django.http.response import HttpResponse as HttpResponse
 from .forms import (
     all_fields, all_field_verbose_names, field_dict, SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
-    UploadForm, FilterForm, LoginForm, GroupFilterForm,
+    UploadForm, LoginForm, GroupFilterForm,
     SearchForm, SampleFormDataPaths
 )
 from django.views.decorators.csrf import requires_csrf_token
