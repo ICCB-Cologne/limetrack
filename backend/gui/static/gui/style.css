@@ -132,6 +132,10 @@ form {
     background-color: rgba(20, 40, 100, 0.94);
 }
 
+.dropdown-menu {
+    background-color: #21346D;
+}
+
 /* Style the form container */
 .form-containerino {
     width: 100%;
