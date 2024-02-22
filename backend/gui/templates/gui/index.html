@@ -100,12 +100,16 @@
   <form action={% url "search" %} method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
-      <div>
-        <h2> Edit Record <i class="bi bi-search"></i> </h2>
-      </div>
-      <div>
-        {{ search_form.search_field.label_tag }}
-      </div>
+      <h2> Search Record <i class="bi bi-search"></i> </h2>
+      <hr>
+      {% for element in search_form %}
+      <p >
+        {% if not element.name == "search_field" %}
+          {{element.label_tag}}
+          {{element}}
+        {% endif %}
+      </p>
+      {% endfor %}
       <div class="custom-row">
         <input 
           id="{{ search_form.search_field.auto_id }}" 
@@ -116,9 +120,6 @@
           Search
         </button>
       </div>
-      <!-- {{search_form.as_p}} -->
-      <!-- <div class="text-center"> -->
-      <!-- </div> -->
         {% if messages %}
           {%for message in messages%}
 
