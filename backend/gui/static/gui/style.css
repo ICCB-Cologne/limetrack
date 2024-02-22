@@ -24,8 +24,6 @@ h2 {
 p {
     position: relative;
     font-family: Arial, Helvetica, sans-serif;
-    margin: 5px;
-    padding: 10px;
     display: flex;
     flex-direction: column;
 }
@@ -459,4 +457,28 @@ footer{
 .footerdiv{
     display: flex;
     flex-direction: row;
+}
+
+/*Login Form*/
+#id_password {
+    width: 100%;
+}
+
+#id_user_name {
+    width: 100%;
+}
+
+.login-form {
+    width: 30%;
+    margin-top: 3%;
+}
+
+.login-button {
+    width: 100%;
+}
+
+.login-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
