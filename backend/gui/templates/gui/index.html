@@ -43,19 +43,7 @@
           {% if field.name in form.errors %}
             <p class="wrong_input" id="{{field.name}}"> 
               {{field.label_tag}}
-
-              {# custom check box - felt cute, might delete later #}
-              {% if field.name == "corresponding_organoid" %}
-                <label class="checko"> 
-                  {{field}}
-                <span class="checkmark">  </span>
-                </label>
-                
-              {# normal input field #}
-              {% else %}
-                {{field}}
-                
-              {% endif %}
+              {{field}}
               {{field.help_text}}
               
               {# error message right below the respective field #}
@@ -71,44 +59,19 @@
           {# if there has been no error in the submitted field #}
           {% else %}
           <p id="{{ field.name }}"> 
-            {{field.label_tag}} 
-
-              {# custom check box - felt cute, might delete later #}
-              {% if field.name == "corresponding_organoid" %}
-                <label class="checko"> 
-                  {{field}}
-                  <span class="checkmark">  </span>
-                </label>
-              
-              {# normal input field #}
-              {% else %}
-                {{field}}
-              {% endif %} 
+              {{field.label_tag}} 
+              {{field}}
               {{field.help_text}}</p>
           {% endif %}
             
         {#  NO MESSAGES / NO FROM SUBMITTED YET #}
         {% else %} 
       
-          <p id="{{ field.name }}">  {{field.label_tag}}
-
-            
-            {# custom check box - felt cute, might delete later #}
-            {% if field.name == "corresponding_organoid" %}
-              <label class="checko"> 
-                {{field}}
-              <span class="checkmark">  </span>
-              </label>
-
-             {# normal input field #}
-             
-             {% else %}
+            <p id="{{ field.name }}">  {{field.label_tag}}
               {{field}}
-            {% endif %}
-            {{field.help_text}}
-            
+              {{field.help_text}}
              </p>
-
+            
         {% endif %} 
       {% endfor %}
       <!-- END OF INPUT FIELDS -->
@@ -118,7 +81,6 @@
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="modalButton">
           Submit 
         </button>
-      
       </div>
       
       <!-- GENERAL MESSAGES -->

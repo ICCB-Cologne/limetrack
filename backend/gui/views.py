@@ -563,15 +563,27 @@ class SearchView(LoginRequiredMixin, TemplateView):
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         search_form = SearchForm(request.POST)
-        search = request.POST["search_field"]
+        
 
         if search_form.is_valid():
-            if HistopathologicalSample.objects.filter(saturn3_sample_code=search).exists():
-                found_record = HistopathologicalSample.objects.get(
-                    saturn3_sample_code=search)
+            search = search_form.cleaned_data["search_field"]
+            radio_select = search_form.cleaned_data["radio_select"]
+            if HistopathologicalSample.objects.filter(saturn3_sample_code=search).exists() or HistopathologicalSample.objects.filter(patient_identifier=search).exists():
+                if radio_select == "SATURN3 Sample Code":
+                    found_record = HistopathologicalSample.objects.get(saturn3_sample_code=search)
+                else: 
+                    found_records = HistopathologicalSample.objects.filter(patient_identifier=search)
+                    found_record = found_records[0]
+                
 
                 model_dict = model_to_dict(found_record)
                 model_dict.pop("id")
+
+                if radio_select == "PID":
+                    for key in model_dict:
+                        if key not in ["recruiting_site", "patient_identifier", "sex", "died"]:
+                            model_dict[key] = ""
+
 
                 form = get_form(str(request.user.groups.first()).lower(), model_dict)
 
