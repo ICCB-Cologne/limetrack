@@ -74,13 +74,13 @@ class SampleCodeField(MultiValueField):
                 error_messages={"incomplete": "Enter a 5-digit PID"},
                 validators=[validate_alphanumeric], help_text="Saturn3 + Entity"
             ),
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=1),
+            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
 
             ChoiceField(
                 error_messages={"incomplete": "Select a value"}, choices=TISSUE_TYPE
             ),
 
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=1),
+            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
 
             ChoiceField(
                 error_messages={"incomplete": "Select a value"}, choices=STORAGE_FORMAT
@@ -90,7 +90,7 @@ class SampleCodeField(MultiValueField):
                 error_messages={"incomplete": "Select a value"}, choices=ANALYTE_TYPE
             ),
 
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=1),
+            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
             
         )
         

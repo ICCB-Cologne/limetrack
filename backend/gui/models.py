@@ -157,8 +157,7 @@ class HistopathologicalSample(models.Model):
         "Sampling Timepoint - "
         "Tissue Type + Order Number - "
         "Storage Format - Analyte Type "
-        "+ Order Number",
-        unique=True)
+        "+ Order Number")
     sampling_date = models.DateField(verbose_name="Sampling Date")
     tissue_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,

@@ -157,6 +157,11 @@ form {
     flex-direction: row;
 }
 
+#main_form p:empty {
+    margin: 0%;
+    padding: 0%;
+}
+
 #main_form label {
     width: 20%;
     font-weight: bold;
