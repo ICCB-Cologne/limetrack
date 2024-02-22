@@ -181,13 +181,15 @@ class SampleForm(ModelForm):
     required_css_class = "required"
     # error_css_class = "error-field"
     
-    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="Saturn3 Sample Code")
+    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
     patient_identifier = forms.CharField(
         max_length=5,
         widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
                                       "data-placement" : "top",
                                       "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
-                                      'onchange': "autoFillPatient(this.value)"}))
+                                      'onchange': "autoFillPatient(this.value)"}),
+        label="Patient Identifier")
+    
 
     class Meta:
         model = HistopathologicalSample
@@ -219,13 +221,22 @@ class SampleFormRec(ModelForm):
     required_css_class = "required"
     # error_css_class = "error-field"
 
-    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="Saturn3 Sample Code")
+    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
     patient_identifier = forms.CharField(
         max_length=5,
         widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
                                       "data-placement" : "top",
                                       "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
-                                      'onchange': "autoFillPatient(this.value)"}))
+                                      'onchange': "autoFillPatient(this.value)"}),
+        label="Patient Identifier")
+    corresponding_organoid = forms.BooleanField(required=False,
+                                                widget=forms.
+                                                CheckboxInput(attrs={
+                                                    "class":"form-check-input",
+                                                    "id":"large-checkbox"}),
+                                                help_text="generated"
+                                                " from the same "
+                                                "biopsy/tissue piece")
 
     class Meta:
         model = HistopathologicalSample
@@ -277,7 +288,14 @@ class SampleFormRec(ModelForm):
 class SampleFormTUM(ModelForm):
     required_css_class = "required"
 
-    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="Saturn3 Sample Code")
+    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
+    patient_identifier = forms.CharField(
+        max_length=5,
+        widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
+                                      "data-placement" : "top",
+                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                                      'onchange': "autoFillPatient(this.value)"}),
+        label="Patient Identifier")
     
     # set disabled required recruiter fields on not required
     recruiting_site = forms.CharField(
@@ -680,4 +698,5 @@ class LoginForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    search_field = forms.CharField(label="Search for SATURN3 Sample Code")
+    radio_select = forms.ChoiceField(choices=[("PID", "SATURN3 Patient Identifier"), ("SATURN3 Sample Code", "SATURN3 Sample Code")], label="Search for", widget=forms.RadioSelect(attrs={"id" : "humeen"}))
+    search_field = forms.CharField(label="Search")

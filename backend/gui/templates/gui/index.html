@@ -43,19 +43,7 @@
           {% if field.name in form.errors %}
             <p class="wrong_input" id="{{field.name}}"> 
               {{field.label_tag}}
-
-              {# custom check box - felt cute, might delete later #}
-              {% if field.name == "corresponding_organoid" %}
-                <label class="checko"> 
-                  {{field}}
-                <span class="checkmark">  </span>
-                </label>
-                
-              {# normal input field #}
-              {% else %}
-                {{field}}
-                
-              {% endif %}
+              {{field}}
               {{field.help_text}}
               
               {# error message right below the respective field #}
@@ -71,44 +59,19 @@
           {# if there has been no error in the submitted field #}
           {% else %}
           <p id="{{ field.name }}"> 
-            {{field.label_tag}} 
-
-              {# custom check box - felt cute, might delete later #}
-              {% if field.name == "corresponding_organoid" %}
-                <label class="checko"> 
-                  {{field}}
-                  <span class="checkmark">  </span>
-                </label>
-              
-              {# normal input field #}
-              {% else %}
-                {{field}}
-              {% endif %} 
+              {{field.label_tag}} 
+              {{field}}
               {{field.help_text}}</p>
           {% endif %}
             
         {#  NO MESSAGES / NO FROM SUBMITTED YET #}
         {% else %} 
       
-          <p id="{{ field.name }}">  {{field.label_tag}}
-
-            
-            {# custom check box - felt cute, might delete later #}
-            {% if field.name == "corresponding_organoid" %}
-              <label class="checko"> 
-                {{field}}
-              <span class="checkmark">  </span>
-              </label>
-
-             {# normal input field #}
-             
-             {% else %}
+            <p id="{{ field.name }}">  {{field.label_tag}}
               {{field}}
-            {% endif %}
-            {{field.help_text}}
-            
+              {{field.help_text}}
              </p>
-
+            
         {% endif %} 
       {% endfor %}
       <!-- END OF INPUT FIELDS -->
@@ -139,8 +102,15 @@
   <form action={% url "search" %} method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
-      <h2> Edit Record <i class="bi bi-search"></i> </h2>
-        {{search_form.as_p}}
+      <h2> Search Record <i class="bi bi-search"></i> </h2>
+      <hr>
+      {% for element in search_form %}
+      <p >
+        {{element.label_tag}}
+        {{element}}
+      </p>
+      
+      {% endfor %}
       <div class="text-center">
         <button type="submit" class="btn btn-primary" id="search-button" >
           Search
@@ -165,6 +135,7 @@
     {% csrf_token %}
     <div class="form-containerino">
       <h2> CSV File Upload <i class="bi bi-upload"></i> </h2>
+      <hr>
       
         {{upload_form.as_p}}
         <a href="/csv_template/" class="btn btn-primary" role="button"> Download template</a>

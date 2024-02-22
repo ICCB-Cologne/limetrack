@@ -30,10 +30,30 @@ if (exampleModal) {
     const thead = document.createElement("thead");
     const tbody = document.createElement("tbody");
 
+    var sat3 = "";
     for (var pair of formData.entries()) {
       if (pair[0] != "csrfmiddlewaretoken") {
-        var name = pair[0];
-        var value = pair[1];
+        if (pair[0].includes("saturn3_sample_code_")) {
+          sat3 = sat3.concat(pair[1].toString());
+
+          if (
+            pair[0] != "saturn3_sample_code_3" &&
+            pair[0] != "saturn3_sample_code_6" &&
+            pair[0] != "saturn3_sample_code_7"
+          ) {
+            sat3 = sat3.concat("-");
+          }
+
+          if ("saturn3_sample_code_7" != pair[0]) {
+            continue;
+          }
+          var name = "saturn3_sample_code";
+          var value = sat3;
+        } else {
+          var name = pair[0];
+          var value = pair[1];
+        }
+
         row = document.createElement("tr");
         row.className = "";
         row.innerHTML = `
