@@ -486,9 +486,10 @@ footer{
 }
 
 /*CSV File Upload Form*/
-#row-upload {
+.custom-row {
     display: flex;
-    margin: 8px 0;
+    margin-top: 16px;
+    margin-bottom: 24px;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
