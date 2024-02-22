@@ -347,7 +347,7 @@ select.form-control {
 
 .btn {
     background-color: rgba(20,40,100,0.7);
-    width: 15%;
+    /* width: 15%; */
     border: none;
 }
 

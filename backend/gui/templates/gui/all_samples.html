@@ -75,7 +75,7 @@ All Samples
 
     {% comment %} <a href="/csv/" class="btn btn-primary bg-primary my-1" role="button"> Download</a> {% endcomment %}
     
-    <button class="btn btn-primary" onclick="downloadWithFilter()"> Download as CSV </button>
+    <button class="btn btn-primary" onclick="downloadWithFilter()"> Download</button>
     <form  action={% url "filtered_download" %} method="post" id="filter-download">{% csrf_token %}</form>
     <br>
   </div>
