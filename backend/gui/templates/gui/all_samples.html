@@ -1,40 +1,37 @@
 {% extends './base.html' %}
 
 {% block title %}
-All Samples
+Samples
 {% endblock title %}
-
-{% block header %}
-<h1>
-  All Samples 
-</h1>
-{% endblock header %}
 
 {% block content %}
 <div class="containerino">
   <div class="overdiv">
-    <br>
-    <div>
-      <h2> Samples <i class="bi bi-table"></i> </h2> 
+    <div id="header-samples">
+      <div>
+        <h2> Samples <i class="bi bi-table"></i> </h2>
+      </div>
+      <div > 
+        <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+          Filter columns
+        </button>
+        <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
+        <button class="btn btn-primary" onclick="downloadWithFilter()"> Download</button>
+        <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
+            {% csrf_token %}
+          <ul class="dropdown-menu">
+            {% for filter in filters %}
+            <li class="dropdown-item"> 
+            {{filter}}
+            {{filter.label}} </li>
+            {% endfor %}
+          </ul>
+        </form>
+        <div>
+          <hr>
+        </div>
+      </div>
     </div>
-    <div>
-    <!-- <div class="filterdiv"> -->
-      <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-        Filter columns
-      </button>
-      <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
-    </div>
-    <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
-        {% csrf_token %}
-      <ul class="dropdown-menu">
-        {% for filter in filters %}
-        <li class="dropdown-item"> 
-        {{filter}}
-        {{filter.label}} </li>
-        {% endfor %}
-      </ul>
-    </form>
-    <!-- </div> -->
   
     <div class="tablediv">
       <form method="post" id="id-form">{% csrf_token %}</form>
@@ -78,9 +75,7 @@ All Samples
         </tbody>
       </table>
     </div>
-    {% comment %} <a href="/csv/" class="btn btn-primary bg-primary my-1" role="button"> Download</a> {% endcomment %}
     
-    <button class="btn btn-primary" onclick="downloadWithFilter()"> Download</button>
     <form  action={% url "filtered_download" %} method="post" id="filter-download">{% csrf_token %}</form>
     <br>
   </div>

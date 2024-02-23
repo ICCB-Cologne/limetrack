@@ -432,3 +432,9 @@ footer{
     align-items: center;
     gap: 10px;
 }
+
+/* Samples */
+#header-samples {
+    margin-top: 16px;
+    width: 95%;
+}
