@@ -29,7 +29,6 @@ import logging
 
 app_log = logging.getLogger("s3sample")
 
-# app_log.info('This log is starting')
 # Create your views here.
 
 
@@ -42,9 +41,9 @@ def get_form(
             form = SampleFormSPL(data=data)
         case 'tum':
             form = SampleFormTUM(data=data)
-        case 'sclab':
+        case 'scopenlab':
             form = SampleFormScLab(data=data)
-        case 'lb':
+        case 'liquidbiopsy':
             form = SampleFormLB(data=data)
         case 'recruiter':
             form = SampleFormRec(data=data)
