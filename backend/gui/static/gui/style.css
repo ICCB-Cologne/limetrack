@@ -46,8 +46,8 @@ p:empty{
 /* for all_samples_overview to contain containers */
 .overdiv {
     position: relative;
-    width: 90%;
-    border-radius: 10px;
+    width: 100%;
+    border-radius: 5px;
     /* border: #649bd6 dotted 1px; */
     display: flex;
     flex-direction: column;
@@ -61,11 +61,11 @@ p:empty{
 .tablediv {
     margin: 1% 1% 1% 1%;
     max-width: 100%;
-    width: 90%;
+    width: 95%;
     overflow: auto;
     background: rgba(0, 0, 0, 0.033);
     border: solid white 3px;
-    border-radius: 10px;
+    border-radius: 5px;
     
 }
 

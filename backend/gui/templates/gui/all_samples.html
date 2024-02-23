@@ -14,15 +14,17 @@ All Samples
 <div class="containerino">
   <div class="overdiv">
     <br>
-    
-    <h2> Samples Table <i class="bi bi-table"></i> </h2> 
-    <br>
-    <div class="filterdiv">
+    <div>
+      <h2> Samples <i class="bi bi-table"></i> </h2> 
+    </div>
+    <div>
+    <!-- <div class="filterdiv"> -->
       <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
         Filter columns
       </button>
       <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
-      <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
+    </div>
+    <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
         {% csrf_token %}
       <ul class="dropdown-menu">
         {% for filter in filters %}
@@ -31,57 +33,51 @@ All Samples
         {{filter.label}} </li>
         {% endfor %}
       </ul>
-  </form>
-
-  </div>
-    
-    
-  </form>
+    </form>
+    <!-- </div> -->
   
-<div class="tablediv">
-  <form method="post" id="id-form">{% csrf_token %}</form>
-  <table class="stripedtable">
-    <thead>
-      <tr>
-        {% if samples.0 %}
-        {% for key, _ in samples.0 %}
-          {% if key %}
-            {% if key == "SATURN3 Sample Code" %}
-            <th class="absolutecol"> {{ key }} </th>
-            {% else %}
-            <th>{{ key }}</th>
+    <div class="tablediv">
+      <form method="post" id="id-form">{% csrf_token %}</form>
+      <table class="stripedtable">
+        <thead>
+          <tr>
+            {% if samples.0 %}
+            {% for key, _ in samples.0 %}
+              {% if key %}
+                {% if key == "SATURN3 Sample Code" %}
+                <th class="absolutecol"> {{ key }} </th>
+                {% else %}
+                <th>{{ key }}</th>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            <th>Action</th>
+            {%endif%}
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in samples %}
+          <tr>
+            {% for key, value in item %}
+            {% if key %}
+                {% if key == "SATURN3 Sample Code" %}
+                <td> {{ value }} </td>
+                {% else %}
+                <td>{{ value }}</td>
+                {% endif %}
             {% endif %}
-          {% endif %}
-        {% endfor %}
-        <th>Action</th>
-        {%endif%}
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in samples %}
-      <tr>
-        {% for key, value in item %}
-        {% if key %}
-            {% if key == "SATURN3 Sample Code" %}
-            <td> {{ value }} </td>
-            {% else %}
-            <td>{{ value }}</td>
-            {% endif %}
-        {% endif %}
-        {% endfor %}
-        <td>
-          {% if user.get_username == "root" %}
-          <button type="button" onclick="submitForm({{ item.0.1 }})">Delete</button>
-          {% endif %}
-        </td>
-        
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-  
-</div>
+            {% endfor %}
+            <td>
+              {% if user.get_username == "root" %}
+              <button type="button" onclick="submitForm({{ item.0.1 }})">Delete</button>
+              {% endif %}
+            </td>
+            
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% comment %} <a href="/csv/" class="btn btn-primary bg-primary my-1" role="button"> Download</a> {% endcomment %}
     
     <button class="btn btn-primary" onclick="downloadWithFilter()"> Download</button>
