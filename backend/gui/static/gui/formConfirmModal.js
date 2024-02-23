@@ -30,9 +30,18 @@ if (exampleModal) {
     const thead = document.createElement("thead");
     const tbody = document.createElement("tbody");
 
+    const corresponding_organoid_value = document.getElementById(
+      "id_corresponding_organoid"
+    ).checked;
+
+    console.log(corresponding_organoid_value);
+
     var sat3 = "";
     for (var pair of formData.entries()) {
-      if (pair[0] != "csrfmiddlewaretoken") {
+      if (
+        pair[0] != "csrfmiddlewaretoken" &&
+        pair[0] != "corresponding_organoid"
+      ) {
         if (pair[0].includes("saturn3_sample_code_")) {
           sat3 = sat3.concat(pair[1].toString());
 
@@ -60,6 +69,15 @@ if (exampleModal) {
           <td class=""> ${name} </td>
           <td>${value}</td>`;
         tbody.appendChild(row);
+
+        if (pair[0] == "localisation") {
+          row = document.createElement("tr");
+          row.className = "";
+          row.innerHTML = `
+          <td class=""> corresponding_organoid </td>
+          <td>${corresponding_organoid_value}</td>`;
+          tbody.appendChild(row);
+        }
       }
       modalBody.appendChild(tablediv);
     }

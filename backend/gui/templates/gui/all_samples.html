@@ -16,6 +16,7 @@ All Samples
 <div class="containerino">
   <div class="overdiv">
     <br>
+    
     <h2> Samples Table <i class="bi bi-table"></i> </h2> 
     <br>
     <div class="filterdiv">
@@ -64,15 +65,18 @@ All Samples
         {% for key, value in item %}
         {% if key %}
             {% if key == "SATURN3 Sample Code" %}
-            <td class="absolutecol"> {{ value }} </td>
+            <td> {{ value }} </td>
             {% else %}
             <td>{{ value }}</td>
             {% endif %}
         {% endif %}
         {% endfor %}
-        <td>  
+        <td>
+          {% if user.get_username == "root" %}
           <button type="button" onclick="submitForm({{ item.0.1 }})">Delete</button>
+          {% endif %}
         </td>
+        
       </tr>
       {% endfor %}
     </tbody>

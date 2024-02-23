@@ -229,14 +229,6 @@ class SampleFormRec(ModelForm):
                                       "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
                                       'onchange': "autoFillPatient(this.value)"}),
         label="Patient Identifier")
-    corresponding_organoid = forms.BooleanField(required=False,
-                                                widget=forms.
-                                                CheckboxInput(attrs={
-                                                    "class":"form-check-input",
-                                                    "id":"large-checkbox"}),
-                                                help_text="generated"
-                                                " from the same "
-                                                "biopsy/tissue piece")
 
     class Meta:
         model = HistopathologicalSample

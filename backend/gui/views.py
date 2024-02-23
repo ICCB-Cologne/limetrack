@@ -261,6 +261,18 @@ def handle_form(form: ModelForm,
 
     elif request.user.groups.filter(name='Recruiter').exists():
         # maybe check if record already exists and deny creating of new record
+        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+            messages.error(request,
+                   f'Submission unsuccessful!'
+                   f' Record with saturn3_sample_code '
+                   f'{str(sat3_code)} already exists.',
+                   extra_tags=tag)
+
+            return render(request, 'gui/index.html',
+                  context={'form': form,
+                           'upload_form': UploadForm(),
+                           'search_form': SearchForm(),
+                           "jump_to": ("form" if tag == "general" else None)})
         if tag == "general":
             form.save()
         else:
@@ -390,7 +402,8 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         filters = GroupFilterForm()
         context = {
             'samples': fields_and_values_list,
-            'filters': filters
+            'filters': filters,
+            'user': request.user
         }
         return render(request, template_name, context=context)
 
