@@ -1,7 +1,7 @@
 {% extends './base.html' %}
 
 {% block title%}
-🪐 Saturn3 - Sample Tracking
+Sample Tracking
 {% endblock title%}
 
 {% block header %}
@@ -29,8 +29,7 @@
           {% endif %}
         {% endfor %}
       </ul>
-      {% endif %}
-      
+      {% endif %}   
       {% for field in form %}
        {# splitting the form visually in sections for the different user groups #}
        {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, lb_analyte_type, pools"%}
@@ -41,36 +40,81 @@
         {% if messages %} 
           {# highlight errorneous field if there's been an error in the submissed form field #}
           {% if field.name in form.errors %}
-            <p class="wrong_input" id="{{field.name}}"> 
-              {{field.label_tag}}
-              {{field}}
-              {{field.help_text}}
-              
-              {# error message right below the respective field #}
-             <ul class="messages">
+    
+            <div id="{{field.name}}" class="wrong_input"> 
+                  {{field.label_tag}}
+                  {% if field.name == "saturn3_sample_code" %}
+                    <div class="w-50">
+                      
+                      {{field}}
+                      {{field.help_text}}
+
+                      {% comment %} <input id="sat3-generated" type="text" class="ms-5"> </input> {% endcomment %}
+                    </div>
+                  {% else %}
+
+                    {{field}}
+                    {{field.help_text}}
+
+                  {% endif %}
+            </div>
+            {# error message right below the respective field #}
+            <ul class="messages">
               {% for message in messages %}
                 {%if field.name == message.extra_tags %} 
-                <li class=" {{ message.tags }} " > {{ message }} </li>
+                <li class=" {{ message.tags }} "> {{ message }} </li>
                 {%endif%}
               {% endfor %}
             </ul>
-            </p>
+
           
           {# if there has been no error in the submitted field #}
           {% else %}
-          <p id="{{ field.name }}"> 
-              {{field.label_tag}} 
+
+
+          <div id="{{ field.name }}" class="form-row">
+            {{field.label_tag}} 
+            {% if field.name == "saturn3_sample_code" %}
+
+                <div class="w-50">
+                    {{field}}
+                    {{field.help_text}}
+                </div>
+                {% comment %} <input id="sat3-generated" type="text" class="ws-100">  </input> {% endcomment %}
+
+            {% else %}
+
               {{field}}
-              {{field.help_text}}</p>
+              {{field.help_text}}
+
+            {% endif %}
+            </div>
           {% endif %}
             
         {#  NO MESSAGES / NO FROM SUBMITTED YET #}
         {% else %} 
-      
-            <p id="{{ field.name }}">  {{field.label_tag}}
+            
+              <div id="{{ field.name }}" class="form-row">
+                {{field.label_tag}}
+                 {% if field.name == "saturn3_sample_code" %}
+
+                <div class="w-50">
+                    {{field}}
+                </div>
+                
+                {% comment %} <input id="sat3-generated" type="text" class="w-50" style="max-width : 20em">  </input> {% endcomment %}
+                {% else %}
+
               {{field}}
               {{field.help_text}}
-             </p>
+
+            {% endif %}
+            </div>
+            
+            
+
+
+             
             
         {% endif %} 
       {% endfor %}
@@ -140,6 +184,7 @@
     <div class="form-containerino">
       <div>
         <h2> CSV File Upload <i class="bi bi-upload"></i> </h2>
+        <hr>
       </div>
       <div class="custom-row">
         <input id="{{ upload_form.file.auto_id }}" name="{{upload_form.file.name}}" type="file">

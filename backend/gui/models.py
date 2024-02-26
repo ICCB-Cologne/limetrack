@@ -101,6 +101,11 @@ SEX_CHOICES = [
     ("m", "m")
 ]
 
+CORRESPONDING_ORGANOID_CHOICES = [
+    (True, "Yes"),
+    (False, "No"),
+]
+
 
 def validate_alphanumeric(value):
     char: str
@@ -170,17 +175,19 @@ class HistopathologicalSample(models.Model):
         max_length=CHARFIELD_MAXLEN, choices=LOCALISATION_CHOICE,
         verbose_name="Localisation")
     corresponding_organoid = models.BooleanField(
-        help_text="generated from the same biopsy/tissue piece",
-        verbose_name="Corresponding Organoid")
+        verbose_name="Corresponding Organoid",
+        choices=CORRESPONDING_ORGANOID_CHOICES
+        )
     grading = models.CharField(max_length=CHARFIELD_MAXLEN, choices=GRADING,
-                               verbose_name="Grading", blank=True)
+                               verbose_name="Grading", blank=True,
+                               null=True)
     # histology_subtype = models.CharField(max_length=CHARFIELD_MAXLEN)
     # skip for prototype
 
     # TUM Pathology ###
     tumor_cell_content = models.CharField(
         max_length=CHARFIELD_MAXLEN,
-        blank=True,
+        blank=True, null=True,
         validators=[zero_to_a_hundred],
         verbose_name="Tumor Cell Content")
 
@@ -189,12 +196,12 @@ class HistopathologicalSample(models.Model):
         null=True, blank=True, verbose_name="SPL Received")
     spl_status = models.CharField(
         max_length=CHARFIELD_MAXLEN,
-        blank=True,
+        blank=True, null=True,
         choices=STATUS_CHOICES,
         verbose_name="SPL Status")
     spl_sequencing_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,
-        blank=True,
+        blank=True, null=True,
         choices=SPL_SEQUENCING_TYPES,
         verbose_name="SPL Sequencing Type")
 
@@ -213,22 +220,23 @@ class HistopathologicalSample(models.Model):
                                             verbose_name="scLab Nuclei"
                                             " Size [µm]")
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                    blank=True, verbose_name="scLab Status",
+                                    blank=True, null=True,
+                                    verbose_name="scLab Status",
                                     choices=STATUS_CHOICES)
     sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                             blank=True,
+                                             blank=True, null=True,
                                              verbose_name="scLab"
                                              " Sequencing Type",
                                              choices=SCLAB_SEQUENCING_TYPES)
-    sclab_sorting = models.BooleanField(null=True,
-                                        blank=True,
+    sclab_sorting = models.BooleanField(choices=CORRESPONDING_ORGANOID_CHOICES,
+                                        blank=True, null=True,
                                         verbose_name="scLab Sorting")
     sclab_pool = models.IntegerField(null=True,
                                      blank=True, verbose_name="scLab Pool")
 
     # LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                       blank=True,
+                                       blank=True, null=True,
                                        verbose_name="LB analyte type",
                                        choices=LB_ANALYTE_TYPES)
     lb_sampling_date = models.DateField(null=True,
@@ -250,7 +258,7 @@ class HistopathologicalSample(models.Model):
                                                   "Isolated cfDNA [ng]")
 
     lb_status = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                 blank=True,
+                                 blank=True, null=True,
                                  verbose_name="LB Status",
                                  choices=LB_STATUS_CHOICES)
 

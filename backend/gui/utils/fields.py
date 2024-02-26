@@ -118,15 +118,22 @@ class SampleCodeWidget(MultiWidget):
     def __init__(self, widgets=None, attrs=None) -> None:
         widgets=[
             Select(attrs=attrs, choices=ENTITY),
-            TextInput(attrs={"maxlength" : 5},),
+            TextInput(attrs={"maxlength" : 5,
+                             "data-toggle" : "tooltip",
+                             "data-placement" : "top",
+                             "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",},),
             NumberInput(attrs={"data-toggle" : "tooltip",
                                "data-placement" : "top",
                                "title" : "Sampling timepoint 0, 1, 2 etc.",},),
             Select(attrs=attrs, choices=TISSUE_TYPE), 
-            NumberInput(attrs=attrs),
+            NumberInput(attrs={"data-toggle" : "tooltip",
+                               "data-placement" : "top",
+                               "title" : "Tissue type - order number",}),
             Select(choices=STORAGE_FORMAT),
             Select(choices=ANALYTE_TYPE),   
-            NumberInput(attrs=attrs)]
+            NumberInput(attrs={"data-toggle" : "tooltip",
+                               "data-placement" : "top",
+                               "title" : "Analyte type - order number",})]
         
         super().__init__(widgets, attrs)
 
