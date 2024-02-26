@@ -188,7 +188,7 @@ def handle_form(form: ModelForm,
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
-    elif request.user.groups.filter(name='scLab').exists():
+    elif request.user.groups.filter(name='scOpenLab').exists():
         sclab_received = None if data["sclab_received"] == "" else data["sclab_received"]
         sclab_extraction_date = None if data["sclab_extraction_date"] == "" else data["sclab_extraction_date"]
         sclab_nuclei_yield = None if data["sclab_nuclei_yield"] == "" else data["sclab_nuclei_yield"]
@@ -214,7 +214,7 @@ def handle_form(form: ModelForm,
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
-    elif request.user.groups.filter(name='LB').exists():
+    elif request.user.groups.filter(name='LiquidBiopsy').exists():
         lb_analyte_type = data["lb_analyte_type"]
         # @Jonas statements wie diese können vereinfacht werden, da leere Strings false returnen
         # lb_sampling_date = None if not data["lb_sampling_date"] else data["lb_sampling_date"]
