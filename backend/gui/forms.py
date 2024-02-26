@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from .models import (HistopathologicalSample,
                      SITE_CHOICES, SEX_CHOICES, CHARFIELD_MAXLEN,
                      TISSUE_TYPES, INTERVENTION_TYPES,
-                     LOCALISATION_CHOICE, GRADING)
+                     LOCALISATION_CHOICE, GRADING, CORRESPONDING_ORGANOID_CHOICES)
 from tempus_dominus.widgets import DatePicker
 # documentation https://github.com/FlipperPA/django-tempus-dominus
 from .utils.fields import SampleCodeField, SampleCodeWidget
@@ -224,23 +224,25 @@ class SampleFormRec(ModelForm):
     # error_css_class = "error-field"
 
     saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
-    patient_identifier = forms.CharField(
-        max_length=5,
-        widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
-                                      'onchange': "autoFillPatient(this.value)"}),
-        label="Patient Identifier")
 
     class Meta:
         model = HistopathologicalSample
         fields = all_fields
 
         widgets = {
+            "patient_identifier" : forms.TextInput(attrs={"data-toggle" : "tooltip", 
+                                      "data-placement" : "top",
+                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                                      'onchange': "autoFillPatient(this.value)"}),
             'died': DatePicker(options={"allowInputToggle" : True}, attrs={
                 "input_group": False}),
             'sampling_date': DatePicker(options={"allowInputToggle" : True}, attrs={
                 "input_group": False}),
+            
+            "corresponding_organoid" : forms.Select(attrs={"data-toggle" : "tooltip", 
+                                      "data-placement" : "top",
+                                      "title" : "generated from the same biopsy/tissue piece"},
+                                      ),
 
             # disabled
             "tumor_cell_content": forms.NumberInput(attrs={
@@ -323,11 +325,9 @@ class SampleFormTUM(ModelForm):
 
     corresponding_organoid = forms.BooleanField(required=False,
                                                 widget=forms.
-                                                CheckboxInput(attrs={
-                                                    'disabled': "true"}),
-                                                help_text="generated"
-                                                " from the same "
-                                                "biopsy/tissue piece")
+                                                Select(attrs={
+                                                    'disabled': "true"},
+                                                    choices=CORRESPONDING_ORGANOID_CHOICES))
     grading = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,

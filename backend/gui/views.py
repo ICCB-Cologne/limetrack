@@ -189,15 +189,14 @@ def handle_form(form: ModelForm,
             return no_sample_code_found(request, sat3_code, tag, form)
 
     elif request.user.groups.filter(name='scOpenLab').exists():
-        sclab_received = None if data["sclab_received"] == "" else data["sclab_received"]
-        sclab_extraction_date = None if data["sclab_extraction_date"] == "" else data["sclab_extraction_date"]
-        sclab_nuclei_yield = None if data["sclab_nuclei_yield"] == "" else data["sclab_nuclei_yield"]
-        sclab_nuclei_size = None if data["sclab_nuclei_size"] == "" else data["sclab_nuclei_size"]
+        sclab_received = data["sclab_received"]
+        sclab_extraction_date = data["sclab_extraction_date"]
+        sclab_nuclei_yield = data["sclab_nuclei_yield"]
+        sclab_nuclei_size = data["sclab_nuclei_size"]
         sclab_status = data["sclab_status"]
         sclab_sequencing_type = data["sclab_sequencing_type"]
-        sclab_sorting = None if data["sclab_sorting"] == "unknown" or data["sclab_sorting"] == "" else data[
-            "sclab_sorting"]
-        sclab_pool = None if data["sclab_pool"] == "" else data["sclab_pool"]
+        sclab_sorting = data["sclab_sorting"]
+        sclab_pool = data["sclab_pool"]
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
@@ -216,12 +215,10 @@ def handle_form(form: ModelForm,
 
     elif request.user.groups.filter(name='LiquidBiopsy').exists():
         lb_analyte_type = data["lb_analyte_type"]
-        # @Jonas statements wie diese können vereinfacht werden, da leere Strings false returnen
-        # lb_sampling_date = None if not data["lb_sampling_date"] else data["lb_sampling_date"]
-        lb_sampling_date = None if data["lb_sampling_date"] == "" else data["lb_sampling_date"]
-        lb_received = None if data["lb_received"] == "" else data["lb_received"]
+        lb_sampling_date = data["lb_sampling_date"]
+        lb_received =data["lb_received"]
         lb_sample_volume = data["lb_sample_volume"]
-        lb_date_of_isolation = None if data["lb_date_of_isolation"] == "" else data["lb_date_of_isolation"]
+        lb_date_of_isolation = data["lb_date_of_isolation"]
         lb_total_isolated_cfdna = data["lb_total_isolated_cfdna"]
         lb_status = data["lb_status"]
 
@@ -290,9 +287,39 @@ def handle_form(form: ModelForm,
                 grading=data["grading"]
             )
 
-    # TODO: check if user is admin
-    else:
+    elif (request.user.is_superuser
+          or request.user.groups.filter(name='superuser').exists() 
+          or request.user.groups.filter(name='admins').exists()):
+        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+
+            messages.error(request,
+                   f'Submission unsuccessful!'
+                   f' Record with saturn3_sample_code '
+                   f'{str(sat3_code)} already exists.',
+                   extra_tags=tag)
+
+            return render(request, 'gui/index.html',
+                  context={'form': form,
+                           'upload_form': UploadForm(),
+                           'search_form': SearchForm(),
+                           "jump_to": ("form" if tag == "general" else None)})
+        
         form.save()
+
+    
+    else:
+        messages.error(request,
+                   f'Submission unsuccessful!'
+                   f' Not permitted!',
+                   extra_tags=tag)
+
+        return render(request, 'gui/index.html',
+                        context={'form': form,
+                           'upload_form': UploadForm(),
+                           'search_form': SearchForm(),
+                           "jump_to": ("form" if tag == "general" else None)})
+
+    
 
     if tag.lower() == "general":
         # if form's been input by using the webpages form
