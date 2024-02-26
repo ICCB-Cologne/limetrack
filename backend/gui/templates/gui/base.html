@@ -30,12 +30,12 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
       <div class="container-fluid">
         <a class="navbar-brand " href="/">
-          <img class="rounded" src="{% static 'gui/img/SATURN3_Logo_RGB.jpg' %}" width="70" alt="Saturn3 Logo">
+          <img class="rounded" src="{% static 'gui/img/SATURN3_Logo_RGB_Square_rect.png' %}" width="70" alt="Saturn3 Logo">
         </a>
         <div class="collapse navbar-collapse">
           <div class="navbar-nav">
             <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
-            <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">All Samples</a>
+            <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">Samples</a>
             <a class="nav-item nav-link" href={% url "contact" %} id="contact-nav">Contact</a>
           </div>
           <div class="navbar-nav ms-auto">
@@ -44,7 +44,7 @@
               <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 User
               </a>
-              <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarScrollingDropdown">
+              <div id="dropdown-login" class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarScrollingDropdown">
                 <h6 class="dropdown-header">{{ user }}</h6>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="/logout/">Log out</a>
