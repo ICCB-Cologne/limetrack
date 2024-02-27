@@ -47,7 +47,7 @@ def get_form(
             form = SampleFormLB(data=data)
         case 'recruiter':
             form = SampleFormRec(data=data)
-        case 'datapath':
+        case 'omicspath':
             form = SampleFormDataPaths(data=data)
         case _:
             form = SampleForm(data=data)
@@ -235,7 +235,7 @@ def handle_form(form: ModelForm,
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
-    elif request.user.groups.filter(name='datapath').exists():
+    elif request.user.groups.filter(name='OmicsPath').exists():
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
             HistopathologicalSample.objects.filter(

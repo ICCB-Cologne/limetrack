@@ -13,6 +13,7 @@ def generate_groups(apps, schema_editor):
     Group.objects.get_or_create(name="SPL")
     Group.objects.get_or_create(name="TUM")
     Group.objects.get_or_create(name="Recruiter")
+    Group.objects.get_or_create(name="OmicsPath")
 
 
 class Migration(migrations.Migration):
