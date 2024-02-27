@@ -235,7 +235,7 @@ def handle_form(form: ModelForm,
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
-    elif request.user.groups.filter(name='Datapath').exists():
+    elif request.user.groups.filter(name='datapath').exists():
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
             HistopathologicalSample.objects.filter(
@@ -632,40 +632,44 @@ class SearchView(LoginRequiredMixin, TemplateView):
         if search_form.is_valid():
             search = search_form.cleaned_data["search_field"]
             radio_select = search_form.cleaned_data["radio_select"]
-            if HistopathologicalSample.objects.filter(saturn3_sample_code=search).exists() or HistopathologicalSample.objects.filter(patient_identifier=search).exists():
-                if radio_select == "SATURN3 Sample Code":
-                    found_record = HistopathologicalSample.objects.get(saturn3_sample_code=search)
-                else: 
-                    found_records = HistopathologicalSample.objects.filter(patient_identifier=search)
-                    found_record = found_records[0]
+            if HistopathologicalSample.objects.filter(saturn3_sample_code=search).exists():
+                found_record = HistopathologicalSample.objects.get(saturn3_sample_code=search)                    
                 
+                model_dict = model_to_dict(found_record)
+                model_dict.pop("id")
+
+                form = get_form(str(request.user.groups.first()).lower(), model_dict)
+
+            elif HistopathologicalSample.objects.filter(patient_identifier=search).exists():
+                found_records = HistopathologicalSample.objects.filter(patient_identifier=search)
+                found_record = found_records[0]
 
                 model_dict = model_to_dict(found_record)
                 model_dict.pop("id")
 
-                if radio_select == "PID":
-                    for key in model_dict:
-                        if key not in ["recruiting_site", "patient_identifier", "sex", "died"]:
-                            model_dict[key] = ""
-
+                for key in model_dict:
+                    if key not in ["recruiting_site", "patient_identifier", "sex", "died"]:
+                        model_dict[key] = ""
 
                 form = get_form(str(request.user.groups.first()).lower(), model_dict)
 
-                messages.success(
-                    request, f"FOUND saturn3_sample_code {search}", extra_tags="general")
-                template_name = 'gui/index.html'
-                context = {
+
+            else:
+                messages.error(request, f"DID NOT FIND {radio_select} {search}",
+                               extra_tags="general")
+                return HttpResponseRedirect(reverse("config"))
+
+            messages.success(
+                request, f"FOUND {radio_select} {search}", extra_tags="general")
+            template_name = 'gui/index.html'
+            context = {
                     'jump_to': "form",
                     'form': form,
                     'upload_form': UploadForm(),
                     'search_form': SearchForm()
                 }
-                return render(request, template_name, context=context)
-
-            else:
-                messages.error(request, f"DID NOT FIND saturn3_sample_code {search}",
-                               extra_tags="general")
-                return HttpResponseRedirect(reverse("config"))
+            
+            return render(request, template_name, context=context)
 
         else:
             messages.error(request, 'Invalid input',

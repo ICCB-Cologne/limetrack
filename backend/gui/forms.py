@@ -686,5 +686,5 @@ class LoginForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    radio_select = forms.ChoiceField(choices=[("PID", "SATURN3 Patient Identifier"), ("SATURN3 Sample Code", "SATURN3 Sample Code")], label="Search for", widget=forms.RadioSelect(attrs={"id" : "humeen"}))
+    radio_select = forms.ChoiceField(choices=[("Patient Identifier", "SATURN3 Patient Identifier"), ("SATURN3 Sample Code", "SATURN3 Sample Code")], label="Search for", widget=forms.RadioSelect())
     search_field = forms.CharField(label="Search")
