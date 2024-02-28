@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 
 def generate_groups(apps, schema_editor):
     Group.objects.get_or_create(name="admins")
-    Group.objects.get_or_create(name="superuser")
+    Group.objects.get_or_create(name="coordinators")
     Group.objects.get_or_create(name="LiquidBiopsy")
     Group.objects.get_or_create(name="scOpenLab")
     Group.objects.get_or_create(name="SPL")
