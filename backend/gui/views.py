@@ -287,7 +287,8 @@ def handle_form(form: ModelForm,
     elif (request.user.is_superuser
           or request.user.groups.filter(name='superuser').exists()
           or request.user.groups.filter(name='admins').exists()
-          or request.user.groups.filter(name='coordinators').exists()):
+          or request.user.groups.filter(name='coordinators').exists()
+          ):
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
             messages.error(request,
                            f'Submission unsuccessful!'

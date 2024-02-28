@@ -66,7 +66,7 @@ Samples
             {% endif %}
             {% endfor %}
             <td>
-              {% if user.get_username == "root" %}
+              {% if user.is_superuser or user.name == "root" or user.groups.first.name == "SPL" %}
               <button type="button" onclick="submitForm({{ item.0.1 }})">Delete</button>
               {% endif %}
             </td>
