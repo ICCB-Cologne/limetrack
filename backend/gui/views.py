@@ -1,6 +1,5 @@
-from django.http.response import HttpResponse as HttpResponse
 from .forms import (
-    all_fields, all_field_verbose_names, field_dict, SampleFormScLab, SampleFormRec,
+    all_field_verbose_names, field_dict, SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, LoginForm, GroupFilterForm,
     SearchForm, SampleFormDataPaths
@@ -23,7 +22,6 @@ from django.urls import reverse
 
 from typing import Any
 import csv
-
 import pandas as pd
 import logging
 
@@ -216,7 +214,7 @@ def handle_form(form: ModelForm,
     elif request.user.groups.filter(name='LiquidBiopsy').exists():
         lb_analyte_type = data["lb_analyte_type"]
         lb_sampling_date = data["lb_sampling_date"]
-        lb_received =data["lb_received"]
+        lb_received = data["lb_received"]
         lb_sample_volume = data["lb_sample_volume"]
         lb_date_of_isolation = data["lb_date_of_isolation"]
         lb_total_isolated_cfdna = data["lb_total_isolated_cfdna"]
@@ -258,18 +256,17 @@ def handle_form(form: ModelForm,
     elif request.user.groups.filter(name='Recruiter').exists():
         # maybe check if record already exists and deny creating of new record
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
             messages.error(request,
-                   f'Submission unsuccessful!'
-                   f' Record with saturn3_sample_code '
-                   f'{str(sat3_code)} already exists.',
-                   extra_tags=tag)
+                           f'Submission unsuccessful!'
+                           f' Record with saturn3_sample_code '
+                           f'{str(sat3_code)} already exists.',
+                           extra_tags=tag)
 
             return render(request, 'gui/index.html',
-                  context={'form': form,
-                           'upload_form': UploadForm(),
-                           'search_form': SearchForm(),
-                           "jump_to": ("form" if tag == "general" else None)})
+                          context={'form': form,
+                                   'upload_form': UploadForm(),
+                                   'search_form': SearchForm(),
+                                   "jump_to": ("form" if tag == "general" else None)})
         if tag == "general":
             form.save()
         else:
@@ -292,35 +289,31 @@ def handle_form(form: ModelForm,
           or request.user.groups.filter(name='admins').exists()
           or request.user.groups.filter(name='coordinators').exists()):
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
             messages.error(request,
-                   f'Submission unsuccessful!'
-                   f' Record with saturn3_sample_code '
-                   f'{str(sat3_code)} already exists.',
-                   extra_tags=tag)
+                           f'Submission unsuccessful!'
+                           f' Record with saturn3_sample_code '
+                           f'{str(sat3_code)} already exists.',
+                           extra_tags=tag)
 
             return render(request, 'gui/index.html',
-                  context={'form': form,
-                           'upload_form': UploadForm(),
-                           'search_form': SearchForm(),
-                           "jump_to": ("form" if tag == "general" else None)})
-        
+                          context={'form': form,
+                                   'upload_form': UploadForm(),
+                                   'search_form': SearchForm(),
+                                   "jump_to": ("form" if tag == "general" else None)})
+
         form.save()
 
-    
     else:
         messages.error(request,
-                   f'Submission unsuccessful!'
-                   f' Not permitted!',
-                   extra_tags=tag)
+                       f'Submission unsuccessful!'
+                       f' Not permitted!',
+                       extra_tags=tag)
 
         return render(request, 'gui/index.html',
-                        context={'form': form,
-                           'upload_form': UploadForm(),
-                           'search_form': SearchForm(),
-                           "jump_to": ("form" if tag == "general" else None)})
-
-    
+                      context={'form': form,
+                               'upload_form': UploadForm(),
+                               'search_form': SearchForm(),
+                               "jump_to": ("form" if tag == "general" else None)})
 
     if tag.lower() == "general":
         # if form's been input by using the webpages form
@@ -371,26 +364,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
         df = pd.read_csv(file, sep=",", keep_default_na=False)
         first_error = True
         for index, row in df.iterrows():
-            # data = {
-            #     "recruiting_site": row["Recruiting Site"], "patient_identifier": row["Patient Identifier"],
-            #     "sex": row["Sex"],
-            #     "died": row["Died"], "saturn3_sample_code": row["SATURN3 Sample Code"],
-            #     "sampling_date": row["Sampling Date"], "tissue_type": row["Tissue Type"],
-            #     "type_of_intervention": row["Type of Intervention"], "localisation": row["Localisation"],
-            #     "corresponding_organoid": row["Corresponding Organoid"], "grading": row["Grading"],
-            #     "tumor_cell_content": row["Tumor Cell Content"], "spl_received": row["SPL Received"],
-            #     "spl_status": row["SPL Status"], "spl_sequencing_type": row["SPL Sequencing Type"],
-            #     "sclab_received": row["scLab Received"], "sclab_extraction_date": row["scLab Extraction Date"],
-            #     "sclab_nuclei_yield": row["scLab Nuclei Yield"], "sclab_nuclei_size": row["scLab Nuclei Size [µm]"],
-            #     "sclab_status": row["scLab Status"], "sclab_sequencing_type": row["scLab Sequencing Type"],
-            #     "sclab_sorting": row["scLab Sorting"], "sclab_pool": row["scLab Pool"],
-            #     "lb_analyte_type": row["LB analyte type"], "lb_sampling_date": row["LB Sampling Date"],
-            #     "lb_received": row["LB Received"], "lb_sample_volume": row["LB Sample Volume [ml]"],
-            #     "lb_date_of_isolation": row["LB Date of Isolation"],
-            #     "lb_total_isolated_cfdna": row["LB Total Isolated cfDNA [ng]"], "lb_status": row["LB Status"],
-            #     "pools": row["Pools"], "scrna_r1": row["scRNA R1"]
-            # }
-
             data = {
                 "recruiting_site": row.get("Recruiting Site"), "patient_identifier": row.get("Patient Identifier"),
                 "sex": row.get("Sex"),
@@ -401,16 +374,17 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 "tumor_cell_content": row.get("Tumor Cell Content"), "spl_received": row.get("SPL Received"),
                 "spl_status": row.get("SPL Status"), "spl_sequencing_type": row.get("SPL Sequencing Type"),
                 "sclab_received": row.get("scLab Received"), "sclab_extraction_date": row.get("scLab Extraction Date"),
-                "sclab_nuclei_yield": row.get("scLab Nuclei Yield"), "sclab_nuclei_size": row.get("scLab Nuclei Size [µm)"),
+                "sclab_nuclei_yield": row.get("scLab Nuclei Yield"),
+                "sclab_nuclei_size": row.get("scLab Nuclei Size [µm)"),
                 "sclab_status": row.get("scLab Status"), "sclab_sequencing_type": row.get("scLab Sequencing Type"),
                 "sclab_sorting": row.get("scLab Sorting"), "sclab_pool": row.get("scLab Pool"),
                 "lb_analyte_type": row.get("LB analyte type"), "lb_sampling_date": row.get("LB Sampling Date"),
                 "lb_received": row.get("LB Received"), "lb_sample_volume": row.get("LB Sample Volume [ml)"),
                 "lb_date_of_isolation": row.get("LB Date of Isolation"),
                 "lb_total_isolated_cfdna": row.get("LB Total Isolated cfDNA [ng)"), "lb_status": row.get("LB Status"),
-                "pools": row.get("Pools"), "scrna_r1": row.get("scRNA R1"), "scrna_r2" : row.get("scRNA R2"),
+                "pools": row.get("Pools"), "scrna_r1": row.get("scRNA R1"), "scrna_r2": row.get("scRNA R2"),
                 "scatac_r1": row.get("scATAC R1"), "scatac_r2": row.get("scATAC R2"), "scatac_i2": row.get("scATAC I2"),
-                "wgs_r1": row.get("WGS R1"),"wgs_r2": row.get("WGS R2"),"wgs_bam": row.get("WGS bam"),
+                "wgs_r1": row.get("WGS R1"), "wgs_r2": row.get("WGS R2"), "wgs_bam": row.get("WGS bam"),
                 "wgs_vcf": row.get("WGS vcf"),
 
             }
@@ -628,14 +602,13 @@ class SearchView(LoginRequiredMixin, TemplateView):
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         search_form = SearchForm(request.POST)
-        
 
         if search_form.is_valid():
             search = search_form.cleaned_data["search_field"]
             radio_select = search_form.cleaned_data["radio_select"]
             if HistopathologicalSample.objects.filter(saturn3_sample_code=search).exists():
-                found_record = HistopathologicalSample.objects.get(saturn3_sample_code=search)                    
-                
+                found_record = HistopathologicalSample.objects.get(saturn3_sample_code=search)
+
                 model_dict = model_to_dict(found_record)
                 model_dict.pop("id")
 
@@ -654,7 +627,6 @@ class SearchView(LoginRequiredMixin, TemplateView):
 
                 form = get_form(str(request.user.groups.first()).lower(), model_dict)
 
-
             else:
                 messages.error(request, f"DID NOT FIND {radio_select} {search}",
                                extra_tags="general")
@@ -664,12 +636,12 @@ class SearchView(LoginRequiredMixin, TemplateView):
                 request, f"FOUND {radio_select} {search}", extra_tags="general")
             template_name = 'gui/index.html'
             context = {
-                    'jump_to': "form",
-                    'form': form,
-                    'upload_form': UploadForm(),
-                    'search_form': SearchForm()
-                }
-            
+                'jump_to': "form",
+                'form': form,
+                'upload_form': UploadForm(),
+                'search_form': SearchForm()
+            }
+
             return render(request, template_name, context=context)
 
         else:
