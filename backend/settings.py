@@ -10,21 +10,49 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(os.getcwd())
+
+def load_env_file() -> str:
+    output = ""
+    env_dir = "env"
+    dev_path = os.path.join(env_dir, "development.env")
+    prod_path = os.path.join(env_dir,"production.env")
+
+    if os.path.exists(prod_path):
+        output = prod_path
+
+    else:
+        output = dev_path
+
+    return output
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file=load_env_file())
+    
+    POSTGRES_PASSWORD: str
+    POSTGRES_USER: str
+    POSTGRES_DB: str
+    DJANGO_SECRET_KEY: str
+    DJANGO_DEBUG: bool
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+SETTINGS = Settings()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-v710o^%-$^q&%*l*hcd*bgqfvw-8-h%^6+&*q+41!*$m@6xrx)"
+SECRET_KEY = SETTINGS.DJANGO_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = SETTINGS.DJANGO_DEBUG
 
 ALLOWED_HOSTS = ['0.0.0.0', 'saturn3sample-django', 'localhost']
 
@@ -81,9 +109,9 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "saturn3samples",
-        "USER": "admin",
-        "PASSWORD": "admin",
+        "NAME": SETTINGS.POSTGRES_DB,
+        "USER": SETTINGS.POSTGRES_USER,
+        "PASSWORD": SETTINGS.POSTGRES_PASSWORD,
         "HOST": "db",  # set in docker-compose.yml
         "PORT": "5432",  # default postgres port
     }

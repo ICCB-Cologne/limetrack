@@ -40,3 +40,5 @@ zope.event==5.0
 zope.interface==6.1
 django_compressor==4.4
 django-libsass==0.9
+pydantic==2.6.3
+pydantic-settings==2.2.1

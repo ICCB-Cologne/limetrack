@@ -19,7 +19,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install --upgrade pip
 # pip packages
-RUN pip install -r ./requirements.txt
+RUN python3 -m pip install -r ./requirements.txt
 
 EXPOSE 8080
 
