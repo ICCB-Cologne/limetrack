@@ -8,3 +8,4 @@ files/
 venv/
 logs/
 .vscode/
+production.env
