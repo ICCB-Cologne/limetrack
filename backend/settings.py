@@ -54,7 +54,7 @@ SECRET_KEY = SETTINGS.DJANGO_SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = SETTINGS.DJANGO_DEBUG
 
-ALLOWED_HOSTS = ['0.0.0.0', 'saturn3sample-django', 'localhost']
+ALLOWED_HOSTS = ['0.0.0.0', 'saturn3sample-django', 'localhost', "ibsm-saturn3.uniklinik-freiburg.de"]
 
 
 # Application definition
