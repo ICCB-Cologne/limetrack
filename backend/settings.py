@@ -55,7 +55,7 @@ SECRET_KEY = SETTINGS.DJANGO_SECRET_KEY
 DEBUG = SETTINGS.DJANGO_DEBUG
 
 ALLOWED_HOSTS = ['0.0.0.0', 'saturn3sample-django', 'localhost', "ibsm-saturn3.uniklinik-freiburg.de"]
-CSRF_TRUSTED_ORIGINS = ["https://ibsm-saturn3.uniklinik-freiburg.de"]
+CSRF_TRUSTED_ORIGINS = ["http://0.0.0.0", "https://ibsm-saturn3.uniklinik-freiburg.de"]
 # Application definition
 
 INSTALLED_APPS = [
