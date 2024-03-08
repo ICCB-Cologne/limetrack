@@ -41,6 +41,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     DJANGO_SECRET_KEY: str
     DJANGO_DEBUG: bool
+    CSFR_COOKIE_SECURE: bool
+    SESSION_COOKIE_SECURE: bool
 
 
 # Quick-start development settings - unsuitable for production
@@ -56,6 +58,9 @@ DEBUG = SETTINGS.DJANGO_DEBUG
 
 ALLOWED_HOSTS = ['0.0.0.0', 'saturn3sample-django', 'localhost', "ibsm-saturn3.uniklinik-freiburg.de"]
 CSRF_TRUSTED_ORIGINS = ["http://0.0.0.0", "https://ibsm-saturn3.uniklinik-freiburg.de"]
+
+CSRF_COOKIE_SECURE = SETTINGS.CSFR_COOKIE_SECURE
+SESSION_COOKIE_SECURE = SETTINGS.SESSION_COOKIE_SECURE
 # Application definition
 
 INSTALLED_APPS = [
