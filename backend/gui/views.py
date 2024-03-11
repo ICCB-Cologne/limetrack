@@ -572,8 +572,10 @@ def log_out(request: HttpRequest):
 class LoginView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/login.html'
+        print(request.user.get_username())
         context = {
-            'form': LoginForm()
+            'form': LoginForm(),
+            'user': request.user.get_username()
         }
         return render(request, template_name, context=context)
 

@@ -45,9 +45,9 @@
                 User
               </a>
               <div id="dropdown-login" class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarScrollingDropdown">
-                <h6 class="dropdown-header">{{ user }}</h6>
+                <h6 class="dropdown-header"> {% if user %} {{ user }} {% else %} You are not logged in {% endif %}</h6>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/logout/">Log out</a>
+                {% if user %} <a class="dropdown-item" href="/logout/">Log out</a> {% endif %}
               </div>
             </li>
           </div>
