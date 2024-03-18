@@ -236,6 +236,7 @@ Sample Tracking
 
 {% load static %}
 <script src="{% static 'gui/formConfirmModal.js' %}"></script>
+<script src="{% static 'gui/sampleCodeDropdown.js' %}"> </script>
 <script>
   function confirmSubmission(){
     const form = document.getElementById('start-of-form');
@@ -261,6 +262,8 @@ Sample Tracking
     $('[data-toggle="tooltip"]').tooltip();   
   });
 </script>
+
+
   
 
 {% endblock content %}

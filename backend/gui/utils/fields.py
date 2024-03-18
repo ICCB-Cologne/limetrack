@@ -52,6 +52,9 @@ ANALYTE_TYPE = [
     ("N", "N"),
 ]
 
+class CustomSelect(Select):
+    def __init__(self, attrs: dict[str, Any] | None = ..., choices: Sequence[tuple[Any, Any]] = ...) -> None:
+        super().__init__(attrs, choices)
 
 
 
@@ -63,7 +66,7 @@ class SampleCodeField(MultiValueField):
     def __init__(self, **kwargs):
 
         error_messages = {
-            "incomplete": "Enter a country calling code and a phone number.",
+            "incomplete": "Choose or enter a value for every field.",
         }
 
         fields = (
@@ -172,3 +175,5 @@ class SampleCodeWidget(MultiWidget):
         decompressed_list.append(data["saturn3_sample_code_6"])
         decompressed_list.append(data["saturn3_sample_code_7"])
         return decompressed_list
+    
+

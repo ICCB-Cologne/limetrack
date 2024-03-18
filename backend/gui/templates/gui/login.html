@@ -7,6 +7,7 @@ Login
 
 {% block content %}
 <div class="containerino">
+  {% comment %} <a href={% url "password_reset" %}>Forgot Password?</a> {% endcomment %}
   <form action={% url "login" %} class="login-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
@@ -19,6 +20,8 @@ Login
       </p>
     </div>
     </form>
+   
+
 
     {% if messages %}
       <ul class="messages">
@@ -28,4 +31,6 @@ Login
       </ul>
       {% endif %}
 </div>
+
+
 {% endblock content %}
