@@ -7,3 +7,4 @@ services:
       - ./backend:/backend
       - ./manage.py:/manage.py:ro
       - ./requirements.txt:/requirements.txt
+      - ./env:/env
