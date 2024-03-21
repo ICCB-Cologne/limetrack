@@ -1,8 +1,9 @@
 from .forms import (
-    all_field_verbose_names, field_dict, SampleFormScLab, SampleFormRec,
+    all_field_verbose_names, all_fields, odcf_fields, field_dict,
+    SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, LoginForm, GroupFilterForm,
-    SearchForm, SampleFormDataPaths
+    SearchForm, SampleFormDataPaths,
 )
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -155,7 +156,7 @@ def handle_form(form: ModelForm,
     or creates new patient records (if group membership is recruiter).
 
     variables:
-    tag = 'general' or 'file' 
+    tag = 'general' or 'file'
     indicating if it's submission by uploading
     a file or filling in the form
 
@@ -300,7 +301,8 @@ def handle_form(form: ModelForm,
                           context={'form': form,
                                    'upload_form': UploadForm(),
                                    'search_form': SearchForm(),
-                                   "jump_to": ("form" if tag == "general" else None)})
+                                   "jump_to": ("form" if tag == "general"
+                                               else None)})
 
         form.save()
 
@@ -314,14 +316,15 @@ def handle_form(form: ModelForm,
                       context={'form': form,
                                'upload_form': UploadForm(),
                                'search_form': SearchForm(),
-                               "jump_to": ("form" if tag == "general" else None)})
+                               "jump_to": ("form" if tag == "general"
+                                           else None)})
 
     if tag.lower() == "general":
         # if form's been input by using the webpages form
         messages.success(request, 'Submission successful!', extra_tags=tag)
         return HttpResponseRedirect(request.path_info)
     else:
-        # if a CSV file's been submitted (handle_file handles the return) 
+        # if a CSV file's been submitted (handle_file handles the return)
         return
 
 
@@ -346,6 +349,7 @@ class ImprintView(TemplateView):
 
         return render(request, template_name, context=context)
 
+
 class UploadView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/index.html'
@@ -369,44 +373,32 @@ class UploadView(LoginRequiredMixin, TemplateView):
     @staticmethod
     def handle_file(file, request):
         """
-        TODO: needs to be adapted to the different sorts of forms / group memberships
+        TODO: needs to be adapted to the different
+        sorts of forms / group memberships
         """
+
         df = pd.read_csv(file, sep=",", keep_default_na=False)
         first_error = True
         for index, row in df.iterrows():
-            data = {
-                "recruiting_site": row.get("Recruiting Site"), "patient_identifier": row.get("Patient Identifier"),
-                "sex": row.get("Sex"),
-                "died": row.get("Died"), "saturn3_sample_code": row.get("SATURN3 Sample Code"),
-                "sampling_date": row.get("Sampling Date"), "tissue_type": row.get("Tissue Type"),
-                "type_of_intervention": row.get("Type of Intervention"), "localisation": row.get("Localisation"),
-                "corresponding_organoid": row.get("Corresponding Organoid"), "grading": row.get("Grading"),
-                "tumor_cell_content": row.get("Tumor Cell Content"), "spl_received": row.get("SPL Received"),
-                "spl_status": row.get("SPL Status"), "spl_sequencing_type": row.get("SPL Sequencing Type"),
-                "sclab_received": row.get("scLab Received"), "sclab_extraction_date": row.get("scLab Extraction Date"),
-                "sclab_nuclei_yield": row.get("scLab Nuclei Yield"),
-                "sclab_nuclei_size": row.get("scLab Nuclei Size [µm)"),
-                "sclab_status": row.get("scLab Status"), "sclab_sequencing_type": row.get("scLab Sequencing Type"),
-                "sclab_sorting": row.get("scLab Sorting"), "sclab_pool": row.get("scLab Pool"),
-                "lb_analyte_type": row.get("LB analyte type"), "lb_sampling_date": row.get("LB Sampling Date"),
-                "lb_received": row.get("LB Received"), "lb_sample_volume": row.get("LB Sample Volume [ml)"),
-                "lb_date_of_isolation": row.get("LB Date of Isolation"),
-                "lb_total_isolated_cfdna": row.get("LB Total Isolated cfDNA [ng)"), "lb_status": row.get("LB Status"),
-                "pools": row.get("Pools"), "scrna_r1": row.get("scRNA R1"), "scrna_r2": row.get("scRNA R2"),
-                "scatac_r1": row.get("scATAC R1"), "scatac_r2": row.get("scATAC R2"), "scatac_i2": row.get("scATAC I2"),
-                "wgs_r1": row.get("WGS R1"), "wgs_r2": row.get("WGS R2"), "wgs_bam": row.get("WGS bam"),
-                "wgs_vcf": row.get("WGS vcf"),
 
-            }
+            data = {}
+            for field_name, verbose_field_name in zip(all_fields + odcf_fields[1:], all_field_verbose_names):
+                data.update({field_name: row.get(verbose_field_name)})
 
             form = get_form(str(request.user.groups.first()).lower(), data)
 
             if form.is_valid():
                 # alternatively append every valid form to valid_forms
-                # and process them only if all forms were valid after the for loop
+                # and process them only if all forms were
+                # valid after the for loop
+
                 form_data = form.cleaned_data
                 handle_form(
-                    form, data["saturn3_sample_code"], form_data, request, "file")
+                    form,
+                    data["saturn3_sample_code"],
+                    form_data,
+                    request,
+                    "file")
             else:
                 if first_error:
                     messages.error(
