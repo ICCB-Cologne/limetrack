@@ -3,7 +3,8 @@ from django.forms import ModelForm
 from .models import (HistopathologicalSample,
                      SITE_CHOICES, SEX_CHOICES, CHARFIELD_MAXLEN,
                      TISSUE_TYPES, INTERVENTION_TYPES,
-                     LOCALISATION_CHOICE, GRADING, CORRESPONDING_ORGANOID_CHOICES)
+                     LOCALISATION_CHOICE, GRADING,
+                     CORRESPONDING_ORGANOID_CHOICES)
 from tempus_dominus.widgets import DatePicker
 # documentation https://github.com/FlipperPA/django-tempus-dominus
 from .utils.fields import SampleCodeField, SampleCodeWidget
@@ -120,8 +121,8 @@ spl_fields = [
 
 sclab_fields = [
     "saturn3_sample_code",
-    "sclab_received", 
-    "sclab_extraction_date", 
+    "sclab_received",
+    "sclab_extraction_date",
     "sclab_nuclei_yield",
     "sclab_nuclei_size",
     "sclab_status",
@@ -155,479 +156,719 @@ odcf_fields = [
     "wgs_vcf"
 ]
 
-field_dict = {"recruiter" : recruiter_fields,
-              "odcf" : odcf_fields,
-              "tum" : tum_fields,
-              "spl" : spl_fields,
-              "sclab" : sclab_fields,
-              "lb" : lb_fields,
+field_dict = {
+    "recruiter": recruiter_fields,
+    "odcf": odcf_fields,
+    "tum": tum_fields,
+    "spl": spl_fields,
+    "sclab": sclab_fields,
+    "lb": lb_fields,
               }
 
+
 class SampleForm(ModelForm):
+    """
+    For admins, coordinators & superusers
+    This form allows entries in every field of the
+    HistopathologicalSample model.
+
+    The submission of this form can create new records.
+    """
     required_css_class = "required"
     # error_css_class = "error-field"
-    
-    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
-    
+
+    saturn3_sample_code = SampleCodeField(required=True,
+                                          widget=SampleCodeWidget(),
+                                          label="SATURN3 Sample Code")
 
     class Meta:
         model = HistopathologicalSample
         fields = all_fields + odcf_fields
 
-        
         widgets = {
 
-            "patient_identifier" : forms.TextInput(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
-                                      'onchange': "autoFillPatient(this.value)"}),
+            # include tooltips into widgets
+            "patient_identifier": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                       "onchange": "autoFillPatient(this.value)"}
+                       ),
 
-            "corresponding_organoid" : forms.Select(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "generated from the same biopsy/tissue piece"}),
+            "corresponding_organoid": forms.Select(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "generated from the same biopsy/tissue piece"}
+                       ),
 
-            'died': DatePicker(options={"allowInputToggle" : True},
-                               attrs={"input_group": False}),
-            'sampling_date': DatePicker(options={"allowInputToggle" : True},
-                                        attrs={"input_group": False}),
-            'spl_received': DatePicker(options={"allowInputToggle" : True},
-                                       attrs={"input_group": False}),
-            'sclab_received': DatePicker(options={"allowInputToggle" : True},
-                                         attrs={"input_group": False}),
-            'sclab_extraction_date': DatePicker(options={"allowInputToggle" : True},
-                                                attrs={"input_group": False}),
-            'lb_sampling_date': DatePicker(options={"allowInputToggle" : True},
-                                           attrs={"input_group": False}),
-            'lb_received': DatePicker(options={"allowInputToggle" : True},
-                                      attrs={"input_group": False}),
-            'lb_date_of_isolation': DatePicker(options={"allowInputToggle" : True},
-                                               attrs={"input_group": False}),
+            # Datepicker widgets
+            "died": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "sampling_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "spl_received": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "sclab_received": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "sclab_extraction_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "lb_sampling_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "lb_received": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "lb_date_of_isolation": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
         }
 
 
 class SampleFormRec(ModelForm):
+    """
+    For recruiters only
+
+    The submission of this form can create new records.
+    """
     required_css_class = "required"
     # error_css_class = "error-field"
 
-    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
+    saturn3_sample_code = SampleCodeField(required=True,
+                                          widget=SampleCodeWidget(),
+                                          label="SATURN3 Sample Code")
 
     class Meta:
         model = HistopathologicalSample
         fields = all_fields
 
         widgets = {
-            "patient_identifier" : forms.TextInput(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
-                                      'onchange': "autoFillPatient(this.value)"}),
-            'died': DatePicker(options={"allowInputToggle" : True}, attrs={
-                "input_group": False}),
-            'sampling_date': DatePicker(options={"allowInputToggle" : True}, attrs={
-                "input_group": False}),
-            
-            "corresponding_organoid" : forms.Select(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "generated from the same biopsy/tissue piece"},
-                                      ),
+
+            # include tooltips into widgets
+            "patient_identifier": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                       "onchange": "autoFillPatient(this.value)"}
+                       ),
+
+            "died": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}
+                ),
+
+            "sampling_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}
+                ),
+
+            "corresponding_organoid": forms.Select(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "generated from the same biopsy/tissue piece"},
+                       ),
+
 
             # disabled
-            "tumor_cell_content": forms.NumberInput(attrs={
-                'disabled': "true"}),
+            "tumor_cell_content": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "spl_received": DatePicker(attrs={
-                'disabled': "true", "input_group": False}),
-            "spl_status": forms.Select(attrs={'disabled': "true"}),
-            "spl_sequencing_type": forms.Select(attrs={'disabled': "true"}),
 
-            "sclab_received": DatePicker(attrs={'disabled': "true",
-                                                "input_group": False}),
-            "sclab_extraction_date": DatePicker(attrs={'disabled': "true",
-                                                       "input_group": False}),
-            "sclab_nuclei_yield": forms.NumberInput(attrs={
-                'disabled': "true"}),
-            "sclab_nuclei_size": forms.NumberInput(attrs={'disabled': "true"}),
-            "sclab_status": forms.TextInput(attrs={'disabled': "true"}),
-            "sclab_sequencing_type": forms.TextInput(attrs={
-                'disabled': "true"}),
-            "sclab_sorting": forms.NullBooleanSelect(attrs={
-                'disabled': "true"}),
-            "sclab_pool": forms.NumberInput(attrs={'disabled': "true"}),
 
-            "lb_analyte_type": forms.Select(attrs={'disabled': "true"}),
-            "lb_sampling_date": DatePicker(attrs={'disabled': "true",
-                                                  "input_group": False}),
-            "lb_received": DatePicker(attrs={'disabled': "true",
-                                             "input_group": False}),
-            "lb_sample_volume": forms.NumberInput(attrs={'disabled': "true"}),
-            "lb_date_of_isolation": DatePicker(attrs={'disabled': "true",
-                                                      "input_group": False}),
-            "lb_total_isolated_cfdna": forms.NumberInput(attrs={
-                'disabled': "true"}),
-            "lb_status": forms.Select(attrs={'disabled': "true"}),
+            "spl_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "spl_status": forms.Select(
+                attrs={"disabled": "true"}),
+
+            "spl_sequencing_type": forms.Select(
+                attrs={"disabled": "true"}),
+
+
+
+            "sclab_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "sclab_extraction_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "sclab_nuclei_yield": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_nuclei_size": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_status": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_sequencing_type": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_sorting": forms.NullBooleanSelect(
+                attrs={"disabled": "true"}),
+
+            "sclab_pool": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+
+
+            "lb_analyte_type": forms.Select(
+                attrs={"disabled": "true"}),
+
+            "lb_sampling_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_sample_volume": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_date_of_isolation": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_total_isolated_cfdna": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_status": forms.Select(
+                attrs={"disabled": "true"}),
         }
 
 
 class SampleFormTUM(ModelForm):
+    """
+    For TUM group members only
+
+    The submission of this form can not create new records.
+    """
     required_css_class = "required"
 
-    saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
+    saturn3_sample_code = SampleCodeField(required=True,
+                                          widget=SampleCodeWidget(),
+                                          label="SATURN3 Sample Code")
 
     # set disabled required recruiter fields on not required
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(attrs={
-            'onchange': "autoFillPatient(this.value)",
-            'disabled': "true"},
-            choices=SITE_CHOICES))
+        widget=forms.Select(
+            attrs={
+                "onchange": "autoFillPatient(this.value)",
+                "disabled": "true"
+                },
+            choices=SITE_CHOICES)
+        )
+
     patient_identifier = forms.CharField(
-        max_length=5, required=False,
-        widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "data-html" : "true",
-                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
-                                      'onchange': "autoFillPatient(this.value)",
-                                      'disabled': "true"}))
+        max_length=5,
+        required=False,
+        widget=forms.TextInput(
+            attrs={"data-toggle": "tooltip",
+                   "data-placement": "top",
+                   "data-html": "true",
+                   "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                   "onchange": "autoFillPatient(this.value)",
+                   "disabled": "true"}))
+
     sex = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=SEX_CHOICES))
-    sampling_date = forms.DateField(required=False, widget=DatePicker(
-        options={}, attrs={"input_group": False, 'disabled': "true"}))
+        widget=forms.Select(
+            attrs={"disabled": "true"},
+            choices=SEX_CHOICES))
+
+    sampling_date = forms.DateField(
+        required=False,
+        widget=DatePicker(
+            options={},
+            attrs={"input_group": False,
+                   "disabled": "true"}
+                   )
+        )
+
     tissue_type = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=TISSUE_TYPES))
+        widget=forms.Select(
+            attrs={"disabled": "true"},
+            choices=TISSUE_TYPES))
+
     type_of_intervention = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=INTERVENTION_TYPES))
+        widget=forms.Select(
+            attrs={"disabled": "true"},
+            choices=INTERVENTION_TYPES))
+
     localisation = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(attrs={'disabled': "true"},
-                            choices=LOCALISATION_CHOICE))
+        widget=forms.Select(
+            attrs={"disabled": "true"},
+            choices=LOCALISATION_CHOICE))
 
     corresponding_organoid = forms.BooleanField(required=False,
-                                                widget=forms.
-                                                Select(attrs={
-                                                    'disabled': "true"},
+                                                widget=forms.Select(
+                                                    attrs={"disabled": "true"},
                                                     choices=CORRESPONDING_ORGANOID_CHOICES))
     grading = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(attrs={'disabled': "true"}, choices=GRADING))
+        widget=forms.Select(
+            attrs={"disabled": "true"},
+            choices=GRADING))
+
+    # end of disabling required fields
 
     class Meta:
         model = HistopathologicalSample
         fields = all_fields
         widgets = {
 
-            # disabled
+            # disabled #
 
-            # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"})
-            # always needed(?),
             # "patient", skip for prototype
-            "died": DatePicker(options={},
-                               attrs={'disabled': "true",
-                                      "input_group": False}),
+
+            "died": DatePicker(
+                options={},
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
-            "spl_received": DatePicker(attrs={'disabled': "true",
-                                              "input_group": False}),
-            "spl_status": forms.Select(attrs={'disabled': "true"}),
-            "spl_sequencing_type": forms.Select(attrs={'disabled': "true"}),
+            "spl_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_received": DatePicker(attrs={'disabled': "true",
-                                                "input_group": False}),
-            "sclab_extraction_date": DatePicker(attrs={'disabled': "true",
-                                                       "input_group": False}),
-            "sclab_nuclei_yield": forms.NumberInput(attrs={
-                'disabled': "true"}),
-            "sclab_nuclei_size": forms.NumberInput(attrs={'disabled': "true"}),
-            "sclab_status": forms.TextInput(attrs={'disabled': "true"}),
-            "sclab_sequencing_type": forms.TextInput(attrs={
-                'disabled': "true"}),
-            "sclab_sorting": forms.NullBooleanSelect(attrs={
-                'disabled': "true"}),
-            "sclab_pool": forms.NumberInput(attrs={'disabled': "true"}),
+            "spl_status": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "lb_analyte_type": forms.Select(attrs={'disabled': "true"}),
-            "lb_sampling_date": DatePicker(attrs={'disabled': "true",
-                                                  "input_group": False}),
-            "lb_received": DatePicker(attrs={'disabled': "true",
-                                             "input_group": False}),
-            "lb_sample_volume": forms.NumberInput(attrs={'disabled': "true"}),
-            "lb_date_of_isolation": DatePicker(attrs={'disabled': "true",
-                                                      "input_group": False}),
-            "lb_total_isolated_cfdna": forms.NumberInput(attrs={
-                'disabled': "true"}),
-            "lb_status": forms.Select(attrs={'disabled': "true"}),
+            "spl_sequencing_type": forms.Select(
+                attrs={"disabled": "true"}),
+
+
+
+            "sclab_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "sclab_extraction_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "sclab_nuclei_yield": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_nuclei_size": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_status": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_sequencing_type": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_sorting": forms.NullBooleanSelect(
+                attrs={"disabled": "true"}),
+
+            "sclab_pool": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+
+
+            "lb_analyte_type": forms.Select(
+                attrs={"disabled": "true"}),
+
+            "lb_sampling_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_sample_volume": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_date_of_isolation": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_total_isolated_cfdna": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_status": forms.Select(
+                attrs={"disabled": "true"}),
 
         }
 
 
 class SampleFormSPL(SampleFormTUM):
+    """
+    For SPL group members only
+
+    The submission of this form can not create new records.
+    """
 
     class Meta:
         model = HistopathologicalSample
         fields = all_fields
         widgets = {
-            'spl_received': DatePicker(options={"allowInputToggle" : True},
-                                       attrs={"input_group": False,                                    
-                                              }),
+
+            # DatePickers
+
+            'spl_received': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
 
             # disabled:
 
-            # 'patient_identifier':
-            # forms.TextInput(attrs={'disabled': "true"}) always needed(?),
             # "patient", skip for prototype
-            "died": DatePicker(options={},
-                               attrs={
-                                   'disabled': "true",
-                                   "input_group": False}),
+
+            "died": DatePicker(
+                options={},
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
             # "tissue_name", skip for prototype
+
             # "used_in", skip for prototype
 
-            "tumor_cell_content": forms.NumberInput(attrs={
-                'disabled': "true"}),
 
-            "sclab_received": DatePicker(attrs={
-                'disabled': "true",
-                "input_group": False}),
+            "tumor_cell_content": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "sclab_extraction_date": DatePicker(attrs={
-                'disabled': "true",
-                "input_group": False}),
 
-            "sclab_nuclei_yield": forms.NumberInput(attrs={
-                'disabled': "true"}),
 
-            "sclab_nuclei_size": forms.NumberInput(attrs={'disabled': "true"}),
+            "sclab_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_status": forms.TextInput(attrs={'disabled': "true"}),
+            "sclab_extraction_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_sequencing_type": forms.TextInput(attrs={
-                'disabled': "true"}),
+            "sclab_nuclei_yield": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "sclab_sorting": forms.NullBooleanSelect(attrs={
-                'disabled': "true"}),
+            "sclab_nuclei_size": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "sclab_pool": forms.NumberInput(attrs={'disabled': "true"}),
+            "sclab_status": forms.TextInput(
+                attrs={"disabled": "true"}),
 
-            "lb_analyte_type": forms.Select(attrs={'disabled': "true"}),
+            "sclab_sequencing_type": forms.TextInput(
+                attrs={"disabled": "true"}),
 
-            "lb_sampling_date": DatePicker(attrs={
-                'disabled': "true",
-                "input_group": False}),
+            "sclab_sorting": forms.NullBooleanSelect(
+                attrs={"disabled": "true"}),
 
-            "lb_received": DatePicker(attrs={
-                'disabled': "true",
-                "input_group": False}),
+            "sclab_pool": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "lb_sample_volume": forms.NumberInput(attrs={'disabled': "true"}),
 
-            "lb_date_of_isolation": DatePicker(attrs={
-                'disabled': "true",
-                "input_group": False}),
 
-            "lb_total_isolated_cfdna": forms.NumberInput(attrs={
-                'disabled': "true"}),
+            "lb_analyte_type": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "lb_status": forms.Select(attrs={'disabled': "true"}),
+            "lb_sampling_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_sample_volume": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_date_of_isolation": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_total_isolated_cfdna": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_status": forms.Select(
+                attrs={"disabled": "true"}),
         }
 
 
 class SampleFormScLab(SampleFormTUM):
-    
+    """
+    For ScLab group members only
+
+    The submission of this form can not create new records.
+    """
+
     class Meta:
         model = HistopathologicalSample
 
         fields = all_fields
         widgets = {
-            'sclab_received': DatePicker(options={"allowInputToggle" : True}, attrs={
-                "input_group": False}),
 
-            'sclab_extraction_date': DatePicker(options={"allowInputToggle" : True}, attrs={
-                "input_group": False}),
+            # DatePickers:
+
+            'sclab_received': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            'sclab_extraction_date': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
 
             # disabled
-            # 'patient_identifier': forms.TextInput(attrs={
-            # 'disabled': "true"}) always needed(?),
+
             # "patient", skip for prototype
-            "died": DatePicker(options={},
-                               attrs={
-                                   'disabled': "true",
-                                   "input_group": False
-                                   }),
+
+            "died": DatePicker(
+                options={},
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
-            "tumor_cell_content": forms.NumberInput(attrs={
-                'disabled': "true"}),
+            "tumor_cell_content": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "spl_received": DatePicker(attrs={
-                'disabled': "true",
-                "input_group": False}),
 
-            "spl_status": forms.Select(attrs={'disabled': "true"}),
 
-            "spl_sequencing_type": forms.Select(attrs={'disabled': "true"}),
+            "spl_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "lb_analyte_type": forms.Select(attrs={'disabled': "true"}),
+            "spl_status": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "lb_sampling_date": DatePicker(attrs={'disabled': "true",
-                                                  "input_group": False}),
+            "spl_sequencing_type": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "lb_received": DatePicker(attrs={'disabled': "true",
-                                             "input_group": False}),
 
-            "lb_sample_volume": forms.NumberInput(attrs={'disabled': "true"}),
 
-            "lb_date_of_isolation": DatePicker(attrs={'disabled': "true",
-                                                      "input_group": False}),
+            "lb_analyte_type": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "lb_total_isolated_cfdna": forms.NumberInput(attrs={
-                'disabled': "true"}),
+            "lb_sampling_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "lb_status": forms.Select(attrs={'disabled': "true"}),
+            "lb_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_sample_volume": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_date_of_isolation": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_total_isolated_cfdna": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_status": forms.Select(
+                attrs={"disabled": "true"}),
 
         }
 
 
 class SampleFormLB(SampleFormTUM):
+    """
+    For LB group members only
+
+    The submission of this form can not create new records.
+    """
 
     class Meta:
         model = HistopathologicalSample
         fields = all_fields
         widgets = {
 
-            'lb_sampling_date': DatePicker(options={"allowInputToggle" : True},
-                                           attrs={"input_group": False}),
-            'lb_received': DatePicker(options={"allowInputToggle" : True},
-                                      attrs={"input_group": False}),
-            'lb_date_of_isolation': DatePicker(options={"allowInputToggle" : True},
-                                               attrs={"input_group": False}),
+            # DatePickers:
+
+            'lb_sampling_date': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            'lb_received': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            'lb_date_of_isolation': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
 
             # disabled:
 
-            # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"})
-            # always needed(?),
             # "patient", skip for prototype
-            "died": DatePicker(options={}, attrs={'disabled': "true",
-                                                  "input_group": False}),
+
+            "died": DatePicker(
+                options={},
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
-            "tumor_cell_content": forms.NumberInput(attrs={
-                'disabled': "true"}),
+            "tumor_cell_content": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "spl_received": DatePicker(attrs={'disabled': "true",
-                                              "input_group": False}),
 
-            "spl_status": forms.Select(attrs={'disabled': "true"}),
 
-            "spl_sequencing_type": forms.Select(attrs={'disabled': "true"}),
+            "spl_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_received": DatePicker(attrs={'disabled': "true",
-                                                "input_group": False}),
+            "spl_status": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "sclab_extraction_date": DatePicker(attrs={'disabled': "true",
-                                                       "input_group": False}),
+            "spl_sequencing_type": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "sclab_nuclei_yield": forms.NumberInput(attrs={
-                'disabled': "true"}),
 
-            "sclab_nuclei_size": forms.NumberInput(attrs={'disabled': "true"}),
 
-            "sclab_status": forms.TextInput(attrs={'disabled': "true"}),
+            "sclab_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_sequencing_type": forms.TextInput(attrs={
-                'disabled': "true"}),
+            "sclab_extraction_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_sorting": forms.NullBooleanSelect(attrs={
-                'disabled': "true"}),
+            "sclab_nuclei_yield": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "sclab_pool": forms.NumberInput(attrs={'disabled': "true"}),
+            "sclab_nuclei_size": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_status": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_sequencing_type": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_sorting": forms.NullBooleanSelect(
+                attrs={"disabled": "true"}),
+
+            "sclab_pool": forms.NumberInput(
+                attrs={"disabled": "true"}),
         }
 
 
 class SampleFormDataPaths(SampleFormTUM):
+    """
+    For DataPath group members only
+
+    The submission of this form can not create new records.
+    """
 
     class Meta:
         model = HistopathologicalSample
         fields = all_fields + odcf_fields
         widgets = {
 
-            # all disabled:
-            "lb_analyte_type": forms.Select(attrs={'disabled': "true"}),
+            # disabled:
 
-            "lb_sampling_date": DatePicker(attrs={'disabled': "true",
-                                                  "input_group": False}),
-
-            "lb_received": DatePicker(attrs={'disabled': "true",
-                                             "input_group": False}),
-
-            "lb_sample_volume": forms.NumberInput(attrs={'disabled': "true"}),
-
-            "lb_date_of_isolation": DatePicker(attrs={'disabled': "true",
-                                                      "input_group": False}),
-
-            "lb_total_isolated_cfdna": forms.NumberInput(attrs={
-                'disabled': "true"}),
-
-            "lb_status": forms.Select(attrs={'disabled': "true"}),
-
-
-            # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"})
-            # always needed(?),
             # "patient", skip for prototype
-            "died": DatePicker(options={}, attrs={'disabled': "true",
-                                                  "input_group": False}),
+
+            "died": DatePicker(
+                options={},
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
-            "tumor_cell_content": forms.NumberInput(attrs={
-                'disabled': "true"}),
+            "tumor_cell_content": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "spl_received": DatePicker(attrs={'disabled': "true",
-                                              "input_group": False}),
 
-            "spl_status": forms.Select(attrs={'disabled': "true"}),
 
-            "spl_sequencing_type": forms.Select(attrs={'disabled': "true"}),
+            "spl_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_received": DatePicker(attrs={'disabled': "true",
-                                                "input_group": False}),
+            "spl_status": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "sclab_extraction_date": DatePicker(attrs={'disabled': "true",
-                                                       "input_group": False}),
+            "spl_sequencing_type": forms.Select(
+                attrs={"disabled": "true"}),
 
-            "sclab_nuclei_yield": forms.NumberInput(attrs={
-                'disabled': "true"}),
 
-            "sclab_nuclei_size": forms.NumberInput(attrs={'disabled': "true"}),
 
-            "sclab_status": forms.TextInput(attrs={'disabled': "true"}),
+            "sclab_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_sequencing_type": forms.TextInput(attrs={
-                'disabled': "true"}),
+            "sclab_extraction_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
 
-            "sclab_sorting": forms.NullBooleanSelect(attrs={
-                'disabled': "true"}),
+            "sclab_nuclei_yield": forms.NumberInput(
+                attrs={"disabled": "true"}),
 
-            "sclab_pool": forms.NumberInput(attrs={'disabled': "true"}),
+            "sclab_nuclei_size": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_status": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_sequencing_type": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "sclab_sorting": forms.NullBooleanSelect(
+                attrs={"disabled": "true"}),
+
+            "sclab_pool": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+
+
+            "lb_analyte_type": forms.Select(
+                attrs={"disabled": "true"}),
+
+            "lb_sampling_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_received": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_sample_volume": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_date_of_isolation": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "lb_total_isolated_cfdna": forms.NumberInput(
+                attrs={"disabled": "true"}),
+
+            "lb_status": forms.Select(
+                attrs={"disabled": "true"}),
 
 
         }
-
-
-class DateForm(forms.Form):
-    date = forms.DateTimeField(
-        widget=DatePicker()
-    )
 
 
 class UploadForm(forms.Form):
@@ -635,6 +876,9 @@ class UploadForm(forms.Form):
 
 
 class FilterForm(forms.Form):
+    """
+    Not in usage yet.
+    """
     recruiting_site = forms.BooleanField(initial=True)
     patient_identifier = forms.BooleanField(initial=True)
     patient = forms.BooleanField(initial=True)
@@ -656,14 +900,33 @@ class FilterForm(forms.Form):
     tumor_cell_content_bioinf = forms.BooleanField(initial=True)
     reviewed_and_processed_by_sequencing = forms.BooleanField(initial=True)
 
-class GroupFilterForm(forms.Form):
-    recruiter = forms.BooleanField(initial=True, required=False, label="Recruiter")
-    tum = forms.BooleanField(initial=True, required=False, label="TUM")
-    spl = forms.BooleanField(initial=True, required=False, label="SPL")
-    sclab = forms.BooleanField(initial=True, required=False, label="scLab")
-    lb = forms.BooleanField(initial=True, required=False, label="LB")
-    odcf = forms.BooleanField(initial=True, required=False, label="ODCF")
 
+class GroupFilterForm(forms.Form):
+    """
+    Enables filtering of the sample tables's columns.
+    """
+    recruiter = forms.BooleanField(initial=True,
+                                   required=False,
+                                   label="Recruiter")
+
+    tum = forms.BooleanField(initial=True,
+                             required=False,
+                             label="TUM")
+
+    spl = forms.BooleanField(initial=True,
+                             required=False,
+                             label="SPL")
+    sclab = forms.BooleanField(initial=True,
+                               required=False,
+                               label="scLab")
+
+    lb = forms.BooleanField(initial=True,
+                            required=False,
+                            label="LB")
+
+    odcf = forms.BooleanField(initial=True,
+                              required=False,
+                              label="ODCF")
 
 
 class LoginForm(forms.Form):
@@ -672,5 +935,11 @@ class LoginForm(forms.Form):
 
 
 class SearchForm(forms.Form):
-    radio_select = forms.ChoiceField(choices=[("Patient Identifier", "SATURN3 Patient Identifier"), ("SATURN3 Sample Code", "SATURN3 Sample Code")], label="Search for", widget=forms.RadioSelect())
+    radio_select = forms.ChoiceField(
+        choices=[
+            ("Patient Identifier", "SATURN3 Patient Identifier"),
+            ("SATURN3 Sample Code", "SATURN3 Sample Code")],
+        label="Search for",
+        widget=forms.RadioSelect())
+
     search_field = forms.CharField(label="Search")
