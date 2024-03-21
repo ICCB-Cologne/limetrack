@@ -107,20 +107,6 @@ recruiter_fields = [
     "grading"
 ]
 
-ocdf_fields = [
-    "saturn3_sample_code",
-    "pools",
-    "scrna_r1",
-    "scrna_r2",
-    "scatac_r1",
-    "scatac_r2",
-    "scatac_i2",
-    "wgs_r1",
-    "wgs_r2",
-    "wgs_bam",
-    "wgs_vcf"
-]
-
 tum_fields = [
     "saturn3_sample_code",
     "tumor_cell_content"
@@ -155,7 +141,7 @@ lb_fields = [
     "lb_status"
 ]
 
-ocdf_fields = [
+odcf_fields = [
     "saturn3_sample_code",
     "pools",
     "scrna_r1",
@@ -170,7 +156,7 @@ ocdf_fields = [
 ]
 
 field_dict = {"recruiter" : recruiter_fields,
-              "ocdf" : ocdf_fields,
+              "odcf" : odcf_fields,
               "tum" : tum_fields,
               "spl" : spl_fields,
               "sclab" : sclab_fields,
@@ -186,7 +172,7 @@ class SampleForm(ModelForm):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields + ocdf_fields
+        fields = all_fields + odcf_fields
 
         
         widgets = {
@@ -572,7 +558,7 @@ class SampleFormDataPaths(SampleFormTUM):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields + ocdf_fields
+        fields = all_fields + odcf_fields
         widgets = {
 
             # all disabled:
@@ -671,12 +657,12 @@ class FilterForm(forms.Form):
     reviewed_and_processed_by_sequencing = forms.BooleanField(initial=True)
 
 class GroupFilterForm(forms.Form):
-    recruiter = forms.BooleanField(initial=True, required=False)
-    tum = forms.BooleanField(initial=True, required=False)
-    spl = forms.BooleanField(initial=True, required=False)
-    sclab = forms.BooleanField(initial=True, required=False)
-    lb = forms.BooleanField(initial=True, required=False)
-    ocdf = forms.BooleanField(initial=True, required=False)
+    recruiter = forms.BooleanField(initial=True, required=False, label="Recruiter")
+    tum = forms.BooleanField(initial=True, required=False, label="TUM")
+    spl = forms.BooleanField(initial=True, required=False, label="SPL")
+    sclab = forms.BooleanField(initial=True, required=False, label="scLab")
+    lb = forms.BooleanField(initial=True, required=False, label="LB")
+    odcf = forms.BooleanField(initial=True, required=False, label="ODCF")
 
 
 
