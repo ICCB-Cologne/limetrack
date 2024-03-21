@@ -47,6 +47,7 @@ all_field_verbose_names = [
     "Pools",
     "scRNA R1",
     "scRNA R2",
+    "scATAC R1",
     "scATAC R2",
     "scATAC I2",
     "WGS R1",
