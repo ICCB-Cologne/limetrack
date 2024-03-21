@@ -30,19 +30,28 @@ Sample Tracking
         {% endfor %}
       </ul>
       {% endif %}   
+      
       {% for field in form %}
        {# splitting the form visually in sections for the different user groups #}
-       {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, lb_analyte_type, pools"%}
-      <hr>
-       {%endif%}
+        {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, lb_analyte_type, pools"%}
+          <hr>
+        {%endif%}
 
-        {# IF THERE'S BEEN A SUBMISSION #}
-        {% if messages %} 
+      {# DISPLAY THE FORM DEPENDING ON WHETHER THERE'S BEEN #}
+      {# (1) A SUBMISSION WITH ERRORS #}
+      {# (2) A SUBMISSION WITHOUT ERRORS #}
+      {# (3) NO SUBMISSION #}
+
+        {# (1) or (2) IF THERE'S BEEN A SUBMISSION #}
+        {% if messages %}
+          {# (1) IF THERE'S BEEN ERRORS IN THE SUBMITTED FORM #}
           {# highlight errorneous field if there's been an error in the submissed form field #}
           {% if field.name in form.errors %}
     
             <div id="{{field.name}}" class="wrong_input"> 
+
                   {{field.label_tag}}
+
                   {% if field.name == "saturn3_sample_code" %}
                     <div class="input-group">
                       <label class="input-group-text" for="id_saturn3_sample_code_0">S3</label>
@@ -67,8 +76,8 @@ Sample Tracking
               {% endfor %}
             </ul>
 
-          
-          {# if there has been no error in the submitted field #}
+          {# (2) SUBMITTED FORM WITHOUT ERRORS #}
+          {# if there has been no error in the submitted form #}
           {% else %}
 
 
@@ -92,7 +101,7 @@ Sample Tracking
             </div>
           {% endif %}
             
-        {#  NO MESSAGES / NO FROM SUBMITTED YET #}
+        {# (3) NO MESSAGES / NO FROM SUBMITTED YET #}
         {% else %} 
             
               <div id="{{ field.name }}" class="form-row">
@@ -113,17 +122,12 @@ Sample Tracking
             {% endif %}
             </div>
             
-            
-
-
-             
-            
         {% endif %} 
       {% endfor %}
-      <!-- END OF INPUT FIELDS -->
+      {# END OF INPUT FIELDS #}
 
       <div class="text-center">
-        <!-- Button trigger modal -->
+        <!-- Submit button that triggers modal -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="modalButton">
           Submit 
         </button>
