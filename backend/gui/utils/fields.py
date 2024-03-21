@@ -12,9 +12,9 @@ from django.utils.functional import cached_property
 from django.forms.boundfield import BoundWidget
 
 ENTITY = [
-    ("S3M", "S3M"),
-    ("S3C", "S3C"),
-    ("S3P", "S3P")
+    ("S3M", "M"),
+    ("S3C", "C"),
+    ("S3P", "P")
 ]
 
 TISSUE_TYPE = [

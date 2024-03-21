@@ -37,6 +37,7 @@
             <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
             <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">Samples</a>
             <a class="nav-item nav-link" href={% url "contact" %} id="contact-nav">Contact</a>
+            <a class="nav-item nav-link" href={% url "imprint" %} id="imprint-nav">Imprint</a>
           </div>
           <div class="navbar-nav ms-auto">
             <div class="vr bg-light"></div>
@@ -79,6 +80,9 @@
             break;
           case "/contact/":
             selected = $("#contact-nav");
+            break;
+          case "/imprint/":
+            selected = $("#imprint-nav");
             break;
           case "/":
             selected = $("#sample-tracking-nav");

@@ -337,6 +337,15 @@ class ContactView(LoginRequiredMixin, TemplateView):
         return render(request, template_name)
 
 
+class ImprintView(TemplateView):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        template_name = 'gui/imprint.html'
+        context = {
+            'user': request.user.get_username()
+        }
+
+        return render(request, template_name, context=context)
+
 class UploadView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/index.html'
@@ -537,6 +546,8 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> StreamingHttpResponse | HttpResponseRedirect:
         pseudo_buffer = Echo()
         writer = csv.writer(pseudo_buffer)
+
+        print(request.POST)
 
         form = GroupFilterForm(request.POST)
         if form.is_valid():
