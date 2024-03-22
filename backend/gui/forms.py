@@ -491,64 +491,7 @@ class SampleFormSPL(SampleFormTUM):
 
             # "used_in", skip for prototype
 
-
-            "tumor_cell_content": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-
-
-            "sclab_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "sclab_extraction_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "sclab_nuclei_yield": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_nuclei_size": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_status": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_sequencing_type": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_sorting": forms.NullBooleanSelect(
-                attrs={"disabled": "true"}),
-
-            "sclab_pool": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-
-
-            "lb_analyte_type": forms.Select(
-                attrs={"disabled": "true"}),
-
-            "lb_sampling_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_sample_volume": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "lb_date_of_isolation": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_total_isolated_cfdna": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "lb_status": forms.Select(
-                attrs={"disabled": "true"}),
-        }
+        } | disabled_tum_dict | disabled_sclab_dict | disabled_lb_dict
 
 
 class SampleFormScLab(SampleFormTUM):
@@ -586,48 +529,7 @@ class SampleFormScLab(SampleFormTUM):
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
-            "tumor_cell_content": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-
-
-            "spl_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "spl_status": forms.Select(
-                attrs={"disabled": "true"}),
-
-            "spl_sequencing_type": forms.Select(
-                attrs={"disabled": "true"}),
-
-
-
-            "lb_analyte_type": forms.Select(
-                attrs={"disabled": "true"}),
-
-            "lb_sampling_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_sample_volume": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "lb_date_of_isolation": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_total_isolated_cfdna": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "lb_status": forms.Select(
-                attrs={"disabled": "true"}),
-
-        }
+        } | disabled_tum_dict | disabled_spl_dict | disabled_lb_dict
 
 
 class SampleFormLB(SampleFormTUM):
@@ -668,49 +570,7 @@ class SampleFormLB(SampleFormTUM):
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
-            "tumor_cell_content": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-
-
-            "spl_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "spl_status": forms.Select(
-                attrs={"disabled": "true"}),
-
-            "spl_sequencing_type": forms.Select(
-                attrs={"disabled": "true"}),
-
-
-
-            "sclab_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "sclab_extraction_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "sclab_nuclei_yield": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_nuclei_size": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_status": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_sequencing_type": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_sorting": forms.NullBooleanSelect(
-                attrs={"disabled": "true"}),
-
-            "sclab_pool": forms.NumberInput(
-                attrs={"disabled": "true"}),
-        }
+        } | disabled_tum_dict | disabled_spl_dict | disabled_sclab_dict
 
 
 class SampleFormDataPaths(SampleFormTUM):
@@ -737,77 +597,7 @@ class SampleFormDataPaths(SampleFormTUM):
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
-            "tumor_cell_content": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-
-
-            "spl_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "spl_status": forms.Select(
-                attrs={"disabled": "true"}),
-
-            "spl_sequencing_type": forms.Select(
-                attrs={"disabled": "true"}),
-
-
-
-            "sclab_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "sclab_extraction_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "sclab_nuclei_yield": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_nuclei_size": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_status": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_sequencing_type": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_sorting": forms.NullBooleanSelect(
-                attrs={"disabled": "true"}),
-
-            "sclab_pool": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-
-
-            "lb_analyte_type": forms.Select(
-                attrs={"disabled": "true"}),
-
-            "lb_sampling_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_sample_volume": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "lb_date_of_isolation": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_total_isolated_cfdna": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "lb_status": forms.Select(
-                attrs={"disabled": "true"}),
-
-
-        }
+        } | disabled_tum_dict | disabled_spl_dict | disabled_sclab_dict | disabled_lb_dict
 
 
 class UploadForm(forms.Form):
