@@ -584,7 +584,7 @@ class LoginView(TemplateView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        user_name = request.POST["user_name"]
+        user_name = request.POST["username"]
         pw = request.POST["password"]
         user = authenticate(request, username=user_name, password=pw)
         if user is None:
