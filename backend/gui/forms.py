@@ -108,7 +108,7 @@ recruiter_fields = [
     "grading"
 ]
 
-ocdf_fields = [
+odcf_fields = [
     "saturn3_sample_code",
     "pools",
     "scrna_r1",
@@ -157,7 +157,7 @@ lb_fields = [
     "lb_status"
 ]
 
-ocdf_fields = [
+odcf_fields = [
     "saturn3_sample_code",
     "pools",
     "scrna_r1",
@@ -172,7 +172,7 @@ ocdf_fields = [
 ]
 
 field_dict = {"recruiter": recruiter_fields,
-              "ocdf": ocdf_fields,
+              "odcf": odcf_fields,
               "tum": tum_fields,
               "spl": spl_fields,
               "sclab": sclab_fields,
@@ -188,7 +188,7 @@ class SampleForm(ModelForm):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields + ocdf_fields
+        fields = all_fields + odcf_fields
 
         widgets = {
 
@@ -569,7 +569,7 @@ class SampleFormLB(SampleFormTUM):
 class SampleFormDataPaths(SampleFormTUM):
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields + ocdf_fields
+        fields = all_fields + odcf_fields
         widgets = {
 
             # all disabled:
@@ -672,7 +672,7 @@ class GroupFilterForm(forms.Form):
     spl = forms.BooleanField(initial=True, required=False)
     sclab = forms.BooleanField(initial=True, required=False)
     lb = forms.BooleanField(initial=True, required=False)
-    ocdf = forms.BooleanField(initial=True, required=False)
+    odcf = forms.BooleanField(initial=True, required=False)
 
 
 class LoginForm(forms.Form):
