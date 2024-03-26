@@ -539,8 +539,6 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
         pseudo_buffer = Echo()
         writer = csv.writer(pseudo_buffer)
 
-        print(request.POST)
-
         form = GroupFilterForm(request.POST)
         if form.is_valid():
             all_filters = []
@@ -575,7 +573,6 @@ def log_out(request: HttpRequest):
 class LoginView(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = 'gui/login.html'
-        print(request.user.get_username())
         context = {
             'form': LoginForm(),
             'user': request.user.get_username()

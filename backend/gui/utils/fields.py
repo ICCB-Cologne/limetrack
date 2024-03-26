@@ -113,7 +113,6 @@ class SampleCodeField(MultiValueField):
             )
 
     def compress(self, valid_values: list):
-        print(valid_values)
         string = ""
         for v in valid_values:
             string += str(v)
@@ -165,9 +164,7 @@ class SampleCodeWidget(MultiWidget):
 
     def decompress(self, value: Any) -> Any | None:
         if isinstance(value, str) and value != "None-None-None-None-None-None-None-None":
-            print(value)
             splitted = re.split('-', value)
-            print(splitted)
             res = []
             section: str
             for section in splitted:
@@ -179,7 +176,6 @@ class SampleCodeWidget(MultiWidget):
                     res.append(int(section[1:]))
                 else:
                     res.append(section)
-            print(res)
             return res
         return [None] * 8
 
