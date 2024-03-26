@@ -12,6 +12,11 @@ header {
     align-items: center;
 }
 
+body{
+    position: relative;
+    min-height: 100vh;
+}
+
 h1 {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     margin: 1rem;
@@ -55,13 +60,13 @@ p {
     position: relative;
     width: 100%;
     border-radius: 5px;
-    /* border: #649bd6 dotted 1px; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: rgba(20, 40, 100, 0.03);
     margin-top: 2%;
+    border: 1px solid rgba(20, 40, 100, 0.1);
 
 }
 
@@ -138,6 +143,10 @@ form {
     width: 90%;
 }
 
+.overdiv form{
+    width: auto;
+}
+
 .navbar {
     background-color: rgba(20, 40, 100, 0.94);
 }
@@ -174,12 +183,12 @@ form {
 #main_form label {
     width: 25%;
     font-weight: bold;
-    padding-top: 1em;
+    padding-top: auto;
 }
-/* HUMENE */
+
 
 /* Style the labels */
-label {
+.form-containerino label {
     font-weight: bold;
     margin-bottom: 4px;
 }
@@ -239,7 +248,7 @@ input[type="file"] {
 }
 
 /* Style the different input fields */
-input[type="text"],
+.form-containerino input[type="text"],
 input[type="number"],
 input[type="password"] {
     border: 1px solid #aaa;
@@ -272,7 +281,7 @@ input[disabled="true"] {
     color: grey;
 }
 
-select {
+.form-containerino select {
     border: 1px solid #aaa;
     border-radius: 3px;
     padding: 5px;
@@ -317,6 +326,11 @@ select.form-control {
     width: 50%;
 }
 
+.overdiv .input-group {
+    width: 75%;
+}
+
+
 #saturn3_sample_code{
     flex-direction: row;
 }
@@ -343,6 +357,13 @@ select.form-control {
 #saturn3_sample_code #sat3-generated{
     width: auto;
     min-width: auto;
+}
+
+#saturn3_sample_code .input-group label{
+    width: fit-content;
+    height: fit-content;
+    margin-top: 8px;
+    
 }
 
 
@@ -403,20 +424,17 @@ ul {
     list-style-type: none;
 }
 
-footer{
-    width: auto;
-    opacity: 1;
-    background-color: rgba(20, 40, 100, 0.03);
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin-top: 5%;
+footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(20, 40, 100, 0.94);
+    height: 4rem;
+    padding-bottom: 4.5rem;
 }
 
-.footerdiv{
-    display: flex;
-    flex-direction: row;
+.prefooter{
+    padding-bottom: 10rem;
 }
 
 /*Login Form*/

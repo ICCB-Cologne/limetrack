@@ -35,6 +35,7 @@ all_field_verbose_names = [
     "scLab Sequencing Type",
     "scLab Sorting",
     "scLab Pool",
+    "scLab comment",
     "LB analyte type",
     "LB Sampling Date",
     "LB Received",
@@ -42,7 +43,6 @@ all_field_verbose_names = [
     "LB Date of Isolation",
     "LB Total Isolated cfDNA [ng]",
     "LB Status",
-
     "Pools",
     "scRNA R1",
     "scRNA R2",
@@ -81,6 +81,7 @@ all_fields = [
     "sclab_sequencing_type",
     "sclab_sorting",
     "sclab_pool",
+    "sclab_comment",
     "lb_analyte_type",
     "lb_sampling_date",
     "lb_received",
@@ -124,7 +125,7 @@ ocdf_fields = [
 tum_fields = [
     "saturn3_sample_code",
     "tumor_cell_content"
-    ]
+]
 
 spl_fields = [
     "saturn3_sample_code",
@@ -134,15 +135,16 @@ spl_fields = [
 
 sclab_fields = [
     "saturn3_sample_code",
-    "sclab_received", 
-    "sclab_extraction_date", 
+    "sclab_received",
+    "sclab_extraction_date",
     "sclab_nuclei_yield",
     "sclab_nuclei_size",
     "sclab_status",
     "sclab_sequencing_type",
     "sclab_sorting",
-    "sclab_pool"
-    ]
+    "sclab_pool",
+    "sclab_comment"
+]
 
 lb_fields = [
     "saturn3_sample_code",
@@ -169,52 +171,51 @@ ocdf_fields = [
     "wgs_vcf"
 ]
 
-field_dict = {"recruiter" : recruiter_fields,
-              "ocdf" : ocdf_fields,
-              "tum" : tum_fields,
-              "spl" : spl_fields,
-              "sclab" : sclab_fields,
-              "lb" : lb_fields,
+field_dict = {"recruiter": recruiter_fields,
+              "ocdf": ocdf_fields,
+              "tum": tum_fields,
+              "spl": spl_fields,
+              "sclab": sclab_fields,
+              "lb": lb_fields,
               }
+
 
 class SampleForm(ModelForm):
     required_css_class = "required"
     # error_css_class = "error-field"
-    
+
     saturn3_sample_code = SampleCodeField(required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
-    
 
     class Meta:
         model = HistopathologicalSample
         fields = all_fields + ocdf_fields
 
-        
         widgets = {
 
-            "patient_identifier" : forms.TextInput(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
-                                      'onchange': "autoFillPatient(this.value)"}),
+            "patient_identifier": forms.TextInput(attrs={"data-toggle": "tooltip",
+                                                         "data-placement": "top",
+                                                         "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                                                         'onchange': "autoFillPatient(this.value)"}),
 
-            "corresponding_organoid" : forms.Select(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "generated from the same biopsy/tissue piece"}),
+            "corresponding_organoid": forms.Select(attrs={"data-toggle": "tooltip",
+                                                          "data-placement": "top",
+                                                          "title": "generated from the same biopsy/tissue piece"}),
 
-            'died': DatePicker(options={"allowInputToggle" : True},
+            'died': DatePicker(options={"allowInputToggle": True},
                                attrs={"input_group": False}),
-            'sampling_date': DatePicker(options={"allowInputToggle" : True},
+            'sampling_date': DatePicker(options={"allowInputToggle": True},
                                         attrs={"input_group": False}),
-            'spl_received': DatePicker(options={"allowInputToggle" : True},
+            'spl_received': DatePicker(options={"allowInputToggle": True},
                                        attrs={"input_group": False}),
-            'sclab_received': DatePicker(options={"allowInputToggle" : True},
+            'sclab_received': DatePicker(options={"allowInputToggle": True},
                                          attrs={"input_group": False}),
-            'sclab_extraction_date': DatePicker(options={"allowInputToggle" : True},
+            'sclab_extraction_date': DatePicker(options={"allowInputToggle": True},
                                                 attrs={"input_group": False}),
-            'lb_sampling_date': DatePicker(options={"allowInputToggle" : True},
+            'lb_sampling_date': DatePicker(options={"allowInputToggle": True},
                                            attrs={"input_group": False}),
-            'lb_received': DatePicker(options={"allowInputToggle" : True},
+            'lb_received': DatePicker(options={"allowInputToggle": True},
                                       attrs={"input_group": False}),
-            'lb_date_of_isolation': DatePicker(options={"allowInputToggle" : True},
+            'lb_date_of_isolation': DatePicker(options={"allowInputToggle": True},
                                                attrs={"input_group": False}),
         }
 
@@ -230,19 +231,19 @@ class SampleFormRec(ModelForm):
         fields = all_fields
 
         widgets = {
-            "patient_identifier" : forms.TextInput(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
-                                      'onchange': "autoFillPatient(this.value)"}),
-            'died': DatePicker(options={"allowInputToggle" : True}, attrs={
+            "patient_identifier": forms.TextInput(attrs={"data-toggle": "tooltip",
+                                                         "data-placement": "top",
+                                                         "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                                                         'onchange': "autoFillPatient(this.value)"}),
+            'died': DatePicker(options={"allowInputToggle": True}, attrs={
                 "input_group": False}),
-            'sampling_date': DatePicker(options={"allowInputToggle" : True}, attrs={
+            'sampling_date': DatePicker(options={"allowInputToggle": True}, attrs={
                 "input_group": False}),
-            
-            "corresponding_organoid" : forms.Select(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "title" : "generated from the same biopsy/tissue piece"},
-                                      ),
+
+            "corresponding_organoid": forms.Select(attrs={"data-toggle": "tooltip",
+                                                          "data-placement": "top",
+                                                          "title": "generated from the same biopsy/tissue piece"},
+                                                   ),
 
             # disabled
             "tumor_cell_content": forms.NumberInput(attrs={
@@ -296,10 +297,10 @@ class SampleFormTUM(ModelForm):
             choices=SITE_CHOICES))
     patient_identifier = forms.CharField(
         max_length=5, required=False,
-        widget=forms.TextInput(attrs={"data-toggle" : "tooltip", 
-                                      "data-placement" : "top",
-                                      "data-html" : "true",
-                                      "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+        widget=forms.TextInput(attrs={"data-toggle": "tooltip",
+                                      "data-placement": "top",
+                                      "data-html": "true",
+                                      "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
                                       'onchange': "autoFillPatient(this.value)",
                                       'disabled': "true"}))
     sex = forms.CharField(
@@ -384,13 +385,12 @@ class SampleFormTUM(ModelForm):
 
 
 class SampleFormSPL(SampleFormTUM):
-
     class Meta:
         model = HistopathologicalSample
         fields = all_fields
         widgets = {
-            'spl_received': DatePicker(options={"allowInputToggle" : True},
-                                       attrs={"input_group": False,                                    
+            'spl_received': DatePicker(options={"allowInputToggle": True},
+                                       attrs={"input_group": False,
                                               }),
 
             # disabled:
@@ -455,16 +455,15 @@ class SampleFormSPL(SampleFormTUM):
 
 
 class SampleFormScLab(SampleFormTUM):
-    
     class Meta:
         model = HistopathologicalSample
 
         fields = all_fields
         widgets = {
-            'sclab_received': DatePicker(options={"allowInputToggle" : True}, attrs={
+            'sclab_received': DatePicker(options={"allowInputToggle": True}, attrs={
                 "input_group": False}),
 
-            'sclab_extraction_date': DatePicker(options={"allowInputToggle" : True}, attrs={
+            'sclab_extraction_date': DatePicker(options={"allowInputToggle": True}, attrs={
                 "input_group": False}),
 
             # disabled
@@ -475,7 +474,7 @@ class SampleFormScLab(SampleFormTUM):
                                attrs={
                                    'disabled': "true",
                                    "input_group": False
-                                   }),
+                               }),
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
@@ -512,17 +511,16 @@ class SampleFormScLab(SampleFormTUM):
 
 
 class SampleFormLB(SampleFormTUM):
-
     class Meta:
         model = HistopathologicalSample
         fields = all_fields
         widgets = {
 
-            'lb_sampling_date': DatePicker(options={"allowInputToggle" : True},
+            'lb_sampling_date': DatePicker(options={"allowInputToggle": True},
                                            attrs={"input_group": False}),
-            'lb_received': DatePicker(options={"allowInputToggle" : True},
+            'lb_received': DatePicker(options={"allowInputToggle": True},
                                       attrs={"input_group": False}),
-            'lb_date_of_isolation': DatePicker(options={"allowInputToggle" : True},
+            'lb_date_of_isolation': DatePicker(options={"allowInputToggle": True},
                                                attrs={"input_group": False}),
 
             # disabled:
@@ -569,7 +567,6 @@ class SampleFormLB(SampleFormTUM):
 
 
 class SampleFormDataPaths(SampleFormTUM):
-
     class Meta:
         model = HistopathologicalSample
         fields = all_fields + ocdf_fields
@@ -593,7 +590,6 @@ class SampleFormDataPaths(SampleFormTUM):
                 'disabled': "true"}),
 
             "lb_status": forms.Select(attrs={'disabled': "true"}),
-
 
             # 'patient_identifier': forms.TextInput(attrs={'disabled': "true"})
             # always needed(?),
@@ -634,7 +630,6 @@ class SampleFormDataPaths(SampleFormTUM):
 
             "sclab_pool": forms.NumberInput(attrs={'disabled': "true"}),
 
-
         }
 
 
@@ -670,6 +665,7 @@ class FilterForm(forms.Form):
     tumor_cell_content_bioinf = forms.BooleanField(initial=True)
     reviewed_and_processed_by_sequencing = forms.BooleanField(initial=True)
 
+
 class GroupFilterForm(forms.Form):
     recruiter = forms.BooleanField(initial=True, required=False)
     tum = forms.BooleanField(initial=True, required=False)
@@ -679,12 +675,13 @@ class GroupFilterForm(forms.Form):
     ocdf = forms.BooleanField(initial=True, required=False)
 
 
-
 class LoginForm(forms.Form):
-    user_name = forms.CharField()
+    username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput())
 
 
 class SearchForm(forms.Form):
-    radio_select = forms.ChoiceField(choices=[("Patient Identifier", "SATURN3 Patient Identifier"), ("SATURN3 Sample Code", "SATURN3 Sample Code")], label="Search for", widget=forms.RadioSelect())
+    radio_select = forms.ChoiceField(
+        choices=[("Patient Identifier", "SATURN3 Patient Identifier"), ("SATURN3 Sample Code", "SATURN3 Sample Code")],
+        label="Search for", widget=forms.RadioSelect())
     search_field = forms.CharField(label="Search")

@@ -1,7 +1,7 @@
 const entitiy = new Map([
-  ["S3M", "S3M - Mamma"],
-  ["S3C", "S3C - Colon"],
-  ["S3P", "S3P - Pancreas"],
+  ["S3M", "M - Mamma"],
+  ["S3C", "C - Colon"],
+  ["S3P", "P - Pancreas"],
 ]);
 
 const tissueType = new Map([
@@ -66,7 +66,11 @@ function fullName() {
 function antiFullName() {
   console.log(this.options);
   for (option of this.options) {
-    option.textContent = option.value;
+    if (this.name == "saturn3_sample_code_0") {
+      option.textContent = option.value[2];
+    } else {
+      option.textContent = option.value;
+    }
   }
 }
 

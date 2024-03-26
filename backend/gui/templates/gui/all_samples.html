@@ -14,36 +14,64 @@ Samples
       <div>
         <hr>
       </div>
-      <div > 
-        <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-          Filter columns
-        </button>
-        <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
-        <button class="btn btn-primary" onclick="downloadWithFilter()"> Download</button>
-        <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
-            {% csrf_token %}
-          <ul class="dropdown-menu">
-            {% for filter in filters %}
-            <li class="dropdown-item"> 
-            {{filter}}
-            {{filter.label}} </li>
-            {% endfor %}
-          </ul>
+      <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
+        {% csrf_token %}
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-auto"> 
+            <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+              Filter columns
+            </button>
+            <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
+        
+            
+              <ul class="dropdown-menu">
+                {% for filter in filters %}
+                <li class="dropdown-item"> 
+                {{filter}}
+                {{filter.label}} </li>
+                {% endfor %}
+              </ul>
+            
+          </div>
+          <div class="col offset-sm-1">
+            <div class="input-group">
+              <label class="input-group-text" for="selectTableSearchColumn">Search</label>
+              <select class="form-select" name="searchColumn" id="selectTableSearchColumn" aria-label="Example select with button addon">
+                
+                {% if samples.0 %}
+                  {% for key, _ in samples.0 %}
+                    {% if key %}
+                      <option value="{{ key }}" >{{ key }}</option>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              </select>
+              <input type="text" class="form-control" name="search" id="tableSearchInput" onkeyup="searchTable()" placeholder="Search ...">
+            </div>
+          </div>
         </form>
-       
+          <div class="col-auto">
+            
+            <button class="btn btn-primary" type="button" onclick="downloadWithFilter()"> Download </button>
+            
+          </div>
+        </div>
       </div>
+
+
     </div>
   
     <div class="tablediv">
       <form method="post" id="id-form">{% csrf_token %}</form>
-      <table class="stripedtable">
+      <table class="stripedtable" id="sampleTable">
         <thead>
           <tr>
             {% if samples.0 %}
             {% for key, _ in samples.0 %}
               {% if key %}
                 {% if key == "SATURN3 Sample Code" %}
-                <th class="absolutecol"> {{ key }} </th>
+                <th>{{ key }}</th>
                 {% else %}
                 <th>{{ key }}</th>
                 {% endif %}
@@ -59,7 +87,7 @@ Samples
             {% for key, value in item %}
             {% if key %}
                 {% if key == "SATURN3 Sample Code" %}
-                <td> {{ value }} </td>
+                <td>{{ value }}</td>
                 {% else %}
                 <td>{{ value }}</td>
                 {% endif %}
@@ -76,11 +104,13 @@ Samples
         </tbody>
       </table>
     </div>
-    
-    <form  action={% url "filtered_download" %} method="post" id="filter-download">{% csrf_token %}</form>
+    <form  action={% url "filtered_download" %} method="post" id="filter-download">
+      {% csrf_token %}
+    </form>
     <br>
   </div>
 </div>
+
 {% endblock content %}
 
 {% block head_scripts%}
@@ -110,11 +140,10 @@ Samples
     }
 
     // takes form data out of the filter dropdown and posts it as 
-    // a new form to FilteredSampleView
+    // a new form to FilteredDownloadView
     function downloadWithFilter(){
       const form = document.getElementById('column-filter');
       var formData = new FormData(form);
-      console.log(formData)
       
       const downloadForm = document.getElementById('filter-download');
       
@@ -137,18 +166,66 @@ Samples
           newInput.type = "hidden";
           newInput.name = name
           newInput.value = "on"
-          console.log(newInput)
+          if (all_inputs[i].type == "text"){
+            newInput.value = all_inputs[i].value;
+          }
+
           downloadForm.appendChild(newInput);
         };
       };
 
+      // append select
+      const select = form.getElementsByTagName("select")[0];
+      console.log(select)
+      var newSelect = document.createElement('input');
+      newSelect.type = "hidden";
+      newSelect.name = select.name
+      newSelect.value = select.value
+      downloadForm.appendChild(newSelect);
+
       downloadForm.submit();
 
     }
+
     
     function applyFilter(){
       const form = document.getElementById('column-filter');
       form.submit();
+    }
+  </script>
+
+  <script>
+
+    function searchTable() {
+      // Declare variables
+      var input, filter, table, tr, td, tds, ths, i, txtValue, idx;
+      input = document.getElementById("tableSearchInput");
+      column = document.getElementById("selectTableSearchColumn").value
+      filter = input.value.toUpperCase();
+      table = document.getElementById("sampleTable");
+      tr = table.getElementsByTagName("tr");
+  
+      // get all column names
+      ths = tr[0].getElementsByTagName("th");
+      // find out index of column
+      for (i = 0; i < ths.length; i++) {
+        if (ths[i].innerHTML == column){
+          idx = i
+        }
+      }
+      console.log(idx)
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 1; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[idx];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
     }
 
   </script>

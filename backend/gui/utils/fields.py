@@ -1,20 +1,15 @@
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from typing import Any
-from django.forms.boundfield import BoundField
-from django.forms.fields import MultiValueField, CharField, IntegerField, ChoiceField
-from django.forms import BaseForm, Field, Select, MultiWidget, TextInput, NumberInput
-from django.forms.renderers import BaseRenderer
-from django.forms.widgets import Widget
-from django.utils.safestring import SafeText
+from django.forms.fields import (MultiValueField, CharField,
+                                 IntegerField, ChoiceField)
+from django.forms import Select, MultiWidget, TextInput, NumberInput
 from backend.gui.models import validate_alphanumeric
 import re
-from django.utils.functional import cached_property
-from django.forms.boundfield import BoundWidget
 
 ENTITY = [
-    ("S3M", "S3M"),
-    ("S3C", "S3C"),
-    ("S3P", "S3P")
+    ("S3M", "M"),
+    ("S3C", "C"),
+    ("S3P", "P")
 ]
 
 TISSUE_TYPE = [
@@ -52,16 +47,17 @@ ANALYTE_TYPE = [
     ("N", "N"),
 ]
 
-class CustomSelect(Select):
-    def __init__(self, attrs: dict[str, Any] | None = ..., choices: Sequence[tuple[Any, Any]] = ...) -> None:
-        super().__init__(attrs, choices)
 
+class CustomSelect(Select):
+    def __init__(self,
+                 attrs: dict[str, Any] | None = ...,
+                 choices: Sequence[tuple[Any, Any]] = ...) -> None:
+        super().__init__(attrs, choices)
 
 
 class SampleCodeField(MultiValueField):
     """
     Supposed to split the Saturn3-Sample-Code field into 8 different fields
-    
     """
     def __init__(self, **kwargs):
 
@@ -71,39 +67,50 @@ class SampleCodeField(MultiValueField):
 
         fields = (
             ChoiceField(
-                error_messages={"incomplete": "Select a value"}, choices=ENTITY
+                error_messages={"incomplete": "Select a value"},
+                choices=ENTITY
             ),
-            CharField(max_length=5,
+
+            CharField(
+                max_length=5,
                 error_messages={"incomplete": "Enter a 5-digit PID"},
-                validators=[validate_alphanumeric], help_text="Saturn3 + Entity"
+                validators=[validate_alphanumeric],
+                help_text="Saturn3 + Entity"
             ),
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
+
+            IntegerField(
+                error_messages={"incomplete": "Enter integer"},
+                min_value=0),
 
             ChoiceField(
-                error_messages={"incomplete": "Select a value"}, choices=TISSUE_TYPE
+                error_messages={"incomplete": "Select a value"},
+                choices=TISSUE_TYPE
             ),
 
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
+            IntegerField(
+                error_messages={"incomplete": "Enter integer"},
+                min_value=0),
 
             ChoiceField(
-                error_messages={"incomplete": "Select a value"}, choices=STORAGE_FORMAT
+                error_messages={"incomplete": "Select a value"},
+                choices=STORAGE_FORMAT
             ),
 
             ChoiceField(
-                error_messages={"incomplete": "Select a value"}, choices=ANALYTE_TYPE
+                error_messages={"incomplete": "Select a value"},
+                choices=ANALYTE_TYPE
             ),
 
-            IntegerField(error_messages={"incomplete": "Enter integer"}, min_value=0),
-            
+            IntegerField(error_messages={"incomplete": "Enter integer"},
+                         min_value=0),
         )
-        
+
         super().__init__(
             error_messages=error_messages,
             fields=fields,
             require_all_fields=True,
             **kwargs,
             )
-        
 
     def compress(self, valid_values: list):
         print(valid_values)
@@ -112,32 +119,48 @@ class SampleCodeField(MultiValueField):
             string += str(v)
             if valid_values.index(v) != 3 and valid_values.index(v) != 6:
                 string += "-"
-        return string[:-1]        
-    
+        return string[:-1]
 
 
 class SampleCodeWidget(MultiWidget):
 
     def __init__(self, widgets=None, attrs=None) -> None:
-        widgets=[
-            Select(attrs=attrs, choices=ENTITY),
-            TextInput(attrs={"maxlength" : 5,
-                             "data-toggle" : "tooltip",
-                             "data-placement" : "top",
-                             "title" : "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",},),
-            NumberInput(attrs={"data-toggle" : "tooltip",
-                               "data-placement" : "top",
-                               "title" : "Sampling timepoint 0, 1, 2 etc.",},),
-            Select(attrs=attrs, choices=TISSUE_TYPE), 
-            NumberInput(attrs={"data-toggle" : "tooltip",
-                               "data-placement" : "top",
-                               "title" : "Tissue type - order number",}),
+
+        widgets = [
+            Select(
+                attrs=attrs,
+                choices=ENTITY),
+
+            TextInput(
+                attrs={"maxlength": 5,
+                       "data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)"}
+                             ),
+
+            NumberInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Sampling timepoint 0, 1, 2 etc."}),
+
+            Select(
+                attrs=attrs,
+                choices=TISSUE_TYPE),
+
+            NumberInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Tissue type - order number"}),
+
             Select(choices=STORAGE_FORMAT),
-            Select(choices=ANALYTE_TYPE),   
-            NumberInput(attrs={"data-toggle" : "tooltip",
-                               "data-placement" : "top",
-                               "title" : "Analyte type - order number",})]
-        
+
+            Select(choices=ANALYTE_TYPE),
+
+            NumberInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Analyte type - order number"})]
+
         super().__init__(widgets, attrs)
 
     def decompress(self, value: Any) -> Any | None:
@@ -150,7 +173,8 @@ class SampleCodeWidget(MultiWidget):
             for section in splitted:
                 if section.isnumeric():
                     res.append(int(section))
-                elif splitted.index(section) == 3 or splitted.index(section) == 5:
+                elif (splitted.index(section) == 3 or
+                      splitted.index(section) == 5):
                     res.append(section[0])
                     res.append(int(section[1:]))
                 else:
@@ -158,8 +182,11 @@ class SampleCodeWidget(MultiWidget):
             print(res)
             return res
         return [None] * 8
-    
-    def value_from_datadict(self, data: dict[str, Any], files, name: str) -> Any:
+
+    def value_from_datadict(self,
+                            data: dict[str, Any],
+                            files,
+                            name: str) -> Any:
         """
         Handles the data dict coming from a submitted form or from the database
         """
@@ -175,5 +202,3 @@ class SampleCodeWidget(MultiWidget):
         decompressed_list.append(data["saturn3_sample_code_6"])
         decompressed_list.append(data["saturn3_sample_code_7"])
         return decompressed_list
-    
-
