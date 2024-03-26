@@ -61,6 +61,11 @@ CSRF_TRUSTED_ORIGINS = ["http://0.0.0.0", "https://ibsm-saturn3.uniklinik-freibu
 
 CSRF_COOKIE_SECURE = SETTINGS.CSFR_COOKIE_SECURE
 SESSION_COOKIE_SECURE = SETTINGS.SESSION_COOKIE_SECURE
+
+# Cookie options for automatic logout
+SESSION_COOKIE_AGE = 900
+SESSION_SAVE_EVERY_REQUEST = True
+
 # Application definition
 
 INSTALLED_APPS = [
