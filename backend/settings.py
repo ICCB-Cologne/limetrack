@@ -16,13 +16,13 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-print(os.getcwd())
+
 
 def load_env_file() -> str:
     output = ""
     env_dir = "env"
     dev_path = os.path.join(env_dir, "development.env")
-    prod_path = os.path.join(env_dir,"production.env")
+    prod_path = os.path.join(env_dir, "production.env")
 
     if os.path.exists(prod_path):
         output = prod_path
@@ -35,7 +35,7 @@ def load_env_file() -> str:
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=load_env_file())
-    
+
     POSTGRES_PASSWORD: str
     POSTGRES_USER: str
     POSTGRES_DB: str
@@ -111,7 +111,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -125,7 +124,6 @@ DATABASES = {
         "PORT": "5432",  # default postgres port
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -145,7 +143,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -156,7 +153,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -169,7 +165,6 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "backend", "gui", "static"),)
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 
 FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
@@ -190,7 +185,7 @@ LOGGING = {
             "level": "INFO",
             "class": "logging.handlers.RotatingFileHandler",
             "filename": os.path.join(BASE_DIR, "logs", "audit.log"),
-            "maxBytes": 500 * 1024**2,  # 500MB
+            "maxBytes": 500 * 1024 ** 2,  # 500MB
             "backupCount": 2,
             "formatter": "audit",
         },
@@ -207,6 +202,6 @@ LOGGING = {
 # Mail server settings
 
 EMAIL_HOST = "smtp.uniklinik-freiburg.de"
-#EMAIL_HOST_USER: ''
+# EMAIL_HOST_USER: ''
 EMAIL_PORT = 25
 EMAIL_SUBJECT_PREFIX = "[SATURN3 SAMPLE TRACKING] "
