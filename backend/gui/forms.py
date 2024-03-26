@@ -131,7 +131,8 @@ sclab_fields = [
     "sclab_status",
     "sclab_sequencing_type",
     "sclab_sorting",
-    "sclab_pool"
+    "sclab_pool",
+    "sclab_comment"
     ]
 
 lb_fields = [
