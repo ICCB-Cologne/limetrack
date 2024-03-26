@@ -57,14 +57,13 @@ GRADING = [
 
 STATUS_CHOICES = [
     ("RNA failed", "RNA failed"),
-    ("DNA failed", "DNA failed"),
+    ("ATAC failed", "ATAC failed"),
     ("sequencing failed", "sequencing failed"),
-    ("DNA/RNA failed", "DNA/RNA failed"),
+    ("ATAC/RNA failed", "ATAC/RNA failed"),
     ("successful RNA", "successful RNA"),
-    ("successful DNA", "successful DNA"),
-    ("successful DNA/RNA", "successful DNA/RNA")
+    ("successful ATAC", "successful ATAC"),
+    ("successful ATAC/RNA", "successful ATAC/RNA")
 ]
-
 
 SPL_SEQUENCING_TYPES = [
     ("panel", "panel"),
@@ -77,7 +76,6 @@ SPL_SEQUENCING_TYPES = [
 SCLAB_SEQUENCING_TYPES = [
     ("Multiome (RNA/ATAC)", "Multiome (RNA/ATAC)"),
     ("RNA", "RNA"),
-    ("DNA", "DNA"),
     ("ATAC", "ATAC"),
 ]
 
@@ -119,11 +117,13 @@ def validate_alphanumeric(value):
 def zero_to_a_hundred(value):
     if type(value) is not int and int(value) < 0 or int(value) > 100:
         raise ValidationError("Value between 0 and 100")
-    
+
+
 def check_sat3_sample_code(string):
     regex = '^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMSXLNCFR]\\d+-[SVFPY]-[DRCWYTMLGHN]\\d+$'
     if not re.search(regex, string):
         raise ValidationError("No valid Saturn3 Sample Code")
+
 
 # Create your models here.
 
@@ -132,8 +132,7 @@ class HistopathologicalSample(models.Model):
 
     def generate_patient_id(self):
         return self.patient_identifier + self.recruiting_site
-    
-    
+
     # recruiter ###
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES,
@@ -158,11 +157,11 @@ class HistopathologicalSample(models.Model):
         validators=[check_sat3_sample_code],
         verbose_name="SATURN3 Sample Code",
         help_text="S3 + Entity - "
-        "Patient Identifier - "
-        "Sampling Timepoint - "
-        "Tissue Type + Order Number - "
-        "Storage Format - Analyte Type "
-        "+ Order Number")
+                  "Patient Identifier - "
+                  "Sampling Timepoint - "
+                  "Tissue Type + Order Number - "
+                  "Storage Format - Analyte Type "
+                  "+ Order Number")
     sampling_date = models.DateField(verbose_name="Sampling Date")
     tissue_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,
@@ -177,7 +176,7 @@ class HistopathologicalSample(models.Model):
     corresponding_organoid = models.BooleanField(
         verbose_name="Corresponding Organoid",
         choices=CORRESPONDING_ORGANOID_CHOICES
-        )
+    )
     grading = models.CharField(max_length=CHARFIELD_MAXLEN, choices=GRADING,
                                verbose_name="Grading", blank=True,
                                null=True)
@@ -211,14 +210,14 @@ class HistopathologicalSample(models.Model):
     sclab_extraction_date = models.DateField(null=True,
                                              blank=True,
                                              verbose_name="scLab "
-                                             "Extraction Date")
+                                                          "Extraction Date")
     sclab_nuclei_yield = models.IntegerField(null=True,
                                              blank=True,
                                              verbose_name="scLab Nuclei Yield")
     sclab_nuclei_size = models.IntegerField(null=True,
                                             blank=True,
                                             verbose_name="scLab Nuclei"
-                                            " Size [µm]")
+                                                         " Size [µm]")
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                     blank=True, null=True,
                                     verbose_name="scLab Status",
@@ -226,13 +225,20 @@ class HistopathologicalSample(models.Model):
     sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True, null=True,
                                              verbose_name="scLab"
-                                             " Sequencing Type",
+                                                          " Sequencing Type",
                                              choices=SCLAB_SEQUENCING_TYPES)
     sclab_sorting = models.BooleanField(choices=CORRESPONDING_ORGANOID_CHOICES,
                                         blank=True, null=True,
                                         verbose_name="scLab Sorting")
-    sclab_pool = models.IntegerField(null=True,
-                                     blank=True, verbose_name="scLab Pool")
+    sclab_pool = models.CharField(
+        null=True,
+        blank=True,
+        verbose_name="scLab Pool")
+    sclab_comment = models.TextField(max_length=CHARFIELD_MAXLEN,
+                                     blank=True,
+                                     null=True,
+                                     verbose_name="scLab comment"
+                                     )
 
     # LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,
@@ -247,15 +253,15 @@ class HistopathologicalSample(models.Model):
     lb_sample_volume = models.IntegerField(null=True,
                                            blank=True,
                                            verbose_name="LB Sample"
-                                           " Volume [ml]")
+                                                        " Volume [ml]")
     lb_date_of_isolation = models.DateField(null=True,
                                             blank=True,
                                             verbose_name="LB Date "
-                                            "of Isolation")
+                                                         "of Isolation")
     lb_total_isolated_cfdna = models.IntegerField(null=True,
                                                   blank=True,
                                                   verbose_name="LB Total "
-                                                  "Isolated cfDNA [ng]")
+                                                               "Isolated cfDNA [ng]")
 
     lb_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                  blank=True, null=True,
@@ -264,50 +270,47 @@ class HistopathologicalSample(models.Model):
 
     # Datapaths ###
 
-    pools = models.CharField(max_length=CHARFIELD_MAXLEN,
-                             blank=True,
-                             null=True,
-                             verbose_name="Pools")
-    scrna_r1 = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                blank=True,
-                                null=True,
-                                verbose_name="scRNA R1")
+    pools = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="Pools")
+    scrna_r1 = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="scRNA R1")
 
-    scrna_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                blank=True,
-                                null=True,
-                                verbose_name="scRNA R2")
-    scatac_r1 = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                 blank=True,
-                                 null=True,
-                                 verbose_name="scATAC R1")
+    scrna_r2 = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="scRNA R2")
+    scatac_r1 = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="scATAC R1")
 
-    scatac_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                 blank=True,
-                                 null=True,
-                                 verbose_name="scATAC R2")
+    scatac_r2 = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="scATAC R2")
 
-    scatac_i2 = models.CharField(max_length=CHARFIELD_MAXLEN,
-                                 blank=True,
-                                 null=True,
-                                 verbose_name="scATAC I2")
+    scatac_i2 = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="scATAC I2")
 
-    wgs_r1 = models.CharField(max_length=CHARFIELD_MAXLEN,
-                              blank=True,
-                              null=True,
-                              verbose_name="WGS R1")
+    wgs_r1 = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="WGS R1")
 
-    wgs_r2 = models.CharField(max_length=CHARFIELD_MAXLEN,
-                              blank=True,
+    wgs_r2 = models.CharField(blank=True,
                               null=True,
                               verbose_name="WGS R2")
 
-    wgs_bam = models.CharField(max_length=CHARFIELD_MAXLEN,
-                               blank=True,
+    wgs_bam = models.CharField(blank=True,
                                null=True,
                                verbose_name="WGS bam")
 
-    wgs_vcf = models.CharField(max_length=CHARFIELD_MAXLEN,
-                               blank=True,
+    wgs_vcf = models.CharField(blank=True,
                                null=True,
                                verbose_name="WGS vcf")
