@@ -184,6 +184,7 @@ form {
     width: 25%;
     font-weight: bold;
     padding-top: auto;
+    margin-top: 0.9em;
 }
 
 
@@ -237,8 +238,26 @@ form {
     font-size: large;
 }
 
+.wrong_input textarea {
+    border: 2px solid #ff6347;
+    padding: 5px;
+    width: 50%;
+    /* margin: 8px 0; */
+    font-size: large;
+    vertical-align: center;
+}
+
 /* Style the file input fields */
 input[type="file"] {
+    border: 1px solid #aaa;
+    padding: 5px;
+    width: 50%;
+    /* margin: 8px 0; */
+    font-size: large;
+    vertical-align: center;
+}
+
+textarea {
     border: 1px solid #aaa;
     padding: 5px;
     width: 50%;
