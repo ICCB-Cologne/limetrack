@@ -202,6 +202,6 @@ LOGGING = {
 # Mail server settings
 
 EMAIL_HOST = "smtp.uniklinik-freiburg.de"
-# EMAIL_HOST_USER: ''
+# EMAIL_HOST_USER = "saturn3@uniklinik-freiburg.de"
 EMAIL_PORT = 25
 EMAIL_SUBJECT_PREFIX = "[SATURN3 SAMPLE TRACKING] "

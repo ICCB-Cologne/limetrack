@@ -431,7 +431,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         context = {
             'samples': fields_and_values_list,
             'filters': filters,
-            'user': request.user
+            'user': request.user.get_username()
         }
         return render(request, template_name, context=context)
 
@@ -585,6 +585,8 @@ class LoginView(TemplateView):
         pw = request.POST["password"]
         user = authenticate(request, username=user_name, password=pw)
         if user is None:
+            messages.error(
+                        request, "Wrong password or user name.")
             return HttpResponseRedirect(request.path_info)
         else:
             login(request, user)

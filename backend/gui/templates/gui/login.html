@@ -7,7 +7,18 @@ Login
 
 {% block content %}
 <div class="containerino">
+
   <a href={% url "password_reset" %}>Forgot Password?</a>
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}       
+        <li {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+
   <form action={% url "login" %} class="login-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="form-containerino">
@@ -19,17 +30,8 @@ Login
         <button type="submit" class="btn btn-block btn-primary login-button">Login</button>
       </p>
     </div>
+    
     </form>
-   
-
-
-    {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}       
-            <li {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
-        {% endfor %}
-      </ul>
-      {% endif %}
 </div>
 
 

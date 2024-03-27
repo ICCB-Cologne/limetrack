@@ -37,7 +37,6 @@
             <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
             <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">Samples</a>
             <a class="nav-item nav-link" href={% url "contact" %} id="contact-nav">Contact</a>
-            <a class="nav-item nav-link" href={% url "imprint" %} id="imprint-nav">Imprint</a>
           </div>
           <div class="navbar-nav ms-auto">
             <div class="vr bg-light"></div>
@@ -62,7 +61,7 @@
       </div>
     </nav>
 
-    
+
     {% block content %}
     {% endblock %}
 
@@ -105,7 +104,6 @@
 
             <ul class="nav col-md-4 justify-content-end">
               <li class="nav-item"><a href={% url "config" %} class="nav-link px-2 text-light">Home</a></li>
-              <li class="nav-item"><a href={% url "contact" %} class="nav-link px-2 text-light">Contact</a></li>
               <li class="nav-item"><a href={% url "imprint" %} class="nav-link px-2 text-light">Imprint</a></li>
             </ul>
          <div>
