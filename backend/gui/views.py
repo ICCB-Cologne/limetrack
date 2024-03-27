@@ -196,6 +196,7 @@ def handle_form(form: ModelForm,
         sclab_sequencing_type = data["sclab_sequencing_type"]
         sclab_sorting = data["sclab_sorting"]
         sclab_pool = data["sclab_pool"]
+        sclab_comment = data["sclab_comment"]
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
@@ -208,7 +209,8 @@ def handle_form(form: ModelForm,
                 sclab_status=sclab_status,
                 sclab_sequencing_type=sclab_sequencing_type,
                 sclab_sorting=sclab_sorting,
-                sclab_pool=sclab_pool)
+                sclab_pool=sclab_pool,
+                sclab_comment=sclab_comment)
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
