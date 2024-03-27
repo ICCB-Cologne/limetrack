@@ -433,7 +433,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         context = {
             'samples': fields_and_values_list,
             'filters': filters,
-            'user': request.user.get_username()
+            'user': request.user
         }
         return render(request, template_name, context=context)
 
