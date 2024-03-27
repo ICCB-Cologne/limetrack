@@ -129,15 +129,20 @@ def check_sat3_sample_code(string):
 
 
 class HistopathologicalSample(models.Model):
+    """
+    When adding fields to the model, remember to make respective changes to the forms.py file
+    Meaning go to forms.py and make sure that the lists and dicts on the top of the file include all model fields
+    """
 
     def generate_patient_id(self):
         return self.patient_identifier + self.recruiting_site
 
-    # recruiter ###
+    # recruiter - 11 fields ###
+
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES,
         verbose_name="Recruiting Site")
-    # set this to primary key?
+
     patient_identifier = models.CharField(
         max_length=5,
         validators=[validate_alphanumeric],

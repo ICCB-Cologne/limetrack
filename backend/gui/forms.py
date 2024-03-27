@@ -9,156 +9,37 @@ from tempus_dominus.widgets import DatePicker
 # documentation https://github.com/FlipperPA/django-tempus-dominus
 from .utils.fields import SampleCodeField, SampleCodeWidget
 
-all_field_verbose_names = [
-    "Recruiting Site",
-    "Patient Identifier",
-    # "Patient",
-    "Sex",
-    "Died",
-    # "Tissue Name", skip for prototype
-    # "Used in", skip for prototype
-    "SATURN3 Sample Code",
-    "Sampling Date",
-    "Tissue Type",
-    "Type of Intervention",
-    "Localisation",
-    "Corresponding Organoid",
-    "Grading",
-    "Tumor Cell Content",
-    "SPL Received",
-    "SPL Status",
-    "SPL Sequencing Type",
-    "scLab Received",
-    "scLab Extraction Date",
-    "scLab Nuclei Yield",
-    "scLab Nuclei Size [µm]",
-    "scLab Status",
-    "scLab Sequencing Type",
-    "scLab Sorting",
-    "scLab Pool",
-    "scLab comment",
-    "LB analyte type",
-    "LB Sampling Date",
-    "LB Received",
-    "LB Sample Volume [ml]",
-    "LB Date of Isolation",
-    "LB Total Isolated cfDNA [ng]",
-    "LB Status",
 
-    "Pools",
-    "scRNA R1",
-    "scRNA R2",
-    "scATAC R1",
-    "scATAC R2",
-    "scATAC I2",
-    "WGS R1",
-    "WGS R2",
-    "WGS bam",
-    "WGS vcf"
-]
+all_field_verbose_names = []
+all_field_names = []
 
-all_fields = [
-    "recruiting_site",
-    "patient_identifier",
-    # "patient", skip for prototype
-    "sex",
-    "died",
-    # "tissue_name", skip for prototype
-    # "used_in", skip for prototype
-    "saturn3_sample_code",
-    "sampling_date",
-    "tissue_type",
-    "type_of_intervention",
-    "localisation",
-    "corresponding_organoid",
-    "grading",
-    "tumor_cell_content",
-    "spl_received",
-    "spl_status",
-    "spl_sequencing_type",
-    "sclab_received",
-    "sclab_extraction_date",
-    "sclab_nuclei_yield",
-    "sclab_nuclei_size",
-    "sclab_status",
-    "sclab_sequencing_type",
-    "sclab_sorting",
-    "sclab_pool",
-    "sclab_comment",
-    "lb_analyte_type",
-    "lb_sampling_date",
-    "lb_received",
-    "lb_sample_volume",
-    "lb_date_of_isolation",
-    "lb_total_isolated_cfdna",
-    "lb_status"
-]
+# exclude primary key "ID" by indexing
+all_fields = HistopathologicalSample._meta.get_fields()[1:]
 
-recruiter_fields = [
-    "recruiting_site",
-    "patient_identifier",
-    # "patient", skip for prototype
-    "sex",
-    "died",
-    # "tissue_name", skip for prototype
-    # "used_in", skip for prototype
-    "saturn3_sample_code",
-    "sampling_date",
-    "tissue_type",
-    "type_of_intervention",
-    "localisation",
-    "corresponding_organoid",
-    "grading"
-]
+for field in all_fields:
+    all_field_verbose_names.append(field.verbose_name)
 
-tum_fields = [
-    "saturn3_sample_code",
-    "tumor_cell_content"
-    ]
+for field in all_fields:
+    # exclude odcf
+    if field.name == "pools":
+        break
+    all_field_names.append(field.name)
 
-spl_fields = [
-    "saturn3_sample_code",
-    "spl_received",
-    "spl_status",
-    "spl_sequencing_type"]
 
-sclab_fields = [
-    "saturn3_sample_code",
-    "sclab_received",
-    "sclab_extraction_date",
-    "sclab_nuclei_yield",
-    "sclab_nuclei_size",
-    "sclab_status",
-    "sclab_sequencing_type",
-    "sclab_sorting",
-    "sclab_pool",
-    "sclab_comment"
-    ]
+# lists of fields for individual groups
+# TODO: after adding new model fields    
+# change indexes here by changing the first and the last model field name of a group
+recruiter_fields = all_field_names[:all_field_names.index("grading") + 1]
 
-lb_fields = [
-    "saturn3_sample_code",
-    "lb_analyte_type",
-    "lb_sampling_date",
-    "lb_received",
-    "lb_sample_volume",
-    "lb_date_of_isolation",
-    "lb_total_isolated_cfdna",
-    "lb_status"
-]
+tum_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("tumor_cell_content") : all_field_names.index("tumor_cell_content") + 1]
 
-odcf_fields = [
-    "saturn3_sample_code",
-    "pools",
-    "scrna_r1",
-    "scrna_r2",
-    "scatac_r1",
-    "scatac_r2",
-    "scatac_i2",
-    "wgs_r1",
-    "wgs_r2",
-    "wgs_bam",
-    "wgs_vcf"
-]
+spl_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("spl_received") : all_field_names.index("spl_sequencing_type") + 1]
+
+sclab_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("sclab_received") : all_field_names.index("sclab_comment") + 1]
+
+lb_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("lb_analyte_type") : all_field_names.index("lb_status") + 1]
+
+odcf_fields = ["saturn3_sample_code"] + [field.name for field in all_fields[len(all_field_names):]]
 
 field_dict = {
     "recruiter": recruiter_fields,
@@ -169,6 +50,7 @@ field_dict = {
     "lb": lb_fields,
               }
 
+# dicts for disabling (+ grey display of) the widgets/input fields of individual groups
 
 disabled_tum_dict = {
     "tumor_cell_content": forms.NumberInput(
@@ -262,7 +144,7 @@ class SampleForm(ModelForm):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields + odcf_fields
+        fields = all_field_names + odcf_fields
 
         widgets = {
 
@@ -330,7 +212,7 @@ class SampleFormRec(ModelForm):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields
+        fields = all_field_names
 
         widgets = {
 
@@ -448,7 +330,7 @@ class SampleFormTUM(ModelForm):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields
+        fields = all_field_names
         widgets = {
 
             # disabled #
@@ -475,7 +357,7 @@ class SampleFormSPL(SampleFormTUM):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields
+        fields = all_field_names
         widgets = {
 
             # DatePickers
@@ -510,7 +392,7 @@ class SampleFormScLab(SampleFormTUM):
     class Meta:
         model = HistopathologicalSample
 
-        fields = all_fields
+        fields = all_field_names
         widgets = {
 
             # DatePickers:
@@ -547,7 +429,7 @@ class SampleFormLB(SampleFormTUM):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields
+        fields = all_field_names
         widgets = {
 
             # DatePickers:
@@ -588,7 +470,7 @@ class SampleFormDataPaths(SampleFormTUM):
 
     class Meta:
         model = HistopathologicalSample
-        fields = all_fields + odcf_fields
+        fields = all_field_names + odcf_fields
         widgets = {
 
             # disabled:
