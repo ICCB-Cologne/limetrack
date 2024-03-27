@@ -55,7 +55,7 @@ GRADING = [
     ("G3", "G3")
 ]
 
-STATUS_CHOICES = [
+SCLAB_STATUS_CHOICES = [
     ("RNA failed", "RNA failed"),
     ("ATAC failed", "ATAC failed"),
     ("sequencing failed", "sequencing failed"),
@@ -63,6 +63,16 @@ STATUS_CHOICES = [
     ("successful RNA", "successful RNA"),
     ("successful ATAC", "successful ATAC"),
     ("successful ATAC/RNA", "successful ATAC/RNA")
+]
+
+SPL_STATUS_CHOICES = [
+    ("RNA failed", "RNA failed"),
+    ("DNA failed", "DNA failed"),
+    ("sequencing failed", "sequencing failed"),
+    ("DNA/RNA failed", "DNA/RNA failed"),
+    ("successful RNA", "successful RNA"),
+    ("successful DNA", "successful DNA"),
+    ("successful DNA/RNA", "successful DNA/RNA")
 ]
 
 SPL_SEQUENCING_TYPES = [
@@ -201,7 +211,7 @@ class HistopathologicalSample(models.Model):
     spl_status = models.CharField(
         max_length=CHARFIELD_MAXLEN,
         blank=True, null=True,
-        choices=STATUS_CHOICES,
+        choices=SPL_STATUS_CHOICES,
         verbose_name="SPL Status")
     spl_sequencing_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,
@@ -226,7 +236,7 @@ class HistopathologicalSample(models.Model):
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                     blank=True, null=True,
                                     verbose_name="scLab Status",
-                                    choices=STATUS_CHOICES)
+                                    choices=SCLAB_STATUS_CHOICES)
     sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True, null=True,
                                              verbose_name="scLab"

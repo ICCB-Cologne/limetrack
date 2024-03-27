@@ -1,5 +1,5 @@
 from .forms import (
-    all_field_verbose_names, all_fields, odcf_fields, field_dict,
+    all_field_verbose_names, all_field_names, odcf_fields, field_dict,
     SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, LoginForm, GroupFilterForm,
@@ -162,95 +162,70 @@ def handle_form(form: ModelForm,
 
     """
     if request.user.groups.filter(name='SPL').exists():
-        spl_received = data["spl_received"]
-        spl_status = data["spl_status"]
-        spl_sequencing_type = data["spl_sequencing_type"]
+
+        update_dict = {}
+        for field in field_dict["spl"][1:]:
+            update_dict.update({field : data[field]})
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
+            
             HistopathologicalSample.objects.filter(
-                saturn3_sample_code=sat3_code).update(
-                spl_received=spl_received,
-                spl_status=spl_status,
-                spl_sequencing_type=spl_sequencing_type)
+                 saturn3_sample_code=sat3_code).update(
+                     **update_dict) 
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
     elif request.user.groups.filter(name='TUM').exists():
-        tumor_cell_content = data["tumor_cell_content"]
+        
+        update_dict = {}
+        for field in field_dict["tum"][1:]:
+            update_dict.update({field : data[field]})
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
-                tumor_cell_content=tumor_cell_content)
+                **update_dict)
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
     elif request.user.groups.filter(name='scOpenLab').exists():
-        sclab_received = data["sclab_received"]
-        sclab_extraction_date = data["sclab_extraction_date"]
-        sclab_nuclei_yield = data["sclab_nuclei_yield"]
-        sclab_nuclei_size = data["sclab_nuclei_size"]
-        sclab_status = data["sclab_status"]
-        sclab_sequencing_type = data["sclab_sequencing_type"]
-        sclab_sorting = data["sclab_sorting"]
-        sclab_pool = data["sclab_pool"]
-        sclab_comment = data["sclab_comment"]
 
+        update_dict = {}
+        for field in field_dict["sclab"][1:]:
+            update_dict.update({field : data[field]})
+        
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
-                sclab_received=sclab_received,
-                sclab_extraction_date=sclab_extraction_date,
-                sclab_nuclei_yield=sclab_nuclei_yield,
-                sclab_nuclei_size=sclab_nuclei_size,
-                sclab_status=sclab_status,
-                sclab_sequencing_type=sclab_sequencing_type,
-                sclab_sorting=sclab_sorting,
-                sclab_pool=sclab_pool,
-                sclab_comment=sclab_comment)
+                **update_dict)
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
     elif request.user.groups.filter(name='LiquidBiopsy').exists():
-        lb_analyte_type = data["lb_analyte_type"]
-        lb_sampling_date = data["lb_sampling_date"]
-        lb_received = data["lb_received"]
-        lb_sample_volume = data["lb_sample_volume"]
-        lb_date_of_isolation = data["lb_date_of_isolation"]
-        lb_total_isolated_cfdna = data["lb_total_isolated_cfdna"]
-        lb_status = data["lb_status"]
+
+        update_dict = {}
+        for field in field_dict["lb"][1:]:
+            update_dict.update({field : data[field]})
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
-                lb_analyte_type=lb_analyte_type,
-                lb_sampling_date=lb_sampling_date,
-                lb_received=lb_received,
-                lb_sample_volume=lb_sample_volume,
-                lb_date_of_isolation=lb_date_of_isolation,
-                lb_total_isolated_cfdna=lb_total_isolated_cfdna,
-                lb_status=lb_status)
+                **update_dict)
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
     elif request.user.groups.filter(name='OmicsPath').exists():
+
+        update_dict = {}
+        for field in field_dict["odcf"][1:]:
+            update_dict.update({field : data[field]})
+
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
-                pools=data["pools"],
-                scrna_r1=data["scrna_r1"],
-                scrna_r2=data["scrna_r2"],
-                scatac_r1=data["scatac_r1"],
-                scatac_r2=data["scatac_r2"],
-                scatac_i2=data["scatac_i2"],
-                wgs_r1=data["wgs_r1"],
-                wgs_r2=data["wgs_r2"],
-                wgs_bam=data["wgs_bam"],
-                wgs_vcf=data["wgs_vcf"],
+                **update_dict
             )
 
         else:
@@ -273,18 +248,12 @@ def handle_form(form: ModelForm,
         if tag == "general":
             form.save()
         else:
+            update_dict = {}
+            for field in field_dict["recruiter"]:
+                update_dict.update({field : data[field]})
+
             HistopathologicalSample.objects.create(
-                recruiting_site=data["recruiting_site"],
-                patient_identifier=data["patient_identifier"],
-                sex=data["sex"],
-                died=data["died"],
-                saturn3_sample_code=data["saturn3_sample_code"],
-                sampling_date=data["sampling_date"],
-                tissue_type=data["tissue_type"],
-                type_of_intervention=data["type_of_intervention"],
-                localisation=data["localisation"],
-                corresponding_organoid=data["corresponding_organoid"],
-                grading=data["grading"]
+                **update_dict
             )
 
     elif (request.user.is_superuser
@@ -384,7 +353,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
         for index, row in df.iterrows():
 
             data = {}
-            for field_name, verbose_field_name in zip(all_fields + odcf_fields[1:], all_field_verbose_names):
+            for field_name, verbose_field_name in zip(all_field_names + odcf_fields[1:], all_field_verbose_names):
                 data.update({field_name: row.get(verbose_field_name)})
 
             form = get_form(str(request.user.groups.first()).lower(), data)
@@ -395,7 +364,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 # valid after the for loop
 
                 form_data = form.cleaned_data
-                handle_form(
+                return handle_form(
                     form,
                     data["saturn3_sample_code"],
                     form_data,
@@ -433,7 +402,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         context = {
             'samples': fields_and_values_list,
             'filters': filters,
-            'user': request.user
+            'user': request.user # not username because we need to check the user's attributes
         }
         return render(request, template_name, context=context)
 
