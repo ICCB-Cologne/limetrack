@@ -93,6 +93,12 @@ disabled_sclab_dict = {
             "sclab_sorting": forms.NullBooleanSelect(
                 attrs={"disabled": "true"}),
 
+            "atac_isle_id": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "rna_isle_id": forms.TextInput(
+                attrs={"disabled": "true"}),
+
             "sclab_pool": forms.NumberInput(
                 attrs={"disabled": "true"}),
 

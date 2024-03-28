@@ -134,6 +134,8 @@ def check_sat3_sample_code(string):
     if not re.search(regex, string):
         raise ValidationError("No valid Saturn3 Sample Code")
 
+def check_six_figures(number: str):
+    return len(number) == 6
 
 # Create your models here.
 
@@ -250,10 +252,25 @@ class HistopathologicalSample(models.Model):
         null=True,
         blank=True,
         verbose_name="scLab Pool")
+    
+    rna_isle_id = models.CharField(
+        null=True,
+        blank=True,
+        max_length = 6,
+        validators=[check_six_figures],
+        verbose_name="RNA Isle ID")
+    
+    atac_isle_id = models.CharField(
+        null=True,
+        blank=True,
+        max_length = 6,
+        validators=[check_six_figures],
+        verbose_name="ATAC Isle ID")
+
     sclab_comment = models.TextField(max_length=CHARFIELD_MAXLEN,
                                      blank=True,
                                      null=True,
-                                     verbose_name="scLab comment"
+                                     verbose_name="scLab Comment"
                                      )
 
     # LB ###
