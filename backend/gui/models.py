@@ -140,8 +140,9 @@ def check_sat3_sample_code(string):
 
 class HistopathologicalSample(models.Model):
     """
-    When adding fields to the model, remember to make respective changes to the forms.py file
-    Meaning go to forms.py and make sure that the lists and dicts on the top of the file include all model fields
+    When adding fields to the model, remember to make changes to the forms.py file accordingly.
+
+    Meaning go to forms.py and make sure that the lists and dicts on the top of the file include all model fields.
     """
 
     def generate_patient_id(self):

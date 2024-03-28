@@ -168,6 +168,9 @@ def handle_form(form: ModelForm,
             update_dict.update({field : data[field]})
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+
+            existing_fields = HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).first()._meta.fields_map
+
             
             HistopathologicalSample.objects.filter(
                  saturn3_sample_code=sat3_code).update(
@@ -277,6 +280,7 @@ def handle_form(form: ModelForm,
 
         form.save()
 
+
     else:
         messages.error(request,
                        f'Submission unsuccessful!'
@@ -295,7 +299,7 @@ def handle_form(form: ModelForm,
         messages.success(request, 'Submission successful!', extra_tags=tag)
         return HttpResponseRedirect(request.path_info)
     else:
-        # if a CSV file's been submitted (handle_file handles the return)
+        # if a CSV file's been submitted
         return
 
 
@@ -364,12 +368,15 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 # valid after the for loop
 
                 form_data = form.cleaned_data
-                return handle_form(
+                response = handle_form(
                     form,
                     data["saturn3_sample_code"],
                     form_data,
                     request,
                     "file")
+                if response is not None:
+                    return response
+
             else:
                 if first_error:
                     messages.error(
