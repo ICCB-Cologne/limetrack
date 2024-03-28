@@ -53,11 +53,38 @@ def get_form(
     return form
 
 
+def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
+    record = HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).first()
+    existing_fields = record._meta.get_fields()
+
+    already_filled = False
+    for field in existing_fields:
+        if field.name in field_dict[group_name][1:] and getattr(record, field.name) is not None:
+            already_filled = True
+            break
+    return already_filled
+
+
 def no_sample_code_found(request: HttpRequest, sat3_code: str, tag: str, form):
     messages.error(request,
                    f'Submission unsuccessful!'
                    f' No record with saturn3_sample_code '
                    f'{str(sat3_code)} found.',
+                   extra_tags=tag)
+
+    return render(request, 'gui/index.html',
+                  context={'form': form,
+                           'upload_form': UploadForm(),
+                           'search_form': SearchForm(),
+                           "jump_to": ("form" if tag == "general" else None)})
+
+
+def record_already_exists(request: HttpRequest, sat3_code: str, tag: str, form, group_name: str):
+    messages.error(request,
+                   f'Submission unsuccessful!'
+                   f' {group_name} data for '
+                   'record with saturn3_sample_code '
+                   f'{str(sat3_code)} already exists.',
                    extra_tags=tag)
 
     return render(request, 'gui/index.html',
@@ -169,10 +196,10 @@ def handle_form(form: ModelForm,
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
-            existing_fields = HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).first()._meta.fields_map
+            if check_existing_input_for_group("spl", sat3_code):
+                return record_already_exists(request, sat3_code, tag, form, "spl")
 
-            
-            HistopathologicalSample.objects.filter(
+            HistopathologicalSample.objects.filter( 
                  saturn3_sample_code=sat3_code).update(
                      **update_dict) 
         else:
@@ -185,6 +212,9 @@ def handle_form(form: ModelForm,
             update_dict.update({field : data[field]})
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+
+            if check_existing_input_for_group("tum", sat3_code):
+                return record_already_exists(request, sat3_code, tag, form, "tum")
 
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
@@ -199,6 +229,10 @@ def handle_form(form: ModelForm,
             update_dict.update({field : data[field]})
         
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+
+            if check_existing_input_for_group("sclab", sat3_code):
+                return record_already_exists(request, sat3_code, tag, form, "sclab")
+
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
                 **update_dict)
@@ -212,6 +246,10 @@ def handle_form(form: ModelForm,
             update_dict.update({field : data[field]})
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+
+            if check_existing_input_for_group("lb", sat3_code):
+                return record_already_exists(request, sat3_code, tag, form, "lb")
+
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
                 **update_dict)
@@ -225,6 +263,9 @@ def handle_form(form: ModelForm,
             update_dict.update({field : data[field]})
 
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+
+            if check_existing_input_for_group("odcf", sat3_code):
+                return record_already_exists(request, sat3_code, tag, form, "odcf")
 
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
@@ -255,7 +296,8 @@ def handle_form(form: ModelForm,
             for field in field_dict["recruiter"]:
                 update_dict.update({field : data[field]})
 
-            HistopathologicalSample.objects.create(
+            HistopathologicalSample.objects.filter(
+               saturn3_sample_code=sat3_code).create(
                 **update_dict
             )
 
@@ -264,21 +306,32 @@ def handle_form(form: ModelForm,
           or request.user.groups.filter(name='admins').exists()
           or request.user.groups.filter(name='coordinators').exists()
           ):
+        
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-            messages.error(request,
-                           f'Submission unsuccessful!'
-                           f' Record with saturn3_sample_code '
-                           f'{str(sat3_code)} already exists.',
-                           extra_tags=tag)
+            update_dict = {}
+            for field in all_field_names + odcf_fields:
+                update_dict.update({field : data[field]})
 
-            return render(request, 'gui/index.html',
-                          context={'form': form,
-                                   'upload_form': UploadForm(),
-                                   'search_form': SearchForm(),
-                                   "jump_to": ("form" if tag == "general"
-                                               else None)})
+            HistopathologicalSample.objects.filter(
+                saturn3_sample_code=sat3_code).update(
+                **update_dict
+            )
+            # messages.error(request,
+            #                f'Submission unsuccessful!'
+            #                f' Record with saturn3_sample_code '
+            #                f'{str(sat3_code)} already exists.',
+            #                extra_tags=tag)
 
-        form.save()
+            # return render(request, 'gui/index.html',
+            #               context={'form': form,
+            #                        'upload_form': UploadForm(),
+            #                        'search_form': SearchForm(),
+            #                        "jump_to": ("form" if tag == "general"
+            #                                    else None)})
+
+
+        else:
+            form.save()
 
 
     else:
