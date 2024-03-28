@@ -9,3 +9,4 @@ venv/
 logs/
 .vscode/
 production.env
+static/
