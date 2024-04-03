@@ -393,7 +393,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
     def post(self, request: HttpRequest):
         upload_form = UploadForm(request.POST, request.FILES)
         if upload_form.is_valid():
-            return self.handle_file(request.FILES["file"], request)
+            return self.handle_file(request.FILES["file"], request) 
 
         messages.error(request, "File upload failed!", extra_tags="file")
         return HttpResponseRedirect(reverse("config"))
@@ -407,6 +407,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
         df = pd.read_csv(file, sep=",", keep_default_na=False)
         first_error = True
+        valid_forms = []
         for index, row in df.iterrows():
 
             data = {}
@@ -416,7 +417,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
             form = get_form(str(request.user.groups.first()).lower(), data)
 
             if form.is_valid():
-                # alternatively append every valid form to valid_forms
+                # alternatively append every valid form to valid_forms list
                 # and process them only if all forms were
                 # valid after the for loop
 
@@ -427,6 +428,9 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     form_data,
                     request,
                     "file")
+                # handle_form returns None if there are no errors
+                # if it's not None it's an error response which has to 
+                # be returned
                 if response is not None:
                     return response
 
