@@ -54,6 +54,16 @@ def get_form(
 
 
 def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
+    # temporary auxiliary dictionairy - remove after refractoring all old group names to the new ones
+    temp_dict = {"spl" : "spl",
+                 "tum" : "tum",
+                 "scopenlab" : "sclab",
+                 "liquidbiopsy" : "lb",
+                 "omicspath" : "odcf"
+                 }
+    if group_name in temp_dict.keys():
+        group_name = temp_dict[group_name]
+    
     record = HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).first()
     existing_fields = record._meta.get_fields()
 
@@ -65,30 +75,133 @@ def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
     return already_filled
 
 
-def no_sample_code_found(request: HttpRequest, sat3_code: str, tag: str, form):
+def check_records_existence(request: HttpRequest, sat3_code: str, tag: str, form: ModelForm):
+    
+    if (request.user.groups.filter(name='SPL').exists() or
+        request.user.groups.filter(name='TUM').exists() or
+        request.user.groups.filter(name='scOpenLab').exists() or
+        request.user.groups.filter(name='LiquidBiopsy').exists() or
+        request.user.groups.filter(name='OmicsPath').exists()):
+
+        # if data for the group specific fields already exists -> no update -> error message
+        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+            group_name = str(request.user.groups.first()).lower()
+            if check_existing_input_for_group(group_name, sat3_code):
+                    return record_already_exists(request, sat3_code, tag, form, group_name)
+        
+        # no record with given sat3code exists -> these groups are not allowed to create records -> error message
+        else:
+            return no_sample_code_found(request, sat3_code, tag, form)
+        
+            
+    # if record with given sat3sample already exists -> recruiter is not allowed to edit data -> error message
+    elif request.user.groups.filter(name='Recruiter').exists():
+        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+            messages.error(request,
+                            f'File upload failed!'
+                            f' Record with saturn3_sample_code '
+                            f'{str(sat3_code)} already exists.',
+                            extra_tags=tag)
+
+            return render(request, 'gui/index.html',
+                            context={'form': (form if tag == "general" else get_form(str(request.user.groups.first()).lower())),
+                                    'upload_form': UploadForm(),
+                                    'search_form': SearchForm(),
+                                    "jump_to": ("form" if tag == "general" else None)})
+    
+    # superuser, admins and coordinators are allowed to overwrite all existing data -> update and create records
+    elif (request.user.is_superuser
+        or request.user.groups.filter(name='superuser').exists()
+        or request.user.groups.filter(name='admins').exists()
+        or request.user.groups.filter(name='coordinators').exists()
+        ):
+        return
+    
+    # unauthorized users -> error message
+    else:
+        messages.error(request,
+                    f'File upload failed!'
+                    f' Not permitted!',
+                    extra_tags=tag)
+
+        return render(request, 'gui/index.html',
+                        context={'form': form,
+                                'upload_form': UploadForm(),
+                                'search_form': SearchForm(),
+                                "jump_to": ("form" if tag == "general"
+                                            else None)})
+    
+    # if there is no existing data conflicting with the input data
+    return
+
+
+def update_record(request: HttpRequest, form, group_name: str, data: dict, sat3_code: str, tag: str):
+    update_dict = {}
+    for field in field_dict[group_name][1:]:
+        update_dict.update({field : data[field]})
+
+    if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+
+        if check_existing_input_for_group(group_name, sat3_code):
+            return record_already_exists(request, sat3_code, tag, form, group_name)
+        
+        HistopathologicalSample.objects.filter(
+            saturn3_sample_code=sat3_code).update(
+            **update_dict)
+        
+        if tag == "general":
+            messages.success(request, 'Submission successful!', extra_tags=tag)
+        return HttpResponseRedirect(request.path_info)
+
+        
+    else:
+        return no_sample_code_found(request, sat3_code, tag, form)
+
+
+def no_sample_code_found(request: HttpRequest, sat3_code: str, tag: str, form: ModelForm):
+    
+    if tag == "file":
+        msg = f'File upload failed!' \
+            ' No record with saturn3_sample_code ' \
+            f'{str(sat3_code)} found.'
+        
+        
+    else:
+        msg = f'Submission unsuccessful!' \
+            ' No record with saturn3_sample_code ' \
+            f'{str(sat3_code)} found.'
+    
     messages.error(request,
-                   f'Submission unsuccessful!'
-                   f' No record with saturn3_sample_code '
-                   f'{str(sat3_code)} found.',
+                   msg,
                    extra_tags=tag)
+    
+    
 
     return render(request, 'gui/index.html',
-                  context={'form': form,
+                  context={'form': (form if tag == "general" else get_form(str(request.user.groups.first()).lower())),
                            'upload_form': UploadForm(),
                            'search_form': SearchForm(),
                            "jump_to": ("form" if tag == "general" else None)})
 
 
 def record_already_exists(request: HttpRequest, sat3_code: str, tag: str, form, group_name: str):
+
+    if tag == "file":
+        msg = f'File upload failed! {group_name} data for ' \
+            'record with saturn3_sample_code ' \
+            f'{str(sat3_code)} already exists.'
+        
+    else:
+        msg = f'Submission unsuccessful! {group_name} data for ' \
+            'record with saturn3_sample_code ' \
+            f'{str(sat3_code)} already exists.'
+
     messages.error(request,
-                   f'Submission unsuccessful!'
-                   f' {group_name} data for '
-                   'record with saturn3_sample_code '
-                   f'{str(sat3_code)} already exists.',
+                   msg,
                    extra_tags=tag)
 
     return render(request, 'gui/index.html',
-                  context={'form': form,
+                  context={'form': (form if tag == "general" else get_form(str(request.user.groups.first()).lower())),
                            'upload_form': UploadForm(),
                            'search_form': SearchForm(),
                            "jump_to": ("form" if tag == "general" else None)})
@@ -190,90 +303,23 @@ def handle_form(form: ModelForm,
     """
     if request.user.groups.filter(name='SPL').exists():
 
-        update_dict = {}
-        for field in field_dict["spl"][1:]:
-            update_dict.update({field : data[field]})
-
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
-            if check_existing_input_for_group("spl", sat3_code):
-                return record_already_exists(request, sat3_code, tag, form, "spl")
-
-            HistopathologicalSample.objects.filter( 
-                 saturn3_sample_code=sat3_code).update(
-                     **update_dict) 
-        else:
-            return no_sample_code_found(request, sat3_code, tag, form)
+        return update_record(request, form, "spl", data, sat3_code, tag)
 
     elif request.user.groups.filter(name='TUM').exists():
         
-        update_dict = {}
-        for field in field_dict["tum"][1:]:
-            update_dict.update({field : data[field]})
-
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
-            if check_existing_input_for_group("tum", sat3_code):
-                return record_already_exists(request, sat3_code, tag, form, "tum")
-
-            HistopathologicalSample.objects.filter(
-                saturn3_sample_code=sat3_code).update(
-                **update_dict)
-        else:
-            return no_sample_code_found(request, sat3_code, tag, form)
+        return update_record(request, form, "tum", data, sat3_code, tag)
 
     elif request.user.groups.filter(name='scOpenLab').exists():
 
-        update_dict = {}
-        for field in field_dict["sclab"][1:]:
-            update_dict.update({field : data[field]})
-        
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
-            if check_existing_input_for_group("sclab", sat3_code):
-                return record_already_exists(request, sat3_code, tag, form, "sclab")
-
-            HistopathologicalSample.objects.filter(
-                saturn3_sample_code=sat3_code).update(
-                **update_dict)
-        else:
-            return no_sample_code_found(request, sat3_code, tag, form)
+        return update_record(request, form, "sclab", data, sat3_code, tag)
 
     elif request.user.groups.filter(name='LiquidBiopsy').exists():
 
-        update_dict = {}
-        for field in field_dict["lb"][1:]:
-            update_dict.update({field : data[field]})
-
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
-            if check_existing_input_for_group("lb", sat3_code):
-                return record_already_exists(request, sat3_code, tag, form, "lb")
-
-            HistopathologicalSample.objects.filter(
-                saturn3_sample_code=sat3_code).update(
-                **update_dict)
-        else:
-            return no_sample_code_found(request, sat3_code, tag, form)
+        return update_record(request, form, "lb", data, sat3_code, tag)
 
     elif request.user.groups.filter(name='OmicsPath').exists():
 
-        update_dict = {}
-        for field in field_dict["odcf"][1:]:
-            update_dict.update({field : data[field]})
-
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-
-            if check_existing_input_for_group("odcf", sat3_code):
-                return record_already_exists(request, sat3_code, tag, form, "odcf")
-
-            HistopathologicalSample.objects.filter(
-                saturn3_sample_code=sat3_code).update(
-                **update_dict
-            )
-
-        else:
-            return no_sample_code_found(request, sat3_code, tag, form)
+        return update_record(request, form, "odcf", data, sat3_code, tag)
 
     elif request.user.groups.filter(name='Recruiter').exists():
         # maybe check if record already exists and deny creating of new record
@@ -399,7 +445,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
         return HttpResponseRedirect(reverse("config"))
 
     @staticmethod
-    def handle_file(file, request):
+    def handle_file(file, request: HttpRequest):
         """
         TODO: needs to be adapted to the different
         sorts of forms / group memberships
@@ -407,7 +453,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
         df = pd.read_csv(file, sep=",", keep_default_na=False)
         first_error = True
-        valid_forms = []
+        valid_forms: list[ModelForm] = []
+        row_number = 1
         for index, row in df.iterrows():
 
             data = {}
@@ -417,32 +464,44 @@ class UploadView(LoginRequiredMixin, TemplateView):
             form = get_form(str(request.user.groups.first()).lower(), data)
 
             if form.is_valid():
-                # alternatively append every valid form to valid_forms list
-                # and process them only if all forms were
-                # valid after the for loop
+                # append every valid form to valid_forms list
+                # and process them only if all forms are
+                # valid
 
                 form_data = form.cleaned_data
-                response = handle_form(
-                    form,
-                    data["saturn3_sample_code"],
-                    form_data,
-                    request,
-                    "file")
-                # handle_form returns None if there are no errors
+                sat3_code = form.cleaned_data["saturn3_sample_code"]
+
+                possible_response = check_records_existence(request, sat3_code, "file", form)
+                
+                # check_records_existence with returns None if there are no errors
                 # if it's not None it's an error response which has to 
                 # be returned
-                if response is not None:
-                    return response
+                if possible_response is not None:
+                    return possible_response
+                
+                valid_forms.append(form)
 
             else:
                 if first_error:
                     messages.error(
                         request, "File upload failed!", extra_tags="file")
 
-                msg = f"Error in data of patient with identifier: {str(row['SATURN3 Sample Code'])} {form.errors.as_text()}"
+                msg = f"Error in row {row_number + 1}: data of the record with SATURN3 Sample Code: {str(row['SATURN3 Sample Code'])} --- {str(form.errors.as_text())}"
                 messages.error(
                     request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
+            
+            row_number += 1
+            
+        for form in valid_forms:
+            form_data = form.cleaned_data
+            handle_form(
+                form,
+                form_data["saturn3_sample_code"],
+                form_data,
+                request,
+                "file")
+            
 
         messages.success(request, 'File upload successful!', extra_tags="file")
         return HttpResponseRedirect(request.path_info)

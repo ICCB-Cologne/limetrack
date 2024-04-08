@@ -448,12 +448,13 @@ footer {
     position: absolute;
     bottom: 0;
     background-color: rgba(20, 40, 100, 0.94);
-    height: 4rem;
+    height: 25rem;
     padding-bottom: 4.5rem;
 }
 
+/* distance to footer: has to be larger than footer's height  */
 .prefooter{
-    padding-bottom: 10rem;
+    padding-bottom: 35rem;
 }
 
 /*Login Form*/
@@ -492,5 +493,5 @@ footer {
 /* Samples */
 #header-samples {
     margin-top: 16px;
-    width: 95%;
+    width: 95%; 
 }
