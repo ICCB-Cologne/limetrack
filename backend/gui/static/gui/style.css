@@ -443,19 +443,27 @@ ul {
     list-style-type: none;
 }
 
-footer {
+/* footer {
     width: 100%;
     position: absolute;
     bottom: 0;
     background-color: rgba(20, 40, 100, 0.94);
     height: 25rem;
     padding-bottom: 4.5rem;
+} */
+
+footer {
+    clear: both;
+    position: relative;
+    height: 4rem;
+    /* margin-top: 5rem; */
+    background-color: rgba(20, 40, 100, 0.94);
 }
 
 /* distance to footer: has to be larger than footer's height  */
-.prefooter{
+/* .prefooter{
     padding-bottom: 47rem;
-}
+} */
 
 /*Login Form*/
 #id_password {

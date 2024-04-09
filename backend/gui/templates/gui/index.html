@@ -13,7 +13,11 @@ Sample Tracking
 {% block content %}
 <div class="containerino">
 
- 
+  {% comment %} a little space above the footer {% endcomment %}
+  <div class="my-5">
+    
+  </div>
+  
 
   <form action={% url "config" %} method="post" enctype="multipart/form-data" id="start-of-form">
     {% csrf_token %}
