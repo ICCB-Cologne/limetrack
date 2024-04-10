@@ -91,7 +91,7 @@
       });
     </script>
 
-    {% comment %} Important for keeping the footer at the bottom {% endcomment %}
+    {% comment %} Important for keeping some space between footer and the main page {% endcomment %}
     <div class="my-5">
     
     </div>
@@ -120,49 +120,63 @@
 
 
       {% comment %} Logo banners {% endcomment %}
-      <div class="bg-white mt-0">
-        <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <div class="row bg-white mt-0 pt-4 w-100">
 
-          <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <img class="rounded bg-white pt-4 pb-4 " src="{% static 'gui/img/image001.png' %}" width="225" alt="Saturn3 Logo"> 
-          </div>
-         
-         
-          <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <div class="bg-white rounded">
-            <img class="rounded bg-white pt-4 pb-4 " src="{% static 'gui/img/NDK_Logo_webRZ/NDGK_Logo_JPG_webRZ/NDGK_Logo_webRZ.jpg' %}" width="225" alt="Saturn3 Logo"> 
+        <div class="col-9">
+      
+          <div class="bg-white mt-0">
+
+
+            
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
+
+              <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <img class="rounded bg-white p-1" src="{% static 'gui/img/ICCB_logo.png' %}" width="275" alt="Saturn3 Logo">
+              </div>
+
+              <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <img class="rounded bg-white p-1" src="{% static 'gui/img/DKFZ_Logo-Research_en_Black-Blue_sRGB.png' %}" width="275" height="" alt="Saturn3 Logo">
+              </div>
+
+
+              <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <img class="rounded bg-white pb-3 pt-3" src="{% static 'gui/img/Logo_UME_UKE.jpg' %}" width="275" alt="Saturn3 Logo">
+              </div>
+
             </div>
           </div>
 
-          <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <img class="rounded bg-white" src="{% static 'gui/img/Logo_UME_WTZ_essen.png' %}" width="225" alt="Saturn3 Logo">
-          </div>
-        </div>
-      </div>
+
+          <div class="bg-white pt-3 pb-5">
+            <div class="d-flex flex-wrap justify-content-between align-items-center">
 
 
-      <div class="bg-white pb-5">
-        <div class="d-flex flex-wrap justify-content-between align-items-center">
 
-          <div class="col-md-3 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <img class="rounded bg-white p-1" src="{% static 'gui/img/ICCB_logo.png' %}" width="225" alt="Saturn3 Logo">
-          </div>
-  
-          <div class="col-md-3 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <img class="rounded bg-white p-1" src="{% static 'gui/img/DKFZ_Logo-Research_en_Black-Blue_sRGB.png' %}" width="225" height="90" alt="Saturn3 Logo">
-          </div>
+              <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <img class="rounded bg-white p-1" src="{% static 'gui/img/Logo_UniKoeln.svg' %}" width="275" height="90" alt="Saturn3 Logo">
+              </div>
 
-          <div class="col-md-3 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <img class="rounded bg-white p-1" src="{% static 'gui/img/Logo_UniKoeln.svg' %}" width="225" height="90" alt="Saturn3 Logo">
-          </div>
+              <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <img class="rounded bg-white pt-4 pb-4" src="{% static 'gui/img/UKF.png' %}" width="275" alt="Saturn3 Logo"> 
+              </div>
+
+              <div class="col-md-4 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <img class="rounded bg-white" src="{% static 'gui/img/Logo_UME_WTZ_essen.png' %}" width="275" style="margin-top: -25px; margin-bottom: -25px" alt="Saturn3 Logo">
+              </div>
 
 
-          <div class="col-md-3 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <img class="rounded bg-white pb-3 pt-3" src="{% static 'gui/img/Logo_UME_UKE.jpg' %}" width="225" alt="Saturn3 Logo">
+            </div>
           </div>
 
         </div>
+
+        <div class="col-3 mt-5">
+          <div class="d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <img class="bg-white" src="{% static 'gui/img/NKD_BMBF.png' %}" width="400" alt="Saturn3 Logo">
+          <div>
+
+        </div>  
       </div>
   
   </body>
-</html>
+</html> 
