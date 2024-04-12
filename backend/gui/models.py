@@ -258,14 +258,14 @@ class HistopathologicalSample(models.Model):
         blank=True,
         max_length = 6,
         validators=[check_six_figures],
-        verbose_name="RNA ISLE ID")
+        verbose_name="RNA ILSE ID")
     
     atac_isle_id = models.CharField(
         null=True,
         blank=True,
         max_length = 6,
         validators=[check_six_figures],
-        verbose_name="ATAC ISLE ID")
+        verbose_name="ATAC ILSE ID")
 
     sclab_comment = models.TextField(max_length=CHARFIELD_MAXLEN,
                                      blank=True,
