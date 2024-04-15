@@ -28,40 +28,40 @@
   <body class="bg-light">
     {% comment %} This div renders the footer on the bottom of the viewport {% endcomment %}
     <div class="d-flex flex-column min-vh-100">
-    {# Navigation across pages #}
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-      <div class="container-fluid">
-        <a class="navbar-brand " href="/">
-          <img class="rounded" src="{% static 'gui/img/SATURN3_Logo_RGB_Square_rect.png' %}" width="70" alt="Saturn3 Logo">
-        </a>
-        <div class="collapse navbar-collapse">
-          <div class="navbar-nav">
-            <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
-            <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">Samples</a>
-            <a class="nav-item nav-link" href={% url "contact" %} id="contact-nav">Contact</a>
-          </div>
-          <div class="navbar-nav ms-auto">
-            <div class="vr bg-light"></div>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                User
-              </a>
-              <div id="dropdown-login" class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarScrollingDropdown">
-                <h6 class="dropdown-header"> {% if user %} {{ user }} {% else %} You are not logged in {% endif %}</h6>
-                {% if user %}
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href={% url "password_change" %}>Change password</a> 
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="/logout/">Log out</a> 
-                
-                
-                {% endif %}
-              </div>
-            </li>
+      {# Navigation across pages #}
+      <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+          <a class="navbar-brand " href="/">
+            <img class="rounded" src="{% static 'gui/img/SATURN3_Logo_RGB_Square_rect.png' %}" width="70" alt="Saturn3 Logo">
+          </a>
+          <div class="collapse navbar-collapse">
+            <div class="navbar-nav">
+              <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
+              <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">Samples</a>
+              <a class="nav-item nav-link" href={% url "contact" %} id="contact-nav">Contact</a>
+            </div>
+            <div class="navbar-nav ms-auto">
+              <div class="vr bg-light"></div>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  User
+                </a>
+                <div id="dropdown-login" class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarScrollingDropdown">
+                  <h6 class="dropdown-header"> {% if user %} {{ user }} {% else %} You are not logged in {% endif %}</h6>
+                  {% if user %}
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href={% url "password_change" %}>Change password</a> 
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/logout/">Log out</a> 
+                  
+                  
+                  {% endif %}
+                </div>
+              </li>
+            </div>
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
 
     
 
@@ -103,7 +103,7 @@
 
             <p class="col-md-4 mb-0 text-light">SATURN3 Sample Tracking Tool</p>
 
-            <div class="col-md-1 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <div class="col-md-1 d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto">
               
             </div>
 
@@ -128,17 +128,25 @@
 
             <div class="d-flex flex-wrap justify-content-between align-items-center">
 
-              <div class="col-md-4 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
                 <img class="bg-white p-1 img-fluid" src="{% static 'gui/img/ICCB_logo.png' %}" width="150" alt="Saturn3 Logo">
               </div>
 
-              <div class="col-md-4 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto text-decoration-none">
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
+              </div>
+
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
                 <img class="rounded bg-white img-fluid" src="{% static 'gui/img/DKFZ_cropped.png' %}" style="margin-bottom: -25px" width="250" height="" alt="Saturn3 Logo">
               </div>
 
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
+              </div>
 
-              <div class="col-md-4 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
                 <img class="rounded bg-white mb-2 img-fluid" src="{% static 'gui/img/Logo_UME_UKE.jpg' %}" width="200" alt="Saturn3 Logo">
+              </div>
+
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
               </div>
 
             </div>
@@ -148,33 +156,37 @@
           <div class="bg-white pt-0 pb-2">
             <div class="d-flex flex-wrap justify-content-between align-items-center">
 
-              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
               </div>
 
-              <div class="col-md-3 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
                 <img class="rounded bg-white p-1 img-fluid" src="{% static 'gui/img/Logo_UniKoeln.svg' %}" width="150" height="" alt="Saturn3 Logo">
               </div>
 
-              <div class="col-md-3 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
+              </div>
+
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
                 <img class="rounded bg-white pt-2 pb-2 img-fluid" src="{% static 'gui/img/UKF.png' %}" width="150" alt="Saturn3 Logo"> 
               </div>
 
-              <div class="col-md-3 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <img class="rounded bg-white pb-0 img-fluid" src="{% static 'gui/img/Logo_UME_WTZ_essen.png' %}" width="150" style="margin-top: -25px; margin-bottom: -25px" alt="Saturn3 Logo">
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
               </div>
 
-
+              <div class="col-md-2 d-flex align-items-center justify-content-center mt-0 mb-1 mb-md-0 me-md-auto">
+                <img class="rounded bg-white pb-0 img-fluid" src="{% static 'gui/img/Logo_UME_WTZ_essen.png' %}" width="150" style="margin-top: -25px; margin-bottom: -25px" alt="Saturn3 Logo">
+              </div>
             </div>
           </div>
-
         </div>
 
-        <div class="col-3 mt-0">
-          <div class="d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto">
-            <img class="bg-white img-fluid" src="{% static 'gui/img/NKD_BMBF.png' %}" width="300" alt="Saturn3 Logo">
-          <div>
 
-        </div>  
+        <div class="col-3 mt-1">
+          <div class="d-flex align-items-center justify-content-center mt-2 mb-3 mb-md-0 me-md-auto">
+            <img class="bg-white img-fluid" src="{% static 'gui/img/NKD_BMBF.png' %}" width="300" alt="NKD and BMBF Logo">
+          <div>
+        </div>
+ 
       </div>
   
   </body>

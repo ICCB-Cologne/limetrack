@@ -134,6 +134,7 @@ def check_sat3_sample_code(string):
     if not re.search(regex, string):
         raise ValidationError("No valid Saturn3 Sample Code")
 
+
 def check_six_figures(number: str):
     return len(number) == 6
 
@@ -142,9 +143,13 @@ def check_six_figures(number: str):
 
 class HistopathologicalSample(models.Model):
     """
-    When adding fields to the model, remember to make changes to the forms.py file accordingly.
+    When adding fields to the model,
+    remember to make changes to
+    the forms.py file accordingly.
 
-    Meaning go to forms.py and make sure that the lists and dicts on the top of the file include all model fields.
+    Meaning go to forms.py and make sure
+    that the lists and dicts on the top of
+    the file include all model fields.
     """
 
     def generate_patient_id(self):
@@ -252,18 +257,18 @@ class HistopathologicalSample(models.Model):
         null=True,
         blank=True,
         verbose_name="scLab Pool")
-    
+
     rna_isle_id = models.CharField(
         null=True,
         blank=True,
-        max_length = 6,
+        max_length=6,
         validators=[check_six_figures],
         verbose_name="RNA ILSE ID")
-    
+
     atac_isle_id = models.CharField(
         null=True,
         blank=True,
-        max_length = 6,
+        max_length=6,
         validators=[check_six_figures],
         verbose_name="ATAC ILSE ID")
 

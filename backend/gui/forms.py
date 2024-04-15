@@ -27,17 +27,17 @@ for field in all_fields:
 
 
 # lists of fields for individual groups
-# TODO: after adding new model fields    
+# TODO: after adding new model fields
 # change indexes here by changing the first and the last model field name of a group
 recruiter_fields = all_field_names[:all_field_names.index("grading") + 1]
 
-tum_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("tumor_cell_content") : all_field_names.index("tumor_cell_content") + 1]
+tum_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("tumor_cell_content"): all_field_names.index("tumor_cell_content") + 1]
 
-spl_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("spl_received") : all_field_names.index("spl_sequencing_type") + 1]
+spl_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("spl_received"): all_field_names.index("spl_sequencing_type") + 1]
 
-sclab_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("sclab_received") : all_field_names.index("sclab_comment") + 1]
+sclab_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("sclab_received"): all_field_names.index("sclab_comment") + 1]
 
-lb_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("lb_analyte_type") : all_field_names.index("lb_status") + 1]
+lb_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("lb_analyte_type"): all_field_names.index("lb_status") + 1]
 
 odcf_fields = ["saturn3_sample_code"] + [field.name for field in all_fields[len(all_field_names):]]
 
