@@ -462,13 +462,10 @@ class UploadView(LoginRequiredMixin, TemplateView):
                         value = False
                 data.update({field_name: value})
 
-            print("-----------<<<< TESTING -----------<<<<")
-            print(data)
             form = get_form(str(request.user.groups.first()).lower(), data)
             
 
             if form.is_valid():
-                print("VALID")
                 # append every valid form to valid_forms list
                 # and process them only if all forms are
                 # valid
