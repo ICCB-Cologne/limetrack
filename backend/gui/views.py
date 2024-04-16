@@ -458,7 +458,9 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 # workaround for allowing yes and no as Boolean values in file upload
                 if field_name == "corresponding_organoid" or field_name == "sclab_sorting":
-                    if value.lower() == "yes":
+                    if type(value) is not str:
+                        pass
+                    elif value.lower() == "yes":
                         value = True
                     elif value.lower() == "no":
                         value = False
