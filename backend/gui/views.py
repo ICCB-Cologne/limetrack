@@ -453,11 +453,22 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
             data = {}
             for field_name, verbose_field_name in zip(all_field_names + odcf_fields[1:], all_field_verbose_names):
-                data.update({field_name: row.get(verbose_field_name)})
+                value: str = row.get(verbose_field_name)
+                # workaround for allowing yes and no as Boolean values in file upload
+                if field_name == "corresponding_organoid" or field_name == "sclab_sorting":
+                    if value.lower() == "yes":
+                        value = True
+                    elif value.lower() == "no":
+                        value = False
+                data.update({field_name: value})
 
+            print("-----------<<<< TESTING -----------<<<<")
+            print(data)
             form = get_form(str(request.user.groups.first()).lower(), data)
+            
 
             if form.is_valid():
+                print("VALID")
                 # append every valid form to valid_forms list
                 # and process them only if all forms are
                 # valid
