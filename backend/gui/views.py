@@ -15,11 +15,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.forms.models import model_to_dict
-from .models import HistopathologicalSample
+from .models import HistopathologicalSample, check_sat3_sample_code
 from django.contrib import messages
 from django.shortcuts import render
 from django.forms import ModelForm
 from django.urls import reverse
+from django.core.exceptions import ValidationError
 
 from typing import Any
 import csv
@@ -454,12 +455,28 @@ class UploadView(LoginRequiredMixin, TemplateView):
             data = {}
             for field_name, verbose_field_name in zip(all_field_names + odcf_fields[1:], all_field_verbose_names):
                 value: str = row.get(verbose_field_name)
+
                 # workaround for allowing yes and no as Boolean values in file upload
                 if field_name == "corresponding_organoid" or field_name == "sclab_sorting":
                     if value.lower() == "yes":
                         value = True
                     elif value.lower() == "no":
                         value = False
+
+                # unfortunately I can't figure out a better way to check the sample code (as implemented below) by now 
+                # since the field is composed out of multiple fields the usual form handling (form.is_valid())
+                # leads to the SampleCodeWidget trying to decompress() the field.
+                # this yet leads to errors because decompress() can only handle sample codes in the
+                # correct format 
+                if field_name == "saturn3_sample_code":
+                    try:
+                        check_sat3_sample_code(value)
+                    except ValidationError:
+                        messages.error(request, "File upload failed!", extra_tags="file")
+                        msg = f"Error in row {row_number + 1}: data of the record with SATURN3 Sample Code: {str(row['SATURN3 Sample Code'])} --- No valid SATURN3 Sample Code"
+                        messages.error(request, msg, extra_tags="file")
+                        return HttpResponseRedirect(request.path_info)
+                
                 data.update({field_name: value})
 
             form = get_form(str(request.user.groups.first()).lower(), data)
@@ -526,7 +543,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         context = {
             "samples": fields_and_values_list,
             "filters": filters,
-            "user": request.user  # not username because we need to check the user's attributes
+            "user": request.user  # user, not username because we need to check the user's attributes
         }
         return render(request, template_name, context=context)
 
