@@ -70,8 +70,8 @@ Samples
             {% if samples.0 %}
             {% for key, _ in samples.0 %}
               {% if key %}
-                {% if key == "SATURN3 Sample Code" %}
-                <th>{{ key }}</th>
+                {% if key == "ID" %}
+                <th hidden>{{ key }}</th>
                 {% else %}
                 <th>{{ key }}</th>
                 {% endif %}
@@ -86,8 +86,8 @@ Samples
           <tr>
             {% for key, value in item %}
             {% if key %}
-                {% if key == "SATURN3 Sample Code" %}
-                <td>{{ value }}</td>
+                {% if key == "ID" %}
+                <td hidden >{{ value }}</td>
                 {% else %}
                 <td>{{ value }}</td>
                 {% endif %}
