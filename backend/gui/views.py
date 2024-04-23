@@ -66,18 +66,24 @@ def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
     if group_name in temp_dict.keys():
         group_name = temp_dict[group_name]
 
-    record = HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).first()
+    record = HistopathologicalSample.objects. \
+        filter(saturn3_sample_code=sat3_code).first()
+
     existing_fields = record._meta.get_fields()
 
     already_filled = False
     for field in existing_fields:
-        if (field.name in field_dict[group_name][1:] and getattr(record, field.name) is not None):
+        if (field.name in field_dict[group_name][1:]
+                and getattr(record, field.name) is not None):
             already_filled = True
             break
     return already_filled
 
 
-def check_records_existence(request: HttpRequest, sat3_code: str, tag: str, form: ModelForm):
+def check_records_existence(request: HttpRequest,
+                            sat3_code: str,
+                            tag: str,
+                            form: ModelForm):
 
     if (request.user.groups.filter(name="SPL").exists() or
         request.user.groups.filter(name="TUM").exists() or
@@ -86,7 +92,8 @@ def check_records_existence(request: HttpRequest, sat3_code: str, tag: str, form
             request.user.groups.filter(name="OmicsPath").exists()):
 
         # if data for the group specific fields already exists -> no update -> error message
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+        if HistopathologicalSample.objects. \
+                filter(saturn3_sample_code=sat3_code).exists():
             group_name = str(request.user.groups.first()).lower()
             if check_existing_input_for_group(group_name, sat3_code):
                 return record_already_exists(request, sat3_code, tag, form, group_name)
@@ -377,8 +384,8 @@ def handle_form(form: ModelForm,
 
     else:
         messages.error(request,
-                       f"Submission unsuccessful!"
-                       f" Not permitted!",
+                       "Submission unsuccessful!"
+                       " Not permitted!",
                        extra_tags=tag)
 
         return render(request, "gui/index.html",
@@ -398,7 +405,8 @@ def handle_form(form: ModelForm,
 
 
 class DashBoardView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/dashboard.html"
         return render(request, template_name)
 
@@ -465,11 +473,11 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     elif value.lower() == "no":
                         value = False
 
-                # unfortunately I can't figure out a better way to check the sample code (as implemented below) by now 
+                # unfortunately I can't figure out a better way to check the sample code (as implemented below) by now
                 # since the field is composed out of multiple fields the usual form handling (form.is_valid())
                 # leads to the SampleCodeWidget trying to decompress() the field.
                 # this yet leads to errors because decompress() can only handle sample codes in the
-                # correct format 
+                # correct format
                 if field_name == "saturn3_sample_code":
                     try:
                         check_sat3_sample_code(value)
@@ -478,11 +486,10 @@ class UploadView(LoginRequiredMixin, TemplateView):
                         msg = f"Error in row {row_number + 1}: data of the record with SATURN3 Sample Code: {str(row['SATURN3 Sample Code'])} --- No valid SATURN3 Sample Code"
                         messages.error(request, msg, extra_tags="file")
                         return HttpResponseRedirect(request.path_info)
-                
+
                 data.update({field_name: value})
 
             form = get_form(str(request.user.groups.first()).lower(), data)
-            
 
             if form.is_valid():
                 # append every valid form to valid_forms list
