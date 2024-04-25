@@ -70,11 +70,11 @@ def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
         filter(saturn3_sample_code=sat3_code).first()
 
     existing_fields = record._meta.get_fields()
-
     already_filled = False
     for field in existing_fields:
         if (field.name in field_dict[group_name][1:]
-                and getattr(record, field.name) is not None):
+                and getattr(record, field.name) is not None
+                and getattr(record, field.name) != ""):  # for TextArea fields ...
             already_filled = True
             break
     return already_filled

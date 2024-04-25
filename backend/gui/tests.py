@@ -1,6 +1,6 @@
 from django.test import TestCase
 from backend.gui.models import HistopathologicalSample
-
+from django.test import Client
 # Create your tests here.
 
 class CSVFileDataCreation(TestCase):
@@ -44,3 +44,15 @@ class CSVFileDataCreation(TestCase):
     def test_humene(self):
         self.assertEqual("LOL", 'LOL')
 
+
+class LoginTest(TestCase):
+
+    def test_login(self):
+        c = Client()
+        response = c.post("/login/", {"user_name": "rosot", "password": "root"})
+        print("post test_login")
+        print(response.status_code)
+        print(response.content)
+        print("get test_login")
+        response = c.get("/login/")
+        #print(response.content)
