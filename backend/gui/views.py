@@ -562,7 +562,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         delete_instance = HistopathologicalSample.objects.get(id=delete_id)
         delete_instance.delete()
         app_log.info(
-            f"{request.user} deleted"
+            f"{request.user} deleted "
             f"{delete_instance.saturn3_sample_code}")
         return HttpResponseRedirect(request.path_info)
 
