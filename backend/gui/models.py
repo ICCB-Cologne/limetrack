@@ -46,7 +46,8 @@ LOCALISATION_CHOICE = [
     ("Thorax Wall", "Thorax Wall"),
     ("Pleura Punctate", "Pleura Punctate"),
     ("Ascites", "Ascites"),
-    ("Blood", "Blood")
+    ("Blood", "Blood"),
+    ("Peritoneum", "Peritoneum")
 ]
 
 GRADING = [
