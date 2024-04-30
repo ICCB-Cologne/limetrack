@@ -55,6 +55,9 @@ def get_form(
 
 
 def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
+    """
+    Checks whether a group's specific fields already has entries.
+    """
     # temporary auxiliary dictionairy -
     # remove after refractoring all old user group names to the new ones
     temp_dict = {"spl": "spl",
@@ -84,6 +87,13 @@ def check_records_existence(request: HttpRequest,
                             sat3_code: str,
                             tag: str,
                             form: ModelForm):
+    """
+    This function is required for handling files.
+    It checks the database for a existing record with given
+    SATURN3-Sample-Code.
+
+    Returns error if record exists and user has no permission to change it.
+    """
 
     if (request.user.groups.filter(name="SPL").exists() or
         request.user.groups.filter(name="TUM").exists() or
@@ -91,23 +101,30 @@ def check_records_existence(request: HttpRequest,
         request.user.groups.filter(name="LiquidBiopsy").exists() or
             request.user.groups.filter(name="OmicsPath").exists()):
 
-        # if data for the group specific fields already exists -> no update -> error message
+        # if data for the group specific fields already exists
+        # and the user has no permission for editing
+        # -> no update -> error message
         if HistopathologicalSample.objects. \
                 filter(saturn3_sample_code=sat3_code).exists():
-            group_name = str(request.user.groups.first()).lower()
-            if check_existing_input_for_group(group_name, sat3_code):
-                return record_already_exists(request, sat3_code, tag, form, group_name)
 
-        # no record with given sat3code exists -> these groups are not allowed to create records -> error message
+            if not request.user.has_perm("gui.change_histopathologicalsample"):
+                group_name = str(request.user.groups.first()).lower()
+                if check_existing_input_for_group(group_name, sat3_code):
+                    return record_already_exists(request, sat3_code, tag, form, group_name)
+
+        # no record with given sat3code exists &
+        # these groups are not allowed to create records -> error message
         else:
             return no_sample_code_found(request, sat3_code, tag, form)
 
-    # if record with given sat3sample already exists -> recruiter is not allowed to edit data -> error message
+    # if record with given sat3sample already exists and
+    # recruiter is not allowed to edit data -> error message
     elif request.user.groups.filter(name="Recruiter").exists():
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+        if (HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists()
+                and not request.user.has_perm("gui.change_histopathologicalsample")):
             messages.error(request,
                            f"File upload failed!"
-                           f" Record with saturn3_sample_code "
+                           f" Record with SATURN3 Sample Code "
                            f"{str(sat3_code)} already exists.",
                            extra_tags=tag)
 
@@ -117,11 +134,12 @@ def check_records_existence(request: HttpRequest,
                                    "search_form": SearchForm(),
                                    "jump_to": ("form" if tag == "general" else None)})
 
-    # superuser, admins and coordinators are allowed to overwrite all existing data -> update and create records
+    # superuser, admins and coordinators are allowed to overwrite all existing data -> update record
     elif (request.user.is_superuser
           or request.user.groups.filter(name="superuser").exists()
           or request.user.groups.filter(name="admins").exists()
           or request.user.groups.filter(name="coordinators").exists()
+          or request.user.has_perm("gui.change_histopathologicalsample")
           ):
         return
 
@@ -144,13 +162,25 @@ def check_records_existence(request: HttpRequest,
 
 
 def update_record(request: HttpRequest, form, group_name: str, data: dict, sat3_code: str, tag: str):
+    """
+    Updates existing records in the db or returns error.
+
+    If record with given sat3_code exists:
+    Allows users to fill in data in the empty fields of their respective group.
+    Edits a record's fields if the user has the permission to edit
+    """
     update_dict = {}
-    for field in field_dict[group_name][1:]:
-        update_dict.update({field: data[field]})
+    if group_name != "recruiter":
+        for field in field_dict[group_name][1:]:
+            update_dict.update({field: data[field]})
+    else:
+        for field in field_dict[group_name]:    
+            update_dict.update({field: data[field]})
 
     if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
 
-        if check_existing_input_for_group(group_name, sat3_code):
+        if (not request.user.has_perm("gui.change_histopathologicalsample")
+                and check_existing_input_for_group(group_name, sat3_code)):
             return record_already_exists(request, sat3_code, tag, form, group_name)
 
         HistopathologicalSample.objects.filter(
@@ -159,22 +189,29 @@ def update_record(request: HttpRequest, form, group_name: str, data: dict, sat3_
 
         if tag == "general":
             messages.success(request, "Submission successful!", extra_tags=tag)
-        return HttpResponseRedirect(request.path_info)
+            return HttpResponseRedirect(request.path_info)
 
     else:
         return no_sample_code_found(request, sat3_code, tag, form)
 
 
-def no_sample_code_found(request: HttpRequest, sat3_code: str, tag: str, form: ModelForm):
+def no_sample_code_found(request: HttpRequest,
+                         sat3_code: str,
+                         tag: str,
+                         form: ModelForm) -> HttpResponse:
+    """
+    Returns HttpResponse with error message stating that a
+    input with given sat3_code is not possible.
+    """
 
     if tag == "file":
         msg = f"File upload failed!" \
-            " No record with saturn3_sample_code " \
+            " No record with SATURN3 Sample Code " \
             f"{str(sat3_code)} found."
 
     else:
         msg = f"Submission unsuccessful!" \
-            " No record with saturn3_sample_code " \
+            " No record with SATURN3 Sample Code " \
             f"{str(sat3_code)} found."
 
     messages.error(request,
@@ -188,17 +225,19 @@ def no_sample_code_found(request: HttpRequest, sat3_code: str, tag: str, form: M
                            "jump_to": ("form" if tag == "general" else None)})
 
 
-def record_already_exists(request: HttpRequest, sat3_code: str, tag: str, form, group_name: str):
-
+def record_already_exists(request: HttpRequest, sat3_code: str, tag: str, form, group_name: str) -> HttpResponse:
+    """
+    Returns HttpResponse with error message stating that a
+    input with given sat3_code is not possible.
+    """
     if tag == "file":
-        msg = f"File upload failed! {group_name} data for " \
-            "record with saturn3_sample_code " \
-            f"{str(sat3_code)} already exists."
-
+        fail = "File upload failed!"
     else:
-        msg = f"Submission unsuccessful! {group_name} data for " \
-            "record with saturn3_sample_code " \
-            f"{str(sat3_code)} already exists."
+        fail = "Submission unsuccessful!"
+
+    msg = f"{fail} {group_name} data for " \
+        "record with SATURN3 Sample Code " \
+        f"{str(sat3_code)} already exists."
 
     messages.error(request,
                    msg,
@@ -326,30 +365,42 @@ def handle_form(form: ModelForm,
         return update_record(request, form, "odcf", data, sat3_code, tag)
 
     elif request.user.groups.filter(name="Recruiter").exists():
+        print(request.user.get_all_permissions())
         # maybe check if record already exists and deny creating of new record
         if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-            messages.error(request,
-                           f"Submission unsuccessful!"
-                           f" Record with saturn3_sample_code "
-                           f"{str(sat3_code)} already exists.",
-                           extra_tags=tag)
+            print(request.user.get_all_permissions())
+            if request.user.has_perm("gui.change_histopathologicalsample"):
+                return update_record(request, form, "recruiter", data, sat3_code, tag)
 
-            return render(request, "gui/index.html",
-                          context={"form": form,
-                                   "upload_form": UploadForm(),
-                                   "search_form": SearchForm(),
-                                   "jump_to": ("form" if tag == "general" else None)})
+            else:
+                messages.error(request,
+                            f"Submission unsuccessful!"
+                            f" Record with SATURN3 Sample Code "
+                            f"{str(sat3_code)} already exists.",
+                            extra_tags=tag)
+
+                return render(request, "gui/index.html",
+                            context={"form": form,
+                                    "upload_form": UploadForm(),
+                                    "search_form": SearchForm(),
+                                    "jump_to": ("form" if tag == "general" else None)})
         if tag == "general":
             form.save()
         else:
+            # this is important for the file upload since
+            # handle_file() also takes fields from the
+            # csv file which do not belong to the
+            # group of the uploading user.
+            # Thus form.save() would also save fields
+            # that must not be filled by the recruiter group
+
             update_dict = {}
             for field in field_dict["recruiter"]:
                 update_dict.update({field: data[field]})
 
             HistopathologicalSample.objects.filter(
                saturn3_sample_code=sat3_code).create(
-                **update_dict
-            )
+                **update_dict)
 
     elif (request.user.is_superuser
           or request.user.groups.filter(name="superuser").exists()
@@ -473,7 +524,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     elif value.lower() == "no":
                         value = False
 
-                # unfortunately I can't figure out a better way to check the sample code (as implemented below) by now
+                # JG-IBSM: unfortunately I can't figure out a better way to check the sample code (as implemented below) by now
                 # since the field is composed out of multiple fields the usual form handling (form.is_valid())
                 # leads to the SampleCodeWidget trying to decompress() the field.
                 # this yet leads to errors because decompress() can only handle sample codes in the
@@ -500,10 +551,10 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 sat3_code = form.cleaned_data["saturn3_sample_code"]
 
                 possible_response = check_records_existence(request, sat3_code, "file", form)
-
-                # check_records_existence with returns None if there are no errors
+                # check_records_existence returns None if there are no errors
                 # if it's not None it's an error response which has to
                 # be returned
+
                 if possible_response is not None:
                     return possible_response
 
@@ -532,10 +583,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
         messages.success(request, "File upload successful!", extra_tags="file")
         return HttpResponseRedirect(request.path_info)
-
-
-class ConfirmSubmissionView(LoginRequiredMixin, TemplateView):
-    pass
 
 
 class AllSamplesView(LoginRequiredMixin, TemplateView):

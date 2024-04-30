@@ -240,8 +240,8 @@ class HistopathologicalSample(models.Model):
                                              verbose_name="scLab Nuclei Yield")
     sclab_nuclei_size = models.IntegerField(null=True,
                                             blank=True,
-                                            verbose_name="scLab Nuclei"
-                                                         " Size [µm]")
+                                            verbose_name="scLab particles "
+                                                         "above 5 µm [%]")
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                     blank=True, null=True,
                                     verbose_name="scLab Status",
