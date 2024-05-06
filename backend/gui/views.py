@@ -204,7 +204,7 @@ def no_sample_code_found(request: HttpRequest,
     input with given sat3_code is not possible.
     """
 
-    if tag == "file":
+    if tag == "file":   
         msg = f"File upload failed!" \
             " No record with SATURN3 Sample Code " \
             f"{str(sat3_code)} found."
