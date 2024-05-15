@@ -16,7 +16,6 @@ TISSUE_TYPE = [
     ("B", "B"),
     ("T", "T"),
     ("M", "M"),
-    ("S", "S"),
     ("X", "X"),
     ("L", "L"),
     ("N", "N"),
@@ -30,7 +29,8 @@ STORAGE_FORMAT = [
     ("V", "V"),
     ("F", "F"),
     ("P", "P"),
-    ("Y", "Y")
+    ("Y", "Y"),
+    ("O", "O")
     ]
 
 ANALYTE_TYPE = [
@@ -67,7 +67,7 @@ class SampleCodeField(MultiValueField):
 
         fields = (
             ChoiceField(
-                error_messages={"incomplete": "Select a value"},
+                error_messages={"incomplete": "Select an entity value"},
                 choices=ENTITY
             ),
 
@@ -79,29 +79,29 @@ class SampleCodeField(MultiValueField):
             ),
 
             IntegerField(
-                error_messages={"incomplete": "Enter integer"},
+                error_messages={"incomplete": "Enter sampling timepoint"},
                 min_value=0),
 
             ChoiceField(
-                error_messages={"incomplete": "Select a value"},
+                error_messages={"incomplete": "Select a tissue type value"},
                 choices=TISSUE_TYPE
             ),
 
             IntegerField(
-                error_messages={"incomplete": "Enter integer"},
+                error_messages={"incomplete": "Enter tissue type order number"},
                 min_value=0),
 
             ChoiceField(
-                error_messages={"incomplete": "Select a value"},
+                error_messages={"incomplete": "Select a storage format value"},
                 choices=STORAGE_FORMAT
             ),
 
             ChoiceField(
-                error_messages={"incomplete": "Select a value"},
+                error_messages={"incomplete": "Select an analyte type value"},
                 choices=ANALYTE_TYPE
             ),
 
-            IntegerField(error_messages={"incomplete": "Enter integer"},
+            IntegerField(error_messages={"incomplete": "Enter analyte type order number"},
                          min_value=0),
         )
 
@@ -127,7 +127,9 @@ class SampleCodeWidget(MultiWidget):
 
         widgets = [
             Select(
-                attrs=attrs,
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Entity"},
                 choices=ENTITY),
 
             TextInput(
@@ -143,7 +145,9 @@ class SampleCodeWidget(MultiWidget):
                        "title": "Sampling timepoint 0, 1, 2 etc."}),
 
             Select(
-                attrs=attrs,
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Tissue type"},
                 choices=TISSUE_TYPE),
 
             NumberInput(
@@ -151,9 +155,17 @@ class SampleCodeWidget(MultiWidget):
                        "data-placement": "top",
                        "title": "Tissue type - order number"}),
 
-            Select(choices=STORAGE_FORMAT),
+            Select(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Storage format"},
+                choices=STORAGE_FORMAT),
 
-            Select(choices=ANALYTE_TYPE),
+            Select(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Analyte type"},
+                choices=ANALYTE_TYPE),
 
             NumberInput(
                 attrs={"data-toggle": "tooltip",
@@ -173,7 +185,8 @@ class SampleCodeWidget(MultiWidget):
                 elif (splitted.index(section) == 3 or
                       splitted.index(section) == 5):
                     res.append(section[0])
-                    res.append(int(section[1:]))
+                    if len(section) > 1:
+                        res.append(int(section[1:]))
                 else:
                     res.append(section)
             return res

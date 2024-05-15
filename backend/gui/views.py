@@ -15,7 +15,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.forms.models import model_to_dict
-from .models import HistopathologicalSample, check_sat3_sample_code
+from .models import HistopathologicalSample, check_sat3_sample_code, check_sat3_sample_code_with_none_analyte
 from django.contrib import messages
 from django.shortcuts import render
 from django.forms import ModelForm
@@ -449,7 +449,16 @@ def handle_form(form: ModelForm,
     if tag.lower() == "general":
         # if form's been input by using the webpages form
         messages.success(request, "Submission successful!", extra_tags=tag)
-        return HttpResponseRedirect(request.path_info)
+        return render(
+                request,
+                "gui/index.html",
+                context={
+                    "jump_to": "form",
+                    "form": get_form(str(request.user.groups.first()).lower()),
+                    "upload_form": UploadForm(),
+                    "search_form": SearchForm()
+                }
+            )
     else:
         # if a CSV file's been submitted
         return
@@ -505,7 +514,14 @@ class UploadView(LoginRequiredMixin, TemplateView):
         sorts of forms / group memberships
         """
 
-        df = pd.read_csv(file, sep=",", keep_default_na=False)
+        try:
+            df = pd.read_csv(file, sep=",", keep_default_na=False)
+        except UnicodeDecodeError:
+            messages.error(request, "File upload failed!", extra_tags="file")
+            msg = f"Cannot read file. Please make sure it is UTF-8 encoded."
+            messages.error(request, msg, extra_tags="file")
+            return HttpResponseRedirect(request.path_info)
+        
         first_error = True
         valid_forms: list[ModelForm] = []
         row_number = 1
@@ -533,10 +549,13 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     try:
                         check_sat3_sample_code(value)
                     except ValidationError:
-                        messages.error(request, "File upload failed!", extra_tags="file")
-                        msg = f"Error in row {row_number + 1}: data of the record with SATURN3 Sample Code: {str(row['SATURN3 Sample Code'])} --- No valid SATURN3 Sample Code"
-                        messages.error(request, msg, extra_tags="file")
-                        return HttpResponseRedirect(request.path_info)
+                        try:
+                            check_sat3_sample_code_with_none_analyte(value)
+                        except:
+                            messages.error(request, "File upload failed!", extra_tags="file")
+                            msg = f"Error in row {row_number + 1}: data of the record with SATURN3 Sample Code: {str(row['SATURN3 Sample Code'])} --- No valid SATURN3 Sample Code"
+                            messages.error(request, msg, extra_tags="file")
+                            return HttpResponseRedirect(request.path_info)
 
                 data.update({field_name: value})
 

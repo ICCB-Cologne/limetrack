@@ -95,7 +95,7 @@ Samples
             {% endfor %}
             <td>
               {% if user.is_superuser or user.name == "root" or user.groups.first.name == "coordinators" or user.groups.first.name == "admins" %}
-              <button type="button" onclick="submitForm({{ item.0.1 }})">Delete</button>
+              <button id="Delete {{item.5.1}}" type="button" onclick="submitForm({{ item.0.1 }})">Delete</button>
               {% endif %}
             </td>
             

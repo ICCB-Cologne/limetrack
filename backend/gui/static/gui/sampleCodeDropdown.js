@@ -8,7 +8,6 @@ const tissueType = new Map([
   ["B", "B - Normal blood"],
   ["T", "T - Tumorous tissue"],
   ["M", "M - Metastatis"],
-  ["S", "S - Sphere/Organoid"],
   ["X", "X - Xenograft"],
   ["L", "L - Plasma"],
   ["N", "N - Normal/health tissue"],
@@ -23,6 +22,7 @@ const storageFormat = new Map([
   ["F", "F - Viable frozen tissue"],
   ["P", "P - FFPE"],
   ["Y", "Y - Formalin"],
+  ["O", "O - Sphere/Organoid"],
 ]);
 
 const analyteType = new Map([
