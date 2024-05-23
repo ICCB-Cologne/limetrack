@@ -114,10 +114,13 @@ class SampleCodeField(MultiValueField):
 
     def compress(self, valid_values: list):
         string = ""
+        index = 0
         for v in valid_values:
             string += str(v)
-            if valid_values.index(v) != 3 and valid_values.index(v) != 6:
+            if index != 3 and index != 6:
+                print("-")
                 string += "-"
+            index += 1
         return string[:-1]
 
 

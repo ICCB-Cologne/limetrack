@@ -48,7 +48,8 @@ LOCALISATION_CHOICE = [
     ("Ascites", "Ascites"),
     ("Blood", "Blood"),
     ("Peritoneum", "Peritoneum"),
-    ("Lymph Node", "Lymph Node")
+    ("Lymph Node", "Lymph Node"),
+    ("Spleen", "Spleen")
 ]
 
 GRADING = [
@@ -132,7 +133,7 @@ def zero_to_a_hundred(value):
 
 
 def check_sat3_sample_code(string):
-    regex = '^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMSXLNCFR]\\d+-[SVFPY]-[DRCWYTMLGHN]\\d+$'
+    regex = '^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMXLNCFR]\\d+-[SVFPYO]-[DRCWYTMLGHN]\\d+$'
     if not re.search(regex, string):
         raise ValidationError("No valid Saturn3 Sample Code")
     
