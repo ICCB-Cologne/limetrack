@@ -122,6 +122,9 @@ class SampleCodeField(MultiValueField):
 
 
 class SampleCodeWidget(MultiWidget):
+    """
+    Widget representing the SATURN3-Sample-Code field.
+    """
 
     def __init__(self, widgets=None, attrs=None) -> None:
 
@@ -142,7 +145,8 @@ class SampleCodeWidget(MultiWidget):
             NumberInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "Sampling timepoint 0, 1, 2 etc."}),
+                       "title": "Sampling timepoint 0, 1, 2 etc.",
+                       "min" : "0"}),
 
             Select(
                 attrs={"data-toggle": "tooltip",
@@ -153,7 +157,8 @@ class SampleCodeWidget(MultiWidget):
             NumberInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "Tissue type - order number"}),
+                       "title": "Tissue type - order number",
+                       "min" : "0"}),
 
             Select(
                 attrs={"data-toggle": "tooltip",
@@ -170,7 +175,8 @@ class SampleCodeWidget(MultiWidget):
             NumberInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "Analyte type - order number"})]
+                       "title": "Analyte type - order number",
+                       "min" : "0"})]
 
         super().__init__(widgets, attrs)
 

@@ -11,10 +11,15 @@ Samples
       <div>
         <h2> Samples <i class="bi bi-table"></i> </h2>
       </div>
-      <div>
+    <div>
         <hr>
+    </div>
+    <div class="row mb-3 mx-2">
+      <div class="col auto bg-white">
+        Total number of samples: {{ samples|length }}
       </div>
-      <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
+    </div>
+    <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
         {% csrf_token %}
       <div class="container-fluid">
         <div class="row">
@@ -34,6 +39,8 @@ Samples
               </ul>
             
           </div>
+
+          {% comment %} Search bar {% endcomment %}
           <div class="col offset-sm-1">
             <div class="input-group">
               <label class="input-group-text" for="selectTableSearchColumn">Search</label>
@@ -50,7 +57,7 @@ Samples
               <input type="text" class="form-control" name="search" id="tableSearchInput" onkeyup="searchTable()" placeholder="Search ...">
             </div>
           </div>
-        </form>
+    </form>
           <div class="col-auto">
             
             <button class="btn btn-primary" type="button" onclick="downloadWithFilter()"> Download </button>
@@ -58,12 +65,12 @@ Samples
           </div>
         </div>
       </div>
-
-
     </div>
-  
+
+   
     <div class="tablediv">
       <form method="post" id="id-form">{% csrf_token %}</form>
+
       <table class="stripedtable" id="sampleTable">
         <thead>
           <tr>
