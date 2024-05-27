@@ -1,0 +1,13 @@
+# name: github-actions-pytest
+# run-name: $ Run Pytest tests
+# on: [push]
+# jobs:
+#   test1:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-pyhton@v4
+#         with:
+#           node-version: '20'
+#       - run: python3 -m 
+#       - run: pytest

@@ -28,18 +28,32 @@ for field in all_fields:
 
 # lists of fields for individual groups
 # TODO: after adding new model fields
-# change indexes here by changing the first and the last model field name of a group
+# change indexes here by changing the first
+# and the last model field name of a group
 recruiter_fields = all_field_names[:all_field_names.index("grading") + 1]
 
-tum_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("tumor_cell_content"): all_field_names.index("tumor_cell_content") + 1]
+tum_fields = ["saturn3_sample_code"] + \
+    all_field_names[
+        all_field_names.index("tumor_cell_content"):
+        all_field_names.index("tumor_cell_content") + 1]
 
-spl_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("spl_received"): all_field_names.index("spl_sequencing_type") + 1]
+spl_fields = ["saturn3_sample_code"] + \
+    all_field_names[
+        all_field_names.index("spl_received"):
+        all_field_names.index("spl_sequencing_type") + 1]
 
-sclab_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("sclab_received"): all_field_names.index("sclab_comment") + 1]
+sclab_fields = ["saturn3_sample_code"] + \
+    all_field_names[
+        all_field_names.index("sclab_received"):
+        all_field_names.index("sclab_comment") + 1]
 
-lb_fields = ["saturn3_sample_code"] + all_field_names[all_field_names.index("lb_analyte_type"): all_field_names.index("lb_status") + 1]
+lb_fields = ["saturn3_sample_code"] + \
+    all_field_names[
+        all_field_names.index("lb_analyte_type"):
+        all_field_names.index("lb_status") + 1]
 
-odcf_fields = ["saturn3_sample_code"] + [field.name for field in all_fields[len(all_field_names):]]
+odcf_fields = ["saturn3_sample_code"] + \
+    [field.name for field in all_fields[len(all_field_names):]]
 
 field_dict = {
     "recruiter": recruiter_fields,
@@ -50,7 +64,8 @@ field_dict = {
     "lb": lb_fields,
               }
 
-# dicts for disabling (+ grey display of) the widgets/input fields of individual groups
+# dicts for disabling (+ grey display of)
+# the widgets/input fields of individual groups
 
 disabled_tum_dict = {
     "tumor_cell_content": forms.NumberInput(
@@ -158,7 +173,8 @@ class SampleForm(ModelForm):
             "patient_identifier": forms.TextInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                       "title": "5-digit SATURN3 pseudonym \
+                        (by Treuhandstelle Freiburg)",
                        "onchange": "autoFillPatient(this.value)"}
                        ),
 
@@ -221,12 +237,12 @@ class SampleFormRec(ModelForm):
         fields = all_field_names
 
         widgets = {
-
             # include tooltips into widgets
             "patient_identifier": forms.TextInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                       "title": "5-digit SATURN3 \
+                        pseudonym (by Treuhandstelle Freiburg)",
                        "onchange": "autoFillPatient(this.value)"}
                        ),
 
@@ -246,7 +262,8 @@ class SampleFormRec(ModelForm):
                        "title": "generated from the same biopsy/tissue piece"},
                        ),
 
-        } | disabled_tum_dict | disabled_spl_dict | disabled_sclab_dict | disabled_lb_dict
+        } | disabled_tum_dict | disabled_spl_dict \
+            | disabled_sclab_dict | disabled_lb_dict
 
 
 class SampleFormTUM(ModelForm):
@@ -280,7 +297,8 @@ class SampleFormTUM(ModelForm):
             attrs={"data-toggle": "tooltip",
                    "data-placement": "top",
                    "data-html": "true",
-                   "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)",
+                   "title": "5-digit SATURN3 \
+                    pseudonym (by Treuhandstelle Freiburg)",
                    "onchange": "autoFillPatient(this.value)",
                    "disabled": "true"}))
 
@@ -321,10 +339,12 @@ class SampleFormTUM(ModelForm):
             attrs={"disabled": "true"},
             choices=LOCALISATION_CHOICE))
 
-    corresponding_organoid = forms.BooleanField(required=False,
-                                                widget=forms.Select(
-                                                    attrs={"disabled": "true"},
-                                                    choices=CORRESPONDING_ORGANOID_CHOICES))
+    corresponding_organoid = forms.BooleanField(
+        required=False,
+        widget=forms.Select(
+            attrs={"disabled": "true"},
+            choices=CORRESPONDING_ORGANOID_CHOICES))
+
     grading = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
@@ -491,7 +511,8 @@ class SampleFormDataPaths(SampleFormTUM):
             # "tissue_name", skip for prototype
             # "used_in", skip for prototype
 
-        } | disabled_tum_dict | disabled_spl_dict | disabled_sclab_dict | disabled_lb_dict
+        } | disabled_tum_dict | disabled_spl_dict \
+            | disabled_sclab_dict | disabled_lb_dict
 
 
 class UploadForm(forms.Form):

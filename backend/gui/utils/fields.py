@@ -88,7 +88,8 @@ class SampleCodeField(MultiValueField):
             ),
 
             IntegerField(
-                error_messages={"incomplete": "Enter tissue type order number"},
+                error_messages={
+                    "incomplete": "Enter tissue type order number"},
                 min_value=0),
 
             ChoiceField(
@@ -101,8 +102,10 @@ class SampleCodeField(MultiValueField):
                 choices=ANALYTE_TYPE
             ),
 
-            IntegerField(error_messages={"incomplete": "Enter analyte type order number"},
-                         min_value=0),
+            IntegerField(
+                error_messages={
+                    "incomplete": "Enter analyte type order number"},
+                min_value=0),
         )
 
         super().__init__(
@@ -142,14 +145,15 @@ class SampleCodeWidget(MultiWidget):
                 attrs={"maxlength": 5,
                        "data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "5-digit SATURN3 pseudonym (by Treuhandstelle Freiburg)"}
-                             ),
+                       "title": "5-digit SATURN3 \
+                        pseudonym (by Treuhandstelle Freiburg)"}
+                        ),
 
             NumberInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
                        "title": "Sampling timepoint 0, 1, 2 etc.",
-                       "min" : "0"}),
+                       "min": "0"}),
 
             Select(
                 attrs={"data-toggle": "tooltip",
@@ -161,7 +165,7 @@ class SampleCodeWidget(MultiWidget):
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
                        "title": "Tissue type - order number",
-                       "min" : "0"}),
+                       "min": "0"}),
 
             Select(
                 attrs={"data-toggle": "tooltip",
@@ -179,12 +183,13 @@ class SampleCodeWidget(MultiWidget):
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
                        "title": "Analyte type - order number",
-                       "min" : "0"})]
+                       "min": "0"})]
 
         super().__init__(widgets, attrs)
 
     def decompress(self, value: Any) -> Any | None:
-        if isinstance(value, str) and value != "None-None-None-None-None-None-None-None":
+        if (isinstance(value, str) and
+                value != "None-None-None-None-None-None-None-None"):
             splitted = re.split('-', value)
             res = []
             section: str

@@ -133,15 +133,16 @@ def zero_to_a_hundred(value):
 
 
 def check_sat3_sample_code(string):
-    regex = '^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMXLNCFR]\\d+-[SVFPYO]-[DRCWYTMLGHN]\\d+$'
-    if not re.search(regex, string):
-        raise ValidationError("No valid Saturn3 Sample Code")
-    
-def check_sat3_sample_code_with_none_analyte(string):
-    regex = '^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMXLNCFR]\\d+-[SVFPYO]-[N]$'
+    regex = \
+     "^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMXLNCFR]\\d+-[SVFPYO]-[DRCWYTMLGHN]\\d+$"
     if not re.search(regex, string):
         raise ValidationError("No valid Saturn3 Sample Code")
 
+
+def check_sat3_sample_code_with_none_analyte(string):
+    regex = "^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMXLNCFR]\\d+-[SVFPYO]-[N]$"
+    if not re.search(regex, string):
+        raise ValidationError("No valid Saturn3 Sample Code")
 
 
 def check_six_figures(number: str):
@@ -305,10 +306,9 @@ class HistopathologicalSample(models.Model):
                                             blank=True,
                                             verbose_name="LB Date "
                                                          "of Isolation")
-    lb_total_isolated_cfdna = models.IntegerField(null=True,
-                                                  blank=True,
-                                                  verbose_name="LB Total "
-                                                               "Isolated cfDNA [ng]")
+    lb_total_isolated_cfdna = \
+        models.IntegerField(null=True, blank=True,
+                            verbose_name="LB Total Isolated cfDNA [ng]")
 
     lb_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                  blank=True, null=True,

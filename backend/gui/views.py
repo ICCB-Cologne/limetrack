@@ -5,6 +5,11 @@ from .forms import (
     UploadForm, LoginForm, GroupFilterForm,
     SearchForm, SampleFormDataPaths,
 )
+from .models import (
+    HistopathologicalSample, check_sat3_sample_code,
+    check_sat3_sample_code_with_none_analyte
+)
+
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
@@ -15,7 +20,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.forms.models import model_to_dict
-from .models import HistopathologicalSample, check_sat3_sample_code, check_sat3_sample_code_with_none_analyte
 from django.contrib import messages
 from django.shortcuts import render
 from django.forms import ModelForm
@@ -77,7 +81,7 @@ def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
     for field in existing_fields:
         if (field.name in field_dict[group_name][1:]
                 and getattr(record, field.name) is not None
-                and getattr(record, field.name) != ""):  # for TextArea fields ...
+                and getattr(record, field.name) != ""):  # for TextArea fields
             already_filled = True
             break
     return already_filled
@@ -109,8 +113,12 @@ def check_records_existence(request: HttpRequest,
 
             if not request.user.has_perm("gui.change_histopathologicalsample"):
                 group_name = str(request.user.groups.first()).lower()
+
                 if check_existing_input_for_group(group_name, sat3_code):
-                    return record_already_exists(request, sat3_code, tag, form, group_name)
+
+                    return record_already_exists(request,
+                                                 sat3_code,
+                                                 tag, form, group_name)
 
         # no record with given sat3code exists &
         # these groups are not allowed to create records -> error message
@@ -120,8 +128,10 @@ def check_records_existence(request: HttpRequest,
     # if record with given sat3sample already exists and
     # recruiter is not allowed to edit data -> error message
     elif request.user.groups.filter(name="Recruiter").exists():
-        if (HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists()
-                and not request.user.has_perm("gui.change_histopathologicalsample")):
+
+        if (HistopathologicalSample.
+                objects.filter(saturn3_sample_code=sat3_code).exists() and not
+                request.user.has_perm("gui.change_histopathologicalsample")):
             messages.error(request,
                            f"File upload failed!"
                            f" Record with SATURN3 Sample Code "
@@ -129,12 +139,18 @@ def check_records_existence(request: HttpRequest,
                            extra_tags=tag)
 
             return render(request, "gui/index.html",
-                          context={"form": (form if tag == "general" else get_form(str(request.user.groups.first()).lower())),
-                                   "upload_form": UploadForm(),
-                                   "search_form": SearchForm(),
-                                   "jump_to": ("form" if tag == "general" else None)})
+                          context={
+                              "form": (form if tag == "general"
+                                       else get_form(
+                                           str(request.user.groups.
+                                               first()).lower())),
+                              "upload_form": UploadForm(),
+                              "search_form": SearchForm(),
+                              "jump_to": ("form" if tag == "general"
+                                          else None)})
 
-    # superuser, admins and coordinators are allowed to overwrite all existing data -> update record
+    # superuser, admins and coordinators are allowed to
+    # overwrite all existing data -> update record
     elif (request.user.is_superuser
           or request.user.groups.filter(name="superuser").exists()
           or request.user.groups.filter(name="admins").exists()
@@ -146,8 +162,8 @@ def check_records_existence(request: HttpRequest,
     # unauthorized users -> error message
     else:
         messages.error(request,
-                       f"File upload failed!"
-                       f" Not permitted!",
+                       "File upload failed!"
+                       " Not permitted!",
                        extra_tags=tag)
 
         return render(request, "gui/index.html",
@@ -161,7 +177,9 @@ def check_records_existence(request: HttpRequest,
     return
 
 
-def update_record(request: HttpRequest, form, group_name: str, data: dict, sat3_code: str, tag: str):
+def update_record(request: HttpRequest,
+                  form, group_name: str,
+                  data: dict, sat3_code: str, tag: str):
     """
     Updates existing records in the db or returns error.
 
@@ -174,14 +192,17 @@ def update_record(request: HttpRequest, form, group_name: str, data: dict, sat3_
         for field in field_dict[group_name][1:]:
             update_dict.update({field: data[field]})
     else:
-        for field in field_dict[group_name]:    
+        for field in field_dict[group_name]:
             update_dict.update({field: data[field]})
 
-    if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+    if (HistopathologicalSample.
+            objects.filter(saturn3_sample_code=sat3_code).exists()):
 
-        if (not request.user.has_perm("gui.change_histopathologicalsample")
-                and check_existing_input_for_group(group_name, sat3_code)):
-            return record_already_exists(request, sat3_code, tag, form, group_name)
+        if (not request.user.has_perm("gui.change_histopathologicalsample") and
+                check_existing_input_for_group(group_name, sat3_code)):
+
+            return record_already_exists(request,
+                                         sat3_code, tag, form, group_name)
 
         HistopathologicalSample.objects.filter(
             saturn3_sample_code=sat3_code).update(
@@ -204,7 +225,7 @@ def no_sample_code_found(request: HttpRequest,
     input with given sat3_code is not possible.
     """
 
-    if tag == "file":   
+    if tag == "file":
         msg = f"File upload failed!" \
             " No record with SATURN3 Sample Code " \
             f"{str(sat3_code)} found."
@@ -219,13 +240,17 @@ def no_sample_code_found(request: HttpRequest,
                    extra_tags=tag)
 
     return render(request, "gui/index.html",
-                  context={"form": (form if tag == "general" else get_form(str(request.user.groups.first()).lower())),
+                  context={"form": (form if tag == "general"
+                                    else get_form(
+                                        str(request.user.groups
+                                            .first()).lower())),
                            "upload_form": UploadForm(),
                            "search_form": SearchForm(),
                            "jump_to": ("form" if tag == "general" else None)})
 
 
-def record_already_exists(request: HttpRequest, sat3_code: str, tag: str, form, group_name: str) -> HttpResponse:
+def record_already_exists(request: HttpRequest, sat3_code: str,
+                          tag: str, form, group_name: str) -> HttpResponse:
     """
     Returns HttpResponse with error message stating that a
     input with given sat3_code is not possible.
@@ -244,7 +269,9 @@ def record_already_exists(request: HttpRequest, sat3_code: str, tag: str, form, 
                    extra_tags=tag)
 
     return render(request, "gui/index.html",
-                  context={"form": (form if tag == "general" else get_form(str(request.user.groups.first()).lower())),
+                  context={"form": (form if tag == "general"
+                                    else get_form(str(
+                                        request.user.groups.first()).lower())),
                            "upload_form": UploadForm(),
                            "search_form": SearchForm(),
                            "jump_to": ("form" if tag == "general" else None)})
@@ -327,8 +354,6 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             )
 
 
-# FIXME: @JG-IBSM kannst du das ggfs. aufhübschen oder wenigstens einmal durch ChatGPT jagen?
-# Type hinting etc. würde mich persönlich sehr glücklich machen :)
 def handle_form(form: ModelForm,
                 sat3_code: str,
                 data: dict[str: Any],
@@ -367,23 +392,27 @@ def handle_form(form: ModelForm,
     elif request.user.groups.filter(name="Recruiter").exists():
         print(request.user.get_all_permissions())
         # maybe check if record already exists and deny creating of new record
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
-            print(request.user.get_all_permissions())
+        if (HistopathologicalSample.
+            objects.filter(
+                saturn3_sample_code=sat3_code).exists()):
+
             if request.user.has_perm("gui.change_histopathologicalsample"):
-                return update_record(request, form, "recruiter", data, sat3_code, tag)
+                return update_record(request, form,
+                                     "recruiter", data, sat3_code, tag)
 
             else:
                 messages.error(request,
-                            f"Submission unsuccessful!"
-                            f" Record with SATURN3 Sample Code "
-                            f"{str(sat3_code)} already exists.",
-                            extra_tags=tag)
+                               "Submission unsuccessful!"
+                               " Record with SATURN3 Sample Code "
+                               f"{str(sat3_code)} already exists.",
+                               extra_tags=tag)
 
                 return render(request, "gui/index.html",
-                            context={"form": form,
-                                    "upload_form": UploadForm(),
-                                    "search_form": SearchForm(),
-                                    "jump_to": ("form" if tag == "general" else None)})
+                              context={"form": form,
+                                       "upload_form": UploadForm(),
+                                       "search_form": SearchForm(),
+                                       "jump_to": ("form" if tag == "general"
+                                                   else None)})
         if tag == "general":
             form.save()
         else:
@@ -408,27 +437,15 @@ def handle_form(form: ModelForm,
           or request.user.groups.filter(name="coordinators").exists()
           ):
 
-        if HistopathologicalSample.objects.filter(saturn3_sample_code=sat3_code).exists():
+        if (HistopathologicalSample.
+                objects.filter(saturn3_sample_code=sat3_code).exists()):
             update_dict = {}
             for field in all_field_names + odcf_fields:
                 update_dict.update({field: data[field]})
 
             HistopathologicalSample.objects.filter(
                 saturn3_sample_code=sat3_code).update(
-                **update_dict
-            )
-            # messages.error(request,
-            #                f"Submission unsuccessful!"
-            #                f" Record with saturn3_sample_code "
-            #                f"{str(sat3_code)} already exists.",
-            #                extra_tags=tag)
-
-            # return render(request, "gui/index.html",
-            #               context={"form": form,
-            #                        "upload_form": UploadForm(),
-            #                        "search_form": SearchForm(),
-            #                        "jump_to": ("form" if tag == "general"
-            #                                    else None)})
+                **update_dict)
 
         else:
             form.save()
@@ -472,13 +489,17 @@ class DashBoardView(LoginRequiredMixin, TemplateView):
 
 
 class ContactView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
+
         template_name = "gui/contact.html"
         return render(request, template_name)
 
 
 class ImprintView(TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
+
         template_name = "gui/imprint.html"
         context = {
             "user": request.user.get_username()
@@ -488,7 +509,9 @@ class ImprintView(TemplateView):
 
 
 class UploadView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
+
         template_name = "gui/index.html"
         form = get_form(str(request.user.groups.first()).lower())
         context = {
@@ -518,21 +541,26 @@ class UploadView(LoginRequiredMixin, TemplateView):
             df = pd.read_csv(file, sep=",", keep_default_na=False)
         except UnicodeDecodeError:
             messages.error(request, "File upload failed!", extra_tags="file")
-            msg = f"Cannot read file. Please make sure it is UTF-8 encoded."
+            msg = "Cannot read file. Please make sure it is UTF-8 encoded."
             messages.error(request, msg, extra_tags="file")
             return HttpResponseRedirect(request.path_info)
-        
+
         first_error = True
         valid_forms: list[ModelForm] = []
         row_number = 1
         for index, row in df.iterrows():
 
             data = {}
-            for field_name, verbose_field_name in zip(all_field_names + odcf_fields[1:], all_field_verbose_names):
+            for field_name, verbose_field_name in zip(all_field_names +
+                                                      odcf_fields[1:],
+                                                      all_field_verbose_names):
+
                 value: str = row.get(verbose_field_name)
 
-                # workaround for allowing yes and no as Boolean values in file upload
-                if field_name == "corresponding_organoid" or field_name == "sclab_sorting":
+                # allowing yes and no
+                # as Boolean values in file upload
+                if (field_name == "corresponding_organoid" or
+                        field_name == "sclab_sorting"):
                     if type(value) is not str:
                         pass
                     elif value.lower() == "yes":
@@ -540,20 +568,28 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     elif value.lower() == "no":
                         value = False
 
-                # JG-IBSM: unfortunately I can't figure out a better way to check the sample code (as implemented below) by now
-                # since the field is composed out of multiple fields the usual form handling (form.is_valid())
-                # leads to the SampleCodeWidget trying to decompress() the field.
-                # this yet leads to errors because decompress() can only handle sample codes in the
-                # correct format
+                # JG-IBSM: unfortunately I can't figure out a better way
+                # to check the sample code (as implemented below) by now
+                # since the field is composed out of
+                # multiple fields the usual form handling (form.is_valid())
+                # leads to the SampleCodeWidget trying
+                # to decompress() the field.
+                # this yet leads to errors because decompress()
+                # can only handle sample codes in the correct format
                 if field_name == "saturn3_sample_code":
                     try:
                         check_sat3_sample_code(value)
                     except ValidationError:
                         try:
                             check_sat3_sample_code_with_none_analyte(value)
-                        except:
-                            messages.error(request, "File upload failed!", extra_tags="file")
-                            msg = f"Error in row {row_number + 1}: data of the record with SATURN3 Sample Code: {str(row['SATURN3 Sample Code'])} --- No valid SATURN3 Sample Code"
+                        except ValidationError:
+                            messages.error(request,
+                                           "File upload failed!",
+                                           extra_tags="file")
+                            msg = f"Error in row {row_number + 1}: \
+                            data of the record with SATURN3 Sample \
+                            Code: {str(row['SATURN3 Sample Code'])} \
+                            --- No valid SATURN3 Sample Code"
                             messages.error(request, msg, extra_tags="file")
                             return HttpResponseRedirect(request.path_info)
 
@@ -569,7 +605,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 form_data = form.cleaned_data
                 sat3_code = form.cleaned_data["saturn3_sample_code"]
 
-                possible_response = check_records_existence(request, sat3_code, "file", form)
+                possible_response = check_records_existence(request, sat3_code,
+                                                            "file", form)
                 # check_records_existence returns None if there are no errors
                 # if it's not None it's an error response which has to
                 # be returned
@@ -584,7 +621,10 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     messages.error(
                         request, "File upload failed!", extra_tags="file")
 
-                msg = f"Error in row {row_number + 1}: data of the record with SATURN3 Sample Code: {str(row['SATURN3 Sample Code'])} --- {str(form.errors.as_text())}"
+                msg = f"Error in row {row_number + 1}: data of the \
+                        record with SATURN3 Sample Code: \
+                        {str(row['SATURN3 Sample Code'])} \
+                        --- {str(form.errors.as_text())}"
                 messages.error(
                     request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
@@ -605,7 +645,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
 
 class AllSamplesView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/all_samples.html"
         samples = HistopathologicalSample.objects.all()
         fields_and_values_list = [
@@ -618,12 +659,14 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         context = {
             "samples": fields_and_values_list,
             "filters": filters,
-            "user": request.user  # user, not username because we need to check the user's attributes
+            "user": request.user  # user, not username because we
+                                  # need to check the user's attributes
         }
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(self, request: HttpRequest,
+             *args: Any, **kwargs: Any) -> HttpResponse:
         delete_id = int(request.POST["id"])
         delete_instance = HistopathologicalSample.objects.get(id=delete_id)
         delete_instance.delete()
@@ -634,7 +677,8 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
 
 
 class FilteredSamplesView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/all_samples.html"
         samples = HistopathologicalSample.objects.all()
         fields_and_values_list = [
@@ -650,20 +694,22 @@ class FilteredSamplesView(LoginRequiredMixin, TemplateView):
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(self, request: HttpRequest,
+             *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/all_samples.html"
         filtered_form = GroupFilterForm(request.POST)
         if filtered_form.is_valid():
             all_filters = []
             for group in filtered_form.cleaned_data:
-                all_filters += field_dict[group] if filtered_form.cleaned_data[group] else []
+                all_filters += field_dict[group] \
+                      if filtered_form.cleaned_data[group] else []
 
             samples = HistopathologicalSample.objects.all()
             fields_and_values_list = [
-                [(field.verbose_name, getattr(instance, field.name)) if field.name in all_filters else (None, None)
+                [(field.verbose_name, getattr(instance, field.name))
+                    if field.name in all_filters else (None, None)
                  for field in instance._meta.fields]
-                for instance in samples
-            ]
+                for instance in samples]
 
             context = {
                 "samples": fields_and_values_list,
@@ -703,7 +749,9 @@ def some_streaming_csv_view(request):
     return StreamingHttpResponse(
         (writer.writerow(row) for row in data),
         content_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="saturn3samples.csv"'},
+        headers={
+            "Content-Disposition":
+            'attachment; filename="saturn3samples.csv"'},
     )
 
 
@@ -713,16 +761,22 @@ def csv_template_download(request):
     return StreamingHttpResponse(
         (writer.writerow(all_field_verbose_names)),
         content_type="text/csv",
-        headers={"Content-Disposition": 'attachment; filename="saturn3template.csv"'},
+        headers={
+            "Content-Disposition":
+            'attachment; filename="saturn3samples_template.csv"'},
     )
 
 
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
         return HttpResponseRedirect(reverse("all_samples"))
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> StreamingHttpResponse | HttpResponseRedirect:
+    def post(self, request: HttpRequest,
+             *args: Any,
+             **kwargs: Any) -> StreamingHttpResponse | HttpResponseRedirect:
+
         pseudo_buffer = Echo()
         writer = csv.writer(pseudo_buffer)
 
@@ -730,24 +784,28 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
         if form.is_valid():
             all_filters = []
             for group in form.cleaned_data:
-                all_filters += field_dict[group] if form.cleaned_data[group] else []
+                all_filters += field_dict[group] \
+                    if form.cleaned_data[group] else []
 
             samples = HistopathologicalSample.objects.all()
             fields_and_values_list = [
                 [(field.verbose_name, getattr(instance, field.name))
-                 for field in instance._meta.fields if field.name in all_filters]
+                 for field in instance._meta.fields
+                    if field.name in all_filters]
                 for instance in samples
             ]
             rows = []
             headers = [i[0] for i in fields_and_values_list[0]]
             rows.append(headers)
-            data = [[i[1] for i in sublist] for sublist in fields_and_values_list]
+            data = [[i[1] for i in sublist]
+                    for sublist in fields_and_values_list]
             data.insert(0, headers)
 
             return StreamingHttpResponse(
                 (writer.writerow(row) for row in data),
                 content_type="text/csv",
-                headers={"Content-Disposition": 'attachment; filename="saturn3samples.csv"'}, )
+                headers={"Content-Disposition":
+                         'attachment; filename="saturn3samples.csv"'}, )
 
         return HttpResponseRedirect(request.path_info)
 
@@ -758,7 +816,8 @@ def log_out(request: HttpRequest):
 
 
 class LoginView(TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/login.html"
         context = {
             "form": LoginForm(),
@@ -767,7 +826,8 @@ class LoginView(TemplateView):
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(self, request: HttpRequest,
+             *args: Any, **kwargs: Any) -> HttpResponse:
         user_name = request.POST["user_name"]
         pw = request.POST["password"]
         user = authenticate(request, username=user_name, password=pw)
@@ -781,7 +841,8 @@ class LoginView(TemplateView):
 
 
 class SearchView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower())
         template_name = "gui/index.html"
         context = {
@@ -792,40 +853,50 @@ class SearchView(LoginRequiredMixin, TemplateView):
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(self, request: HttpRequest,
+             *args: Any, **kwargs: Any) -> HttpResponse:
         search_form = SearchForm(request.POST)
 
         if search_form.is_valid():
             search = search_form.cleaned_data["search_field"]
             radio_select = search_form.cleaned_data["radio_select"]
-            if HistopathologicalSample.objects.filter(saturn3_sample_code=search).exists():
-                found_record = HistopathologicalSample.objects.get(saturn3_sample_code=search)
+            if (HistopathologicalSample.
+                    objects.filter(saturn3_sample_code=search).exists()):
 
+                found_record = HistopathologicalSample. \
+                    objects.get(saturn3_sample_code=search)
                 model_dict = model_to_dict(found_record)
                 model_dict.pop("id")
+                form = get_form(
+                    str(request.user.groups.first()).lower(), model_dict)
 
-                form = get_form(str(request.user.groups.first()).lower(), model_dict)
+            elif (HistopathologicalSample.
+                    objects.filter(patient_identifier=search).exists()):
 
-            elif HistopathologicalSample.objects.filter(patient_identifier=search).exists():
-                found_records = HistopathologicalSample.objects.filter(patient_identifier=search)
+                found_records = HistopathologicalSample. \
+                    objects.filter(patient_identifier=search)
                 found_record = found_records[0]
 
                 model_dict = model_to_dict(found_record)
                 model_dict.pop("id")
 
                 for key in model_dict:
-                    if key not in ["recruiting_site", "patient_identifier", "sex", "died"]:
+                    if key not in ["recruiting_site", "patient_identifier",
+                                   "sex", "died"]:
                         model_dict[key] = ""
 
-                form = get_form(str(request.user.groups.first()).lower(), model_dict)
+                form = get_form(str(request.user.groups.first()).lower(),
+                                model_dict)
 
             else:
-                messages.error(request, f"DID NOT FIND {radio_select} {search}",
+                messages.error(request,
+                               f"DID NOT FIND {radio_select} {search}",
                                extra_tags="general")
                 return HttpResponseRedirect(reverse("config"))
 
             messages.success(
-                request, f"FOUND {radio_select} {search}", extra_tags="general")
+                request,
+                f"FOUND {radio_select} {search}", extra_tags="general")
             template_name = "gui/index.html"
             context = {
                 "jump_to": "form",
