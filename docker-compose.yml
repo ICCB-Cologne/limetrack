@@ -25,10 +25,7 @@ services:
     volumes:
       - ./pg_data:/var/lib/postgresql/data
     env_file:
-      - path: env/development.env
-        required: true
-      - path: env/production.env
-        required: false
+      env/development.env
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U admin -d saturn3samples" ]
       interval: 10s
