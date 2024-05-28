@@ -30,7 +30,7 @@ jobs:
         sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
         sudo tar -xvzf geckodriver*
         sudo chmod +x geckodriver
-        sudo export PATH=$PATH:./geckodriver
+        export PATH=$PATH:./geckodriver
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
