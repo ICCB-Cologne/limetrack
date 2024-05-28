@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Docker Compose
-      run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
+      run: sudo docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
     - name: Install firefox
       run:
         sudo snap remove firefox
@@ -28,9 +28,9 @@ jobs:
     - name: Install geckodriver
       run: |
         sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
-        tar -xvzf geckodriver*
-        chmod +x geckodriver
-        export PATH=$PATH:./geckodriver
+        sudo tar -xvzf geckodriver*
+        sudo chmod +x geckodriver
+        sudo export PATH=$PATH:./geckodriver
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
