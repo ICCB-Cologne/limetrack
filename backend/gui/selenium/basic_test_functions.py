@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.service import Service
 
 
 class BasicTestClass():
@@ -9,8 +10,9 @@ class BasicTestClass():
         op.add_argument('-headless')
         op.add_argument('--no-sandbox')
         op.add_argument('--disable-dev-shm-usage')
+        service = Service(log_path='geckodriver.log')
         try:
-            self.driver = webdriver.Firefox(options=op)
+            self.driver = webdriver.Firefox(service=service, options=op)
         except Exception as e:
             print(f"Error setting up WebDriver: {e}")
             raise
