@@ -23,6 +23,7 @@ jobs:
       run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
     - name: Install firefox
       run:
+        sudo snap remove firefox
         sudo apt-get install firefox firefox-locale-de 
     - name: Install geckodriver
       run: |
