@@ -17,3 +17,4 @@ jobs:
     - uses: actions/checkout@v4
     - name: Docker Compose
       run: docker compose -f docker-compose.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate
+      # RUN PYTEST
