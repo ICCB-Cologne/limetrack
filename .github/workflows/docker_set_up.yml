@@ -21,6 +21,9 @@ jobs:
     - uses: actions/checkout@v4
     - name: Docker Compose
       run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
+    - name: Install firefox
+      run:
+        sudo apt-get install firefox firefox-locale-de 
     - name: Install geckodriver
       run: |
         sudo wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
