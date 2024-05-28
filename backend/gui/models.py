@@ -129,7 +129,10 @@ def validate_alphanumeric(value):
 
 def zero_to_a_hundred(value):
     if type(value) is not int:
-        raise ValidationError("Only integer numbers are allowed")
+        try:
+            int(value)
+        except ValueError:
+            raise ValidationError("Only integer numbers are allowed")
     if int(value) < 0 or int(value) > 100:
         raise ValidationError("Value between 0 and 100")
 
