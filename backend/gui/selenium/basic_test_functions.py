@@ -10,7 +10,7 @@ class BasicTestClass():
         op.add_argument('-headless')
         op.add_argument('--no-sandbox')
         op.add_argument('--disable-dev-shm-usage')
-        service = Service(log_path='geckodriver.log')
+        service = Service(log_output='geckodriver.log')
         try:
             self.driver = webdriver.Firefox(service=service, options=op)
         except Exception as e:
