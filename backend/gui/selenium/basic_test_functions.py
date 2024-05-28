@@ -6,7 +6,7 @@ class BasicTestClass():
 
     def setup_method(self, method):
         op = webdriver.FirefoxOptions()
-        op.add_argument('-headless')
+        op.add_argument('--headless')
         self.driver = webdriver.Firefox(options=op)
         self.driver.get("http://0.0.0.0:8080/")
         self.vars = {}
