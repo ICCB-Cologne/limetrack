@@ -46,10 +46,10 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        sudo python3 -m pytest
+        python3 -m pytest
     - name: Upload geckodriver log
       if: failure()
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: geckodriver-log
         path: geckodriver.log
