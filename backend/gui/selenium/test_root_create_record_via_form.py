@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from backend.gui.selenium.basic_test_functions import BasicTestClass
 
+from time import sleep
 
 class TestRootCreateRecordViaForm(BasicTestClass):
 
@@ -100,6 +101,7 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
     def test_rootcreaterecordviaformv2(self):
         self.login("root", "root")
+        sleep(1)
         self.create_test_record()
 
         messages = self.driver.find_elements(By.CLASS_NAME, "messages")
