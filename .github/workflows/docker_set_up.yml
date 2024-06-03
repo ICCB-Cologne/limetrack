@@ -47,7 +47,7 @@ jobs:
         export DJANGO_SUPERUSER_PASSWORD=root
         export DJANGO_SUPERUSER_USERNAME=root
         export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
-        createsuperuser --noinput
+        python3 manage.py createsuperuser --noinput
     # ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('root', '', 'root')"
     - name: Lint with flake8
       run: |
