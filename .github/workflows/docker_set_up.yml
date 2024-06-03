@@ -27,6 +27,11 @@ jobs:
         tar -xvzf geckodriver*
         chmod +x geckodriver
         export PATH=$PATH:./geckodriver
+    - name: Install xvfb
+      run: |
+        sudo apt-get install xvfb
+        Xvfb :99 -ac &
+        export DISPLAY=:99
     - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:

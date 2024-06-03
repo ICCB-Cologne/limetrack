@@ -8,6 +8,7 @@ from backend.gui.selenium.basic_test_functions import BasicTestClass
 
 from time import sleep
 
+
 class TestRootCreateRecordViaForm(BasicTestClass):
 
     def create_test_record(self):
