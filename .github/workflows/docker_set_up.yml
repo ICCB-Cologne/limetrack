@@ -43,7 +43,12 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements.txt ]; then sudo pip install -r requirements.txt; fi
     - name: create users
-      run: sudo ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('root', '', 'root')"
+      run: |
+        export DJANGO_SUPERUSER_PASSWORD=root
+        export DJANGO_SUPERUSER_USERNAME=root
+        export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
+        createsuperuser --noinput
+    # ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('root', '', 'root')"
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
