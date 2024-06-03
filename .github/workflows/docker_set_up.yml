@@ -45,7 +45,7 @@ jobs:
     - name: create super user in container
       run: |
         docker ps
-        docker exec -it saturn3-sample-tracking-saturn3sample-django-1 bash -c "
+        docker exec saturn3-sample-tracking-saturn3sample-django-1 bash -c "
           export DJANGO_SUPERUSER_PASSWORD=root
           export DJANGO_SUPERUSER_USERNAME=root
           export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
