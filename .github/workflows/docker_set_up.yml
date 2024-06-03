@@ -44,7 +44,6 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        cat ./backend/gui/selenium/test_root_create_record_via_form.py
         pytest --ignore=./pg_data
     - name: Upload geckodriver log
       if: failure()
