@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
 
 
 class BasicTestClass():
@@ -9,9 +10,11 @@ class BasicTestClass():
         op = webdriver.FirefoxOptions()
         op.add_argument('--headless')
         op.add_argument("--no-sandbox")
-        service = Service(log_output='geckodriver.log')
         try:
-            self.driver = webdriver.Firefox(service=service, options=op)
+            self.driver = webdriver.Firefox(
+                service=Service(GeckoDriverManager().install(),
+                                log_output='geckodriver.log'),
+                options=op)
         except Exception as e:
             print(f"Error setting up WebDriver: {e}")
             raise
