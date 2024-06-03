@@ -2,7 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
 from webdriver_manager.firefox import GeckoDriverManager
-from django.contrib.auth.models import User
 
 
 class BasicTestClass():
@@ -22,7 +21,6 @@ class BasicTestClass():
         self.driver = webdriver.Firefox(options=op)
         self.driver.get("http://0.0.0.0:8080/")
         self.vars = {}
-        User.objects.create_superuser('root', '', 'root')
 
     def login(self, user, password):
         self.driver.implicitly_wait(0.5)
