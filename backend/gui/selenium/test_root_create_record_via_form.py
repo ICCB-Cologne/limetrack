@@ -13,6 +13,7 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
     def create_test_record(self):
         wait = WebDriverWait(self.driver, 5)
+        self.driver.save_screenshot('screenie.png')
 
         wait.until(EC.element_to_be_clickable((By.ID, "id_recruiting_site")))
 
@@ -106,6 +107,7 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
     def test_rootcreaterecordviaformv2(self):
         self.login("root", "root")
+        self.driver.implicitly_wait(2)
         self.create_test_record()
 
         messages = self.driver.find_elements(By.CLASS_NAME, "messages")
