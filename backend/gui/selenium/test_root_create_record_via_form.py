@@ -12,6 +12,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 class TestRootCreateRecordViaForm(BasicTestClass):
 
     def create_test_record(self):
+        self.driver.save_screenshot('screenie.png')
         wait = WebDriverWait(self.driver, 5)
 
         wait.until(EC.element_to_be_clickable((By.ID, "id_recruiting_site")))
