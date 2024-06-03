@@ -45,7 +45,7 @@ jobs:
     - name: Test with pytest
       run: |
         cat ./backend/gui/selenium/test_root_create_record_via_form.py
-        pytest -k "RootCreateRecordViaForm"
+        pytest --ignore=./pg_data
     - name: Upload geckodriver log
       if: failure()
       uses: actions/upload-artifact@v4
