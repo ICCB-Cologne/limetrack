@@ -41,6 +41,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: create users
+      run: python3 backend/gui/selenium/create_test_users.py
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names

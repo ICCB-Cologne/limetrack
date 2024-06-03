@@ -16,7 +16,6 @@ services:
       python manage.py makemigrations;
       python manage.py migrate;
       python manage.py collectstatic --noinput;
-      python backend/gui/selenium/create_test_users.py
       python manage.py runserver 0.0.0.0:8080
       "
 
