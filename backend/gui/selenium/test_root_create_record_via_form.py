@@ -5,13 +5,17 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from backend.gui.selenium.basic_test_functions import BasicTestClass
-
-from time import sleep
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class TestRootCreateRecordViaForm(BasicTestClass):
 
     def create_test_record(self):
+        wait = WebDriverWait(self.driver, 5)
+
+        wait.until(EC.element_to_be_clickable((By.ID, "id_recruiting_site")))
+
         recruiting_site = self.driver.find_element(By.ID, "id_recruiting_site")
         recruiting_site.find_element(
             By.XPATH, "//option[. = 'Göttingen']").click()
@@ -102,7 +106,6 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
     def test_rootcreaterecordviaformv2(self):
         self.login("root", "root")
-        sleep(1)
         self.create_test_record()
 
         messages = self.driver.find_elements(By.CLASS_NAME, "messages")
