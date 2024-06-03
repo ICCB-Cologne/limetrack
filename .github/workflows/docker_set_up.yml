@@ -45,7 +45,6 @@ jobs:
     - name: Test with pytest
       run: |
         cat ./backend/gui/selenium/test_root_create_record_via_form.py
-        pytest ./backend/gui/selenium/
         pytest -k "RootCreateRecordViaForm"
     - name: Upload geckodriver log
       if: failure()
