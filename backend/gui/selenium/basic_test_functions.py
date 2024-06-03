@@ -25,6 +25,7 @@ class BasicTestClass():
     def login(self, user, password):
         self.driver.implicitly_wait(0.5)
         self.driver.set_window_size(50000, 30000)
+        self.driver.save_screenshot('screenie.png')
         self.driver.find_element(By.ID, "id_user_name").send_keys(user)
         self.driver.find_element(By.ID, "id_password").send_keys(password)
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
