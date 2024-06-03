@@ -16,9 +16,9 @@ services:
       python manage.py makemigrations;
       python manage.py migrate;
       python manage.py collectstatic --noinput;
+      python backend/gui/selenium/create_test_users.py
       python manage.py runserver 0.0.0.0:8080
       "
-      echo "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('root', '', 'root')" | python manage.py shell
 
   db:
     image: postgres
