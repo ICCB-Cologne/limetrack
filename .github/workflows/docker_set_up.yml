@@ -40,10 +40,8 @@ jobs:
         python -m pip install --upgrade pip
         pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        if [ -f requirements.txt ]; then sudo pip install -r requirements.txt; fi
-    - name: create super user in container
+    - name: Create users in docker container
       run: |
-        docker ps
         docker exec saturn3-sample-tracking-saturn3sample-django-1 bash -c "
           export DJANGO_SUPERUSER_PASSWORD=root
           export DJANGO_SUPERUSER_USERNAME=root

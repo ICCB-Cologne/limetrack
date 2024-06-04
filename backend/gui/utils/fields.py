@@ -121,7 +121,6 @@ class SampleCodeField(MultiValueField):
         for v in valid_values:
             string += str(v)
             if index != 3 and index != 6:
-                print("-")
                 string += "-"
             index += 1
         return string[:-1]

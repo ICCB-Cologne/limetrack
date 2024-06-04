@@ -25,6 +25,7 @@ from django.shortcuts import render
 from django.forms import ModelForm
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
 
 from typing import Any
 import csv
@@ -390,7 +391,6 @@ def handle_form(form: ModelForm,
         return update_record(request, form, "odcf", data, sat3_code, tag)
 
     elif request.user.groups.filter(name="Recruiter").exists():
-        print(request.user.get_all_permissions())
         # maybe check if record already exists and deny creating of new record
         if (HistopathologicalSample.
             objects.filter(
@@ -621,12 +621,18 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     messages.error(
                         request, "File upload failed!", extra_tags="file")
 
-                msg = f"Error in row {row_number + 1}: data of the \
-                        record with SATURN3 Sample Code: \
-                        {str(row['SATURN3 Sample Code'])} \
-                        --- {str(form.errors.as_text())}"
+                error_list = ""
+                for key, value in form.errors.as_data().items():
+                    if len(value) > 0:
+                        error_list += f"{key}: {value[0]} </br>"
+
+                msg = f"Error(s) in row {row_number + 1} of your CSV-file: \
+                        The record's data with SATURN3 Sample Code \
+                        *{str(row['SATURN3 Sample Code'])}* \
+                        have following issues: </br>\
+                        {error_list}"
                 messages.error(
-                    request, msg, extra_tags="file")
+                    request, mark_safe(msg), extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
 
             row_number += 1
