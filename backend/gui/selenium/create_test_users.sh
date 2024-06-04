@@ -1,1 +1,27 @@
-python3 manage.py shell -c "from django.contrib.auth.models import User; user=User.objects.create_user('test_SPL', password='test4life'); user.save();"
+python3 manage.py shell -c "
+from django.contrib.auth.models import User
+user = User.objects.create_user('test_SPL', password='test4life')
+new_group, created = Group.objects.get_or_create(name='SPL')
+new_group.user_set.add(user)
+user.save()
+user = User.objects.create_user('test_Recruiter', password='test4life')
+new_group, created = Group.objects.get_or_create(name='Recruiter')
+new_group.user_set.add(user)
+user.save()
+user = User.objects.create_user('test_LB', password='test4life')
+new_group, created = Group.objects.get_or_create(name='LiquidBiopsy')
+new_group.user_set.add(user)
+user.save()
+user = User.objects.create_user('test_ScLab', password='test4life')
+new_group, created = Group.objects.get_or_create(name='scOpenLab')
+new_group.user_set.add(user)
+user.save()
+user = User.objects.create_user('test_Omics', password='test4life')
+new_group, created = Group.objects.get_or_create(name='OmicsPath')
+new_group.user_set.add(user)
+user.save()
+user = User.objects.create_user('test_TUM', password='test4life')
+new_group, created = Group.objects.get_or_create(name='TUM')
+new_group.user_set.add(user)
+user.save()
+"
