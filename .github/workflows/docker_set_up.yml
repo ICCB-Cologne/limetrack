@@ -21,8 +21,9 @@ jobs:
       run: |
         rm backend/gui/migrations/0001_initial.py
         rm backend/gui/migrations/0002_add_groups.py
+        ls backend/gui/migrations
     - name: Docker Compose
-      run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate #-d
+      run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
     - name: Install firefox
       uses: browser-actions/setup-firefox@v1
     - name: Install geckodriver
@@ -54,9 +55,6 @@ jobs:
           export DJANGO_SUPERUSER_USERNAME=root
           export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
           python3 manage.py createsuperuser --noinput
-          python3 manage.py makemigrations
-          python3 manage.py migrate
-          ls backend/gui/migrations
           "
     #     python3 backend/gui/selenium/create_test_users.py
     # # ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('root', '', 'root')"
