@@ -21,12 +21,6 @@ jobs:
       run: |
         rm backend/gui/migrations/0001_initial.py
         rm backend/gui/migrations/0002_add_groups.py
-    - name: migrations
-      run: |
-        docker exec saturn3-sample-tracking-saturn3sample-django-1 bash -c "
-          python3 manage.py makemigrations
-          python3 manage.py migrate
-          ""
     - name: Docker Compose
       run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
     - name: Install firefox
@@ -60,6 +54,9 @@ jobs:
           export DJANGO_SUPERUSER_USERNAME=root
           export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
           python3 manage.py createsuperuser --noinput
+          python3 manage.py makemigrations
+          python3 manage.py migrate
+          ls backend/gui/migrations
           "
     #     python3 backend/gui/selenium/create_test_users.py
     # # ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('root', '', 'root')"
