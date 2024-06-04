@@ -49,11 +49,7 @@ jobs:
           export DJANGO_SUPERUSER_USERNAME=root
           export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
           python3 manage.py createsuperuser --noinput
-          python3 manage.py shell -c '
-          from django.contrib.auth.models import User;
-          user=User.objects.create_user('test_SPL', password='test4life');
-          user.save();
-          '
+          python3 manage.py shell --command='from django.contrib.auth.models import User; user=User.objects.create_user('test_SPL', password='test4life'); user.save();'
           "
     - name: Lint with flake8
       run: |
