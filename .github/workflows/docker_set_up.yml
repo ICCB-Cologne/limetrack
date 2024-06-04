@@ -49,9 +49,8 @@ jobs:
           export DJANGO_SUPERUSER_USERNAME=root
           export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
           python3 manage.py createsuperuser --noinput
+          python3 backend/gui/selenium/create_test_users.py
           "
-    #     python3 backend/gui/selenium/create_test_users.py
-    # # ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('root', '', 'root')"
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -61,12 +60,12 @@ jobs:
     - name: Test with pytest
       run: |
         pytest --ignore=./pg_data
-    # - name: Upload geckodriver log
-    #   if: failure()
-    #   uses: actions/upload-artifact@v4
-    #   with:
-    #     name: geckodriver-log
-    #     path: geckodriver.log
+    - name: Upload geckodriver log
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: geckodriver-log
+        path: geckodriver.log
     - name: Upload Screenshot
       if: failure()
       uses: actions/upload-artifact@v4
