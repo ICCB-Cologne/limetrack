@@ -92,15 +92,16 @@ class TestRootCreateRecordViaForm(BasicTestClass):
         select_grading.select_by_value("G2")
 
         self.driver.find_element(By.ID, "modalButton").click()
-        self.driver.save_screenshot('screenie.png')
         self.driver.find_element(
             By.CSS_SELECTOR, ".modal-footer > .btn-primary").click()
 
     def delete_test_record(self):
+        self.driver.save_screenshot('screenie.png')
         self.driver.find_element(By.ID, "all-samples-nav").click()
         self.driver.find_element(By.ID, "Delete S3P-TEST1-5-L9-P-L1").click()
 
     def teardown_method(self, method):
+
         self.delete_test_record()
         self.logout()
         self.driver.close()

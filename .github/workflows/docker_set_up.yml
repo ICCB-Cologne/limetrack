@@ -22,7 +22,7 @@ jobs:
         rm backend/gui/migrations/0001_initial.py
         rm backend/gui/migrations/0002_add_groups.py
     - name: Docker Compose
-      run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
+      run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate #-d
     - name: Install firefox
       uses: browser-actions/setup-firefox@v1
     - name: Install geckodriver
