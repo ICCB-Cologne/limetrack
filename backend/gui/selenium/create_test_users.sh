@@ -1,1 +1,1 @@
-python3 manage.py shell -c "from django.contrib.auth.models import User; user=User.objects.create_user('test_SPL', password='test4life'); user.save();""
+python3 manage.py shell -c "from django.contrib.auth.models import User; user=User.objects.create_user('test_SPL', password='test4life'); user.save();"

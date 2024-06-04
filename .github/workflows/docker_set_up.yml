@@ -49,6 +49,7 @@ jobs:
           export DJANGO_SUPERUSER_USERNAME=root
           export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
           python3 manage.py createsuperuser --noinput
+          chmod +x ./backend/gui/selenium/create_test_users.sh
           ./backend/gui/selenium/create_test_users.sh
           "
     - name: Lint with flake8
