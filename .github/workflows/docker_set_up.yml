@@ -20,13 +20,7 @@ jobs:
     - name: Delete migration files
       run: |
         rm backend/gui/migrations/*
-      # ./manage.py clear_cache
-      # ./manage.py clean_pyc
-      # ./manage.py reset_schema
-      # ./manage.py reset_db
         touch backend/gui/migrations/__init__.py
-        # ./manage.py makemigrations
-        # ./manage.py migrate
         ls backend/gui/migrations/
     - name: Docker Compose
       run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
