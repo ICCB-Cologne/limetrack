@@ -1,5 +1,5 @@
 python3 manage.py shell -c "
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 user = User.objects.create_user('test_SPL', password='test4life')
 new_group, created = Group.objects.get_or_create(name='SPL')
 new_group.user_set.add(user)
