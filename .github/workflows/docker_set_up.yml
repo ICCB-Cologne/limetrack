@@ -44,13 +44,13 @@ jobs:
     - name: create super user in container
       run: |
         docker ps
-        docker exec saturn3-sample-tracking-saturn3sample-django-1 bash -c """
+        docker exec saturn3-sample-tracking-saturn3sample-django-1 bash -c "
           export DJANGO_SUPERUSER_PASSWORD=root
           export DJANGO_SUPERUSER_USERNAME=root
           export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
           python3 manage.py createsuperuser --noinput
-          python3 manage.py shell --command="from django.contrib.auth.models import User; user=User.objects.create_user('test_SPL', password='test4life'); user.save();"
-          """
+          ./backend/gui/selenium/create_test_users.sh
+          "
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
