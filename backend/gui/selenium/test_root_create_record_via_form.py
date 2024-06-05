@@ -7,11 +7,14 @@ from selenium.webdriver.support.select import Select
 from backend.gui.selenium.basic_test_functions import BasicTestClass
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from .record_generator import RecordGenerator
 
 
 class TestRootCreateRecordViaForm(BasicTestClass):
 
     def create_test_record(self):
+
+        print(RecordGenerator.generate_localisation())
 
         wait = WebDriverWait(self.driver, 5)
 

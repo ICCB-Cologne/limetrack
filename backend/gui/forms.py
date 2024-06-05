@@ -1,10 +1,12 @@
 from django import forms
 from django.forms import ModelForm
-from .models import (HistopathologicalSample,
-                     SITE_CHOICES, SEX_CHOICES, CHARFIELD_MAXLEN,
+from .models import HistopathologicalSample, CHARFIELD_MAXLEN
+from .utils.model_choices import (
+                     SITE_CHOICES, SEX_CHOICES,
                      TISSUE_TYPES, INTERVENTION_TYPES,
-                     LOCALISATION_CHOICE, GRADING,
-                     CORRESPONDING_ORGANOID_CHOICES)
+                     GRADING,
+                     CORRESPONDING_ORGANOID_CHOICES,
+                     LOCALISATION_CHOICE)
 from tempus_dominus.widgets import DatePicker
 # documentation https://github.com/FlipperPA/django-tempus-dominus
 from .utils.fields import SampleCodeField, SampleCodeWidget

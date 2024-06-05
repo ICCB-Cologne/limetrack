@@ -361,8 +361,9 @@ def handle_form(form: ModelForm,
                 request: HttpRequest,
                 tag: str):
     """
-    Updates existing patient records (if group membership is not recruiter)
-    or creates new patient records (if group membership is recruiter).
+    Updates existing patient records
+    or creates new patient records
+    depending on user group and user permissions
 
     variables:
     tag = "general" or "file"

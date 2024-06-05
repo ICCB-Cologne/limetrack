@@ -1,3 +1,4 @@
+# only important for github actions in order to create users inside the docker container
 python3 manage.py shell -c "
 from django.contrib.auth.models import User, Group
 user = User.objects.create_user('test_SPL', password='test4life')
