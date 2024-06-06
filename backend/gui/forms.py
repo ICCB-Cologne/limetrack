@@ -16,6 +16,7 @@ all_field_verbose_names = []
 all_field_names = []
 
 # exclude primary key "ID" by indexing
+# for we dont want it displayed
 all_fields = HistopathologicalSample._meta.get_fields()[1:]
 
 for field in all_fields:

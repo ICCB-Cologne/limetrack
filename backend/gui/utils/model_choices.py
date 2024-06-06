@@ -110,3 +110,44 @@ CORRESPONDING_ORGANOID_CHOICES = [
     (True, "Yes"),
     (False, "No"),
 ]
+
+ENTITY = [
+    ("S3M", "M"),
+    ("S3C", "C"),
+    ("S3P", "P")
+]
+
+TISSUE_TYPE = [
+    ("B", "B"),
+    ("T", "T"),
+    ("M", "M"),
+    ("X", "X"),
+    ("L", "L"),
+    ("N", "N"),
+    ("C", "C"),
+    ("F", "F"),
+    ("R", "R"),
+]
+
+STORAGE_FORMAT = [
+    ("S", "S"),
+    ("V", "V"),
+    ("F", "F"),
+    ("P", "P"),
+    ("Y", "Y"),
+    ("O", "O")
+    ]
+
+ANALYTE_TYPE = [
+    ("D", "D"),
+    ("R", "R"),
+    ("C", "C"),
+    ("W", "W"),
+    ("Y", "Y"),
+    ("T", "T"),
+    ("M", "M"),
+    ("L", "L"),
+    ("G", "G"),
+    ("H", "H"),
+    ("N", "N"),
+]

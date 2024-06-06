@@ -60,7 +60,7 @@ class HistopathologicalSample(models.Model):
     remember to make changes to
     the forms.py file accordingly.
 
-    Meaning go to forms.py and make sure
+    Meaning: go to forms.py and make sure
     that the lists and dicts on the top of
     the file include all model fields.
     """

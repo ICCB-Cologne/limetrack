@@ -21,6 +21,7 @@ class BasicTestClass():
         self.driver = webdriver.Firefox(options=op)
         self.driver.get("http://0.0.0.0:8080/")
         self.vars = {}
+        self.sat3_sample_code = ""
 
     def login(self, user, password):
         self.driver.implicitly_wait(0.5)

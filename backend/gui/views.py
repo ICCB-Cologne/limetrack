@@ -765,8 +765,23 @@ def some_streaming_csv_view(request):
 def csv_template_download(request):
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)
+    example_sample = [
+        "München", "BSP12", "f", "2021-02-10", "S3C-BSP12-0-M1-V-R1",
+        "2021-02-10", "CTC", "Blood withdrawal", "Lung", "No", "G2",
+        "15", "2023-12-17", "successful DNA", "panel", "2023-12-17",
+        "2023-12-17", "77", "45", "successful DNA", "ATAC",
+        "Yes", "214", "123456", "123456", "LOL", "panel",
+        "2023-12-17", "2023-12-17", "4", "2023-12-17",
+        "111", "sequencing successful", "pool10",
+        "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
+        "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
+        "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
+        "/omics/odcf/example", "/omics/odcf/example"
+        ]
+
+    data = [all_field_verbose_names, example_sample]
     return StreamingHttpResponse(
-        (writer.writerow(all_field_verbose_names)),
+        (writer.writerow(row) for row in data),
         content_type="text/csv",
         headers={
             "Content-Disposition":

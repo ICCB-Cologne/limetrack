@@ -5,8 +5,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from backend.gui.selenium.basic_test_functions import BasicTestClass
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 from .record_generator import RecordGenerator
 
 
@@ -14,18 +12,14 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
     def create_test_record(self):
 
-        print(RecordGenerator.generate_localisation())
-
-        wait = WebDriverWait(self.driver, 5)
-
-        wait.until(EC.element_to_be_clickable((By.ID, "id_recruiting_site")))
-
         recruiting_site = self.driver.find_element(By.ID, "id_recruiting_site")
         recruiting_site.find_element(
-            By.XPATH, "//option[. = 'Göttingen']").click()
+            By.XPATH,
+            f"//option[. = '{RecordGenerator.random_site_choice()}']").click()
 
+        patient_identifier = RecordGenerator.random_patient_identifier()
         self.driver.find_element(
-            By.ID, "id_patient_identifier").send_keys("TEST1")
+            By.ID, "id_patient_identifier").send_keys(patient_identifier)
 
         sex = self.driver.find_element(By.ID, "id_sex")
         sex_select = Select(sex)
@@ -35,64 +29,98 @@ class TestRootCreateRecordViaForm(BasicTestClass):
         self.driver.find_element(By.ID, "id_died").send_keys(Keys.ENTER)
 
         # SATURN3 Sample Code
+
+        # Entity
+        sat3_code_entity = RecordGenerator.random_sample_code_entity_choice()
         saturn3_sample_code_0 = self.driver.find_element(
             By.ID, "id_saturn3_sample_code_0")
         select_saturn3_sample_code_0 = Select(saturn3_sample_code_0)
-        select_saturn3_sample_code_0.select_by_value("S3P")
+        select_saturn3_sample_code_0.select_by_value(sat3_code_entity)
 
         # saturn3_sample_code_1 is filled out automatically
 
+        # samling time point
+        sat3_code_sampling_time_point = \
+            RecordGenerator.random_sample_code_number()
         self.driver.find_element(
-            By.ID, "id_saturn3_sample_code_2").send_keys("5")
+            By.ID, "id_saturn3_sample_code_2").send_keys(
+                sat3_code_sampling_time_point)
 
+        # tissue type
+        sat3_code_tissue_type = RecordGenerator.random_sample_code_tissue_type()
+        print(sat3_code_tissue_type)
         saturn3_sample_code_3 = self.driver.find_element(
             By.ID, "id_saturn3_sample_code_3")
         select_saturn3_sample_code_3 = Select(saturn3_sample_code_3)
-        select_saturn3_sample_code_3.select_by_value("L")
+        select_saturn3_sample_code_3.select_by_value(sat3_code_tissue_type)
 
+        # tissue type - order number
+        sat3_code_tissue_type_order_number = \
+            RecordGenerator.random_sample_code_number()
         self.driver.find_element(
-            By.ID, "id_saturn3_sample_code_4").send_keys("9")
+            By.ID, "id_saturn3_sample_code_4").send_keys(
+                sat3_code_tissue_type_order_number)
 
+        # storage format
+        sat3_code_storage_format = RecordGenerator.random_storage_format()
         saturn3_sample_code_5 = self.driver.find_element(
             By.ID, "id_saturn3_sample_code_5")
         select_saturn3_sample_code_5 = Select(saturn3_sample_code_5)
-        select_saturn3_sample_code_5.select_by_value("P")
+        select_saturn3_sample_code_5.select_by_value(sat3_code_storage_format)
 
+        # analyte type
+        sat3_code_analyte_type = RecordGenerator.random_analyte_type()
         saturn3_sample_code_6 = self.driver.find_element(
             By.ID, "id_saturn3_sample_code_6")
         select_saturn3_sample_code_6 = Select(saturn3_sample_code_6)
-        select_saturn3_sample_code_6.select_by_value("L")
+        select_saturn3_sample_code_6.select_by_value(sat3_code_analyte_type)
 
+        # analyte type - order number
+        sat3_code_analyte_type_order_number = \
+            RecordGenerator.random_sample_code_number()
         self.driver.find_element(
-            By.ID, "id_saturn3_sample_code_7").send_keys("1")
-        # end of SATURN3 Sample Code
+            By.ID, "id_saturn3_sample_code_7").send_keys(
+                sat3_code_analyte_type_order_number)
 
+        self.sat3_sample_code = \
+            sat3_code_entity + \
+            "-" + patient_identifier + \
+            "-" + sat3_code_sampling_time_point + \
+            "-" + sat3_code_tissue_type + sat3_code_tissue_type_order_number + \
+            "-" + sat3_code_storage_format + \
+            "-" + sat3_code_analyte_type + sat3_code_analyte_type_order_number
+
+        print(RecordGenerator.random_date())
         self.driver.find_element(
-            By.ID, "id_sampling_date").send_keys("2024-05-14")
+            By.ID, "id_sampling_date").send_keys(RecordGenerator.random_date())
         self.driver.find_element(
             By.ID, "id_sampling_date").send_keys(Keys.ENTER)
 
         tissue_type = self.driver.find_element(By.ID, "id_tissue_type")
         select_tissue_type = Select(tissue_type)
-        select_tissue_type.select_by_value("PBMC")
+        select_tissue_type.select_by_value(
+            RecordGenerator.random_tissue_type())
 
         type_of_intervention = self.driver.find_element(
             By.ID, "id_type_of_intervention")
         select_type_of_intervention = Select(type_of_intervention)
-        select_type_of_intervention.select_by_value("Blood withdrawal")
+        select_type_of_intervention.select_by_value(
+            RecordGenerator.random_intervention_type())
 
         localisation = self.driver.find_element(By.ID, "id_localisation")
         select_localisation = Select(localisation)
-        select_localisation.select_by_value("Brain")
+        select_localisation.select_by_value(
+            RecordGenerator.random_localisation())
 
         corresponding_organoid = self.driver.find_element(
             By.ID, "id_corresponding_organoid")
         select_corresponding_organoid = Select(corresponding_organoid)
-        select_corresponding_organoid.select_by_visible_text("No")
+        select_corresponding_organoid.select_by_visible_text(
+            RecordGenerator.random_corresponding_organoid_choice())
 
         grading = self.driver.find_element(By.ID, "id_grading")
         select_grading = Select(grading)
-        select_grading.select_by_value("G2")
+        select_grading.select_by_value(RecordGenerator.random_grading())
 
         self.driver.find_element(By.ID, "modalButton").click()
         self.driver.find_element(
@@ -101,7 +129,8 @@ class TestRootCreateRecordViaForm(BasicTestClass):
     def delete_test_record(self):
         self.driver.save_screenshot('screenie.png')
         self.driver.find_element(By.ID, "all-samples-nav").click()
-        self.driver.find_element(By.ID, "Delete S3P-TEST1-5-L9-P-L1").click()
+        self.driver.find_element(By.ID,
+                                 f"Delete {self.sat3_sample_code}").click()
 
     def teardown_method(self, method):
 
@@ -112,13 +141,8 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
     def test_rootcreaterecordviaformv2(self):
         self.login("root", "root")
-        self.driver.implicitly_wait(2)
         self.create_test_record()
 
-        messages = self.driver.find_elements(By.CLASS_NAME, "messages")
-
-        for message in messages:
-            errors = message.find_elements(By.TAG_NAME, "li")
-            for err in errors:
-                print(err.get_attribute("class"))
-                print(err.text)
+        message_container = self.driver.find_element(By.CLASS_NAME, "messages")
+        message = message_container.find_element(By.TAG_NAME, "li")
+        assert (message.text == "Submission successful!")

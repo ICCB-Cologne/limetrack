@@ -10,11 +10,106 @@ from backend.gui.utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                              LB_ANALYTE_TYPES,
                                              LB_STATUS_CHOICES)
 
+from backend.gui.utils.model_choices import (ENTITY, TISSUE_TYPE,
+                                             STORAGE_FORMAT,
+                                             ANALYTE_TYPE)
+
 import random
+import string
+import time
+import datetime
 
 
 class RecordGenerator:
 
     @staticmethod
-    def generate_localisation():
-        return random.choice(LOCALISATION_CHOICE)
+    def random_localisation():
+        return random.choice(LOCALISATION_CHOICE)[0]
+
+    @staticmethod
+    def random_site_choice():
+        return random.choice(SITE_CHOICES)[0]
+
+    @staticmethod
+    def random_sex_choice():
+        return random.choice(SEX_CHOICES)[0]
+
+    @staticmethod
+    def random_tissue_type():
+        return random.choice(TISSUE_TYPES)[0]
+
+    @staticmethod
+    def random_intervention_type():
+        return random.choice(INTERVENTION_TYPES)[0]
+
+    @staticmethod
+    def random_corresponding_organoid_choice():
+        return random.choice(CORRESPONDING_ORGANOID_CHOICES)[1]
+
+    @staticmethod
+    def random_grading():
+        return random.choice(GRADING)[0]
+
+    @staticmethod
+    def random_spl_sequencing_types():
+        return random.choice(SPL_SEQUENCING_TYPES)[0]
+
+    @staticmethod
+    def random_spl_status_choice():
+        return random.choice(SPL_STATUS_CHOICES)[0]
+
+    @staticmethod
+    def random_sclab_sequencing_types():
+        return random.choice(SCLAB_SEQUENCING_TYPES)[0]
+
+    @staticmethod
+    def random_sclab_status_choice():
+        return random.choice(SCLAB_STATUS_CHOICES)[0]
+
+    @staticmethod
+    def random_lb_analyte_types():
+        return random.choice(LB_ANALYTE_TYPES)[0]
+
+    @staticmethod
+    def random_lb_status_choice():
+        return random.choice(LB_STATUS_CHOICES)[0]
+
+    @staticmethod
+    def random_patient_identifier():
+        return ''.join(random.choices(
+            string.ascii_uppercase + string.digits, k=5))
+
+    @staticmethod
+    def random_sample_code_number():
+        return ''.join(random.choices(
+            string.digits, k=1))
+
+    @staticmethod
+    def random_sample_code_entity_choice():
+        return random.choice(ENTITY)[0]
+
+    @staticmethod
+    def random_sample_code_tissue_type():
+        return random.choice(TISSUE_TYPE)[0]
+
+    @staticmethod
+    def random_storage_format():
+        return random.choice(STORAGE_FORMAT)[0]
+
+    @staticmethod
+    def random_analyte_type():
+        return random.choice(ANALYTE_TYPE)[0]
+
+    @staticmethod
+    def random_date():
+        rand = random.uniform(0.0, 1.0)
+
+        start = str(datetime.date(1900, 1, 1))
+        end = str(datetime.date(3000, 1, 1))
+        time_format = "%Y-%m-%d"
+        stime = time.mktime(time.strptime(start, time_format))
+        etime = time.mktime(time.strptime(end, time_format))
+
+        ptime = stime + rand * (etime - stime)
+
+        return time.strftime(time_format, time.localtime(ptime))
