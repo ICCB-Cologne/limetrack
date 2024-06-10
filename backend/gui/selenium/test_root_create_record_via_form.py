@@ -10,7 +10,7 @@ from .record_generator import RecordGenerator
 
 class TestRootCreateRecordViaForm(BasicTestClass):
 
-    def create_test_record(self):
+    def create_minimal_test_record(self):
 
         recruiting_site = self.driver.find_element(By.ID, "id_recruiting_site")
         recruiting_site.find_element(
@@ -25,7 +25,8 @@ class TestRootCreateRecordViaForm(BasicTestClass):
         sex_select = Select(sex)
         sex_select.select_by_value("m")
 
-        self.driver.find_element(By.ID, "id_died").send_keys("2024-05-14")
+        self.driver.find_element(By.ID, "id_died").send_keys(
+            RecordGenerator.random_date())
         self.driver.find_element(By.ID, "id_died").send_keys(Keys.ENTER)
 
         # SATURN3 Sample Code
@@ -47,8 +48,8 @@ class TestRootCreateRecordViaForm(BasicTestClass):
                 sat3_code_sampling_time_point)
 
         # tissue type
-        sat3_code_tissue_type = RecordGenerator.random_sample_code_tissue_type()
-        print(sat3_code_tissue_type)
+        sat3_code_tissue_type = \
+            RecordGenerator.random_sample_code_tissue_type()
         saturn3_sample_code_3 = self.driver.find_element(
             By.ID, "id_saturn3_sample_code_3")
         select_saturn3_sample_code_3 = Select(saturn3_sample_code_3)
@@ -86,11 +87,10 @@ class TestRootCreateRecordViaForm(BasicTestClass):
             sat3_code_entity + \
             "-" + patient_identifier + \
             "-" + sat3_code_sampling_time_point + \
-            "-" + sat3_code_tissue_type + sat3_code_tissue_type_order_number + \
+            "-" + sat3_code_tissue_type + sat3_code_tissue_type_order_number +\
             "-" + sat3_code_storage_format + \
             "-" + sat3_code_analyte_type + sat3_code_analyte_type_order_number
 
-        print(RecordGenerator.random_date())
         self.driver.find_element(
             By.ID, "id_sampling_date").send_keys(RecordGenerator.random_date())
         self.driver.find_element(
@@ -122,9 +122,164 @@ class TestRootCreateRecordViaForm(BasicTestClass):
         select_grading = Select(grading)
         select_grading.select_by_value(RecordGenerator.random_grading())
 
+    def create_full_record(self):
+
+        self.create_minimal_test_record()
+
+        self.driver.find_element(By.ID, "id_tumor_cell_content").send_keys(
+            RecordGenerator.random_integer_from_0_to_100())
+
+        self.driver.find_element(
+            By.ID,
+            "id_spl_received").send_keys(RecordGenerator.random_date())
+
+        spl_status = self.driver.find_element(By.ID, "id_spl_status")
+        spl_status.find_element(
+            By.XPATH,
+            f"//option[. = '{RecordGenerator.random_spl_status()}']").click()
+
+        spl_sequencing_type = self.driver.find_element(
+            By.ID,
+            "id_spl_sequencing_type")
+        spl_sequencing_type.find_element(
+            By.XPATH,
+            f"//option[. = '{RecordGenerator.random_spl_sequencing()}']"). \
+            click()
+
+        self.driver.find_element(
+            By.ID,
+            "id_sclab_received").send_keys(RecordGenerator.random_date())
+
+        self.driver.find_element(
+            By.ID,
+            "id_sclab_extraction_date").send_keys(
+                RecordGenerator.random_date())
+
+        self.driver.find_element(
+            By.ID,
+            "id_sclab_nuclei_yield").send_keys(
+                RecordGenerator.random_integer_from_0_to_100())
+
+        self.driver.find_element(
+            By.ID,
+            "id_sclab_nuclei_size").send_keys(
+                RecordGenerator.random_integer_from_0_to_100())
+
+        sclab_status = self.driver.find_element(By.ID, "id_sclab_status")
+        sclab_status.find_element(
+            By.XPATH,
+            f"//option[. = "
+            f"'{RecordGenerator.random_sclab_status_choice()}']").click()
+
+        sclab_sequencing_type = self.driver.find_element(
+            By.ID, "id_sclab_sequencing_type")
+        sclab_sequencing_type.find_element(
+            By.XPATH,
+            f"//option[. = "
+            f"'{RecordGenerator.random_sclab_sequencing_types()}']").click()
+
+        sclab_sorting = self.driver.find_element(By.ID, "id_sclab_sorting")
+        sclab_sorting.find_element(
+            By.XPATH,
+            f"//option[. = '{RecordGenerator.random_sclab_sorting()}']"). \
+            click()
+
+        self.driver.find_element(By.ID, "id_sclab_pool").send_keys(
+            RecordGenerator.random_string_of_length(5))
+
+        self.driver.find_element(
+            By.ID,
+            "id_rna_isle_id").send_keys(
+                RecordGenerator.random_integer_from_0_to_100())
+
+        self.driver.find_element(
+            By.ID,
+            "id_atac_isle_id").send_keys(
+                RecordGenerator.random_integer_from_0_to_100())
+
+        self.driver.find_element(
+            By.ID,
+            "id_sclab_comment").send_keys(
+                RecordGenerator.random_string_of_length(100))
+
+        lb_analyte_type = self.driver.find_element(By.ID, "id_lb_analyte_type")
+        lb_analyte_type.find_element(
+            By.XPATH,
+            f"//option[. = '{RecordGenerator.random_lb_analyte_types()}']") \
+            .click()
+
+        self.driver.find_element(
+            By.ID,
+            "id_lb_sampling_date").send_keys(
+                RecordGenerator.random_date())
+
+        self.driver.find_element(
+            By.ID,
+            "id_lb_received").send_keys(
+                RecordGenerator.random_date())
+
+        self.driver.find_element(By.ID, "id_lb_sample_volume").send_keys(
+            RecordGenerator.random_integer_from_0_to_100())
+
+        self.driver.find_element(By.ID, "id_lb_date_of_isolation").send_keys(
+                RecordGenerator.random_date())
+
+        self.driver.find_element(
+            By.ID,
+            "id_lb_total_isolated_cfdna").send_keys(
+                RecordGenerator.random_integer_from_0_to_100())
+
+        lb_status = self.driver.find_element(By.ID, "id_lb_status")
+        lb_status.find_element(
+            By.XPATH,
+            f"//option[. = '{RecordGenerator.random_lb_status_choice()}']"). \
+            click()
+
+        self.driver.find_element(
+            By.ID,
+            "id_pools").send_keys(
+                RecordGenerator.random_integer_from_0_to_100())
+
+        self.driver.find_element(
+            By.ID, "id_scrna_r1").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_scrna_r2").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_scatac_r1").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_scatac_r2").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_scatac_i2").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_wgs_r1").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_wgs_r2").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_wgs_bam").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_wgs_vcf").send_keys("omics/schmomociks")
+
+    def submit_record(self):
+
         self.driver.find_element(By.ID, "modalButton").click()
         self.driver.find_element(
             By.CSS_SELECTOR, ".modal-footer > .btn-primary").click()
+
+    def check_submission(self):
+        message_container = self.driver.find_element(By.CLASS_NAME, "messages")
+        message = message_container.find_element(By.TAG_NAME, "li")
+        assert (message.text == "Submission successful!")
+
+        for m in message_container.find_elements(By.TAG_NAME, "li"):
+            print(m.text)
 
     def delete_test_record(self):
         self.driver.save_screenshot('screenie.png')
@@ -133,7 +288,6 @@ class TestRootCreateRecordViaForm(BasicTestClass):
                                  f"Delete {self.sat3_sample_code}").click()
 
     def teardown_method(self, method):
-
         self.delete_test_record()
         self.logout()
         self.driver.close()
@@ -141,8 +295,6 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
     def test_rootcreaterecordviaformv2(self):
         self.login("root", "root")
-        self.create_test_record()
-
-        message_container = self.driver.find_element(By.CLASS_NAME, "messages")
-        message = message_container.find_element(By.TAG_NAME, "li")
-        assert (message.text == "Submission successful!")
+        self.create_full_record()
+        self.submit_record()
+        self.check_submission()

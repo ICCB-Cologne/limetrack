@@ -67,6 +67,10 @@ class RecordGenerator:
         return random.choice(SCLAB_STATUS_CHOICES)[0]
 
     @staticmethod
+    def random_sclab_sorting():
+        return random.choice(CORRESPONDING_ORGANOID_CHOICES)[1]
+
+    @staticmethod
     def random_lb_analyte_types():
         return random.choice(LB_ANALYTE_TYPES)[0]
 
@@ -78,6 +82,11 @@ class RecordGenerator:
     def random_patient_identifier():
         return ''.join(random.choices(
             string.ascii_uppercase + string.digits, k=5))
+
+    @staticmethod
+    def random_string_of_length(k):
+        return ''.join(random.choices(
+            string.ascii_uppercase + string.digits, k=k))
 
     @staticmethod
     def random_sample_code_number():
@@ -101,6 +110,14 @@ class RecordGenerator:
         return random.choice(ANALYTE_TYPE)[0]
 
     @staticmethod
+    def random_spl_status():
+        return random.choice(SPL_STATUS_CHOICES)[0]
+
+    @staticmethod
+    def random_spl_sequencing():
+        return random.choice(SPL_SEQUENCING_TYPES)[0]
+
+    @staticmethod
     def random_date():
         rand = random.uniform(0.0, 1.0)
 
@@ -113,3 +130,7 @@ class RecordGenerator:
         ptime = stime + rand * (etime - stime)
 
         return time.strftime(time_format, time.localtime(ptime))
+
+    @staticmethod
+    def random_integer_from_0_to_100():
+        return str(random.choice(range(0, 100)))
