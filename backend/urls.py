@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
-from backend.gui.views import SampleTrackingView, FilteredSamplesView, AllSamplesView, some_streaming_csv_view,\
+from backend.gui.views.views import SampleTrackingView, FilteredSamplesView, AllSamplesView, some_streaming_csv_view,\
     UploadView, DashBoardView, LoginView, SearchView, log_out, csv_template_download, FilteredDownloadView, ContactView, ImprintView
 
 urlpatterns = [

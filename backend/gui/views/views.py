@@ -1,11 +1,11 @@
-from .forms import (
+from ..forms import (
     all_field_verbose_names, all_field_names, odcf_fields, field_dict,
     SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, LoginForm, GroupFilterForm,
     SearchForm, SampleFormDataPaths,
 )
-from .models import (
+from ..models import (
     HistopathologicalSample, check_sat3_sample_code,
     check_sat3_sample_code_with_none_analyte
 )
