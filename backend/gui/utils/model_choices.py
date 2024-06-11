@@ -11,7 +11,8 @@ LOCALISATION_CHOICE = [
     ("Blood", "Blood"),
     ("Peritoneum", "Peritoneum"),
     ("Lymph Node", "Lymph Node"),
-    ("Spleen", "Spleen")
+    ("Spleen", "Spleen"),
+    ("Skin", "Skin"),
 ]
 
 SITE_CHOICES = [
@@ -150,4 +151,18 @@ ANALYTE_TYPE = [
     ("G", "G"),
     ("H", "H"),
     ("N", "N"),
+]
+
+SPATIAL_METHOD = [
+    ("Xenium", "Xenium"),
+    ("Merscope", "Merscope"),
+    ("Xenium/Merscope", "Xenium/Merscope"),
+]
+
+SPATIAL_STATUS = [
+    ("Xenium failed", "Xenium failed"),
+    ("Merscope failed", "Merscope failed"),
+    ("successful Xenium", "successful Xenium"),
+    ("successful Merscope", "successful Merscope"),
+    ("failed Xenium/Merscope", "failed Xenium/Merscope"),
 ]
