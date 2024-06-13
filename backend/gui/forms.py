@@ -50,6 +50,11 @@ sclab_fields = ["saturn3_sample_code"] + \
         all_field_names.index("sclab_received"):
         all_field_names.index("sclab_comment") + 1]
 
+spatial_fields = ["saturn3_sample_code"] + \
+    all_field_names[
+        all_field_names.index("spatial_method"):
+        all_field_names.index("spatial_comment") + 1]
+
 lb_fields = ["saturn3_sample_code"] + \
     all_field_names[
         all_field_names.index("lb_analyte_type"):
@@ -64,6 +69,7 @@ field_dict = {
     "tum": tum_fields,
     "spl": spl_fields,
     "sclab": sclab_fields,
+    "spatial": spatial_fields,
     "lb": lb_fields,
               }
 
@@ -124,7 +130,47 @@ disabled_sclab_dict = {
                 attrs={"disabled": "true"}),
 }
 
+disabled_spatial_dict = {
+
+            "spatial_method": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "spatial_status": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "xenium_run_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "xenium_slide_id": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "xenium_run_id": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "xenium_panel_id": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "merscope_run_date": DatePicker(
+                attrs={"disabled": "true",
+                       "input_group": False}),
+
+            "merscope_run_id": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "merscope_panel_id": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "dv_200": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+            "spatial_comment": forms.TextInput(
+                attrs={"disabled": "true"}),
+
+}
+
 disabled_lb_dict = {
+
             "lb_analyte_type": forms.Select(
                 attrs={"disabled": "true"}),
 
@@ -208,6 +254,14 @@ class SampleForm(ModelForm):
                 options={"allowInputToggle": True},
                 attrs={"input_group": False}),
 
+            "xenium_run_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "merscope_run_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
             "lb_sampling_date": DatePicker(
                 options={"allowInputToggle": True},
                 attrs={"input_group": False}),
@@ -266,7 +320,8 @@ class SampleFormRec(ModelForm):
                        ),
 
         } | disabled_tum_dict | disabled_spl_dict \
-            | disabled_sclab_dict | disabled_lb_dict
+            | disabled_sclab_dict | disabled_spatial_dict \
+            | disabled_lb_dict
 
 
 class SampleFormTUM(ModelForm):
@@ -312,14 +367,21 @@ class SampleFormTUM(ModelForm):
             attrs={"disabled": "true"},
             choices=SEX_CHOICES))
 
+    died = forms.DateField(
+        required=False,
+        widget=DatePicker(
+            options={},
+            attrs={"input_group": False,
+                   "disabled": "true"}
+                   ))
+
     sampling_date = forms.DateField(
         required=False,
         widget=DatePicker(
             options={},
             attrs={"input_group": False,
                    "disabled": "true"}
-                   )
-        )
+                   ))
 
     tissue_type = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
@@ -362,19 +424,8 @@ class SampleFormTUM(ModelForm):
         fields = all_field_names
         widgets = {
 
-            # disabled #
-
-            # "patient", skip for prototype
-
-            "died": DatePicker(
-                options={},
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            # "tissue_name", skip for prototype
-            # "used_in", skip for prototype
-
-        } | disabled_spl_dict | disabled_sclab_dict | disabled_lb_dict
+        } | disabled_spl_dict | disabled_sclab_dict \
+            | disabled_spatial_dict | disabled_lb_dict
 
 
 class SampleFormSPL(SampleFormTUM):
@@ -395,20 +446,8 @@ class SampleFormSPL(SampleFormTUM):
                 options={"allowInputToggle": True},
                 attrs={"input_group": False}),
 
-            # disabled:
-
-            # "patient", skip for prototype
-
-            "died": DatePicker(
-                options={},
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            # "tissue_name", skip for prototype
-
-            # "used_in", skip for prototype
-
-        } | disabled_tum_dict | disabled_sclab_dict | disabled_lb_dict
+        } | disabled_tum_dict | disabled_sclab_dict \
+            | disabled_spatial_dict | disabled_lb_dict
 
 
 class SampleFormScLab(SampleFormTUM):
@@ -434,19 +473,35 @@ class SampleFormScLab(SampleFormTUM):
                 options={"allowInputToggle": True},
                 attrs={"input_group": False}),
 
-            # disabled
+            "xenium_run_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
 
-            # "patient", skip for prototype
-
-            "died": DatePicker(
-                options={},
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            # "tissue_name", skip for prototype
-            # "used_in", skip for prototype
+            "merscope_run_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
 
         } | disabled_tum_dict | disabled_spl_dict | disabled_lb_dict
+
+
+class SampleFormSpatial(SampleFormTUM):
+    class Meta:
+        model = HistopathologicalSample
+
+        fields = all_field_names
+
+        widgets = {
+
+            "xenium_run_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            "merscope_run_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+        } | disabled_tum_dict | disabled_spl_dict | disabled_lb_dict \
+            | disabled_sclab_dict
 
 
 class SampleFormLB(SampleFormTUM):
@@ -475,19 +530,8 @@ class SampleFormLB(SampleFormTUM):
                 options={"allowInputToggle": True},
                 attrs={"input_group": False}),
 
-            # disabled:
-
-            # "patient", skip for prototype
-
-            "died": DatePicker(
-                options={},
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            # "tissue_name", skip for prototype
-            # "used_in", skip for prototype
-
-        } | disabled_tum_dict | disabled_spl_dict | disabled_sclab_dict
+        } | disabled_tum_dict | disabled_spl_dict | disabled_sclab_dict \
+            | disabled_spatial_dict
 
 
 class SampleFormDataPaths(SampleFormTUM):
@@ -502,20 +546,9 @@ class SampleFormDataPaths(SampleFormTUM):
         fields = all_field_names + odcf_fields
         widgets = {
 
-            # disabled:
-
-            # "patient", skip for prototype
-
-            "died": DatePicker(
-                options={},
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            # "tissue_name", skip for prototype
-            # "used_in", skip for prototype
-
         } | disabled_tum_dict | disabled_spl_dict \
-            | disabled_sclab_dict | disabled_lb_dict
+            | disabled_sclab_dict | disabled_spatial_dict \
+            | disabled_lb_dict
 
 
 class UploadForm(forms.Form):
@@ -563,9 +596,14 @@ class GroupFilterForm(forms.Form):
     spl = forms.BooleanField(initial=True,
                              required=False,
                              label="SPL")
+
     sclab = forms.BooleanField(initial=True,
                                required=False,
                                label="ScLab")
+
+    spatial = forms.BooleanField(initial=True,
+                                 required=False,
+                                 label="Spatial")
 
     lb = forms.BooleanField(initial=True,
                             required=False,

@@ -3,7 +3,7 @@ from ..forms import (
     SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, LoginForm, GroupFilterForm,
-    SearchForm, SampleFormDataPaths,
+    SearchForm, SampleFormDataPaths, SampleFormSpatial
 )
 from ..models import (
     HistopathologicalSample, check_sat3_sample_code,
@@ -31,6 +31,7 @@ from typing import Any
 import csv
 import pandas as pd
 import logging
+import plotly.graph_objects as go
 
 app_log = logging.getLogger("s3sample")
 
@@ -54,6 +55,8 @@ def get_form(
             form = SampleFormRec(data=data)
         case "omicspath":
             form = SampleFormDataPaths(data=data)
+        case "spatial":
+            form = SampleFormSpatial(data=data)
         case _:
             form = SampleForm(data=data)
     return form
@@ -69,7 +72,8 @@ def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
                  "tum": "tum",
                  "scopenlab": "sclab",
                  "liquidbiopsy": "lb",
-                 "omicspath": "odcf"
+                 "omicspath": "odcf",
+                 "spatial": "spatial"
                  }
     if group_name in temp_dict.keys():
         group_name = temp_dict[group_name]
@@ -104,7 +108,8 @@ def check_records_existence(request: HttpRequest,
         request.user.groups.filter(name="TUM").exists() or
         request.user.groups.filter(name="scOpenLab").exists() or
         request.user.groups.filter(name="LiquidBiopsy").exists() or
-            request.user.groups.filter(name="OmicsPath").exists()):
+        request.user.groups.filter(name="OmicsPath").exists() or
+            request.user.groups.filter(name="Spatial").exists()):
 
         # if data for the group specific fields already exists
         # and the user has no permission for editing
@@ -391,6 +396,10 @@ def handle_form(form: ModelForm,
 
         return update_record(request, form, "odcf", data, sat3_code, tag)
 
+    elif request.user.groups.filter(name="Spatial").exists():
+
+        return update_record(request, form, "spatial", data, sat3_code, tag)
+
     elif request.user.groups.filter(name="Recruiter").exists():
         # maybe check if record already exists and deny creating of new record
         if (HistopathologicalSample.
@@ -480,13 +489,6 @@ def handle_form(form: ModelForm,
     else:
         # if a CSV file's been submitted
         return
-
-
-class DashBoardView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest,
-            *args: Any, **kwargs: Any) -> HttpResponse:
-        template_name = "gui/dashboard.html"
-        return render(request, template_name)
 
 
 class ContactView(LoginRequiredMixin, TemplateView):
@@ -655,14 +657,32 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest,
             *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/all_samples.html"
-        samples = HistopathologicalSample.objects.all()
-        fields_and_values_list = [
-            [(field.verbose_name, getattr(instance, field.name))
-             for field in instance._meta.fields]
-            for instance in samples
-        ]
 
-        filters = GroupFilterForm()
+        if len(request.GET) == 0:
+            samples = HistopathologicalSample.objects.all()
+            fields_and_values_list = [
+                [(field.verbose_name, getattr(instance, field.name))
+                    for field in instance._meta.fields]
+                for instance in samples
+            ]
+            filters = GroupFilterForm()
+
+        else:
+            filtered_form = GroupFilterForm(request.GET)
+            if filtered_form.is_valid():
+                all_filters = ["id"]
+                for group in filtered_form.cleaned_data:
+                    all_filters += field_dict[group] \
+                        if filtered_form.cleaned_data[group] else []
+
+                samples = HistopathologicalSample.objects.all()
+                fields_and_values_list = [
+                    [(field.verbose_name, getattr(instance, field.name))
+                        if field.name in all_filters else (None, None)
+                        for field in instance._meta.fields]
+                    for instance in samples]
+            filters = filtered_form
+
         context = {
             "samples": fields_and_values_list,
             "filters": filters,
@@ -674,13 +694,39 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
     @method_decorator(requires_csrf_token)
     def post(self, request: HttpRequest,
              *args: Any, **kwargs: Any) -> HttpResponse:
-        delete_id = int(request.POST["id"])
-        delete_instance = HistopathologicalSample.objects.get(id=delete_id)
-        delete_instance.delete()
-        app_log.info(
-            f"{request.user} deleted "
-            f"{delete_instance.saturn3_sample_code}")
-        return HttpResponseRedirect(request.path_info)
+        template_name = "gui/all_samples.html"
+        post_data = request.POST
+        delete_id = int(post_data["id"])
+
+        if HistopathologicalSample.objects.filter(id=delete_id).exists():
+            delete_instance = HistopathologicalSample.objects.get(id=delete_id)
+            delete_instance.delete()
+            app_log.info(
+                f"{request.user} deleted "
+                f"{delete_instance.saturn3_sample_code}")
+
+        filtered_form = GroupFilterForm(post_data)
+        if filtered_form.is_valid():
+            all_filters = ["id"]
+            for group in filtered_form.cleaned_data:
+                all_filters += field_dict[group] \
+                    if filtered_form.cleaned_data[group] else []
+
+            samples = HistopathologicalSample.objects.all()
+            fields_and_values_list = [
+                [(field.verbose_name, getattr(instance, field.name))
+                    if field.name in all_filters else (None, None)
+                    for field in instance._meta.fields]
+                for instance in samples]
+        filters = filtered_form
+
+        context = {
+            "samples": fields_and_values_list,
+            "filters": filters,
+            "user": request.user  # user, not username because we
+                                  # need to check the user's attributes
+        }
+        return render(request, template_name, context=context)
 
 
 class FilteredSamplesView(LoginRequiredMixin, TemplateView):
@@ -704,6 +750,16 @@ class FilteredSamplesView(LoginRequiredMixin, TemplateView):
     def post(self, request: HttpRequest,
              *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/all_samples.html"
+
+        print(request.POST)
+        if request.POST.get("id"):
+            delete_id = int(request.POST["id"])
+            delete_instance = HistopathologicalSample.objects.get(id=delete_id)
+            delete_instance.delete()
+            app_log.info(
+                f"{request.user} deleted "
+                f"{delete_instance.saturn3_sample_code}")
+
         filtered_form = GroupFilterForm(request.POST)
         if filtered_form.is_valid():
             all_filters = []
@@ -746,6 +802,7 @@ def some_streaming_csv_view(request):
          for field in instance._meta.fields]
         for instance in samples
     ]
+    print(fields_and_values_list)
     rows = []
     headers = [i[0] for i in fields_and_values_list[0]]
     rows.append(headers)
@@ -773,6 +830,7 @@ def csv_template_download(request):
         "Yes", "214", "123456", "123456", "LOL", "panel",
         "2023-12-17", "2023-12-17", "4", "2023-12-17",
         "111", "sequencing successful", "pool10",
+
         "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
         "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
         "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
@@ -933,3 +991,64 @@ class SearchView(LoginRequiredMixin, TemplateView):
             messages.error(request, "Invalid input",
                            extra_tags="general")
             return HttpResponseRedirect(reverse("config"))
+
+
+class DashboardView(LoginRequiredMixin, TemplateView):
+    def get(self, request: HttpRequest,
+            *args: Any, **kwargs: Any) -> HttpResponse:
+        template_name = "gui/dashboard.html"
+        samples = HistopathologicalSample.objects.all()
+
+        get_dict = request.GET
+        print(get_dict)
+
+        if get_dict.get("count_what"):
+            count_this = get_dict["count_what"]
+        else:
+            count_this = "recruiting_site"
+
+        real_sites = [
+            [getattr(instance, field.name)
+                for field in instance._meta.fields
+                if field.name == count_this]
+            for instance in samples
+        ]
+        keys = [site[0] for site in real_sites]
+        keys = list(set(keys))
+        print("I got the keys")
+        print(keys)
+        d = dict()
+        for key in keys:
+            d.update({key: 0})
+        for site in real_sites:
+            d[site[0]] += 1
+
+        fig1 = go.Figure(data=[go.Bar(x=list(d.keys()), y=list(d.values()),
+                                      marker_color="rgba(25,42,98,255)")])
+
+        fig2 = go.Figure(data=[go.Bar(x=list(d.keys()), y=list(d.values()),
+                                      marker_color="rgba(150,77,0,255)")])
+
+        plot1 = fig1.to_html(full_html=False)
+        plot2 = fig2.to_html(full_html=False)
+
+        context = {
+            "samples": real_sites,
+            "plot1": plot1,
+            "plot2": plot2,
+            "user": request.user  # user, not username because we
+                                  # need to check the user's attributes
+        }
+        return render(request, template_name, context=context)
+
+    # @method_decorator(requires_csrf_token)
+    # def post(self, request: HttpRequest,
+    #          *args: Any,
+    #          **kwargs: Any) -> HttpResponse:
+
+    #     print("HEERREREEE WEEEEWEWEWE GOGOGOGOOGOGO")
+    #     print(request.POST)
+
+    #     print(request.POST.keys())
+
+    #     return HttpResponseRedirect(request.path_info)

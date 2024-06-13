@@ -1,7 +1,0 @@
-﻿Recruiting Site,Patient Identifier,Sex,Died,SATURN3 Sample Code,Sampling Date,Tissue Type,Type of Intervention,Localisation,Corresponding Organoid,Grading,Tumor Cell Content,SPL Received,SPL Status,SPL Sequencing Type,scLab Received,scLab Extraction Date,scLab Nuclei Yield,scLab particles above 5 Âµm [%],scLab Status,scLab Sequencing Type,scLab Sorting,scLab Pool,RNA ILSE ID,ATAC ILSE ID,scLab Comment,LB analyte type,LB Sampling Date,LB Received,LB Sample Volume [ml],LB Date of Isolation,LB Total Isolated cfDNA [ng],LB Status,Pools,scRNA R1,scRNA R2,scATAC R1,scATAC R2,scATAC I2,WGS R1,WGS R2,WGS bam,WGS vcf
-Essen,8HYUC,f,,S3P-8HYUC-0-M4-S-N0,2023-06-14,CTC,Resection,Brain,Yes,,,2023-06-14,successful DNA/RNA,WGS/RNA,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-München,UXFTU,f,,S3P-UXFTU-1-N1-S-N0,2023-06-14,CTC,Resection,Brain,Yes,,,2023-06-23,successful DNA,WGS,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-München,KCRNY,f,,S3C-KCRNY-3-M1-S-N0,2023-06-14,CTC,Resection,Brain,Yes,,,2023-06-23,successful DNA/RNA,WGS/RNA,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-München,DD80U,f,,S3P-DD80U-1-T1-S-N0,2023-06-14,CTC,Resection,Brain,Yes,,,2023-09-13,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Heidelberg,DAUL3,f,,S3C-DAUL3-0-B2-V-D1,2023-06-14,CTC,Resection,Brain,Yes,,,2024-01-19,successful DNA,WGS,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Essen,QC880,f,,S3P-QC880-0-T1-S-N0,2023-06-14,CTC,Resection,Brain,Yes,,,2024-04-16,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,

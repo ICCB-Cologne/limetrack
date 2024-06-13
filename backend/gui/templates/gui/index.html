@@ -37,7 +37,7 @@ Sample Tracking
       
       {% for field in form %}
        {# splitting the form visually in sections for the different user groups #}
-        {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, lb_analyte_type, pools"%}
+        {%if field.name in "recruiting_site, tumor_cell_content, spl_received, sclab_received, spatial_method, lb_analyte_type, pools"%}
           <hr>
         {%endif%}
 

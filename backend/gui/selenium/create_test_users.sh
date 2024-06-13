@@ -25,4 +25,8 @@ user = User.objects.create_user('test_TUM', password='test4life')
 new_group, created = Group.objects.get_or_create(name='TUM')
 new_group.user_set.add(user)
 user.save()
+user = User.objects.create_user('test_Spatial', password='test4life')
+new_group, created = Group.objects.get_or_create(name='Spatial')
+new_group.user_set.add(user)
+user.save()
 "

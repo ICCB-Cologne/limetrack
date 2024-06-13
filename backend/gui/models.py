@@ -11,7 +11,9 @@ from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   SCLAB_SEQUENCING_TYPES,
                                   SCLAB_STATUS_CHOICES,
                                   LB_ANALYTE_TYPES,
-                                  LB_STATUS_CHOICES)
+                                  LB_STATUS_CHOICES,
+                                  SPATIAL_METHOD,
+                                  SPATIAL_STATUS)
 
 CHARFIELD_MAXLEN = 200
 
@@ -190,6 +192,51 @@ class HistopathologicalSample(models.Model):
                                      null=True,
                                      verbose_name="scLab Comment"
                                      )
+
+    # Spatial ###
+    spatial_method = models.CharField(blank=True, null=True,
+                                      verbose_name="Spatial Method",
+                                      choices=SPATIAL_METHOD)
+
+    spatial_status = models.CharField(blank=True, null=True,
+                                      verbose_name="Spatial Status",
+                                      choices=SPATIAL_STATUS)
+
+    xenium_run_date = models.DateField(null=True,
+                                       blank=True,
+                                       verbose_name="Xenium Run Date")
+
+    xenium_slide_id = models.CharField(blank=True, null=True,
+                                       verbose_name="Xenium Slide ID")
+
+    xenium_run_id = models.CharField(
+        max_length=200,
+        blank=True, null=True,
+        verbose_name="Xenium Run ID")
+
+    xenium_panel_id = models.CharField(
+        max_length=100,
+        blank=True, null=True,
+        verbose_name="Xenium Panel ID")
+
+    merscope_run_date = models.DateField(blank=True, null=True,
+                                         verbose_name="Merscope Run Date")
+
+    merscope_run_id = models.CharField(
+        max_length=200,
+        blank=True, null=True,
+        verbose_name="Merscope Run ID")
+
+    merscope_panel_id = models.CharField(
+        max_length=100,
+        blank=True, null=True,
+        verbose_name="Merscope Panel ID")
+
+    dv_200 = models.CharField(blank=True, null=True,
+                              verbose_name="DV200")
+
+    spatial_comment = models.TextField(blank=True, null=True,
+                                       verbose_name="Spatial Comment")
 
     # LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,

@@ -13,6 +13,7 @@ def generate_groups(apps, schema_editor):
     Group.objects.get_or_create(name="TUM")
     Group.objects.get_or_create(name="Recruiter")
     Group.objects.get_or_create(name="OmicsPath")
+    Group.objects.get_or_create(name="Spatial")
 
 
 class Migration(migrations.Migration):
@@ -21,6 +22,6 @@ class Migration(migrations.Migration):
         ('gui', '0001_initial'),
     ]
 
-    operations = [
+    operations = [  
         migrations.RunPython(generate_groups)
     ]

@@ -2,28 +2,18 @@
 
 from selenium.webdriver.common.by import By
 from .record_generator import RecordGenerator
-from .test_root_create_record_via_form import TestRootCreateRecordViaForm
+from selenium.webdriver.support.select import Select
+from .basic_test_functions import BasicTestClass
 
 
-class TestAllUserGroupsForm(TestRootCreateRecordViaForm):
-
-    def delete_test_record(self):
-        self.driver.find_element(By.ID, "all-samples-nav").click()
-        self.driver.find_element(By.ID,
-                                 f"Delete {self.sat3_sample_code}").click()
-
-    def teardown_method(self, method):
-
-        self.delete_test_record()
-        self.logout()
-        self.driver.close()
-        self.driver.quit()
+class TestAllUserGroupsForm(BasicTestClass):
 
     def test_all_users_input(self):
         self.recruiter_create()
         self.tum_input()
         self.spl_input()
         self.sclab_input()
+        self.spatial_input()
         self.lb_input()
         self.omics_input()
         self.login("root", "root")
@@ -55,20 +45,23 @@ class TestAllUserGroupsForm(TestRootCreateRecordViaForm):
     def spl_input(self):
         self.login("test_SPL", "test4life")
         self.search_record()
+
         self.driver.find_element(
             By.ID,
             "id_spl_received").send_keys(RecordGenerator.random_date())
-        spl_status = self.driver.find_element(By.ID, "id_spl_status")
-        spl_status.find_element(
-            By.XPATH,
-            f"//option[. = '{RecordGenerator.random_spl_status()}']").click()
+
+        spl_status = self.driver.find_element(
+            By.ID, "id_spl_status")
+        select_spl_status = Select(spl_status)
+        select_spl_status.select_by_visible_text(
+            RecordGenerator.random_spl_status())
+
         spl_sequencing_type = self.driver.find_element(
-            By.ID,
-            "id_spl_sequencing_type")
-        spl_sequencing_type.find_element(
-            By.XPATH,
-            f"//option[. = '{RecordGenerator.random_spl_sequencing()}']"). \
-            click()
+            By.ID, "id_spl_sequencing_type")
+        select_spl_sequencing_type = Select(spl_sequencing_type)
+        select_spl_sequencing_type.select_by_visible_text(
+            RecordGenerator.random_spl_sequencing())
+
         self.submit_record()
         self.check_submission()
         self.logout()
@@ -95,24 +88,23 @@ class TestAllUserGroupsForm(TestRootCreateRecordViaForm):
             "id_sclab_nuclei_size").send_keys(
                 RecordGenerator.random_integer_from_0_to_100())
 
-        sclab_status = self.driver.find_element(By.ID, "id_sclab_status")
-        sclab_status.find_element(
-            By.XPATH,
-            f"//option[. = "
-            f"'{RecordGenerator.random_sclab_status_choice()}']").click()
+        sclab_status = self.driver.find_element(
+            By.ID, "id_sclab_status")
+        select_sclab_status = Select(sclab_status)
+        select_sclab_status.select_by_visible_text(
+            RecordGenerator.random_sclab_status_choice())
 
         sclab_sequencing_type = self.driver.find_element(
             By.ID, "id_sclab_sequencing_type")
-        sclab_sequencing_type.find_element(
-            By.XPATH,
-            f"//option[. = "
-            f"'{RecordGenerator.random_sclab_sequencing_types()}']").click()
+        select_sclab_sequencing_type = Select(sclab_sequencing_type)
+        select_sclab_sequencing_type.select_by_visible_text(
+            RecordGenerator.random_sclab_sequencing_types())
 
-        sclab_sorting = self.driver.find_element(By.ID, "id_sclab_sorting")
-        sclab_sorting.find_element(
-            By.XPATH,
-            f"//option[. = '{RecordGenerator.random_sclab_sorting()}']"). \
-            click()
+        sclab_sorting = self.driver.find_element(
+            By.ID, "id_sclab_sorting")
+        select_corresponding_organoid = Select(sclab_sorting)
+        select_corresponding_organoid.select_by_visible_text(
+            RecordGenerator.random_corresponding_organoid_choice())
 
         self.driver.find_element(By.ID, "id_sclab_pool").send_keys(
             RecordGenerator.random_string_of_length(5))
@@ -136,14 +128,64 @@ class TestAllUserGroupsForm(TestRootCreateRecordViaForm):
         self.check_submission()
         self.logout()
 
+    def spatial_input(self):
+        self.login("test_Spatial", "test4life")
+        self.search_record()
+
+        spatial_method = self.driver.find_element(
+            By.ID, "id_spatial_method")
+        select_spatial_method = Select(spatial_method)
+        select_spatial_method.select_by_visible_text(
+            RecordGenerator.random_spatial_method())
+
+        spatial_status = self.driver.find_element(
+            By.ID, "id_spatial_status")
+        select_spatial_status = Select(spatial_status)
+        select_spatial_status.select_by_visible_text(
+            RecordGenerator.random_spatial_status())
+
+        self.driver.find_element(By.ID, "id_xenium_run_date").send_keys(
+                RecordGenerator.random_date())
+
+        self.driver.find_element(
+            By.ID,
+            "id_xenium_slide_id").send_keys(
+                RecordGenerator.random_string_of_length(10))
+
+        self.driver.find_element(By.ID, "id_xenium_run_id").send_keys(
+            RecordGenerator.random_string_of_length(50))
+
+        self.driver.find_element(By.ID, "id_xenium_panel_id").send_keys(
+            RecordGenerator.random_string_of_length(50))
+
+        self.driver.find_element(By.ID, "id_merscope_run_date").send_keys(
+                RecordGenerator.random_date())
+
+        self.driver.find_element(By.ID, "id_merscope_run_id").send_keys(
+            RecordGenerator.random_string_of_length(50))
+
+        self.driver.find_element(By.ID, "id_merscope_panel_id").send_keys(
+            RecordGenerator.random_string_of_length(50))
+
+        self.driver.find_element(By.ID, "id_dv_200").send_keys(
+            RecordGenerator.random_string_of_length(10))
+
+        self.driver.find_element(By.ID, "id_spatial_comment").send_keys(
+            RecordGenerator.random_string_of_length(50))
+
+        self.submit_record()
+        self.check_submission()
+        self.logout()
+
     def lb_input(self):
         self.login("test_LB", "test4life")
         self.search_record()
-        lb_analyte_type = self.driver.find_element(By.ID, "id_lb_analyte_type")
-        lb_analyte_type.find_element(
-            By.XPATH,
-            f"//option[. = '{RecordGenerator.random_lb_analyte_types()}']") \
-            .click()
+
+        lb_analyte_type = self.driver.find_element(
+            By.ID, "id_lb_analyte_type")
+        select_lb_analyte_type = Select(lb_analyte_type)
+        select_lb_analyte_type.select_by_visible_text(
+            RecordGenerator.random_lb_analyte_types())
 
         self.driver.find_element(
             By.ID,
@@ -166,11 +208,11 @@ class TestAllUserGroupsForm(TestRootCreateRecordViaForm):
             "id_lb_total_isolated_cfdna").send_keys(
                 RecordGenerator.random_integer_from_0_to_100())
 
-        lb_status = self.driver.find_element(By.ID, "id_lb_status")
-        lb_status.find_element(
-            By.XPATH,
-            f"//option[. = '{RecordGenerator.random_lb_status_choice()}']"). \
-            click()
+        lb_status = self.driver.find_element(
+            By.ID, "id_lb_status")
+        select_lb_status = Select(lb_status)
+        select_lb_status.select_by_visible_text(
+            RecordGenerator.random_lb_status_choice())
 
         self.submit_record()
         self.check_submission()

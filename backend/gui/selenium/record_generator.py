@@ -8,7 +8,9 @@ from backend.gui.utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                              SCLAB_SEQUENCING_TYPES,
                                              SCLAB_STATUS_CHOICES,
                                              LB_ANALYTE_TYPES,
-                                             LB_STATUS_CHOICES)
+                                             LB_STATUS_CHOICES,
+                                             SPATIAL_METHOD,
+                                             SPATIAL_STATUS)
 
 from backend.gui.utils.model_choices import (ENTITY, TISSUE_TYPE,
                                              STORAGE_FORMAT,
@@ -71,6 +73,14 @@ class RecordGenerator:
         return random.choice(CORRESPONDING_ORGANOID_CHOICES)[1]
 
     @staticmethod
+    def random_spatial_method():
+        return random.choice(SPATIAL_METHOD)[1]
+
+    @staticmethod
+    def random_spatial_status():
+        return random.choice(SPATIAL_STATUS)[1]
+
+    @staticmethod
     def random_lb_analyte_types():
         return random.choice(LB_ANALYTE_TYPES)[0]
 
@@ -106,7 +116,7 @@ class RecordGenerator:
         return random.choice(STORAGE_FORMAT)[0]
 
     @staticmethod
-    def random_analyte_type():
+    def random_sample_code_analyte_type():
         return random.choice(ANALYTE_TYPE)[0]
 
     @staticmethod

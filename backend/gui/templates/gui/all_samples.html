@@ -15,7 +15,7 @@ Samples
         <hr>
     </div>
 
-    <form action={% url "filtered_samples" %} method="post" enctype="multipart/form-data" id="column-filter">
+    <form action={% url "all_samples" %} method="get" enctype="multipart/form-data" id="column-filter">
         {% csrf_token %}
 
       <div class="container-fluid">
@@ -144,9 +144,30 @@ Samples
       idInput.name = 'id';
       idInput.value = id;
       form.appendChild(idInput);
-  
+
+      const filterForm = document.getElementById('column-filter');
+      var formData = new FormData(filterForm);
+      console.log(formData)
+      const all_inputs = filterForm.getElementsByTagName("input");
+
+      for (let i = 1; i < all_inputs.length; i++) {
+        var name = all_inputs[i].name;
+        if (formData.has(name)){
+          newInput = document.createElement('input');
+          newInput.type = "hidden";
+          newInput.name = name
+          newInput.value = "on"
+          if (all_inputs[i].type == "text"){
+            newInput.value = all_inputs[i].value;
+          }
+
+          form.appendChild(newInput);
+        };
+      };
+
       // Submit the form
       form.submit();
+      
     }
 
     // takes form data out of the filter dropdown and posts it as 
@@ -183,15 +204,6 @@ Samples
           downloadForm.appendChild(newInput);
         };
       };
-
-      // append select
-      const select = form.getElementsByTagName("select")[0];
-      console.log(select)
-      var newSelect = document.createElement('input');
-      newSelect.type = "hidden";
-      newSelect.name = select.name
-      newSelect.value = select.value
-      downloadForm.appendChild(newSelect);
 
       downloadForm.submit();
 

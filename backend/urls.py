@@ -18,21 +18,26 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
-from backend.gui.views.views import SampleTrackingView, FilteredSamplesView, AllSamplesView, some_streaming_csv_view,\
-    UploadView, DashBoardView, LoginView, SearchView, log_out, csv_template_download, FilteredDownloadView, ContactView, ImprintView
+from backend.gui.views.views import (SampleTrackingView, FilteredSamplesView,
+                                     AllSamplesView, some_streaming_csv_view,
+                                     UploadView, DashboardView, LoginView,
+                                     SearchView, log_out,
+                                     csv_template_download,
+                                     FilteredDownloadView, ContactView,
+                                     ImprintView)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", SampleTrackingView.as_view(), name="config"),
     path("samples/", AllSamplesView.as_view(), name="all_samples"),
-    path("samples/filtered", FilteredSamplesView.as_view(), name="filtered_samples"),
+    # path("samples/filtered", FilteredSamplesView.as_view(), name="filtered_samples"),
     path("csv/", some_streaming_csv_view, name="csv"),
     path("filtered_download/", FilteredDownloadView.as_view(), name="filtered_download"),
     path("csv_template/", csv_template_download, name="csv_template"),
     path("upload/", UploadView.as_view(), name="upload"),
     path("contact/", ContactView.as_view(), name="contact"),
     path("imprint/", ImprintView.as_view(), name="imprint"),
-    path("dashboard/", DashBoardView.as_view(), name="dashboard"),
+    # path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", log_out, name="logout"),
     path("search/", SearchView.as_view(), name="search"),

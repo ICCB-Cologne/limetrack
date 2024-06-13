@@ -1,38 +1,62 @@
 {% extends './base.html' %}
 
 {% block title %}
-  Contact
+  Dashboard
 {% endblock title %}
 
 
 {% block header %}
 <h1>
-  Contact
+  Dashboard
 </h1>
 {% endblock header %}
 
 
 {% block content %}
-<div class="card-group">
-  <div class=card text-bg-secondary mb-10 >
-      <div class="card-header">Contact
-      </div>
-      <div class="card-body">
-          <p class="card-text"> Laura Godfrey: <br/> laura.godfrey@uk-essen.de <br/> <br/>  Jonas Gassenschmidt: <br/>  jonas.gassenschmidt@uniklinik-freiburg.de </p> 
-      </div>
-      <div class="card-footer">
-        
-      </div>          
+
+<div class="containerino">
+  
+  <div class="row">
+    <div class="col auto">
+      {% autoescape off %}
+      {{plot1}}
+      {% endautoescape %}
     </div>
-  <div class=card text-bg-secondary mb-10 >
-    <div class="card-header">Contributors
+
+    <div class="col auto">
+      {% autoescape off %}
+      {{plot2}}
+      {% endautoescape %}
     </div>
-      <div class="card-body">
-        <p class="card-text"> Florian Heyl <br/> Frederik Voigt <br/> Jonas Gassenschmidt <br/> Laura Godfrey <br/> Lukas Heine </p> 
+  </div>
+  
+
+  <div>
+    Hullo
+    <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
+
+  </div>
+  <div class="row">
+    <div class="col auto">
+  <form action={% url "dashboard" %} method="get" enctype="multipart/form-data"  id="dashboard-filter">
+    {% csrf_token %}
+
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="count_what" value="recruiting_site" id="flexRadioDefault1">
+        <label class="form-check-label" for="flexRadioDefault1">
+          Recruiter
+        </label>
       </div>
-      <div class="card-footer">
-        
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="count_what" value="tissue_type" id="flexRadioDefault2">
+        <label class="form-check-label" for="flexRadioDefault2">
+          Tisue Type
+        </label>
       </div>
-</div>
+      <button class="btn btn-primary"> Apply2 </button>
+    </form>
+  </div>
+  </div>
+
 </div>
 {% endblock content %}
