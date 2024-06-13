@@ -3,27 +3,49 @@ from selenium.webdriver.common.by import By
 from backend.gui.selenium.basic_test_functions import BasicTestClass
 import os
 
+
 class TestUpload(BasicTestClass):
 
     def test_upload_root(self):
         self.login("root", "root")
-
         self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
 
-        self.driver.find_element(
-          By.ID, "id_file").send_keys(os.path.abspath("./csv-files/one_record.csv"))
-        self.driver.find_element(By.ID, "end-of-page").click()
-        self.check_upload()
+        self.upload_file("one_record.csv")
 
+        # download
         self.driver.find_element(By.ID, "all-samples-nav").click()
         self.driver.find_element(
             By.CSS_SELECTOR, ".col-auto:nth-child(3) > .btn").click()
 
+    def test_upload_all_groups(self):
+
+        self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
+
+        user_names = ["test_Recruiter", "test_TUM", "test_SPL",
+                      "test_ScLab", "test_Spatial", "test_LB",
+                      "test_Omics"]
+
+        for user in user_names:
+            self.login(user, "test4life")
+            self.upload_file("one_record.csv")
+            self.check_upload()
+            self.logout()
+
+        self.login("root", "root")
+
     def check_upload(self):
-        message_container = self.driver.find_elements(By.CLASS_NAME, "messages")
+        message_container = self.driver.find_elements(
+            By.CLASS_NAME, "messages")
 
         for message in message_container:
 
             li = message.find_elements(By.TAG_NAME, "li")
             if len(li) != 0:
                 assert (li[0].text == "File upload successful!")
+
+    def upload_file(self, file_name):
+        self.driver.find_element(
+          By.ID, "id_file").send_keys(
+              os.path.abspath(f"./csv-files/{file_name}"))
+        self.driver.find_element(By.ID, "end-of-page").click()
+        self.check_upload()
