@@ -33,12 +33,16 @@ Samples
             <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
         
             
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu" id="id-group-filters">
                 {% for filter in filters %}
                 <li class="dropdown-item"> 
                 {{filter}}
                 {{filter.label}} </li>
                 {% endfor %}
+                <li class="dropdown-item"> 
+                  <input type="checkbox" name="all" id="id_all_group_filters" checked="" onclick="selectAllFilters()">
+                  All groups
+                </li>
               </ul>
             
           </div>
@@ -213,6 +217,20 @@ Samples
     function applyFilter(){
       const form = document.getElementById('column-filter');
       form.submit();
+    }
+
+    function selectAllFilters(){
+      const form = document.getElementById('id-group-filters');
+      const all_inputs = form.getElementsByTagName("input");
+      console.log(all_inputs[all_inputs.length - 1])
+      for (let i = 0; i < all_inputs.length - 1; i++) {
+        if (all_inputs[all_inputs.length - 1].checked == false){
+          all_inputs[i].checked=false;
+        }
+        else{
+          all_inputs[i].checked=true;
+        }
+      }
     }
   </script>
 
