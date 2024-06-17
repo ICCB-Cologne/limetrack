@@ -751,7 +751,6 @@ class FilteredSamplesView(LoginRequiredMixin, TemplateView):
              *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/all_samples.html"
 
-        print(request.POST)
         if request.POST.get("id"):
             delete_id = int(request.POST["id"])
             delete_instance = HistopathologicalSample.objects.get(id=delete_id)

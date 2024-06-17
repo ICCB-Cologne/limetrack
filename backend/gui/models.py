@@ -100,6 +100,12 @@ class HistopathologicalSample(models.Model):
                   "Tissue Type + Order Number - "
                   "Storage Format - Analyte Type "
                   "+ Order Number")
+
+    note = models.TextField(
+        max_length=350,
+        verbose_name="Note", blank=True,
+        null=True)
+
     sampling_date = models.DateField(verbose_name="Sampling Date")
     tissue_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,

@@ -245,6 +245,7 @@ form {
     /* margin: 8px 0; */
     font-size: large;
     vertical-align: center;
+    max-height: 10em;
 }
 
 /* Style the file input fields */
@@ -261,9 +262,10 @@ textarea {
     border: 1px solid #aaa;
     padding: 5px;
     width: 50%;
-    /* margin: 8px 0; */
+    margin: 8px 0;
     font-size: large;
     vertical-align: center;
+    max-height: 10em;
 }
 
 /* Style the different input fields */

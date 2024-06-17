@@ -17,13 +17,32 @@ class TestUpload(BasicTestClass):
         self.driver.find_element(
             By.CSS_SELECTOR, ".col-auto:nth-child(3) > .btn").click()
 
-    def test_upload_all_groups(self):
+    def test_upload_all_groups_except_spatial(self):
+        """
+        Spatial is excluded here because the sclab user
+        already fills in all the spatial fields
+        (for they have write permissions on spatial fields)
+        """
 
         self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
 
         user_names = ["test_Recruiter", "test_TUM", "test_SPL",
-                      "test_ScLab", "test_Spatial", "test_LB",
+                      "test_ScLab", "test_LB",
                       "test_Omics"]
+
+        for user in user_names:
+            self.login(user, "test4life")
+            self.upload_file("one_record.csv")
+            self.check_upload()
+            self.logout()
+
+        self.login("root", "root")
+
+    def test_upload_spatial(self):
+
+        self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
+
+        user_names = ["test_Recruiter", "test_Spatial"]
 
         for user in user_names:
             self.login(user, "test4life")

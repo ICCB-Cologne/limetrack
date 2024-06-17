@@ -11,8 +11,6 @@ class TestRootCreateRecordViaForm(BasicTestClass):
     def create_full_record(self):
 
         self.create_minimal_test_record()
-        print("222222 GODDAMNNN SAMPLECODE:")
-        print(self.sat3_sample_code)
 
         self.driver.find_element(By.ID, "id_tumor_cell_content").send_keys(
             RecordGenerator.random_integer_from_0_to_100())

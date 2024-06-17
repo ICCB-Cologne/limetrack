@@ -146,6 +146,12 @@ class BasicTestClass():
             "-" + sat3_code_storage_format + \
             "-" + sat3_code_analyte_type + sat3_code_analyte_type_order_number
 
+        # End of SATURN3 Sample Code section
+
+        self.driver.find_element(
+            By.ID,
+            "id_note").send_keys(RecordGenerator.random_string_of_length(200))
+
         self.driver.find_element(
             By.ID, "id_sampling_date").send_keys(RecordGenerator.random_date())
         self.driver.find_element(

@@ -48,7 +48,7 @@ spl_fields = ["saturn3_sample_code"] + \
 sclab_fields = ["saturn3_sample_code"] + \
     all_field_names[
         all_field_names.index("sclab_received"):
-        all_field_names.index("sclab_comment") + 1]
+        all_field_names.index("spatial_comment") + 1]
 
 spatial_fields = ["saturn3_sample_code"] + \
     all_field_names[
@@ -233,6 +233,14 @@ class SampleForm(ModelForm):
                        "title": "generated from the same biopsy/tissue piece"}
                        ),
 
+            "dv_200": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Quality meassure: RNA \
+                        molecules larger than 200 bp [%]"}
+                        ),
+
+
             # Datepicker widgets
             "died": DatePicker(
                 options={"allowInputToggle": True},
@@ -375,6 +383,11 @@ class SampleFormTUM(ModelForm):
                    "disabled": "true"}
                    ))
 
+    note = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={"disabled": "true"}))
+
     sampling_date = forms.DateField(
         required=False,
         widget=DatePicker(
@@ -463,6 +476,14 @@ class SampleFormScLab(SampleFormTUM):
         fields = all_field_names
         widgets = {
 
+            # tool tips
+            "dv_200": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Quality meassure: RNA \
+                        molecules larger than 200 bp [%]"}
+                        ),
+
             # DatePickers:
 
             'sclab_received': DatePicker(
@@ -492,6 +513,15 @@ class SampleFormSpatial(SampleFormTUM):
 
         widgets = {
 
+            # tool tips
+            "dv_200": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Quality meassure: RNA \
+                        molecules larger than 200 bp [%]"}
+                        ),
+
+            # date pickers
             "xenium_run_date": DatePicker(
                 options={"allowInputToggle": True},
                 attrs={"input_group": False}),
