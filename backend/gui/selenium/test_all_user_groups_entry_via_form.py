@@ -168,7 +168,7 @@ class TestAllUserGroupsForm(BasicTestClass):
             RecordGenerator.random_string_of_length(50))
 
         self.driver.find_element(By.ID, "id_dv_200").send_keys(
-            RecordGenerator.random_string_of_length(10))
+            RecordGenerator.random_integer_from_0_to_100())
 
         self.driver.find_element(By.ID, "id_spatial_comment").send_keys(
             RecordGenerator.random_string_of_length(50))
