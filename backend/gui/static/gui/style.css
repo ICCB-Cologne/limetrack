@@ -74,11 +74,12 @@ p {
     margin: 1% 1% 1% 1%;
     max-width: 100%;
     width: 95%;
+    max-height: 60vh;
     overflow: auto;
     background: rgba(0, 0, 0, 0.033);
     border: solid white 3px;
     border-radius: 5px;
-    
+    position: relative;
 }
 
 /* idea: fixing the saturn3-sample-code column in a position */
@@ -96,7 +97,6 @@ p {
 
 .stripedtable {
     margin: 0% auto 5% auto;
-    overflow: auto;
     width: 80%;
     border-collapse: collapse;
 }
@@ -112,12 +112,15 @@ p {
 
 .stripedtable th {
     white-space: nowrap;
+    position: sticky;
+    top: 0px;
     text-align: left;
     padding: 8px;
     color: black;
     background-color: #ffffff;
     border-bottom:1px solid black;
 }
+
 .stripedtable td {
     white-space: nowrap;
     border: 1px solid #ffffff;
