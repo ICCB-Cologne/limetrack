@@ -213,6 +213,7 @@ class HistopathologicalSample(models.Model):
                                        verbose_name="Xenium Run Date")
 
     xenium_slide_id = models.CharField(blank=True, null=True,
+                                       max_length=10,
                                        verbose_name="Xenium Slide ID")
 
     xenium_run_id = models.CharField(
@@ -239,7 +240,9 @@ class HistopathologicalSample(models.Model):
         verbose_name="Merscope Panel ID")
 
     dv_200 = models.CharField(blank=True, null=True,
-                              verbose_name="DV200")
+                              max_length=3,
+                              verbose_name="DV200",
+                              validators=[zero_to_a_hundred])
 
     spatial_comment = models.TextField(blank=True, null=True,
                                        verbose_name="Spatial Comment")
