@@ -80,14 +80,20 @@ Samples
 
       <table class="stripedtable" id="sampleTable">
         <thead>
-          <tr>
+          <tr id="head-row">
             {% if samples.0 %}
             {% for key, _ in samples.0 %}
               {% if key %}
                 {% if key == "ID" %}
                 <th hidden>{{ key }}</th>
                 {% else %}
-                <th>{{ key }}</th>
+                <th> {{ key }}
+                    <button  class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" onclick="getColumnValues()" aria-expanded="false"></button>
+                  <form id="column form for {{key}}" action={% url "all_samples" %} method="get">
+                    <ul id="dropdown for {{ key }}" class="dropdown-menu">
+                    </ul> 
+                  </form>
+                </th>
                 {% endif %}
               {% endif %}
             {% endfor %}
@@ -95,7 +101,7 @@ Samples
             {%endif%}
           </tr>
         </thead>
-        <tbody>
+        <tbody id="data-rows">
           {% for item in samples %}
           <tr>
             {% for key, value in item %}
@@ -127,7 +133,13 @@ Samples
 
 {% endblock content %}
 
+
+
+
 {% block head_scripts%}
+  {% load static %}
+  <script src="{% static 'gui/sample_table_scripts/generateColumnFilters.js' %}"></script>
+
   <script>
     function submitForm(id) {
       const form = document.getElementById('id-form');
