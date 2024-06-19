@@ -18,19 +18,23 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 
-from backend.gui.views.views import (SampleTrackingView, FilteredSamplesView,
-                                     AllSamplesView, some_streaming_csv_view,
-                                     UploadView, DashboardView, LoginView,
+from backend.gui.views.views import (SampleTrackingView,
+                                     LoginView,
                                      SearchView, log_out,
-                                     csv_template_download,
-                                     FilteredDownloadView, ContactView,
+                                     ContactView,
                                      ImprintView)
+
+from backend.gui.views.samples_view import (AllSamplesView,
+                                            some_streaming_csv_view,
+                                            csv_template_download,
+                                            FilteredDownloadView)
+from backend.gui.views.dashboard_view import DashboardView
+from backend.gui.views.upload_view import UploadView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", SampleTrackingView.as_view(), name="config"),
     path("samples/", AllSamplesView.as_view(), name="all_samples"),
-    # path("samples/filtered", FilteredSamplesView.as_view(), name="filtered_samples"),
     path("csv/", some_streaming_csv_view, name="csv"),
     path("filtered_download/", FilteredDownloadView.as_view(), name="filtered_download"),
     path("csv_template/", csv_template_download, name="csv_template"),
@@ -42,6 +46,7 @@ urlpatterns = [
     path("logout/", log_out, name="logout"),
     path("search/", SearchView.as_view(), name="search"),
 
+    # Password reset / change section #
     path("password_change/",
          auth_views.PasswordChangeView.as_view(
              template_name="gui/password_handling/password_change.html",

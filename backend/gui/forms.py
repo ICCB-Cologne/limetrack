@@ -65,12 +65,12 @@ odcf_fields = ["saturn3_sample_code"] + \
 
 field_dict = {
     "recruiter": recruiter_fields,
-    "odcf": odcf_fields,
+    "omicspath": odcf_fields,
     "tum": tum_fields,
     "spl": spl_fields,
-    "sclab": sclab_fields,
+    "scopenlab": sclab_fields,
     "spatial": spatial_fields,
-    "lb": lb_fields,
+    "liquidbiopsy": lb_fields,
               }
 
 # dicts for disabling (+ grey display of)
@@ -585,32 +585,6 @@ class UploadForm(forms.Form):
     file = forms.FileField()
 
 
-class FilterForm(forms.Form):
-    """
-    Not in usage yet.
-    """
-    recruiting_site = forms.BooleanField(initial=True)
-    patient_identifier = forms.BooleanField(initial=True)
-    patient = forms.BooleanField(initial=True)
-    died = forms.BooleanField(initial=True)
-    tissue_name = forms.BooleanField(initial=True)
-    used_in = forms.BooleanField(initial=True)
-    date = forms.BooleanField(initial=True)
-    tissue_type = forms.BooleanField(initial=True)
-    type_intervention = forms.BooleanField(initial=True)
-    localisation = forms.BooleanField(initial=True)
-    grading = forms.BooleanField(initial=True)
-    histology_subtype = forms.BooleanField(initial=True)
-    tumor_cell_content = forms.BooleanField(initial=True)
-    reviewed_and_processed_by = forms.BooleanField(initial=True)
-    identifier = forms.BooleanField(initial=True)
-    spl_status = forms.BooleanField(initial=True)
-    sequencing_type = forms.BooleanField(initial=True)
-    data_sequencing_data_release = forms.BooleanField(initial=True)
-    tumor_cell_content_bioinf = forms.BooleanField(initial=True)
-    reviewed_and_processed_by_sequencing = forms.BooleanField(initial=True)
-
-
 class GroupFilterForm(forms.Form):
     """
     Enables filtering of the sample tables's columns.
@@ -627,21 +601,21 @@ class GroupFilterForm(forms.Form):
                              required=False,
                              label="SPL")
 
-    sclab = forms.BooleanField(initial=True,
-                               required=False,
-                               label="ScLab")
+    scopenlab = forms.BooleanField(initial=True,
+                                   required=False,
+                                   label="ScLab")
 
     spatial = forms.BooleanField(initial=True,
                                  required=False,
                                  label="Spatial")
 
-    lb = forms.BooleanField(initial=True,
-                            required=False,
-                            label="LB")
+    liquidbiopsy = forms.BooleanField(initial=True,
+                                      required=False,
+                                      label="LB")
 
-    odcf = forms.BooleanField(initial=True,
-                              required=False,
-                              label="ODCF")
+    omicspath = forms.BooleanField(initial=True,
+                                   required=False,
+                                   label="ODCF")
 
 
 class LoginForm(forms.Form):
