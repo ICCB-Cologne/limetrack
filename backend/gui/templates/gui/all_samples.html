@@ -157,6 +157,7 @@ Samples
   <script src="{% static 'gui/sample_table_scripts/generateColumnFilters.js' %}"></script>
 
   <script>
+    // delete record with ID id
     function submitForm(id) {
       const form = document.getElementById('id-form');
   
@@ -196,9 +197,7 @@ Samples
         };
       };
 
-      // Submit the form
-      form.submit();
-      
+      form.submit();      
     }
 
     // takes form data out of the filter dropdown and posts it as 
