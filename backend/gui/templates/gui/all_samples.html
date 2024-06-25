@@ -21,9 +21,10 @@ Samples
       <div class="container-fluid">
         <div class="row mb-3">
           <div class="col auto bg-white border border-dark-subtle">
-            Total number of samples: {{samples|length}}
+            Total number of samples: {{samples|length}} &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; <i class="bi bi-funnel-fill"></i> Number of filtered samples: <span id="id-selected-samples"> {{samples|length}} </span>
           </div>
         </div>
+
         
         <div class="row">
           <div class="col-auto"> 
@@ -34,15 +35,19 @@ Samples
         
             
               <ul class="dropdown-menu" id="id-group-filters">
-                {% for filter in filters %}
-                <li class="dropdown-item"> 
-                {{filter}}
-                {{filter.label}} </li>
-                {% endfor %}
-                <li class="dropdown-item"> 
+                <label class="dropdown-item"> 
                   <input type="checkbox" name="all" id="id_all_group_filters" checked="" onclick="selectAllFilters()">
-                  All groups
-                </li>
+                   Select all
+                </label>
+                {% for filter in filters %}
+                
+                  <label class="dropdown-item"> 
+                    {{filter}}
+                    {{filter.label}} 
+                  </label>
+                
+                {% endfor %}
+
               </ul>
             
           </div>
@@ -66,14 +71,25 @@ Samples
           </div>
     </form>
           <div class="col-auto">
+            <div class="dropdown">
+              <button id="download-dropdown-button" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Download
+              </button>
+              <ul class="dropdown-menu">
+                <li><a id="download-dropdown-button-CSV" class="dropdown-item" href="#" onclick="downloadWithFilter('CSV')"> Download as CSV </a></li>
+                <li><a id="download-dropdown-button-EXCEL" class="dropdown-item" href="#" onclick="downloadWithFilter('Excel')"> Download for Excel </a></li>
+              </ul>
+            </div>
             
-            <button class="btn btn-primary" type="button" onclick="downloadWithFilter()"> Download </button>
             
           </div>
         </div>
+        
       </div>
+      
     </div>
 
+    
    
     <div class="tablediv">
       <form method="post" id="id-form">{% csrf_token %}</form>
@@ -85,12 +101,12 @@ Samples
             {% for key, _ in samples.0 %}
               {% if key %}
                 {% if key == "ID" %}
-                <th hidden>{{ key }}</th>
+                <th hidden class="bg-light">{{ key }}</th>
                 {% else %}
-                <th> {{ key }}
-                    <button  class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" onclick="getColumnValues()" aria-expanded="false"></button>
+                <th name="{{key}}" class="bg-light"> {{ key }}
+                    <button id="button for {{ key }}" class="btn btn-outline-dark btn-sm bg-light dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"></button>
                   <form id="column form for {{key}}" action={% url "all_samples" %} method="get">
-                    <ul id="dropdown for {{ key }}" class="dropdown-menu">
+                    <ul id="dropdown for {{ key }}" class="dropdown-menu" style="max-height: 20vh; overflow-y: auto; position: absolute; z-index:10">
                     </ul> 
                   </form>
                 </th>
@@ -124,7 +140,7 @@ Samples
         </tbody>
       </table>
     </div>
-    <form  action={% url "filtered_download" %} method="post" id="filter-download">
+    <form  action={% url "filtered_download" %} method="get" id="filter-download">
       {% csrf_token %}
     </form>
     <br>
@@ -163,7 +179,6 @@ Samples
 
       const filterForm = document.getElementById('column-filter');
       var formData = new FormData(filterForm);
-      console.log(formData)
       const all_inputs = filterForm.getElementsByTagName("input");
 
       for (let i = 1; i < all_inputs.length; i++) {
@@ -188,24 +203,34 @@ Samples
 
     // takes form data out of the filter dropdown and posts it as 
     // a new form to FilteredDownloadView
-    function downloadWithFilter(){
+    function downloadWithFilter(type){
       const form = document.getElementById('column-filter');
       var formData = new FormData(form);
+
       
       const downloadForm = document.getElementById('filter-download');
       
       // Clear existing inputs
       downloadForm.innerHTML = '';
   
-      //Add CSRF token input
+      // Add CSRF token input
       const csrfTokenInput = document.createElement('input');
       csrfTokenInput.type = 'hidden';
       csrfTokenInput.name = 'csrfmiddlewaretoken';
       csrfTokenInput.value = '{{ csrf_token }}';
-      downloadForm.appendChild(csrfTokenInput); 
+      downloadForm.appendChild(csrfTokenInput);
+
+      // file type (csv for excel or normal csv)
+      newInput = document.createElement('input');
+      newInput.type = "hidden";
+      newInput.name = "file_type"
+      newInput.value = type
+      downloadForm.appendChild(newInput);
       
       const all_inputs = form.getElementsByTagName("input");
 
+      // transform input elements into form
+      // (probably to complicated: try to get input values without form data)
       for (let i = 1; i < all_inputs.length; i++) {
         var name = all_inputs[i].name;
         if (formData.has(name)){
@@ -220,23 +245,21 @@ Samples
           downloadForm.appendChild(newInput);
         };
       };
-
       downloadForm.submit();
-
     }
 
-    
+    // filter out group specific columns ("filter colums" dropdown)
     function applyFilter(){
       const form = document.getElementById('column-filter');
       form.submit();
     }
 
+    // check or uncheck all checkboxes of "filter columns" dropdown
     function selectAllFilters(){
       const form = document.getElementById('id-group-filters');
       const all_inputs = form.getElementsByTagName("input");
-      console.log(all_inputs[all_inputs.length - 1])
-      for (let i = 0; i < all_inputs.length - 1; i++) {
-        if (all_inputs[all_inputs.length - 1].checked == false){
+      for (let i = 1; i < all_inputs.length; i++) {
+        if (all_inputs[0].checked == false){
           all_inputs[i].checked=false;
         }
         else{
@@ -246,40 +269,23 @@ Samples
     }
   </script>
 
-  <script>
-
-    function searchTable() {
-      // Declare variables
-      var input, filter, table, tr, td, tds, ths, i, txtValue, idx;
-      input = document.getElementById("tableSearchInput");
-      column = document.getElementById("selectTableSearchColumn").value
-      filter = input.value.toUpperCase();
-      table = document.getElementById("sampleTable");
-      tr = table.getElementsByTagName("tr");
-  
-      // get all column names
-      ths = tr[0].getElementsByTagName("th");
-      // find out index of column
-      for (i = 0; i < ths.length; i++) {
-        if (ths[i].innerHTML == column){
-          idx = i
-        }
-      }
-      console.log(idx)
-      // Loop through all table rows, and hide those who don't match the search query
-      for (i = 1; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[idx];
-        if (td) {
-          txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            tr[i].style.display = "";
-          } else {
-            tr[i].style.display = "none";
-          }
-        }
-      }
-    }
-
-  </script>
+  <script src="{% static 'gui/sample_table_scripts/searchSampleTable.js' %}"> </script>
   
   {% endblock head_scripts %}
+
+
+  {% block body_scripts%}
+  {% load static %}
+    <script>
+      const tableHead = document.querySelector("#head-row")
+      let columnDropdownButtons = tableHead.querySelectorAll("button");
+      columnDropdownButtons.forEach(function(elem, index) {
+            getColumnValues(elem.id, index);
+        });
+    </script>
+
+    <script>
+      var activeFilters = new Map()
+    </script>
+
+  {% endblock body_scripts %}

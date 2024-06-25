@@ -17,7 +17,7 @@ from django.views.generic import TemplateView
 
 from django.shortcuts import render
 
-from django.urls import reverse
+# from django.urls import reverse
 
 from typing import Any
 import csv
@@ -145,11 +145,11 @@ def csv_template_download(request):
         "München", "BSP12", "f", "2021-02-10", "S3C-BSP12-0-M1-V-R1",
         "This is an example sat3 sample", "2021-02-10", "CTC",
         "Blood withdrawal", "Lung", "No", "G2",
-        "15", "2023-12-17", "successful DNA", "panel", "2023-12-17",
-        "2023-12-17", "77", "45", "successful DNA", "ATAC",
+        "15", "2023-12-17", "successful RNA", "panel", "2023-12-17",
+        "2023-12-17", "77", "45", "successful RNA", "ATAC",
         "Yes", "214", "123456", "123456", "Comment",
         "Xenium", "Xenium failed", "2023-12-19",
-        "SLIDEID98124987412", "RUNID98124234432", "PANELID98124987412",
+        "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
         "2023-12-19", "RUNID98124987412", "PANELID98124987412",
         "85", "Spatial Comment",
         "Plasma", "2023-12-17", "2023-12-17", "4", "2023-12-17",
@@ -171,19 +171,26 @@ def csv_template_download(request):
 
 
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest,
-            *args: Any, **kwargs: Any) -> HttpResponse:
-        return HttpResponseRedirect(reverse("all_samples"))
+    # def get(self, request: HttpRequest,
+    #         *args: Any, **kwargs: Any) -> HttpResponse:
+    #     return HttpResponseRedirect(reverse("all_samples"))
 
-    @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest,
-             *args: Any,
-             **kwargs: Any) -> StreamingHttpResponse | HttpResponseRedirect:
+    def get(self, request: HttpRequest,
+            *args: Any,
+            **kwargs: Any) -> StreamingHttpResponse | HttpResponseRedirect:
 
         pseudo_buffer = Echo()
-        writer = csv.writer(pseudo_buffer, delimiter=",")
 
-        form = GroupFilterForm(request.POST)
+        file_type = request.GET.get("file_type")
+        if file_type:
+            d = ";" if file_type == "Excel" else ","
+        else:
+            d = ","
+
+        writer = csv.writer(pseudo_buffer,
+                            delimiter=d)
+
+        form = GroupFilterForm(request.GET)
         if form.is_valid():
             all_filters = []
             for group in form.cleaned_data:
@@ -208,6 +215,6 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
                 (writer.writerow(row) for row in data),
                 content_type="text/csv",
                 headers={"Content-Disposition":
-                         'attachment; filename="saturn3samples.csv"'}, )
+                         'attachment; filename="saturn3samples.csv"'})
 
         return HttpResponseRedirect(request.path_info)
