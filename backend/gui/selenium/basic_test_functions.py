@@ -64,6 +64,10 @@ class BasicTestClass():
             print(m.text)
 
     def create_minimal_test_record(self):
+        """
+        Minimal record in the sense of having all recruiter fields filled out.
+        Not only the required ones.
+        """
 
         recruiting_site = self.driver.find_element(
             By.ID, "id_recruiting_site")
@@ -83,7 +87,7 @@ class BasicTestClass():
             RecordGenerator.random_date())
         self.driver.find_element(By.ID, "id_died").send_keys(Keys.ENTER)
 
-        # SATURN3 Sample Code
+        # SATURN3 Sample Code #
 
         # Entity
         sat3_code_entity = RecordGenerator.random_sample_code_entity_choice()

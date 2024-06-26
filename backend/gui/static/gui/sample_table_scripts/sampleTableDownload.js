@@ -33,7 +33,7 @@ function downloadWithFilter() {
   // Clear existing inputs
   downloadForm.innerHTML = "";
 
-  //Add CSRF token input
+  // Add CSRF token input
   const csrfTokenInput = document.createElement("input");
   csrfTokenInput.type = "hidden";
   csrfTokenInput.name = "csrfmiddlewaretoken";
@@ -42,6 +42,7 @@ function downloadWithFilter() {
 
   const all_inputs = form.getElementsByTagName("input");
 
+  // append all input values to the download form
   for (let i = 1; i < all_inputs.length; i++) {
     var name = all_inputs[i].name;
     if (formData.has(name)) {
@@ -56,15 +57,6 @@ function downloadWithFilter() {
       downloadForm.appendChild(newInput);
     }
   }
-
-  // append select
-  const select = form.getElementsByTagName("select")[0];
-  console.log(select);
-  var newSelect = document.createElement("input");
-  newSelect.type = "hidden";
-  newSelect.name = select.name;
-  newSelect.value = select.value;
-  downloadForm.appendChild(newSelect);
 
   downloadForm.submit();
 }

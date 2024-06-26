@@ -15,7 +15,9 @@ class TestUpload(BasicTestClass):
         # download
         self.driver.find_element(By.ID, "all-samples-nav").click()
         self.driver.find_element(
-            By.CSS_SELECTOR, ".col-auto:nth-child(3) > .btn").click()
+            By.ID, "download-dropdown-button").click()
+        self.driver.find_element(
+            By.ID, "download-dropdown-button-CSV").click()
 
     def test_upload_all_groups_except_spatial(self):
         """
