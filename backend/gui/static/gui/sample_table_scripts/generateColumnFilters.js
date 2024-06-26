@@ -34,6 +34,20 @@ function getColumnValues(id, index) {
   line.style.marginBottom = 0;
   dropdown.appendChild(line);
 
+  // create and append Select All Button
+  var selectAll = document.createElement("label");
+  selectAll.className = "dropdown-item";
+  selectAll.style = "z-index:10";
+  var selectAllInput = document.createElement("input");
+  selectAllInput.type = "checkbox";
+  selectAllInput.setAttribute("checked", true);
+  selectAll.addEventListener("input", function () {
+    selectAllColumnFilters(dropdownID);
+  });
+  selectAll.appendChild(selectAllInput);
+  selectAll.innerHTML += " Select all";
+  dropdown.appendChild(selectAll);
+
   // append all values as checkbox inputs to the dropdown
   for (let value of column) {
     var item = document.createElement("label");
@@ -95,19 +109,19 @@ function sortTable(index) {
         rows[i].style.background = "#fff7f7";
       }
       displayedRowNumber += 1;
-      console.log(`displayedRowNumber ${displayedRowNumber}`);
+      // console.log(`displayedRowNumber ${displayedRowNumber}`);
     }
   }
 }
 
 function filterColumn(id) {
-  // Declare variables
-  console.log("Called");
   var input, filter, table, tr, td, tds, ths, i, txtValue, idx, column;
 
   var dropdownFilter = document.getElementById(id);
   var inputs = dropdownFilter.getElementsByTagName("input");
   var checkedInputs = [];
+
+  // get all unchecked inputs of the column
   for (let input of inputs) {
     if (input.checked == false) {
       let value = input.parentNode.innerText || input.parentNode.textContent;
@@ -117,57 +131,42 @@ function filterColumn(id) {
 
   var column = id.replace("dropdown for ", "");
 
-  console.log(activeFilters);
-
   filter = checkedInputs;
   table = document.getElementById("sampleTable");
   tr = table.getElementsByTagName("tr");
 
   // get all column names
   ths = tr[0].getElementsByTagName("th");
-  // find out indexes of columns
 
+  // find out indexes of columns
   for (i = 0; i < ths.length; i++) {
     if (ths[i].getAttribute("name") == column) {
       activeFilters.set(i, checkedInputs);
     }
   }
   var indexes = Array.from(activeFilters.keys());
-  console.log(activeFilters);
-  console.log(indexes);
 
   // Loop through all table rows, and hide those who can be found in the active filters map
-
   for (i = 1; i < tr.length; i++) {
-    console.log(`Row ${i}`);
     // check every column, that has active filters
     for (let idx of indexes) {
-      console.log(`Check index ${idx}`);
       td = tr[i].getElementsByTagName("td")[idx];
       if (td) {
         txtValue = td.textContent || td.innerText;
         if (activeFilters.get(idx).indexOf(txtValue) < 0) {
-          console.log(`No filtering out ${txtValue}`);
           tr[i].style.display = "";
-          // stripe table
-          if (newRowNumber % 2 == 0) {
-            tr[i].style.background = "#fff7f7";
-          } else {
-            tr[i].style.background = "#d4daebf8";
-          }
-          newRowNumber += 1;
           // if one filter does not match the row, hide it
         } else {
-          console.log(`Filtered out ${txtValue}`);
           tr[i].style.display = "none";
           break;
         }
       }
     }
   }
+  // stripe table and count displayed rows
   var newRowNumber = 1;
   for (i = 1; i < tr.length; i++) {
-    console.log(tr[i].style.display);
+    // console.log(tr[i].style.display);
     if (tr[i].style.display != "none") {
       if (newRowNumber % 2 == 0) {
         tr[i].style.background = "#fff7f7";
@@ -179,4 +178,19 @@ function filterColumn(id) {
   }
   numberSelected = document.getElementById("id-selected-samples");
   numberSelected.innerHTML = newRowNumber - 1;
+}
+
+function selectAllColumnFilters(dropdownID) {
+  const dropdown = document.getElementById(dropdownID);
+  console.log(dropdownID);
+  const all_inputs = dropdown.getElementsByTagName("input");
+  for (let i = 1; i < all_inputs.length; i++) {
+    if (all_inputs[0].checked == false) {
+      all_inputs[i].checked = true;
+      all_inputs[i].click();
+    } else {
+      all_inputs[i].checked = false;
+      all_inputs[i].click();
+    }
+  }
 }

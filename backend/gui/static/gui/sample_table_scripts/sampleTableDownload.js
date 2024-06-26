@@ -42,6 +42,7 @@ function downloadWithFilter() {
 
   const all_inputs = form.getElementsByTagName("input");
 
+  // append all input values to the download form
   for (let i = 1; i < all_inputs.length; i++) {
     var name = all_inputs[i].name;
     if (formData.has(name)) {
