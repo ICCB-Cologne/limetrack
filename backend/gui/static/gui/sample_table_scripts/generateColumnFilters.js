@@ -115,12 +115,27 @@ function sortTable(index) {
 }
 
 function filterColumn(id) {
-  var input, filter, table, tr, td, tds, ths, i, txtValue, idx, column;
+  updateActiveFilters(id);
+  filterTable();
+}
 
+function searchTable() {
+  updateSearchFilter();
+  filterTable();
+}
+
+function updateActiveFilters(id) {
+  // get table and table rows
+  table = document.getElementById("sampleTable");
+  tr = table.getElementsByTagName("tr");
+
+  // get all column names
+  ths = tr[0].getElementsByTagName("th");
+
+  var column = id.replace("dropdown for ", "");
   var dropdownFilter = document.getElementById(id);
   var inputs = dropdownFilter.getElementsByTagName("input");
   var checkedInputs = [];
-
   // get all unchecked inputs of the column
   for (let input of inputs) {
     if (input.checked == false) {
@@ -128,41 +143,113 @@ function filterColumn(id) {
       checkedInputs.push(value.slice(1));
     }
   }
+  for (i = 0; i < ths.length; i++) {
+    if (ths[i].getAttribute("name") == column) {
+      activeFilters.set(i, checkedInputs);
+    }
+  }
+}
 
-  var column = id.replace("dropdown for ", "");
+function updateSearchFilter() {
+  var input, filter, table, tr, td, tds, ths, i, txtValue, idx;
+  input = document.getElementById("tableSearchInput");
+  column = document.getElementById("selectTableSearchColumn").value;
+  filter = input.value.toUpperCase();
+  table = document.getElementById("sampleTable");
+  tr = table.getElementsByTagName("tr");
 
-  filter = checkedInputs;
+  // get all column names
+  ths = tr[0].getElementsByTagName("th");
+  // find out index of column
+  for (i = 0; i < ths.length; i++) {
+    if (ths[i].getAttribute("name") == column) {
+      activeSearchFilter.set(i, filter);
+    }
+  }
+}
+
+function filterTable() {
+  var input,
+    searchFilter,
+    table,
+    tr,
+    td,
+    tds,
+    ths,
+    i,
+    txtValue,
+    idx,
+    column,
+    searchIndex;
+
+  // get table and table rows
   table = document.getElementById("sampleTable");
   tr = table.getElementsByTagName("tr");
 
   // get all column names
   ths = tr[0].getElementsByTagName("th");
 
-  // find out indexes of columns
-  for (i = 0; i < ths.length; i++) {
-    if (ths[i].getAttribute("name") == column) {
-      activeFilters.set(i, checkedInputs);
-    }
-  }
+  // console.log(`activeFilters: ${activeFilters}`);
+  // console.log(activeFilters);
+  // console.log(`activeSearchFilter: ${activeSearchFilter}`);
+  // console.log(activeSearchFilter);
+
+  // indexes of columns to be filtered
   var indexes = Array.from(activeFilters.keys());
+  activeSearchFilter.forEach(function (value, key) {
+    indexes.indexOf(key) && indexes.push(key);
+    searchIndex = key;
+    searchFilter = value;
+  });
+
+  // console.log("indexes");
+  // console.log(indexes);
 
   // Loop through all table rows, and hide those who can be found in the active filters map
+  // and don't match the search filter
   for (i = 1; i < tr.length; i++) {
-    // check every column, that has active filters
+    // check every column, that has active column filters
+    // console.log(`Row number ${i}`);
     for (let idx of indexes) {
+      // console.log(`Check index ${idx}`);
       td = tr[i].getElementsByTagName("td")[idx];
       if (td) {
         txtValue = td.textContent || td.innerText;
-        if (activeFilters.get(idx).indexOf(txtValue) < 0) {
-          tr[i].style.display = "";
-          // if one filter does not match the row, hide it
-        } else {
-          tr[i].style.display = "none";
-          break;
+        // console.log(`Text value:    ${txtValue}`);
+        // console.log(`In active Filters?:    ${activeFilters.has(idx)}`);
+        if (activeFilters.has(idx)) {
+          if (activeFilters.get(idx).indexOf(txtValue) < 0) {
+            // console.log("OK!");
+            tr[i].style.display = "";
+          } else {
+            // console.log("Filtered out!");
+            tr[i].style.display = "none";
+            break;
+          }
+        }
+        // filter searched column
+        if (idx == searchIndex) {
+          // console.log(`Search Filter: ${searchFilter}`);
+          if (txtValue.toUpperCase().indexOf(searchFilter) > -1) {
+            // console.log("OK!");
+            tr[i].style.display = "";
+          } else {
+            // console.log("Filtered out!");
+            tr[i].style.display = "none";
+            break;
+          }
         }
       }
     }
   }
+  stripesAndCount();
+}
+
+function stripesAndCount() {
+  var table, tr;
+
+  table = document.getElementById("sampleTable");
+  tr = table.getElementsByTagName("tr");
   // stripe table and count displayed rows
   var newRowNumber = 1;
   for (i = 1; i < tr.length; i++) {

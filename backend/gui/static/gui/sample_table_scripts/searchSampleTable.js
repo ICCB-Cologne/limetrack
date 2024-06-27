@@ -1,4 +1,4 @@
-function searchTable() {
+function searchsTable() {
   // Declare variables
   var input, filter, table, tr, td, tds, ths, i, txtValue, idx;
   input = document.getElementById("tableSearchInput");

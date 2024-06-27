@@ -69,6 +69,8 @@ Samples
               <input type="text" class="form-control" name="search" id="tableSearchInput" onkeyup="searchTable()" placeholder="Search ...">
             </div>
           </div>
+          {% comment %} End of search bar {% endcomment %}
+
     </form>
           <div class="col-auto">
             <div class="dropdown">
@@ -285,6 +287,7 @@ Samples
 
     <script>
       var activeFilters = new Map()
+      var activeSearchFilter = new Map()
     </script>
 
   {% endblock body_scripts %}
