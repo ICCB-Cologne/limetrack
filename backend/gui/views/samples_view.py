@@ -14,6 +14,7 @@ from django.http import (
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
+import pandas as pd
 
 from django.shortcuts import render
 
@@ -182,13 +183,10 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
         pseudo_buffer = Echo()
 
         file_type = request.GET.get("file_type")
-        if file_type:
-            d = ";" if file_type == "Excel" else ","
-        else:
-            d = ","
+        if file_type is None:
+            return HttpResponseRedirect(request.path_info)
 
-        writer = csv.writer(pseudo_buffer,
-                            delimiter=d)
+        print(file_type)
 
         form = GroupFilterForm(request.GET)
         if form.is_valid():
@@ -211,10 +209,28 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
                     for sublist in fields_and_values_list]
             data.insert(0, headers)
 
-            return StreamingHttpResponse(
-                (writer.writerow(row) for row in data),
-                content_type="text/csv",
-                headers={"Content-Disposition":
-                         'attachment; filename="saturn3samples.csv"'})
+            if file_type == "Excel":
+                file_name = "saturn3samples.xlsx"
+                print(data)
+                pd.DataFrame(data[1:], columns=headers).to_excel(file_name)
+                with open(file_name, 'rb') as fh:
+                    response = StreamingHttpResponse(
+                            (line for line in fh.readlines()),
+                            content_type="application/vnd.ms-excel",
+                            headers={"Content-Disposition":
+                                     f"inline; filename={file_name}"})
+                    return response
+
+            elif file_type == "CSV":
+                writer = csv.writer(pseudo_buffer,
+                                    delimiter=",")
+                content_type = "text/csv"
+                file_name = "saturn3samples.csv"
+
+                return StreamingHttpResponse(
+                    (writer.writerow(row) for row in data),
+                    content_type=content_type,
+                    headers={"Content-Disposition":
+                             f'attachment; filename="{file_name}"'})
 
         return HttpResponseRedirect(request.path_info)

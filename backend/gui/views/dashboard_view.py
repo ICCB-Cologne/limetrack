@@ -30,8 +30,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         ]
         keys = [site[0] for site in real_sites]
         keys = list(set(keys))
-        print("I got the keys")
-        print(keys)
         d = dict()
         for key in keys:
             d.update({key: 0})

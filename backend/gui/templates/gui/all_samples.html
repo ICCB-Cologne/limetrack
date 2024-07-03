@@ -78,8 +78,8 @@ Samples
                 Download
               </button>
               <ul class="dropdown-menu">
-                <li><a id="download-dropdown-button-CSV" class="dropdown-item" href="#" onclick="downloadWithFilter('CSV')"> Download as CSV </a></li>
-                <li><a id="download-dropdown-button-EXCEL" class="dropdown-item" href="#" onclick="downloadWithFilter('Excel')"> Download for Excel </a></li>
+                <li><a id="download-dropdown-button-CSV" class="dropdown-item" href="#" onclick="downloadWithFilter('CSV')"> Download as CSV (.csv) </a></li>
+                <li><a id="download-dropdown-button-EXCEL" class="dropdown-item" href="#" onclick="downloadWithFilter('Excel')"> Download for Excel (.xlsx) </a></li>
               </ul>
             </div>
             
@@ -127,7 +127,11 @@ Samples
                 {% if key == "ID" %}
                 <td hidden >{{ value }}</td>
                 {% else %}
-                <td>{{ value }}</td>
+                  {% comment %} localize off is necessary to get the date format from the settings file {% endcomment %}
+                  {% load l10n %}
+                    {% localize off %}
+                      <td>{{ value }}</td>
+                    {% endlocalize %}
                 {% endif %}
             {% endif %}
             {% endfor %}

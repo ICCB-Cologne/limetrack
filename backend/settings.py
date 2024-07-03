@@ -64,7 +64,7 @@ ALLOWED_HOSTS = [
     "saturn3.uniklinik-freiburg.de"
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "http://0.0.0.0", 
+    "http://0.0.0.0",
     "https://ibsm-saturn3.uniklinik-freiburg.de",
     "https://saturn3.uniklinik-freiburg.de"
 ]
@@ -88,7 +88,9 @@ INSTALLED_APPS = [
     "backend.gui",
     "tempus_dominus"
 ]
+
 TEMPUS_DOMINUS_DATE_FORMAT = "YYYY-MM-DD"
+DATE_FORMAT = "d-m-Y"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

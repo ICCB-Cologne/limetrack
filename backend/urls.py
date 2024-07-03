@@ -30,6 +30,7 @@ from backend.gui.views.samples_view import (AllSamplesView,
                                             FilteredDownloadView)
 from backend.gui.views.dashboard_view import DashboardView
 from backend.gui.views.upload_view import UploadView
+from backend.gui.views.faq_view import FAQView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -41,6 +42,7 @@ urlpatterns = [
     path("upload/", UploadView.as_view(), name="upload"),
     path("contact/", ContactView.as_view(), name="contact"),
     path("imprint/", ImprintView.as_view(), name="imprint"),
+    path("faq/", FAQView.as_view(), name="faq"),
     # path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", log_out, name="logout"),
