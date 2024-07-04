@@ -205,8 +205,14 @@ Sample Tracking
       <div>
         <label>Download CSV-Template:</label>
       </div>
-      <div>
-        <a id="btn-download-tmp" href="/csv_template/" class="btn btn-primary" role="button">Download</a>
+      <div class="dropdown">
+        <button id="download-dropdown-button" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Download
+        </button>
+        <ul class="dropdown-menu">
+          <li><a id="download-dropdown-button-CSV" class="dropdown-item" href="/csv_template_csv"> Download as CSV (.csv) </a></li>
+          <li><a id="download-dropdown-button-EXCEL" class="dropdown-item" href="/csv_template_excel"> Download for Excel (.xlsx) </a></li>
+        </ul>
       </div>
       {% if messages %}
         {%for message in messages%}

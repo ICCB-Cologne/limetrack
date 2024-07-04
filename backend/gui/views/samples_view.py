@@ -27,6 +27,25 @@ import logging
 
 app_log = logging.getLogger("s3sample")
 
+example_sample = [
+    "München", "BSP12", "f", "2021-02-10", "S3C-BSP12-0-M1-V-R1",
+    "This is an example sat3 sample", "2021-02-10", "CTC",
+    "Blood withdrawal", "Lung", "No", "G2",
+    "15", "2023-12-17", "successful RNA", "panel", "2023-12-17",
+    "2023-12-17", "77", "45", "successful RNA", "ATAC",
+    "Yes", "214", "123456", "123456", "Comment",
+    "Xenium", "Xenium failed", "2023-12-19",
+    "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
+    "2023-12-19", "RUNID98124987412", "PANELID98124987412",
+    "85", "Spatial Comment",
+    "Plasma", "2023-12-17", "2023-12-17", "4", "2023-12-17",
+    "111", "sequencing successful", "pool10",
+    "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
+    "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
+    "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
+    "/omics/odcf/example", "/omics/odcf/example"
+    ]
+
 
 class AllSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest,
@@ -139,27 +158,9 @@ def some_streaming_csv_view(request):
     )
 
 
-def csv_template_download(request):
+def csv_template_download_csv(request):
     pseudo_buffer = Echo()
     writer = csv.writer(pseudo_buffer)
-    example_sample = [
-        "München", "BSP12", "f", "2021-02-10", "S3C-BSP12-0-M1-V-R1",
-        "This is an example sat3 sample", "2021-02-10", "CTC",
-        "Blood withdrawal", "Lung", "No", "G2",
-        "15", "2023-12-17", "successful RNA", "panel", "2023-12-17",
-        "2023-12-17", "77", "45", "successful RNA", "ATAC",
-        "Yes", "214", "123456", "123456", "Comment",
-        "Xenium", "Xenium failed", "2023-12-19",
-        "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
-        "2023-12-19", "RUNID98124987412", "PANELID98124987412",
-        "85", "Spatial Comment",
-        "Plasma", "2023-12-17", "2023-12-17", "4", "2023-12-17",
-        "111", "sequencing successful", "pool10",
-        "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
-        "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
-        "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
-        "/omics/odcf/example", "/omics/odcf/example"
-        ]
 
     data = [all_field_verbose_names, example_sample]
     return StreamingHttpResponse(
@@ -169,6 +170,21 @@ def csv_template_download(request):
             "Content-Disposition":
             'attachment; filename="saturn3samples_template.csv"'},
     )
+
+
+def csv_template_download_excel(request):
+    file_name = "saturn3samples_template.xlsx"
+    data = [all_field_verbose_names, example_sample]
+    pd.DataFrame(data[1:], columns=all_field_verbose_names). \
+        to_excel(file_name, index=False)
+    with open(file_name, "rb") as fh:
+        return StreamingHttpResponse(
+            (line for line in fh.readlines()),
+            content_type="application/vnd.ms-excel",
+            headers={
+                "Content-Disposition":
+                f"attachment; filename={file_name}"},
+        )
 
 
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
@@ -211,8 +227,8 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
 
             if file_type == "Excel":
                 file_name = "saturn3samples.xlsx"
-                print(data)
-                pd.DataFrame(data[1:], columns=headers).to_excel(file_name)
+                pd.DataFrame(data[1:], columns=headers). \
+                    to_excel(file_name, index=False)
                 with open(file_name, 'rb') as fh:
                     response = StreamingHttpResponse(
                             (line for line in fh.readlines()),

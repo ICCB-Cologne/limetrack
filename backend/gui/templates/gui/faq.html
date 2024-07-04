@@ -15,42 +15,60 @@
 {% block content %}
 <div class="containerino">
   <div id="main_form" class="form-containerino">
-    <h2> FAQ <i class="bi bi-person-vcard"></i> </h2> 
+    <h2> FAQ <i class="bi bi-question-circle"></i></h2> 
     <hr>
     <div class="accordion" id="accordionExample">
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            How to open a csv file in Excel?
+            <strong> How to open a CSV file in Excel? </strong>
           </button>
         </h2>
         <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
           <div class="accordion-body">
-            Open a new file in excel. It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+            <ol>
+            <li> Open a new file in excel. </li>
+            <li> Click on the <i>Data</i> tab. </li> 
+            <li> Click <i> Get External Data From Text</i>. </li>
+            <li> Choose Text/CSV as data source. Search your system for the CSV file. Select it, click Import and then Continue. </li>
+            <li> Now the data is displayed as a preview. Click on the Load button and a new table is created on your excel sheet. </li>
+            </ol>
           </div>
         </div>
       </div>
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-            Accordion Item #2
+            <strong> What's the best practise to upload many samples? </strong>
           </button>
         </h2>
         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
           <div class="accordion-body">
-            <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+            <ol>
+              <li> Download the template file. </li>
+              <li> Fill out the fields according to your group membership. </li>
+              <li> Make sure that you meet the constraints on each field. <br>
+                Meaning: check the permitted inputs, format dates in the required style etc. <br>
+                You can take the example sample in the template as an reference on how the inputs are supposed to look.
+              </li>
+              <li> If you edit the file in Excel don't forget to export to CSV. <br> 
+                   How to do that? Click on <i> File </i> then on <i> Save as ... </i> and <b> select the file format .csv with UTF-8 encoding </b> before saving it. </li>
+              <li> Now you can upload the file. </li>
+              </ol>
           </div>
         </div>
       </div>
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-            Accordion Item #3
+            <strong> Why is CSV UTF-8 encoding important? </strong>
           </button>
         </h2>
         <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
           <div class="accordion-body">
-            <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+            For the handling of special characters, uploaded files must be encoded in UTF-8. <br>
+            UTF-8 is the dominant standard encoding on the web. <br>
+            That's why you have to export your Microsoft Excel sheet to a CSV file with UTF-8 encoding.
           </div>
         </div>
       </div>

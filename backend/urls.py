@@ -26,7 +26,8 @@ from backend.gui.views.views import (SampleTrackingView,
 
 from backend.gui.views.samples_view import (AllSamplesView,
                                             some_streaming_csv_view,
-                                            csv_template_download,
+                                            csv_template_download_excel,
+                                            csv_template_download_csv,
                                             FilteredDownloadView)
 from backend.gui.views.dashboard_view import DashboardView
 from backend.gui.views.upload_view import UploadView
@@ -38,11 +39,12 @@ urlpatterns = [
     path("samples/", AllSamplesView.as_view(), name="all_samples"),
     path("csv/", some_streaming_csv_view, name="csv"),
     path("filtered_download/", FilteredDownloadView.as_view(), name="filtered_download"),
-    path("csv_template/", csv_template_download, name="csv_template"),
+    path("csv_template_csv/", csv_template_download_csv, name="csv_template_csv"),
+    path("csv_template_excel/", csv_template_download_excel, name="csv_template_excel"),
     path("upload/", UploadView.as_view(), name="upload"),
     path("contact/", ContactView.as_view(), name="contact"),
     path("imprint/", ImprintView.as_view(), name="imprint"),
-    # path("faq/", FAQView.as_view(), name="faq"),
+    path("faq/", FAQView.as_view(), name="faq"),
     # path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", log_out, name="logout"),

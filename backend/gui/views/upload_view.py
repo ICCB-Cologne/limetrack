@@ -67,7 +67,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
             df = pd.read_csv(file, sep=",|;", keep_default_na=False)
         except UnicodeDecodeError:
             messages.error(request, "File upload failed!", extra_tags="file")
-            msg = "Cannot read file. Please make sure it is UTF-8 encoded."
+            msg = "Cannot read file. Please make sure it \
+                   is a UTF-8 encoded CSV file."
             messages.error(request, msg, extra_tags="file")
             return HttpResponseRedirect(request.path_info)
 
