@@ -37,8 +37,8 @@ recruiter_fields = all_field_names[:all_field_names.index("grading") + 1]
 
 tum_fields = ["saturn3_sample_code"] + \
     all_field_names[
-        all_field_names.index("tumor_cell_content"):
-        all_field_names.index("tumor_cell_content") + 1]
+        all_field_names.index("tissue_quality"):
+        all_field_names.index("comment_tumor_cell_content") + 1]
 
 spl_fields = ["saturn3_sample_code"] + \
     all_field_names[
@@ -77,123 +77,28 @@ field_dict = {
 # the widgets/input fields of individual groups
 
 disabled_tum_dict = {
-    "tumor_cell_content": forms.NumberInput(
-        attrs={"disabled": "true"}),
+    tum_fields[i]: forms.TextInput(
+        attrs={"disabled": "true"}) for i in range(1, len(tum_fields))
 }
 
 disabled_spl_dict = {
-            "spl_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "spl_status": forms.Select(
-                attrs={"disabled": "true"}),
-
-            "spl_sequencing_type": forms.Select(
-                attrs={"disabled": "true"}),
+    spl_fields[i]: forms.TextInput(
+        attrs={"disabled": "true"}) for i in range(1, len(spl_fields))
 }
 
 disabled_sclab_dict = {
-            "sclab_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "sclab_extraction_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "sclab_nuclei_yield": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_nuclei_size": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_status": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_sequencing_type": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_sorting": forms.NullBooleanSelect(
-                attrs={"disabled": "true"}),
-
-            "atac_isle_id": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "rna_isle_id": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_pool": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "sclab_comment": forms.TextInput(
-                attrs={"disabled": "true"}),
+    sclab_fields[i]: forms.TextInput(attrs={"disabled": "true"})
+    for i in range(1, len(sclab_fields) - len(spatial_fields) + 1)
 }
 
 disabled_spatial_dict = {
-
-            "spatial_method": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "spatial_status": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "xenium_run_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "xenium_slide_id": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "xenium_run_id": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "xenium_panel_id": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "merscope_run_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "merscope_run_id": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "merscope_panel_id": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "dv_200": forms.TextInput(
-                attrs={"disabled": "true"}),
-
-            "spatial_comment": forms.TextInput(
-                attrs={"disabled": "true"}),
-
+    spatial_fields[i]: forms.TextInput(
+        attrs={"disabled": "true"}) for i in range(1, len(spatial_fields))
 }
 
 disabled_lb_dict = {
-
-            "lb_analyte_type": forms.Select(
-                attrs={"disabled": "true"}),
-
-            "lb_sampling_date": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_received": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_sample_volume": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "lb_date_of_isolation": DatePicker(
-                attrs={"disabled": "true",
-                       "input_group": False}),
-
-            "lb_total_isolated_cfdna": forms.NumberInput(
-                attrs={"disabled": "true"}),
-
-            "lb_status": forms.Select(
-                attrs={"disabled": "true"}),
+    lb_fields[i]: forms.TextInput(
+        attrs={"disabled": "true"}) for i in range(1, len(lb_fields))
 }
 
 

@@ -28,18 +28,28 @@ import logging
 app_log = logging.getLogger("s3sample")
 
 example_sample = [
+    # recruiter
     "München", "BSP12", "f", "2021-02-10", "S3C-BSP12-0-M1-V-R1",
     "This is an example sat3 sample", "2021-02-10", "CTC",
     "Blood withdrawal", "Lung", "No", "G2",
-    "15", "2023-12-17", "successful RNA", "panel", "2023-12-17",
-    "2023-12-17", "77", "45", "successful RNA", "ATAC",
+    # tum
+    "2", "15", "59", "Comment",
+    # spl
+    "2023-12-17", "successful RNA", "panel",
+    # sclab
+    "2023-12-17", "2023-12-17", "77",
+    "45", "successful RNA", "ATAC",
     "Yes", "214", "123456", "123456", "Comment",
+    # spatial
     "Xenium", "Xenium failed", "2023-12-19",
     "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
     "2023-12-19", "RUNID98124987412", "PANELID98124987412",
     "85", "Spatial Comment",
+    # lb
     "Plasma", "2023-12-17", "2023-12-17", "4", "2023-12-17",
-    "111", "sequencing successful", "pool10",
+    "111", "sequencing successful",
+    # ocdf
+    "pool10",
     "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
@@ -176,7 +186,7 @@ def csv_template_download_excel(request):
     file_name = "saturn3samples_template.xlsx"
     data = [all_field_verbose_names, example_sample]
     pd.DataFrame(data[1:], columns=all_field_verbose_names). \
-        to_excel(file_name, index=False)
+        to_excel(file_name,             index=False)
     with open(file_name, "rb") as fh:
         return StreamingHttpResponse(
             (line for line in fh.readlines()),
@@ -201,8 +211,6 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
         file_type = request.GET.get("file_type")
         if file_type is None:
             return HttpResponseRedirect(request.path_info)
-
-        print(file_type)
 
         form = GroupFilterForm(request.GET)
         if form.is_valid():

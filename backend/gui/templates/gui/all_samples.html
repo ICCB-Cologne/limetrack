@@ -60,7 +60,7 @@ Samples
                 
                 {% if samples.0 %}
                   {% for key, _ in samples.0 %}
-                    {% if key %}
+                    {% if key and key != "ID" %}
                       <option value="{{ key }}" >{{ key }}</option>
                     {% endif %}
                   {% endfor %}

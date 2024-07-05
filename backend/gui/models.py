@@ -37,6 +37,16 @@ def zero_to_a_hundred(value):
         raise ValidationError("Value between 0 and 100")
 
 
+def one_to_five(value):
+    if type(value) is not int:
+        try:
+            int(value)
+        except ValueError:
+            raise ValidationError("Only integer numbers are allowed")
+    if int(value) < 1 or int(value) > 5:
+        raise ValidationError("Value between 1 and 5")
+
+
 def check_sat3_sample_code(string):
     regex = \
      "^S3[MCP]-[a-zA-Z0-9]{5}-\\d+-[BTMXLNCFR]\\d+-[SVFPYO]-[DRCWYTMLGHN]\\d+$"
@@ -128,11 +138,29 @@ class HistopathologicalSample(models.Model):
     # skip for prototype
 
     # TUM Pathology ###
+
+    tissue_quality = models.IntegerField(
+        max_length=1,
+        blank=True, null=True,
+        validators=[one_to_five],
+        verbose_name="Tissue Quality"
+        )
+
     tumor_cell_content = models.CharField(
-        max_length=CHARFIELD_MAXLEN,
+        max_length=3,
         blank=True, null=True,
         validators=[zero_to_a_hundred],
         verbose_name="Tumor Cell Content")
+
+    percent_avital_cells = models.IntegerField(
+        max_length=3,
+        blank=True, null=True,
+        validators=[zero_to_a_hundred],
+        verbose_name="Percentage avital cells")
+
+    comment_tumor_cell_content = models.TextField(
+        blank=True, null=True,
+        verbose_name="Comment tumor cell content")
 
     # SPL ###
     spl_received = models.DateField(

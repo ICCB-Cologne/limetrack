@@ -143,4 +143,8 @@ class RecordGenerator:
 
     @staticmethod
     def random_integer_from_0_to_100():
-        return str(random.choice(range(0, 100)))
+        return str(random.choice(range(0, 101)))
+
+    @staticmethod
+    def random_integer_from_1_to_5():
+        return str(random.choice(range(1, 6)))

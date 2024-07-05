@@ -36,8 +36,16 @@ class TestAllUserGroupsForm(BasicTestClass):
     def tum_input(self):
         self.login("test_TUM", "test4life")
         self.search_record()
+        self.driver.find_element(By.ID, "id_tissue_quality").send_keys(
+            RecordGenerator.random_integer_from_1_to_5())
         self.driver.find_element(By.ID, "id_tumor_cell_content").send_keys(
             RecordGenerator.random_integer_from_0_to_100())
+        self.driver.find_element(By.ID, "id_percent_avital_cells").send_keys(
+            RecordGenerator.random_integer_from_0_to_100())
+        self.driver.find_element(
+            By.ID,
+            "id_comment_tumor_cell_content").send_keys(
+                RecordGenerator.random_string_of_length(20))
         self.submit_record()
         self.check_submission()
         self.logout()
