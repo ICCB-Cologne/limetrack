@@ -20,31 +20,33 @@ from django.contrib.auth import views as auth_views
 
 from backend.gui.views.views import (SampleTrackingView,
                                      LoginView,
-                                     SearchView, log_out,
-                                     ContactView,
-                                     ImprintView)
+                                     SearchView, log_out)
 
-from backend.gui.views.samples_view import (AllSamplesView,
-                                            some_streaming_csv_view,
+from backend.gui.views.info_views import (ContactView,
+                                          ImprintView,
+                                          FAQView)
+
+from backend.gui.views.samples_view import AllSamplesView
+
+from backend.gui.views.download_views import (
                                             csv_template_download_excel,
                                             csv_template_download_csv,
                                             FilteredDownloadView)
+
 from backend.gui.views.dashboard_view import DashboardView
 from backend.gui.views.upload_view import UploadView
-from backend.gui.views.faq_view import FAQView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", SampleTrackingView.as_view(), name="config"),
     path("samples/", AllSamplesView.as_view(), name="all_samples"),
-    path("csv/", some_streaming_csv_view, name="csv"),
     path("filtered_download/", FilteredDownloadView.as_view(), name="filtered_download"),
     path("csv_template_csv/", csv_template_download_csv, name="csv_template_csv"),
     path("csv_template_excel/", csv_template_download_excel, name="csv_template_excel"),
     path("upload/", UploadView.as_view(), name="upload"),
     path("contact/", ContactView.as_view(), name="contact"),
     path("imprint/", ImprintView.as_view(), name="imprint"),
-    path("faq/", FAQView.as_view(), name="faq"),
+    path("faqs/", FAQView.as_view(), name="faqs"),
     # path("dashboard/", DashboardView.as_view(), name="dashboard"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", log_out, name="logout"),

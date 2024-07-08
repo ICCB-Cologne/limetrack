@@ -365,26 +365,6 @@ def handle_form(form: ModelForm,
         return
 
 
-class ContactView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest,
-            *args: Any, **kwargs: Any) -> HttpResponse:
-
-        template_name = "gui/contact.html"
-        return render(request, template_name)
-
-
-class ImprintView(TemplateView):
-    def get(self, request: HttpRequest,
-            *args: Any, **kwargs: Any) -> HttpResponse:
-
-        template_name = "gui/imprint.html"
-        context = {
-            "user": request.user.get_username()
-        }
-
-        return render(request, template_name, context=context)
-
-
 def log_out(request: HttpRequest):
     logout(request)
     return HttpResponseRedirect(reverse("config"))

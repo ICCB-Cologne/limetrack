@@ -21,9 +21,10 @@ Samples
       <div class="container-fluid">
         <div class="row mb-3">
           <div class="col auto bg-white border border-dark-subtle">
-            Total number of samples: {{samples|length}} &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; <i class="bi bi-funnel-fill"></i> Number of filtered samples: <span id="id-selected-samples"> {{samples|length}} </span>
+            <i class="bi bi-bar-chart"></i> Total number of samples: {{samples|length}} &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; <i class="bi bi-person"></i> Total number of patients: <span id="id-patient-number">  </span> &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; <i class="bi bi-funnel"></i> Number of filtered samples: <span id="id-selected-samples"> {{samples|length}} </span>
           </div>
         </div>
+        
 
         
         <div class="row">
@@ -292,6 +293,20 @@ Samples
     <script>
       var activeFilters = new Map()
       var activeSearchFilter = new Map()
+    </script>
+
+    <script>
+      const allRows = document.getElementById("data-rows").children;
+      let columnNumber = 2;
+      const patients = new Set();
+      for (let i = 0; i < allRows.length; i++) {
+        var value = allRows[i].children[columnNumber].innerHTML;
+        patients.add(value);
+      }
+      patientNumber = document.getElementById("id-patient-number");
+      patientNumber.innerHTML = patients.size;
+    
+
     </script>
 
   {% endblock body_scripts %}

@@ -18,13 +18,14 @@
     <h2> FAQ <i class="bi bi-question-circle"></i></h2> 
     <hr>
     <div class="accordion" id="accordionExample">
+
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
             <strong> How to open a CSV file in Excel? </strong>
           </button>
         </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <ol>
             <li> Open a new file in excel. </li>
@@ -36,6 +37,7 @@
           </div>
         </div>
       </div>
+
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
@@ -58,6 +60,7 @@
           </div>
         </div>
       </div>
+
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
@@ -69,6 +72,38 @@
             For the handling of special characters, uploaded files must be encoded in UTF-8. <br>
             UTF-8 is the dominant standard encoding on the web. <br>
             That's why you have to export your Microsoft Excel sheet to a CSV file with UTF-8 encoding.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            <strong> How to use the filters over the samples table? </strong>
+          </button>
+        </h2>
+        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <p>
+              <u> Filter out columns:</u>
+              Click the "Filter Columns" button to open a dropdown where you can select the columns displayed in the table. <br>
+              You can filter out columns of the different groups involved in the SATURN3 Sample Tracking. <br>
+              This makes it possible to e.g. only look at the data provided by the SPL. <br>
+              Click the "Apply" button to apply.
+            </p>
+            <p>
+              <u> Search filter:</u>
+              Select a column you like to have searched. Then type in what you're searching for. <br>
+              The search is not case sensitive and gives out all occurences of the input characters. <br>
+              Example: Searching for "S3C-" in the "SATURN3 Sample Code" column will present you all the records whose SATURN3 Sample Codes include "S3C-".
+            </p>
+            <p>
+              <u> Filter within individual columns:</u>
+              Click on the small arrow besides a column's heading. <br>
+              Here you have the opportunity to select and deselect values you want or do not want to see in the table. <br>
+              Example: If you only want male patients to appear in the table, you can hide the female patients records by unchecking the "f" in column "Sex".
+            </p>
+
           </div>
         </div>
       </div>
