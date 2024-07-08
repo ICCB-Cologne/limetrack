@@ -165,4 +165,6 @@ SPATIAL_STATUS = [
     ("successful Xenium", "successful Xenium"),
     ("successful Merscope", "successful Merscope"),
     ("failed Xenium/Merscope", "failed Xenium/Merscope"),
+    ("successful Xenium/Merscope", "successful Xenium/Merscope"),
+
 ]
