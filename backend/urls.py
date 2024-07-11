@@ -24,6 +24,7 @@ from backend.gui.views.views import (SampleTrackingView,
 
 from backend.gui.views.info_views import (ContactView,
                                           ImprintView,
+                                          HomeView,
                                           FAQView)
 
 from backend.gui.views.samples_view import AllSamplesView
@@ -51,6 +52,7 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", log_out, name="logout"),
     path("search/", SearchView.as_view(), name="search"),
+    path("home/", HomeView.as_view(), name="home"),
 
     # Password reset / change section #
     path("password_change/",

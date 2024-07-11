@@ -34,6 +34,13 @@ class ContactView(LoginRequiredMixin, TemplateView):
         return render(request, template_name)
 
 
+class HomeView(TemplateView):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        template_name = "gui/home.html"
+
+        return render(request, template_name)
+
+
 class ImprintView(TemplateView):
     def get(self, request: HttpRequest,
             *args: Any, **kwargs: Any) -> HttpResponse:
@@ -44,3 +51,4 @@ class ImprintView(TemplateView):
         }
 
         return render(request, template_name, context=context)
+    

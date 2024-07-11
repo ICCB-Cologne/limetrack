@@ -36,6 +36,7 @@
           </a>
           <div class="collapse navbar-collapse">
             <div class="navbar-nav">
+              <a class="nav-item nav-link" href={% url "home" %} id="home-nav">Home</a>
               <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
               <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">Samples</a>
               {% comment %} <a class="nav-item nav-link" href={% url "dashboard" %} id="dashboard-nav">Dashboard</a> {% endcomment %}
@@ -75,6 +76,9 @@
         let selected = null;
         
         switch (window.location.pathname) {
+          case "/home/": 
+            selected = $("#home-nav");
+            break;
           case "/samples/": 
             selected = $("#all-samples-nav");
             break;
