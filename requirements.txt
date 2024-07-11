@@ -7,7 +7,7 @@ attrs==23.2.0
 Brotli==1.1.0
 certifi==2024.7.4
 charset-normalizer==3.3.0
-Django==5.0.4
+Django==5.0.7
 django-appconf==1.0.6
 django-compressor==4.4
 django-libsass==0.9
