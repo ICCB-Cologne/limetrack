@@ -1,24 +1,17 @@
 {% extends './base.html' %}
 {% load static %}
+{% load markdownify %}
 {% block title %}
   Home
 {% endblock title %}
 
 {% block content %}
 <div class="containerino">    
-    <div class="form-containerino">
+    <div class="form-containerino mh-100">
         <div>
-            <h2>Changelog</h2>
-            <hr>
-        </div>
-        <div class="card" >
-            <div class="card-header"> 
-                <h4></h4>
-            </div>
-            <div class="card-body">
-                
-            </div>
-            <div class="card-footer">
+            <div id="changelog">
+                {{ changelog | markdownify }}
+
             </div>     
         </div> 
     </div>

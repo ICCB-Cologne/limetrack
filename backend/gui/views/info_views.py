@@ -4,6 +4,7 @@ from django.http import (
 )
 from django.views.generic import TemplateView
 from django.shortcuts import render
+from django.core.files import File
 
 from typing import Any
 import logging
@@ -37,8 +38,13 @@ class ContactView(LoginRequiredMixin, TemplateView):
 class HomeView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/home.html"
+        context = {}
 
-        return render(request, template_name)
+        with open("CHANGELOG.md", "r") as fh:
+            myfile = File(fh)
+            context["changelog"] = myfile.read()
+
+        return render(request, template_name, context=context)
 
 
 class ImprintView(TemplateView):
@@ -51,4 +57,3 @@ class ImprintView(TemplateView):
         }
 
         return render(request, template_name, context=context)
-    
