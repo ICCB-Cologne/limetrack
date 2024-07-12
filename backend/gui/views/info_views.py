@@ -34,7 +34,7 @@ class ContactView(LoginRequiredMixin, TemplateView):
         return render(request, template_name)
 
 
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/home.html"
 

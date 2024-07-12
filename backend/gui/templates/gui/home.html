@@ -1,5 +1,41 @@
 {% extends './base.html' %}
-
+{% load static %}
 {% block title %}
   Home
 {% endblock title %}
+
+{% block content %}
+<div class="containerino">    
+    <div class="form-containerino">
+        <div>
+            <h2>Changelog</h2>
+            <hr>
+        </div>
+        <div class="card" >
+            <div class="card-header"> 
+                <h4></h4>
+            </div>
+            <div class="card-body">
+                
+            </div>
+            <div class="card-footer">
+            </div>     
+        </div> 
+    </div>
+    
+    <div class="form-containerino">
+        <div>
+            <h2>Useful Links</h2>
+            <hr>
+        </div>
+        <div class="flex-row">
+            <a title="SATURN3 Project Homepage" href="https://zks-redcap.uniklinik-freiburg.de/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1">
+                <img class="img-fluid " src="{% static 'gui/img/SATURN3_Logo_white_square.png' %}" width=80%% alt="SATURN3 Logo">
+            </a>
+            <a  href="https://zks-redcap.uniklinik-freiburg.de/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1 ">RedCap</a>
+            <a  href="https://zks-redcap.uniklinik-freiburg.de/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1">ECIP</a>
+            <a  href="https://zks-redcap.uniklinik-freiburg.de/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1">ODCF</a>
+        </div>
+    </div>
+</div>  
+{% endblock content %}
