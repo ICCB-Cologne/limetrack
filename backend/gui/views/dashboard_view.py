@@ -6,6 +6,154 @@ from django.shortcuts import render
 from ..models import HistopathologicalSample
 from typing import Any
 import plotly.graph_objects as go
+import plotly.express as px
+import pandas as pd
+
+coordinates = {
+    "Göttingen": (51.542674085238346, 9.913804090413405),
+    "Heidelberg": (49.39899667646808, 8.672968635087408),
+    "Essen": (51.45191841759816, 7.011888831333727),
+    "Köln": (50.936388829448646, 6.958386355628797),
+    "Frankfurt": (50.1153717270215, 8.687365774626162),
+    "München": (48.13357641953071, 11.579255350658212),
+    "Augsburg": (48.36831813866189, 10.900568819747098),
+}
+
+
+def count_samples_by_category(samples: list[HistopathologicalSample]):
+
+    headings = {"recruiting_site": "Samples by recruiting site",
+                "saturn3_sample_code": "Samples by entity - total"}
+
+    plot_dicts = []
+
+    count_by = ["saturn3_sample_code", "recruiting_site"]
+
+    for c in count_by:
+        key_value_pairs = [
+            [getattr(instance, field.name)
+                for field in instance._meta.fields
+                if field.name == c]
+            for instance in samples
+        ]
+        keys = [site[0] for site in key_value_pairs]
+        keys = list(set(keys))
+        counter_dict = dict()
+
+        for key in keys:
+            if c == "saturn3_sample_code":
+                # count entities (S3C, S3P, S3M)
+                key = key[:3]
+            counter_dict.update({key: 0})
+
+        for key_value in key_value_pairs:
+            if c == "saturn3_sample_code":
+                counter_dict[key_value[0][:3]] += 1
+            else:
+                counter_dict[key_value[0]] += 1
+
+        fig = go.Figure(
+            data=[go.Bar(x=list(counter_dict.keys()),
+                         y=list(counter_dict.values()),
+                         marker_color="rgba(25,42,98,255)")])
+
+        fig.update_xaxes(type='category')
+        fig.update_xaxes(categoryorder='total descending')
+
+        plot = fig.to_html(full_html=False)
+        plot_dicts.append({"plot": plot, "heading": headings[c]})
+
+    return plot_dicts
+
+
+def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
+
+    data = {"Site": [], "Entity": [], "Count": []}
+
+    site_sample_pairs = [
+        [getattr(instance, field.name)
+            for field in instance._meta.fields
+            if field.name == "recruiting_site" or
+            field.name == "saturn3_sample_code"]
+        for instance in samples
+    ]
+
+    print(site_sample_pairs)
+
+    entity_counter = {}
+    for sample in site_sample_pairs:
+        site = sample[0]
+        if site not in entity_counter:
+            entity_counter.update({sample[0]: [0, 0, 0]})
+        entity = sample[1][0:3]
+        if entity == "S3C":
+            entity_counter[site][0] += 1
+        elif entity == "S3M":
+            entity_counter[site][1] += 1
+        elif entity == "S3P":
+            entity_counter[site][2] += 1
+
+    for site in entity_counter.keys():
+        data["Site"].append(site)
+        data["Entity"].append("S3C")
+        data["Count"].append(entity_counter[site][0])
+        data["Site"].append(site)
+        data["Entity"].append("S3M")
+        data["Count"].append(entity_counter[site][1])
+        data["Site"].append(site)
+        data["Entity"].append("S3P")
+        data["Count"].append(entity_counter[site][2])
+
+    print(entity_counter)
+
+    fig = px.bar(data, x="Site", y="Count", color="Entity", color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"])
+    fig.update_xaxes(type='category')
+    fig.update_xaxes(categoryorder='total descending')
+    return fig.to_html()
+
+
+def map_plot(samples: list[HistopathologicalSample]):
+
+    data = {"lat": [], "lon": [], "Samples": [], "site": []}
+
+    key_value_pairs = [
+            [getattr(instance, field.name)
+                for field in instance._meta.fields
+                if field.name == "recruiting_site"]
+            for instance in samples
+        ]
+    keys = [site[0] for site in key_value_pairs]
+    keys = list(set(keys))
+    counter_dict = dict()
+
+    for key in keys:
+        counter_dict.update({key: 0})
+
+    for key_value in key_value_pairs:
+        counter_dict[key_value[0]] += 1
+
+    for site in counter_dict:
+        data["site"].append(site)
+        data["Samples"].append(counter_dict[site])
+        data["lat"].append(coordinates[site][0])
+        data["lon"].append(coordinates[site][1])
+
+    df = pd.DataFrame(data=data)
+
+    fig = px.scatter_mapbox(df, lat="lat", lon="lon", size="Samples",
+                            hover_name="site",
+                            hover_data={"Samples": True,
+                                        "lat": False,
+                                        "lon": False},
+                            color_discrete_sequence=["blue"], zoom=5.5,
+                            center=dict(lat=51.19, lon=10.459),
+                            height=800)
+
+    fig.update_layout(mapbox_style="open-street-map")
+    fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
+    fig.update_layout(mapbox_bounds={"west": 3, "east": 18,
+                                     "south": 47.1, "north": 55.2})
+    return fig.to_html(full_html=False)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -14,42 +162,30 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         template_name = "gui/dashboard.html"
         samples = HistopathologicalSample.objects.all()
 
-        get_dict = request.GET
-        print(get_dict)
+        # get_dict = request.GET
 
-        if get_dict.get("count_what"):
-            count_this = get_dict["count_what"]
-        else:
-            count_this = "recruiting_site"
+        # if get_dict.get("count_what"):
+        #     count_this = get_dict["count_what"]
+        # else:
+        #     count_this = "recruiting_site"
 
-        real_sites = [
-            [getattr(instance, field.name)
-                for field in instance._meta.fields
-                if field.name == count_this]
-            for instance in samples
-        ]
-        keys = [site[0] for site in real_sites]
-        keys = list(set(keys))
-        d = dict()
-        for key in keys:
-            d.update({key: 0})
-        for site in real_sites:
-            d[site[0]] += 1
+        plot_dict = count_samples_by_category(samples)
 
-        fig1 = go.Figure(data=[go.Bar(x=list(d.keys()), y=list(d.values()),
-                                      marker_color="rgba(25,42,98,255)")])
+        figure_list = []
+        for dic in plot_dict:
 
-        fig2 = go.Figure(data=[go.Bar(x=list(d.keys()), y=list(d.values()),
-                                      marker_color="rgba(150,77,0,255)")])
+            figure_list.append(dic)
 
-        plot1 = fig1.to_html(full_html=False)
-        plot2 = fig2.to_html(full_html=False)
+        map_plot1 = map_plot(samples)
+        figure_list.append({"heading": "Samples by sites - Map",
+                            "plot": map_plot1})
+
+        figure_list.append({"heading": "Sample by entity and site",
+                            "plot": count_samples_by_site_and_entity(samples)})
 
         context = {
-            "samples": real_sites,
-            "plot1": plot1,
-            "plot2": plot2,
-            "user": request.user  # user, not username because we
-                                  # need to check the user's attributes
-        }
+            "user": request.user,  # user, not username because we
+                                   # need to check the user's attributes
+            "figure_list": figure_list
+            }
         return render(request, template_name, context=context)
