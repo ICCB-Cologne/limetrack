@@ -1,7 +1,7 @@
-# Change Log
+## Change Log
 
 ### 2024-07-16
 
-this text with a [link](asdasd) fuck -,- this text with a [link](asdasd) fuck -,- this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,-  this text with a [link](asdasd) fuck -,- 
-
-- Added this Changelog [#](link) sadads
+- Added a home landingpage
+    - Added this Changelog
+    - Added links with project ressources
