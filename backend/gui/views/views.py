@@ -136,7 +136,7 @@ def no_sample_code_found(request: HttpRequest,
                    msg,
                    extra_tags=tag)
 
-    return render(request, "gui/index.html",
+    return render(request, "gui/sample_tracking.html",
                   context={"form": (form if tag == "general"
                                     else get_form(
                                         str(request.user.groups
@@ -165,7 +165,7 @@ def record_already_exists(request: HttpRequest, sat3_code: str,
                    msg,
                    extra_tags=tag)
 
-    return render(request, "gui/index.html",
+    return render(request, "gui/sample_tracking.html",
                   context={"form": (form if tag == "general"
                                     else get_form(str(
                                         request.user.groups.first()).lower())),
@@ -182,7 +182,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             **kwargs: Any
     ) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower())
-        template_name = "gui/index.html"
+        template_name = "gui/sample_tracking.html"
         context = {
             "form": form,
             "upload_form": UploadForm(),
@@ -241,7 +241,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
                     )
             return render(
                 request,
-                "gui/index.html",
+                "gui/sample_tracking.html",
                 context={
                     "jump_to": "form",
                     "form": form,
@@ -293,7 +293,7 @@ def handle_form(form: ModelForm,
                                f"{str(sat3_code)} already exists.",
                                extra_tags=tag)
 
-                return render(request, "gui/index.html",
+                return render(request, "gui/sample_tracking.html",
                               context={"form": form,
                                        "upload_form": UploadForm(),
                                        "search_form": SearchForm(),
@@ -340,7 +340,7 @@ def handle_form(form: ModelForm,
                        " Not permitted!",
                        extra_tags=tag)
 
-        return render(request, "gui/index.html",
+        return render(request, "gui/sample_tracking.html",
                       context={"form": form,
                                "upload_form": UploadForm(),
                                "search_form": SearchForm(),
@@ -352,7 +352,7 @@ def handle_form(form: ModelForm,
         messages.success(request, "Submission successful!", extra_tags=tag)
         return render(
                 request,
-                "gui/index.html",
+                "gui/sample_tracking.html",
                 context={
                     "jump_to": "form",
                     "form": get_form(str(request.user.groups.first()).lower()),
@@ -399,7 +399,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest,
             *args: Any, **kwargs: Any) -> HttpResponse:
         form = get_form(str(request.user.groups.first()).lower())
-        template_name = "gui/index.html"
+        template_name = "gui/sample_tracking.html"
         context = {
             "form": form,
             "upload_form": UploadForm(),
@@ -452,7 +452,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
             messages.success(
                 request,
                 f"FOUND {radio_select} {search}", extra_tags="general")
-            template_name = "gui/index.html"
+            template_name = "gui/sample_tracking.html"
             context = {
                 "jump_to": "form",
                 "form": form,

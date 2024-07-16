@@ -45,7 +45,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest,
             *args: Any, **kwargs: Any) -> HttpResponse:
 
-        template_name = "gui/index.html"
+        template_name = "gui/sample_tracking.html"
         form = get_form(str(request.user.groups.first()).lower())
         context = {
             "form": form,
@@ -238,7 +238,7 @@ def check_records_existence(request: HttpRequest,
                            f"{str(sat3_code)} already exists.",
                            extra_tags=tag)
 
-            return render(request, "gui/index.html",
+            return render(request, "gui/sample_tracking.html",
                           context={
                               "form": (form if tag == "general"
                                        else get_form(
@@ -264,7 +264,7 @@ def check_records_existence(request: HttpRequest,
                        " Not permitted!",
                        extra_tags=tag)
 
-        return render(request, "gui/index.html",
+        return render(request, "gui/sample_tracking.html",
                       context={"form": form,
                                "upload_form": UploadForm(),
                                "search_form": SearchForm(),
