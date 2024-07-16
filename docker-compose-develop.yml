@@ -8,3 +8,4 @@ services:
       - ./manage.py:/manage.py:ro
       - ./requirements.txt:/requirements.txt
       - ./env:/env
+      - ./CHANGELOG.md:/CHANGELOG.md:ro
