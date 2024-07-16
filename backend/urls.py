@@ -14,27 +14,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from backend.gui.views.dashboard_view import DashboardView
+from backend.gui.views.samples_view import AllSamplesView
+from backend.gui.views.upload_view import UploadView
+from django.contrib.auth import views as auth_views
+from backend.gui.views.home_view import HomeView
+from backend.gui.views.download_views import (
+    csv_template_download_excel,
+    csv_template_download_csv,
+    FilteredDownloadView
+)
+from backend.gui.views.info_views import (
+    ContactView,
+    ImprintView,
+    FAQView
+)
+from backend.gui.views.views import (
+    SampleTrackingView,
+    LoginView,
+    SearchView, log_out
+)
 from django.contrib import admin
 from django.urls import path
-from django.contrib.auth import views as auth_views
 
-from backend.gui.views.views import (SampleTrackingView,
-                                     LoginView,
-                                     SearchView, log_out)
 
-from backend.gui.views.info_views import (ContactView,
-                                          ImprintView,
-                                          FAQView)
-from backend.gui.views.home_view import HomeView
-from backend.gui.views.samples_view import AllSamplesView
 
-from backend.gui.views.download_views import (
-                                            csv_template_download_excel,
-                                            csv_template_download_csv,
-                                            FilteredDownloadView)
-
-from backend.gui.views.dashboard_view import DashboardView
-from backend.gui.views.upload_view import UploadView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
