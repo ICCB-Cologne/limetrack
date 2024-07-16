@@ -465,4 +465,4 @@ class SearchView(LoginRequiredMixin, TemplateView):
         else:
             messages.error(request, "Invalid input",
                            extra_tags="general")
-            return HttpResponseRedirect(reverse("home"))
+            return HttpResponseRedirect(reverse("sample_tracking"))
