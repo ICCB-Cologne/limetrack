@@ -24,9 +24,8 @@ from backend.gui.views.views import (SampleTrackingView,
 
 from backend.gui.views.info_views import (ContactView,
                                           ImprintView,
-                                          HomeView,
                                           FAQView)
-
+from backend.gui.views.home_view import HomeView
 from backend.gui.views.samples_view import AllSamplesView
 
 from backend.gui.views.download_views import (
