@@ -367,7 +367,7 @@ def handle_form(form: ModelForm,
 
 def log_out(request: HttpRequest):
     logout(request)
-    return HttpResponseRedirect(reverse("config"))
+    return HttpResponseRedirect(reverse("home"))
 
 
 class LoginView(TemplateView):
@@ -392,7 +392,7 @@ class LoginView(TemplateView):
             return HttpResponseRedirect(request.path_info)
         else:
             login(request, user)
-            return HttpResponseRedirect(reverse("config"))
+            return HttpResponseRedirect(reverse("home"))
 
 
 class SearchView(LoginRequiredMixin, TemplateView):
@@ -447,7 +447,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
                 messages.error(request,
                                f"DID NOT FIND {radio_select} {search}",
                                extra_tags="general")
-                return HttpResponseRedirect(reverse("config"))
+                return HttpResponseRedirect(reverse("home"))
 
             messages.success(
                 request,
@@ -465,4 +465,4 @@ class SearchView(LoginRequiredMixin, TemplateView):
         else:
             messages.error(request, "Invalid input",
                            extra_tags="general")
-            return HttpResponseRedirect(reverse("config"))
+            return HttpResponseRedirect(reverse("home"))

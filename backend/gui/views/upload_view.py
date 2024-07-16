@@ -1,35 +1,42 @@
+from django.views.decorators.csrf import requires_csrf_token
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.core.exceptions import ValidationError
+from django.utils.safestring import mark_safe
+from django.views.generic import TemplateView
+from django.shortcuts import render
+from django.contrib import messages
+from django.forms import ModelForm
+from django.urls import reverse
+from django.http import (
+    HttpResponseRedirect,
+    HttpRequest, 
+    HttpResponse, 
+)
+from typing import Any
+from ..models import (
+    HistopathologicalSample, 
+    check_sat3_sample_code_with_none_analyte,
+    check_sat3_sample_code,
+)
+
+from .views import (
+    check_existing_input_for_group, record_already_exists,
+    get_form, handle_form,
+    no_sample_code_found
+)
 from ..forms import (
-    all_field_verbose_names, all_field_names, odcf_fields,
+    all_field_verbose_names, 
+    all_field_names, 
+    odcf_fields,
     UploadForm,
     SearchForm
 )
-from ..models import (
-    HistopathologicalSample, check_sat3_sample_code,
-    check_sat3_sample_code_with_none_analyte
-)
-
-from .views import (get_form, handle_form,
-                    check_existing_input_for_group, record_already_exists,
-                    no_sample_code_found)
-
-from django.views.decorators.csrf import requires_csrf_token
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import (
-    HttpRequest, HttpResponse, HttpResponseRedirect,
-)
-from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView
-
-from django.contrib import messages
-from django.shortcuts import render
-from django.forms import ModelForm
-from django.urls import reverse
-from django.core.exceptions import ValidationError
-from django.utils.safestring import mark_safe
-
-from typing import Any
 import pandas as pd
 import logging
+
+
+
 
 app_log = logging.getLogger("s3sample")
 
@@ -54,7 +61,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
             return self.handle_file(request.FILES["file"], request)
 
         messages.error(request, "File upload failed!", extra_tags="file")
-        return HttpResponseRedirect(reverse("config"))
+        return HttpResponseRedirect(reverse("sample_tracking"))
 
     @staticmethod
     def handle_file(file, request: HttpRequest):

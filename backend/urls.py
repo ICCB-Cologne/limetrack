@@ -41,13 +41,14 @@ from django.urls import path
 
 
 urlpatterns = [
+    path("", HomeView.as_view(), name="home"),
     path("admin/", admin.site.urls),
-    path("", SampleTrackingView.as_view(), name="config"),
     path("samples/", AllSamplesView.as_view(), name="all_samples"),
     path("filtered_download/", FilteredDownloadView.as_view(), name="filtered_download"),
     path("csv_template_csv/", csv_template_download_csv, name="csv_template_csv"),
     path("csv_template_excel/", csv_template_download_excel, name="csv_template_excel"),
     path("upload/", UploadView.as_view(), name="upload"),
+    path("sample_tracking/", SampleTrackingView.as_view(), name="sample_tracking"),
     path("contact/", ContactView.as_view(), name="contact"),
     path("imprint/", ImprintView.as_view(), name="imprint"),
     path("faqs/", FAQView.as_view(), name="faqs"),
@@ -55,7 +56,6 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", log_out, name="logout"),
     path("search/", SearchView.as_view(), name="search"),
-    path("home/", HomeView.as_view(), name="home"),
 
     # Password reset / change section #
     path("password_change/",
