@@ -407,7 +407,10 @@ select.form-control {
 .messages {
     padding: 1px;
     margin-top: 10px;
+    list-style-type: none;
 }
+
+
 
 .btn {
     background-color: rgba(20,40,100,0.7);
@@ -435,6 +438,10 @@ select.form-control {
     /* Red color for error messages */
 }
 
+.errorlist {
+    list-style-type: none;
+}
+
 .success {
     color: #008000;
     background-color: #e9f7ef;
@@ -442,10 +449,6 @@ select.form-control {
     border: 1px solid #42b883;
     /* Green border color */
     /* Green color for success messages */
-}
-
-ul {
-    list-style-type: none;
 }
 
 /* footer {
