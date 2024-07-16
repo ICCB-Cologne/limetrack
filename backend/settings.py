@@ -238,7 +238,8 @@ MARKDOWNIFY = {
             'ol',
             'p',
             'strong',
-            'ul'
+            'ul',
+            'hr'
         ]
     }
 }
