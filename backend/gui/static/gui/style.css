@@ -28,8 +28,6 @@ h2 {
 p {
     position: relative;
     font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    flex-direction: column;
 }
 
 .form-row{
