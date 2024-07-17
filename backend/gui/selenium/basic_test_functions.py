@@ -39,6 +39,7 @@ class BasicTestClass():
         self.driver.find_element(By.ID, "id_user_name").send_keys(user)
         self.driver.find_element(By.ID, "id_password").send_keys(password)
         self.driver.find_element(By.CSS_SELECTOR, ".btn").click()
+        self.driver.find_element(By.ID, "sample-tracking-nav").click()
 
     def logout(self):
         dropdown = self.driver.find_element(

@@ -28,6 +28,7 @@ class TestAllUserGroupsForm(BasicTestClass):
 
     def recruiter_create(self):
         self.login("test_Recruiter", "test4life")
+        self.driver.save_screenshot("screenie.png")
         self.create_minimal_test_record()
         self.submit_record()
         self.check_submission()
