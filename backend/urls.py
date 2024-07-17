@@ -14,36 +14,41 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from backend.gui.views.dashboard_view import DashboardView
+from backend.gui.views.samples_view import AllSamplesView
+from backend.gui.views.upload_view import UploadView
+from django.contrib.auth import views as auth_views
+from backend.gui.views.home_view import HomeView
+from backend.gui.views.download_views import (
+    csv_template_download_excel,
+    csv_template_download_csv,
+    FilteredDownloadView
+)
+from backend.gui.views.info_views import (
+    ContactView,
+    ImprintView,
+    FAQView
+)
+from backend.gui.views.views import (
+    SampleTrackingView,
+    LoginView,
+    SearchView, log_out
+)
 from django.contrib import admin
 from django.urls import path
-from django.contrib.auth import views as auth_views
 
-from backend.gui.views.views import (SampleTrackingView,
-                                     LoginView,
-                                     SearchView, log_out)
 
-from backend.gui.views.info_views import (ContactView,
-                                          ImprintView,
-                                          FAQView)
 
-from backend.gui.views.samples_view import AllSamplesView
-
-from backend.gui.views.download_views import (
-                                            csv_template_download_excel,
-                                            csv_template_download_csv,
-                                            FilteredDownloadView)
-
-from backend.gui.views.dashboard_view import DashboardView
-from backend.gui.views.upload_view import UploadView
 
 urlpatterns = [
+    path("", HomeView.as_view(), name="home"),
     path("admin/", admin.site.urls),
-    path("", SampleTrackingView.as_view(), name="config"),
     path("samples/", AllSamplesView.as_view(), name="all_samples"),
     path("filtered_download/", FilteredDownloadView.as_view(), name="filtered_download"),
     path("csv_template_csv/", csv_template_download_csv, name="csv_template_csv"),
     path("csv_template_excel/", csv_template_download_excel, name="csv_template_excel"),
     path("upload/", UploadView.as_view(), name="upload"),
+    path("sample_tracking/", SampleTrackingView.as_view(), name="sample_tracking"),
     path("contact/", ContactView.as_view(), name="contact"),
     path("imprint/", ImprintView.as_view(), name="imprint"),
     path("faqs/", FAQView.as_view(), name="faqs"),

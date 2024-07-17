@@ -19,7 +19,6 @@ body{
 
 h1 {
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    margin: 1rem;
 }
 
 h2 {
@@ -29,8 +28,6 @@ h2 {
 p {
     position: relative;
     font-family: Arial, Helvetica, sans-serif;
-    display: flex;
-    flex-direction: column;
 }
 
 .form-row{
@@ -408,7 +405,10 @@ select.form-control {
 .messages {
     padding: 1px;
     margin-top: 10px;
+    list-style-type: none;
 }
+
+
 
 .btn {
     background-color: rgba(20,40,100,0.7);
@@ -436,6 +436,10 @@ select.form-control {
     /* Red color for error messages */
 }
 
+.errorlist {
+    list-style-type: none;
+}
+
 .success {
     color: #008000;
     background-color: #e9f7ef;
@@ -443,10 +447,6 @@ select.form-control {
     border: 1px solid #42b883;
     /* Green border color */
     /* Green color for success messages */
-}
-
-ul {
-    list-style-type: none;
 }
 
 /* footer {
@@ -508,4 +508,28 @@ footer {
 #header-samples {
     margin-top: 16px;
     width: 95%; 
+}
+
+.btn-square-md {
+    width: 100px !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    height: 100px !important;
+    text-align: center;
+    padding: 0px;
+    font-size:20px;
+    border-radius: 3px;
+    background-color: rgba(20,40,100,0.7);
+    justify-content: center;
+    align-content: center;
+}
+
+.btn-square-md:hover {
+    background-color: rgba(20,40,100,0.9);
+    border: none;
+}
+
+.btn-square-md:active:focus {
+    background-color: rgba(20,40,100,1.0);
+    border: none;
 }

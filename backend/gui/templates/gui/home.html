@@ -1,0 +1,40 @@
+{% extends './base.html' %}
+{% load static %}
+{% load markdownify %}
+{% block title %}
+  Home
+{% endblock title %}
+
+{% block content %}
+<div class="containerino">    
+    <div class="form-containerino mh-100">
+        <div>
+            <div id="changelog">
+                {{ changelog | markdownify }}
+
+            </div>     
+        </div> 
+    </div>
+    
+    <div class="form-containerino">
+        <div>
+            <h2>Project Ressources</h2>
+            <hr>
+        </div>
+        <div class="flex-row">
+            <a title="SATURN3 Project Homepage" href="https://saturn3.org/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1">
+                <img class="img-fluid " src="{% static 'gui/img/SATURN3_Logo_white_square.png' %}" width=80%% alt="SATURN3 Logo">
+            </a>
+            <a  title="DKTK ODCF" href="https://odcf.dkfz.de/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1">
+                <img class="img-fluid " src="{% static 'gui/img/odcf_white.png' %}" width=80%% alt="SATURN3 Logo">
+            </a>
+            <a  title="Freiburg RedCap" href="https://zks-redcap.uniklinik-freiburg.de/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1 ">
+                <img class="img-fluid " src="{% static 'gui/img/redcap_logo_small.png' %}" width=80%% alt="SATURN3 Logo">
+            </a>
+            <a  title="Essen Central Imaging Platform" href="https://ecip-django.saturn3.ikim.nrw/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1">
+                <img class="img-fluid " src="{% static 'gui/img/logo_ume_uke.png' %}" width=80%% alt="SATURN3 Logo">
+            </a>
+        </div>
+    </div>
+</div>  
+{% endblock content %}

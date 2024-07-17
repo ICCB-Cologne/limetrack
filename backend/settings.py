@@ -86,7 +86,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "backend.gui",
-    "tempus_dominus"
+    "tempus_dominus",
+    'markdownify.apps.MarkdownifyConfig'
 ]
 
 TEMPUS_DOMINUS_DATE_FORMAT = "YYYY-MM-DD"
@@ -217,3 +218,28 @@ EMAIL_HOST = "smtp.uniklinik-freiburg.de"
 # EMAIL_HOST_USER = "saturn3@uniklinik-freiburg.de"
 EMAIL_PORT = 25
 EMAIL_SUBJECT_PREFIX = "[SATURN3 SAMPLE TRACKING] "
+MARKDOWNIFY = {
+    "default": {
+        "WHITELIST_TAGS": [
+            'a',
+            'abbr',
+            'acronym',
+            'b',
+            'blockquote',
+            'em',
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+            'i',
+            'li',
+            'ol',
+            'p',
+            'strong',
+            'ul',
+            'hr'
+        ]
+    }
+}
