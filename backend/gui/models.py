@@ -194,10 +194,10 @@ class HistopathologicalSample(models.Model):
                                     blank=True, null=True,
                                     verbose_name="scLab Status",
                                     choices=SCLAB_STATUS_CHOICES)
-    sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
+    sclab_analysis_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True, null=True,
                                              verbose_name="scLab"
-                                                          " Sequencing Type",
+                                                          " Analysis Type",
                                              choices=SCLAB_SEQUENCING_TYPES)
     sclab_sorting = models.BooleanField(choices=CORRESPONDING_ORGANOID_CHOICES,
                                         blank=True, null=True,

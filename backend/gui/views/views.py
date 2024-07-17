@@ -213,7 +213,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
                 form,
                 saturn3_sample_code,
                 data,
-                request,
+                request,    
                 "general"
             )
 
@@ -251,7 +251,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             )
 
 
-def handle_form(form: ModelForm,
+def  handle_form(form: ModelForm,
                 sat3_code: str,
                 data: dict[str: Any],
                 request: HttpRequest,
