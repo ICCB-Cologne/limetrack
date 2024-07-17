@@ -447,7 +447,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
                 messages.error(request,
                                f"DID NOT FIND {radio_select} {search}",
                                extra_tags="general")
-                return HttpResponseRedirect(reverse("home"))
+                return HttpResponseRedirect(reverse("sample_tracking"))
 
             messages.success(
                 request,
