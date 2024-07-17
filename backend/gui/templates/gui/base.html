@@ -36,11 +36,12 @@
           </a>
           <div class="collapse navbar-collapse">
             <div class="navbar-nav">
-              <a class="nav-item nav-link" href={% url "config" %} id="sample-tracking-nav">Sample Tracking</a>
-              <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">Samples</a>
-              {% comment %} <a class="nav-item nav-link" href={% url "dashboard" %} id="dashboard-nav">Dashboard</a> {% endcomment %}
-              {% comment %} <a class="nav-item nav-link" href={% url "faqs" %} id="faqs-nav">FAQs</a> {% endcomment %}
-              <a class="nav-item nav-link" href={% url "contact" %} id="contact-nav">Contact</a>
+              <!-- <a class="nav-item nav-link" href={% url "home" %} id="home-nav">Home</a> -->
+              <a class="nav-item nav-link" href={% url "sample_tracking" %} id="sample-tracking-nav">Sample Tracking</a>
+              <a class="nav-item nav-link" href={% url "all_samples" %} id="all-samples-nav">Samples Overview</a>
+              <a class="nav-item nav-link" href={% url "faqs" %} id="faqs-nav">FAQs</a>
+              <div class="vr bg-light"></div>
+              <a class="nav-item nav-link" href={% url "dashboard" %} id="dashboard-nav">Dashboard</a>
             </div>
             <div class="navbar-nav ms-auto">
               <div class="vr bg-light"></div>
@@ -75,6 +76,9 @@
         let selected = null;
         
         switch (window.location.pathname) {
+          case "/": 
+            selected = $("#home-nav");
+            break;
           case "/samples/": 
             selected = $("#all-samples-nav");
             break;
@@ -90,7 +94,7 @@
           case "/faqs/":
             selected = $("#faqs-nav");
             break;
-          case "/":
+          case "/sample_tracking/" ||  "/upload/":
             selected = $("#sample-tracking-nav");
             break;
         }
@@ -117,7 +121,8 @@
 
 
             <ul class="nav col-md-4 justify-content-end">
-              <li class="nav-item"><a href={% url "config" %} class="nav-link px-2 text-light">Home</a></li>
+              <li class="nav-item"><a href={% url "home" %} class="nav-link px-2 text-light">Home</a></li>
+              <li class="nav-item"><a href={% url "contact" %} class="nav-link px-2 text-light">Contact</a></li>
               <li class="nav-item"><a href={% url "imprint" %} class="nav-link px-2 text-light">Imprint</a></li>
             </ul>
           </div>    

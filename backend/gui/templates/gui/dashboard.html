@@ -15,47 +15,30 @@
 {% block content %}
 
 <div class="containerino">
+  <div id="main_form" class="form-containerino">
   
-  <div class="row">
-    <div class="col auto">
-      {% autoescape off %}
-      {{plot1}}
-      {% endautoescape %}
+  <h2> Dashboard <i class="bi bi-clipboard-data"></i>  </h2> 
+  <hr>
+
+  {% autoescape off %}
+  {{figure_dict.plot1}}
+  {% endautoescape %}
+
+
+  {% for plot in figure_list%}
+    <div class="row mt-5">
+      <div class="col-2"> </div>
+      <div class="col-8">
+        <h5> {{plot.heading}} </h5>
+        {% autoescape off %}
+        {{plot.plot}}
+        {% endautoescape %}
+      </div>
+      <div class="col-2"> </div>
     </div>
 
-    <div class="col auto">
-      {% autoescape off %}
-      {{plot2}}
-      {% endautoescape %}
-    </div>
-  </div>
-  
+  {% endfor %}
 
-  <div>
-    Hullo
-    <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
-
-  </div>
-  <div class="row">
-    <div class="col auto">
-  <form action={% url "dashboard" %} method="get" enctype="multipart/form-data"  id="dashboard-filter">
-    {% csrf_token %}
-
-    <div class="form-check">
-        <input class="form-check-input" type="radio" name="count_what" value="recruiting_site" id="flexRadioDefault1">
-        <label class="form-check-label" for="flexRadioDefault1">
-          Recruiter
-        </label>
-      </div>
-      <div class="form-check">
-        <input class="form-check-input" type="radio" name="count_what" value="tissue_type" id="flexRadioDefault2">
-        <label class="form-check-label" for="flexRadioDefault2">
-          Tisue Type
-        </label>
-      </div>
-      <button class="btn btn-primary"> Apply2 </button>
-    </form>
-  </div>
   </div>
 
 </div>
