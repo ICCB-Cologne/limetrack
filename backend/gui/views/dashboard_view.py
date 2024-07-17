@@ -55,7 +55,7 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
         fig = go.Figure(
             data=[go.Bar(x=list(counter_dict.keys()),
                          y=list(counter_dict.values()),
-                         marker_color="#142a62")])
+                         marker_color="#142a62", opacity=0.8)])
 
         fig.update_xaxes(type='category')
         fig.update_xaxes(categoryorder='total descending')
@@ -103,7 +103,8 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
         data["Count"].append(entity_counter[site][2])
 
     fig = px.bar(data, x="Site", y="Count", color="Entity", 
-                 color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"])
+                 color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"],
+                 opacity=0.8)
     fig.update_xaxes(type='category')
     fig.update_xaxes(categoryorder='total descending')
     return fig.to_html()
@@ -129,7 +130,7 @@ def sample_process_plot(samples: list[HistopathologicalSample]):
         else:
             data["number"][0] += 1
 
-    fig = px.pie(data, values='number', names='received at',
+    fig = px.pie(data, values='number', names='received at', opacity=0.8,
                  color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"])
     return fig.to_html
 
