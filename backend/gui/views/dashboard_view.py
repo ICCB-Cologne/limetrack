@@ -55,7 +55,7 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
         fig = go.Figure(
             data=[go.Bar(x=list(counter_dict.keys()),
                          y=list(counter_dict.values()),
-                         marker_color="rgba(25,42,98,255)")])
+                         marker_color="#142a62")])
 
         fig.update_xaxes(type='category')
         fig.update_xaxes(categoryorder='total descending')
@@ -77,8 +77,6 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
             field.name == "saturn3_sample_code"]
         for instance in samples
     ]
-
-    print(site_sample_pairs)
 
     entity_counter = {}
     for sample in site_sample_pairs:
@@ -104,12 +102,36 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
         data["Entity"].append("S3P")
         data["Count"].append(entity_counter[site][2])
 
-    print(entity_counter)
-
-    fig = px.bar(data, x="Site", y="Count", color="Entity", color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"])
+    fig = px.bar(data, x="Site", y="Count", color="Entity", 
+                 color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"])
     fig.update_xaxes(type='category')
     fig.update_xaxes(categoryorder='total descending')
     return fig.to_html()
+
+
+def sample_process_plot(samples: list[HistopathologicalSample]):
+    data = {"received at": ["none", "spl", "sclab"],
+            "number": [0, 0, 0]}
+
+    received_dates = [
+        [getattr(instance, field.name)
+            for field in instance._meta.fields
+            if field.name == "spl_received" or
+            field.name == "sclab_received"]
+        for instance in samples
+    ]
+
+    for dates in received_dates:
+        if dates[1]:
+            data["number"][2] += 1
+        elif dates[0]:
+            data["number"][1] += 1
+        else:
+            data["number"][0] += 1
+
+    fig = px.pie(data, values='number', names='received at',
+                 color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"])
+    return fig.to_html
 
 
 def map_plot(samples: list[HistopathologicalSample]):
@@ -145,9 +167,9 @@ def map_plot(samples: list[HistopathologicalSample]):
                             hover_data={"Samples": True,
                                         "lat": False,
                                         "lon": False},
-                            color_discrete_sequence=["blue"], zoom=5.5,
+                            color_discrete_sequence=["#142a62"], zoom=5.5,
                             center=dict(lat=51.19, lon=10.459),
-                            height=800)
+                            height=800, width=700)
 
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
@@ -182,6 +204,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
         figure_list.append({"heading": "Sample by entity and site",
                             "plot": count_samples_by_site_and_entity(samples)})
+
+        figure_list.append({"heading": "Sample Processing",
+                            "plot": sample_process_plot(samples)})
 
         context = {
             "user": request.user,  # user, not username because we
