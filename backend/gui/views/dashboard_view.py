@@ -8,6 +8,8 @@ from typing import Any
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
+from django.conf import settings
+from backend.gui.utils.colors import Saturn3Colors
 
 coordinates = {
     "Göttingen": (51.542674085238346, 9.913804090413405),
@@ -19,7 +21,10 @@ coordinates = {
     "Augsburg": (48.36831813866189, 10.900568819747098),
 }
 
-token = "pk.eyJ1IjoiamctaWJzbSIsImEiOiJjbHlxeDU0YWkwMHNnMnJzNzd0aGZtMng4In0.qnb1sMw30ZLEm4Le6EwISw"
+try:
+    token = settings.SETTINGS.MAPPLOT_TOKEN
+except AttributeError:
+    token = "None"
 
 
 def count_samples_by_category(samples: list[HistopathologicalSample]):
@@ -57,7 +62,8 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
         fig = go.Figure(
             data=[go.Bar(x=list(counter_dict.keys()),
                          y=list(counter_dict.values()),
-                         marker_color="#142a62", opacity=0.8)])
+                         marker_color=Saturn3Colors.DARK_BLUE_HEX,
+                         opacity=0.8)])
 
         fig.update_xaxes(type='category')
         fig.update_xaxes(categoryorder='total descending')
@@ -105,7 +111,9 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
         data["Count"].append(entity_counter[site][2])
 
     fig = px.bar(data, x="Site", y="Count", color="Entity",
-                 color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"],
+                 color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX,
+                                          Saturn3Colors.AQUA_HEX,
+                                          Saturn3Colors.KHAKI_HEX],
                  opacity=0.8)
     fig.update_xaxes(type='category')
     fig.update_xaxes(categoryorder='total descending')
@@ -133,7 +141,9 @@ def sample_process_plot(samples: list[HistopathologicalSample]):
             data["number"][0] += 1
 
     fig = px.pie(data, values='number', names='received at', opacity=0.8,
-                 color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"])
+                 color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX,
+                                          Saturn3Colors.AQUA_HEX,
+                                          Saturn3Colors.KHAKI_HEX])
     return fig.to_html
 
 
@@ -170,11 +180,17 @@ def map_plot(samples: list[HistopathologicalSample]):
                             hover_data={"Samples": True,
                                         "lat": False,
                                         "lon": False},
-                            color_discrete_sequence=["#142a62"], zoom=5.5,
+                            color_continuous_scale=Saturn3Colors.DARK_BLUE_HEX,
+                            zoom=5.5,
                             center=dict(lat=51.19, lon=10.459),
                             height=800, width=700)
 
-    fig.update_layout(mapbox_style="outdoors", mapbox_accesstoken=token)
+    if token != "None":
+        fig.update_layout(mapbox_style="outdoors",
+                          mapbox_accesstoken=token)
+    else:
+        fig.update_layout(mapbox_style="open-street-map")
+
     fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
     fig.update_layout(mapbox_bounds={"west": 3, "east": 18,
                                      "south": 47.1, "north": 55.2})

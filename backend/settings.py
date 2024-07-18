@@ -43,6 +43,7 @@ class Settings(BaseSettings):
     DJANGO_DEBUG: bool
     CSFR_COOKIE_SECURE: bool
     SESSION_COOKIE_SECURE: bool
+    MAPPLOT_TOKEN: str
 
 
 # Quick-start development settings - unsuitable for production
