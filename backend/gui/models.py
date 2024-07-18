@@ -13,7 +13,8 @@ from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   LB_ANALYTE_TYPES,
                                   LB_STATUS_CHOICES,
                                   SPATIAL_METHOD,
-                                  SPATIAL_STATUS)
+                                  SPATIAL_STATUS,
+                                  SCANALYSIS_CHOICES)
 
 CHARFIELD_MAXLEN = 200
 
@@ -174,7 +175,7 @@ class HistopathologicalSample(models.Model):
         max_length=CHARFIELD_MAXLEN,
         blank=True, null=True,
         choices=SPL_SEQUENCING_TYPES,
-        verbose_name="SPL Sequencing Type")
+        verbose_name="SPL Analysis Type")
 
     # scLab ###
     sclab_received = models.DateField(
@@ -194,10 +195,10 @@ class HistopathologicalSample(models.Model):
                                     blank=True, null=True,
                                     verbose_name="scLab Status",
                                     choices=SCLAB_STATUS_CHOICES)
-    sclab_analysis_type = models.CharField(max_length=CHARFIELD_MAXLEN,
+    sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True, null=True,
                                              verbose_name="scLab"
-                                                          " Analysis Type",
+                                                          " Sequencing Type",
                                              choices=SCLAB_SEQUENCING_TYPES)
     sclab_sorting = models.BooleanField(choices=CORRESPONDING_ORGANOID_CHOICES,
                                         blank=True, null=True,
@@ -331,6 +332,12 @@ class HistopathologicalSample(models.Model):
         blank=True,
         null=True,
         verbose_name="scATAC I2")
+
+    # scanalysis_status = models.CharField(
+    #     blank=True,
+    #     null=True,
+    #     verbose_name="scAnalysis status",
+    #     choices=SCANALYSIS_CHOICES)
 
     wgs_r1 = models.CharField(
         blank=True,

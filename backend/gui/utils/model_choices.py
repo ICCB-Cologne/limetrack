@@ -78,7 +78,8 @@ SPL_SEQUENCING_TYPES = [
     ("WGS", "WGS"),
     ("WGS/RNA", "WGS/RNA"),
     ("WES", "WES"),
-    ("WES/RNA", "WES/RNA")
+    ("WES/RNA", "WES/RNA"),
+    ("SNParray", "SNParray"),
 ]
 
 SCLAB_SEQUENCING_TYPES = [
@@ -167,4 +168,10 @@ SPATIAL_STATUS = [
     ("failed Xenium/Merscope", "failed Xenium/Merscope"),
     ("successful Xenium/Merscope", "successful Xenium/Merscope"),
 
+]
+
+SCANALYSIS_CHOICES = [
+    ("demultiplexed", "demultiplexed"),
+    ("demultiplexed + QC", "demultiplexed + QC"),
+    ("QC failed", "QC failed")
 ]

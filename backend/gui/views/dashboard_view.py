@@ -19,6 +19,8 @@ coordinates = {
     "Augsburg": (48.36831813866189, 10.900568819747098),
 }
 
+token = "pk.eyJ1IjoiamctaWJzbSIsImEiOiJjbHlxeDU0YWkwMHNnMnJzNzd0aGZtMng4In0.qnb1sMw30ZLEm4Le6EwISw"
+
 
 def count_samples_by_category(samples: list[HistopathologicalSample]):
 
@@ -102,7 +104,7 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
         data["Entity"].append("S3P")
         data["Count"].append(entity_counter[site][2])
 
-    fig = px.bar(data, x="Site", y="Count", color="Entity", 
+    fig = px.bar(data, x="Site", y="Count", color="Entity",
                  color_discrete_sequence=["#142a62", "#64cad3", "#e2e2cf"],
                  opacity=0.8)
     fig.update_xaxes(type='category')
@@ -172,7 +174,7 @@ def map_plot(samples: list[HistopathologicalSample]):
                             center=dict(lat=51.19, lon=10.459),
                             height=800, width=700)
 
-    fig.update_layout(mapbox_style="open-street-map")
+    fig.update_layout(mapbox_style="outdoors", mapbox_accesstoken=token)
     fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
     fig.update_layout(mapbox_bounds={"west": 3, "east": 18,
                                      "south": 47.1, "north": 55.2})
