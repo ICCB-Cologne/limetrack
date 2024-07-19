@@ -20,24 +20,31 @@
   <h2> Dashboard <i class="bi bi-clipboard-data"></i>  </h2> 
   <hr>
 
-  {% autoescape off %}
-  {{figure_dict.plot1}}
-  {% endautoescape %}
-
-
-  {% for plot in figure_list%}
-    <div class="row mt-5">
-      <div class="col-2"> </div>
-      <div class="col-8">
-        <h5> {{plot.heading}} </h5>
+  <div class="row mt-5">
+    <div class="col-1"> </div>
+    {% for figure in row1%}
+      <div class="col-5">
+        <h5> {{figure.heading}} </h5>
         {% autoescape off %}
-        {{plot.plot}}
+        {{figure.plot}}
         {% endautoescape %}
       </div>
-      <div class="col-2"> </div>
-    </div>
+    {% endfor %}
+    <div class="col-1"> </div>
+  </div>
 
-  {% endfor %}
+  <div class="row mt-5">
+    <div class="col-1"> </div>
+    {% for figure in row2%}
+      <div class="col-5">
+        <h5> {{figure.heading}} </h5>
+        {% autoescape off %}
+        {{figure.plot}}
+        {% endautoescape %}
+      </div>
+    {% endfor %}
+    <div class="col-1"> </div>
+  </div>
 
   </div>
 

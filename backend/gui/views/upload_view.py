@@ -10,12 +10,12 @@ from django.forms import ModelForm
 from django.urls import reverse
 from django.http import (
     HttpResponseRedirect,
-    HttpRequest, 
-    HttpResponse, 
+    HttpRequest,
+    HttpResponse,
 )
 from typing import Any
 from ..models import (
-    HistopathologicalSample, 
+    HistopathologicalSample,
     check_sat3_sample_code_with_none_analyte,
     check_sat3_sample_code,
 )
@@ -26,17 +26,14 @@ from .views import (
     no_sample_code_found
 )
 from ..forms import (
-    all_field_verbose_names, 
-    all_field_names, 
+    all_field_verbose_names,
+    all_field_names,
     odcf_fields,
     UploadForm,
     SearchForm
 )
 import pandas as pd
 import logging
-
-
-
 
 app_log = logging.getLogger("s3sample")
 
@@ -58,7 +55,16 @@ class UploadView(LoginRequiredMixin, TemplateView):
     def post(self, request: HttpRequest):
         upload_form = UploadForm(request.POST, request.FILES)
         if upload_form.is_valid():
-            return self.handle_file(request.FILES["file"], request)
+            try:
+                return self.handle_file(request.FILES["file"], request)
+            except TypeError:
+                messages.error(request, "File upload failed!",
+                               extra_tags="file")
+                msg = "Cannot read file. Please make sure your data \
+                    is separated by commas and all required fields are \
+                    filled out properly (i.e. correct data type etc)."
+                messages.error(request, msg, extra_tags="file")
+                return HttpResponseRedirect(request.path_info)
 
         messages.error(request, "File upload failed!", extra_tags="file")
         return HttpResponseRedirect(reverse("sample_tracking"))
@@ -71,10 +77,10 @@ class UploadView(LoginRequiredMixin, TemplateView):
         """
 
         try:
-            df = pd.read_csv(file, sep=",|;", keep_default_na=False)
+            df = pd.read_csv(file, sep=",", keep_default_na=False)
         except UnicodeDecodeError:
             messages.error(request, "File upload failed!", extra_tags="file")
-            msg = "Cannot read file. Please make sure it \
+            msg = "Cannot read file. Please make sure your file \
                    is a UTF-8 encoded CSV file."
             messages.error(request, msg, extra_tags="file")
             return HttpResponseRedirect(request.path_info)

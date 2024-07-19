@@ -533,3 +533,7 @@ footer {
     background-color: rgba(20,40,100,1.0);
     border: none;
 }
+
+.accordion-button {
+    font-family: Arial, Helvetica, sans-serif;
+}

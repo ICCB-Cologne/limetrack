@@ -34,7 +34,7 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
 
     plot_dicts = []
 
-    count_by = ["saturn3_sample_code", "recruiting_site"]
+    count_by = ["saturn3_sample_code"]
 
     for c in count_by:
         key_value_pairs = [
@@ -143,7 +143,9 @@ def sample_process_plot(samples: list[HistopathologicalSample]):
     fig = px.pie(data, values='number', names='received at', opacity=0.8,
                  color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX,
                                           Saturn3Colors.AQUA_HEX,
-                                          Saturn3Colors.KHAKI_HEX])
+                                          Saturn3Colors.KHAKI_HEX],
+                 height=800)
+    fig.update_layout(margin_b=150, margin_t=150, margin_l=150, margin_r=150)
     return fig.to_html
 
 
@@ -180,16 +182,17 @@ def map_plot(samples: list[HistopathologicalSample]):
                             hover_data={"Samples": True,
                                         "lat": False,
                                         "lon": False},
-                            color_continuous_scale=Saturn3Colors.DARK_BLUE_HEX,
-                            zoom=5.5,
+                            color_discrete_sequence=[Saturn3Colors.
+                                                     DARK_BLUE_HEX],
+                            zoom=5,
                             center=dict(lat=51.19, lon=10.459),
-                            height=800, width=700)
+                            height=800)
 
     if token != "None":
-        fig.update_layout(mapbox_style="outdoors",
+        fig.update_layout(mapbox_style="light",
                           mapbox_accesstoken=token)
     else:
-        fig.update_layout(mapbox_style="open-street-map")
+        fig.update_layout(mapbox_style="carto-positron")
 
     fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
     fig.update_layout(mapbox_bounds={"west": 3, "east": 18,
@@ -212,24 +215,25 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
         plot_dict = count_samples_by_category(samples)
 
-        figure_list = []
+        row1, row2 = [], []
         for dic in plot_dict:
 
-            figure_list.append(dic)
+            row1.append(dic)
 
         map_plot1 = map_plot(samples)
-        figure_list.append({"heading": "Samples by sites - Map",
-                            "plot": map_plot1})
+        row2.append({"heading": "Samples by sites - Map",
+                     "plot": map_plot1})
 
-        figure_list.append({"heading": "Sample by entity and site",
-                            "plot": count_samples_by_site_and_entity(samples)})
+        row1.append({"heading": "Samples by entity and site",
+                     "plot": count_samples_by_site_and_entity(samples)})
 
-        figure_list.append({"heading": "Sample Processing",
-                            "plot": sample_process_plot(samples)})
+        row2.append({"heading": "Sample Processing",
+                     "plot": sample_process_plot(samples)})
 
         context = {
             "user": request.user,  # user, not username because we
                                    # need to check the user's attributes
-            "figure_list": figure_list
+            "row1": row1,
+            "row2": row2
             }
         return render(request, template_name, context=context)
