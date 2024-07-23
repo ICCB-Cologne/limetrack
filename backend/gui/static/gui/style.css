@@ -534,6 +534,13 @@ footer {
     border: none;
 }
 
+.container-homepage {
+    background-color: rgba(20, 40, 100, 0.04);
+    padding: 20px;
+    border: 1px solid rgba(20, 40, 100, 0.1);
+    border-radius: 3px;
+}
+
 .accordion-button {
     font-family: Arial, Helvetica, sans-serif;
 }
