@@ -24,7 +24,7 @@ for field in all_fields:
 
 for field in all_fields:
     # exclude odcf
-    if field.name == "pools":
+    if field.name == "scrna_r1":
         break
     all_field_names.append(field.name)
 

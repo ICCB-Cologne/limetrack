@@ -61,8 +61,8 @@ def check_sat3_sample_code_with_none_analyte(string):
         raise ValidationError("No valid Saturn3 Sample Code")
 
 
-def check_six_figures(number: str):
-    return len(number) == 6
+def check_eleven_figures(number: str):
+    return len(number) == 11
 
 # Create your models here.
 
@@ -141,20 +141,17 @@ class HistopathologicalSample(models.Model):
     # TUM Pathology ###
 
     tissue_quality = models.IntegerField(
-        max_length=1,
         blank=True, null=True,
         validators=[one_to_five],
         verbose_name="Tissue Quality"
         )
 
     tumor_cell_content = models.CharField(
-        max_length=3,
         blank=True, null=True,
         validators=[zero_to_a_hundred],
         verbose_name="Tumor Cell Content")
 
     percent_avital_cells = models.IntegerField(
-        max_length=3,
         blank=True, null=True,
         validators=[zero_to_a_hundred],
         verbose_name="Percentage avital cells")
@@ -212,14 +209,14 @@ class HistopathologicalSample(models.Model):
         null=True,
         blank=True,
         max_length=6,
-        validators=[check_six_figures],
+        validators=[check_eleven_figures],
         verbose_name="RNA ILSE ID")
 
     atac_isle_id = models.CharField(
         null=True,
         blank=True,
         max_length=6,
-        validators=[check_six_figures],
+        validators=[check_eleven_figures],
         verbose_name="ATAC ILSE ID")
 
     sclab_comment = models.TextField(max_length=CHARFIELD_MAXLEN,
@@ -305,10 +302,6 @@ class HistopathologicalSample(models.Model):
 
     # Datapaths ###
 
-    pools = models.CharField(
-        blank=True,
-        null=True,
-        verbose_name="Pools")
     scrna_r1 = models.CharField(
         blank=True,
         null=True,
@@ -333,11 +326,11 @@ class HistopathologicalSample(models.Model):
         null=True,
         verbose_name="scATAC I2")
 
-    # scanalysis_status = models.CharField(
-    #     blank=True,
-    #     null=True,
-    #     verbose_name="scAnalysis status",
-    #     choices=SCANALYSIS_CHOICES)
+    sc_analysis_status = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="scAnalysis status",
+        choices=SCANALYSIS_CHOICES)
 
     wgs_r1 = models.CharField(
         blank=True,

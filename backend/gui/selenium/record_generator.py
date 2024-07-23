@@ -10,7 +10,8 @@ from backend.gui.utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                              LB_ANALYTE_TYPES,
                                              LB_STATUS_CHOICES,
                                              SPATIAL_METHOD,
-                                             SPATIAL_STATUS)
+                                             SPATIAL_STATUS,
+                                             SCANALYSIS_CHOICES)
 
 from backend.gui.utils.model_choices import (ENTITY, TISSUE_TYPE,
                                              STORAGE_FORMAT,
@@ -114,6 +115,10 @@ class RecordGenerator:
     @staticmethod
     def random_storage_format():
         return random.choice(STORAGE_FORMAT)[0]
+
+    @staticmethod
+    def random_scanalysis_choice():
+        return random.choice(SCANALYSIS_CHOICES)[0]
 
     @staticmethod
     def random_sample_code_analyte_type():
