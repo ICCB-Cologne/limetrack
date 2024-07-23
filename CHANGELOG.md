@@ -11,4 +11,5 @@
     - Added links with project ressources
 - *SPL Sequencing Type* renamed to *SPL Analysis Type*
 - *SNParray* added to sequencing type choices
+- *scAnalysis status* added to model
 ---
