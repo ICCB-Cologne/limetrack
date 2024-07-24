@@ -25,7 +25,7 @@
             <strong> How to open a CSV file in Excel? </strong>
           </button>
         </h2>
-        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <ol>
             <li> Open a new file in Excel. </li>
@@ -33,6 +33,23 @@
             <li> Click <i> Get External Data From Text</i>. </li>
             <li> Choose Text/CSV as data source. Search your system for the CSV file. Select it, click Import and then Continue. </li>
             <li> Now the data is displayed as a preview. Click on the Load button and a new table is created on your excel sheet. </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOneA" aria-expanded="false" aria-controls="collapseOneA">
+            <strong> How to change the seperator from ';' to ',' in Excel generated CSVs? </strong>
+          </button>
+        </h2>
+        <div id="collapseOneA" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <ol>
+            <li> Click <b>File</b> > <b>SaveAs</b> and select <b>CSV UTF-8</b></li>
+            <li> Open the saved file in a text editor of your choice (Notepad++, Notepad, VSCode, ...)</li> 
+            <li> Find and replace all semicolons (;) with commas and save.</li>
             </ol>
           </div>
         </div>
