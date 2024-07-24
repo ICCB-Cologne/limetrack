@@ -17,9 +17,9 @@ import pandas as pd
 # from django.urls import reverse
 
 from typing import Any
-import csv
 
 import logging
+import csv
 
 app_log = logging.getLogger("s3sample")
 
