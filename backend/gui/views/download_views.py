@@ -11,12 +11,13 @@ from django.http import (
     StreamingHttpResponse,
 )
 from django.views.generic import TemplateView
+from typing import Any, Generator
+from io import BytesIO
 
 import pandas as pd
 
 # from django.urls import reverse
 
-from typing import Any
 
 import logging
 import csv
@@ -66,31 +67,39 @@ class Echo:
 
 def csv_template_download_csv(request):
     pseudo_buffer = Echo()
+    filename = "saturn3samples_template.csv"
+    data = [all_field_verbose_names, example_sample]
     writer = csv.writer(pseudo_buffer)
 
-    data = [all_field_verbose_names, example_sample]
     return StreamingHttpResponse(
         (writer.writerow(row) for row in data),
         content_type="text/csv",
         headers={
             "Content-Disposition":
-            'attachment; filename="saturn3samples_template.csv"'},
+            f"attachment; filename={filename}"},
     )
 
 
 def csv_template_download_excel(request):
-    file_name = "saturn3samples_template.xlsx"
     data = [all_field_verbose_names, example_sample]
-    pd.DataFrame(data[1:], columns=all_field_verbose_names). \
-        to_excel(file_name,             index=False)
-    with open(file_name, "rb") as fh:
-        return StreamingHttpResponse(
-            (line for line in fh.readlines()),
-            content_type="application/vnd.ms-excel",
-            headers={
-                "Content-Disposition":
-                f"attachment; filename={file_name}"},
+    filename = "saturn3samples_template.xlsx"
+    generator: Generator | None = None
+    buffer = BytesIO()
+
+    with BytesIO() as buffer:
+        pd.DataFrame(data[1:], columns=all_field_verbose_names).to_excel(
+            buffer, index=False
         )
+        buffer.seek(0)
+        generator = (line for line in buffer.readlines())
+
+    return StreamingHttpResponse(
+        generator,
+        content_type="application/vnd.ms-excel",
+        headers={
+            "Content-Disposition":
+            f"attachment; filename={filename}"},
+    )
 
 
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
@@ -130,16 +139,22 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
             data.insert(0, headers)
 
             if file_type == "Excel":
+                response: Generator | None = None
                 file_name = "saturn3samples.xlsx"
-                pd.DataFrame(data[1:], columns=headers). \
-                    to_excel(file_name, index=False)
-                with open(file_name, 'rb') as fh:
+
+                with BytesIO() as buffer:
+                    pd.DataFrame(data[1:], columns=headers). \
+                        to_excel(buffer, index=False)
+                    buffer.seek(0)
                     response = StreamingHttpResponse(
-                            (line for line in fh.readlines()),
-                            content_type="application/vnd.ms-excel",
-                            headers={"Content-Disposition":
-                                     f"inline; filename={file_name}"})
-                    return response
+                        (line for line in buffer.readlines()),
+                        content_type="application/vnd.ms-excel",
+                        headers={
+                            "Content-Disposition": f"inline; filename={file_name}"
+                        },
+                    )
+
+                return response
 
             elif file_type == "CSV":
                 writer = csv.writer(pseudo_buffer,
