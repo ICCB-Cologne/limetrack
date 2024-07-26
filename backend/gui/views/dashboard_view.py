@@ -21,10 +21,7 @@ coordinates = {
     "Augsburg": (48.36831813866189, 10.900568819747098),
 }
 
-try:
-    token = settings.SETTINGS.MAPPLOT_TOKEN
-except AttributeError:
-    token = "None"
+token = settings.SETTINGS.MAPPLOT_TOKEN
 
 
 def count_samples_by_category(samples: list[HistopathologicalSample]):
@@ -188,7 +185,7 @@ def map_plot(samples: list[HistopathologicalSample]):
                             center=dict(lat=51.19, lon=10.459),
                             height=800)
 
-    if token != "None":
+    if not token:
         fig.update_layout(mapbox_style="light",
                           mapbox_accesstoken=token)
     else:

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from typing import Optional
 from pathlib import Path
 import os
 
@@ -43,7 +44,7 @@ class Settings(BaseSettings):
     DJANGO_DEBUG: bool
     CSFR_COOKIE_SECURE: bool
     SESSION_COOKIE_SECURE: bool
-    MAPPLOT_TOKEN: str
+    MAPPLOT_TOKEN: Optional[str] = None
 
 
 # Quick-start development settings - unsuitable for production

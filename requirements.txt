@@ -21,7 +21,6 @@ grpcio==1.59.0
 h11==0.14.0
 idna==3.7
 iniconfig==2.0.0
-libsass==0.23.0
 multidict==6.0.4
 numpy==1.26.2
 openpyxl==3.1.2
