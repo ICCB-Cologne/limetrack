@@ -62,7 +62,7 @@ def check_sat3_sample_code_with_none_analyte(string):
 
 
 def check_eleven_figures(number: str):
-    if len(number) != 11:
+    if len(number) != 11 and len(number) != 5:
         raise ValidationError("Value has to consist of exactly 11 characters")
 
 # Create your models here.

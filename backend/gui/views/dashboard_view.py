@@ -180,7 +180,7 @@ def map_plot(samples: list[HistopathologicalSample]):
                                         "lat": False,
                                         "lon": False},
                             color_discrete_sequence=[Saturn3Colors.
-                                                     DARK_BLUE_HEX],
+                                                     BLUE_GREEN_HEX],
                             zoom=5,
                             center=dict(lat=51.19, lon=10.459),
                             height=800)
