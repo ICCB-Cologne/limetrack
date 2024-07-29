@@ -74,12 +74,12 @@ class TestRootCreateRecordViaForm(BasicTestClass):
         self.driver.find_element(
             By.ID,
             "id_rna_isle_id").send_keys(
-                RecordGenerator.random_integer_from_0_to_100())
+                RecordGenerator.random_string_of_length(11))
 
         self.driver.find_element(
             By.ID,
             "id_atac_isle_id").send_keys(
-                RecordGenerator.random_integer_from_0_to_100())
+                RecordGenerator.random_string_of_length(11))
 
         self.driver.find_element(
             By.ID,

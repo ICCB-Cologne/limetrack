@@ -62,7 +62,8 @@ def check_sat3_sample_code_with_none_analyte(string):
 
 
 def check_eleven_figures(number: str):
-    return len(number) == 11
+    if len(number) != 11:
+        raise ValidationError("Value has to consist of exactly 11 characters")
 
 # Create your models here.
 
@@ -208,14 +209,14 @@ class HistopathologicalSample(models.Model):
     rna_isle_id = models.CharField(
         null=True,
         blank=True,
-        max_length=6,
+        max_length=11,
         validators=[check_eleven_figures],
         verbose_name="RNA ILSE ID")
 
     atac_isle_id = models.CharField(
         null=True,
         blank=True,
-        max_length=6,
+        max_length=11,
         validators=[check_eleven_figures],
         verbose_name="ATAC ILSE ID")
 
