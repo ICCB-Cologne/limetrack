@@ -185,7 +185,7 @@ def map_plot(samples: list[HistopathologicalSample]):
                             center=dict(lat=51.19, lon=10.459),
                             height=800)
 
-    if not token:
+    if token:
         fig.update_layout(mapbox_style="light",
                           mapbox_accesstoken=token)
     else:
