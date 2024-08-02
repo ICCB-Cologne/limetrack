@@ -61,7 +61,7 @@ lb_fields = ["saturn3_sample_code"] + \
         all_field_names.index("lb_status") + 1]
 
 odcf_fields = ["saturn3_sample_code"] + \
-    [field.name for field in all_fields[len(all_field_names):]]
+    [field.name for field in all_fields[len(all_field_names):-1]]
 
 field_dict = {
     "recruiter": recruiter_fields,
@@ -145,6 +145,10 @@ class SampleForm(ModelForm):
                         molecules larger than 200 bp [%]"}
                         ),
 
+            # widgets with additional features
+            "tissue_quality": forms.NumberInput(
+                attrs={'min':1,'max': 5,'type': 'number'}
+            ),
 
             # Datepicker widgets
             "died": DatePicker(
@@ -334,6 +338,7 @@ class SampleFormTUM(ModelForm):
         widget=forms.Select(
             attrs={"disabled": "true"},
             choices=GRADING))
+    
 
     # end of disabling required fields
 
@@ -341,6 +346,9 @@ class SampleFormTUM(ModelForm):
         model = HistopathologicalSample
         fields = all_field_names
         widgets = {
+                "tissue_quality": forms.NumberInput(
+                attrs={'min':1,'max': '5','type': 'number'}
+            ),
 
         } | disabled_spl_dict | disabled_sclab_dict \
             | disabled_spatial_dict | disabled_lb_dict

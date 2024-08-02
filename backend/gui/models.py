@@ -349,3 +349,7 @@ class HistopathologicalSample(models.Model):
     wgs_vcf = models.CharField(blank=True,
                                null=True,
                                verbose_name="WGS vcf")
+
+    # Timestamp ###
+
+    created = models.DateTimeField(null=True, blank=True, auto_now_add=True)

@@ -61,9 +61,12 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
                          y=list(counter_dict.values()),
                          marker_color=Saturn3Colors.DARK_BLUE_HEX,
                          opacity=0.8)])
+                         
 
         fig.update_xaxes(type='category')
         fig.update_xaxes(categoryorder='total descending')
+        fig.update_xaxes(title_text="Entity")
+        fig.update_yaxes(title_text="Number of Samples")
 
         plot = fig.to_html(full_html=False)
         plot_dicts.append({"plot": plot, "heading": headings[c]})
@@ -98,13 +101,13 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
 
     for site in entity_counter.keys():
         data["Site"].append(site)
-        data["Entity"].append("S3C")
+        data["Entity"].append("CRC")
         data["Count"].append(entity_counter[site][0])
         data["Site"].append(site)
-        data["Entity"].append("S3M")
+        data["Entity"].append("BC")
         data["Count"].append(entity_counter[site][1])
         data["Site"].append(site)
-        data["Entity"].append("S3P")
+        data["Entity"].append("PDAC")
         data["Count"].append(entity_counter[site][2])
 
     fig = px.bar(data, x="Site", y="Count", color="Entity",
