@@ -318,11 +318,9 @@ function selectAllFiltersForEntity(entity, dropdownID) {
     if (all_labels[i].innerText.slice(1, 4) == entityMap.get(entity)) {
       var input = all_labels[i].getElementsByTagName("input")[0];
       if (all_inputs[index].checked == false) {
-        input.checked = true;
-        input.click();
+        all_inputs[i].checked && all_inputs[i].click();
       } else {
-        input.checked = false;
-        input.click();
+        all_inputs[i].checked || all_inputs[i].click();
       }
     }
   }
@@ -333,11 +331,9 @@ function selectAllColumnFilters(dropdownID) {
   const all_inputs = dropdown.getElementsByTagName("input");
   for (let i = 1; i < all_inputs.length; i++) {
     if (all_inputs[0].checked == false) {
-      all_inputs[i].checked = true;
-      all_inputs[i].click();
+      all_inputs[i].checked && all_inputs[i].click();
     } else {
-      all_inputs[i].checked = false;
-      all_inputs[i].click();
+      all_inputs[i].checked || all_inputs[i].click();
     }
   }
 }
