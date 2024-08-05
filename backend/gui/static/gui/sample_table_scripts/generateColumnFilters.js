@@ -48,6 +48,12 @@ function getColumnValues(id, index) {
   selectAll.innerHTML += " Select all";
   dropdown.appendChild(selectAll);
 
+  if (dropdownID == "dropdown for SATURN3 Sample Code") {
+    addEntityFilters(dropdownID, " PDAC");
+    addEntityFilters(dropdownID, " CRC");
+    addEntityFilters(dropdownID, " BC");
+  }
+
   // append all values as checkbox inputs to the dropdown
   for (let value of column) {
     var item = document.createElement("label");
@@ -64,6 +70,23 @@ function getColumnValues(id, index) {
     item.innerHTML += value;
     dropdown.appendChild(item);
   }
+}
+
+function addEntityFilters(dropdownID, entity) {
+  var selectEntity = document.createElement("label");
+  selectEntity.className = "dropdown-item";
+  selectEntity.style = "z-index:10";
+  var selectEntityInput = document.createElement("input");
+  selectEntityInput.type = "checkbox";
+  selectEntityInput.setAttribute("checked", true);
+  selectEntity.addEventListener("input", function () {
+    selectAllFiltersForEntity(entity, dropdownID);
+  });
+
+  selectEntity.appendChild(selectEntityInput);
+  selectEntity.innerHTML += entity;
+  const dropdown = document.getElementById(dropdownID);
+  dropdown.appendChild(selectEntity);
 }
 
 function sortTable(index) {
@@ -267,9 +290,46 @@ function stripesAndCount() {
   numberSelected.innerHTML = newRowNumber - 1;
 }
 
+const entityMap = new Map([
+  [" PDAC", "S3P"],
+  [" CRC", "S3C"],
+  [" BC", "S3M"],
+]);
+
+function selectAllFiltersForEntity(entity, dropdownID) {
+  const dropdown = document.getElementById(dropdownID);
+
+  const all_inputs = dropdown.getElementsByTagName("input");
+  const all_labels = dropdown.getElementsByTagName("label");
+  var index;
+  switch (entity) {
+    case " PDAC":
+      index = 1;
+      break;
+    case " CRC":
+      index = 2;
+      break;
+    case " BC":
+      index = 3;
+      break;
+  }
+
+  for (let i = 1; i < all_labels.length; i++) {
+    if (all_labels[i].innerText.slice(1, 4) == entityMap.get(entity)) {
+      var input = all_labels[i].getElementsByTagName("input")[0];
+      if (all_inputs[index].checked == false) {
+        input.checked = true;
+        input.click();
+      } else {
+        input.checked = false;
+        input.click();
+      }
+    }
+  }
+}
+
 function selectAllColumnFilters(dropdownID) {
   const dropdown = document.getElementById(dropdownID);
-  console.log(dropdownID);
   const all_inputs = dropdown.getElementsByTagName("input");
   for (let i = 1; i < all_inputs.length; i++) {
     if (all_inputs[0].checked == false) {

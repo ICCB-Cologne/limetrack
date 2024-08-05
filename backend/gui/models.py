@@ -352,4 +352,4 @@ class HistopathologicalSample(models.Model):
 
     # Timestamp ###
 
-    created = models.DateTimeField(null=True, blank=True, auto_now_add=True)
+    created = models.DateTimeField(null=True, blank=True, auto_now_add=True, verbose_name="Created at")

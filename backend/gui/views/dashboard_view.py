@@ -21,6 +21,8 @@ coordinates = {
     "Augsburg": (48.36831813866189, 10.900568819747098),
 }
 
+entity_dict = {"S3M": "BC", "S3P": "PDAC", "S3C": "CRC"}
+
 token = settings.SETTINGS.MAPPLOT_TOKEN
 
 
@@ -47,12 +49,12 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
         for key in keys:
             if c == "saturn3_sample_code":
                 # count entities (S3C, S3P, S3M)
-                key = key[:3]
+                key = entity_dict[key[:3]]
             counter_dict.update({key: 0})
 
         for key_value in key_value_pairs:
             if c == "saturn3_sample_code":
-                counter_dict[key_value[0][:3]] += 1
+                counter_dict[entity_dict[key_value[0][:3]]] += 1
             else:
                 counter_dict[key_value[0]] += 1
 
@@ -182,8 +184,7 @@ def map_plot(samples: list[HistopathologicalSample]):
                             hover_data={"Samples": True,
                                         "lat": False,
                                         "lon": False},
-                            color_discrete_sequence=[Saturn3Colors.
-                                                     BLUE_GREEN_HEX],
+                            color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX],
                             zoom=5,
                             center=dict(lat=51.19, lon=10.459),
                             height=800)

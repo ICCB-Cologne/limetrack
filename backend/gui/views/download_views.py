@@ -82,12 +82,13 @@ def csv_template_download_csv(request):
 
 def csv_template_download_excel(request):
     data = [example_sample]
+    columns = all_field_verbose_names[:-1] # created at excluded
     filename = "saturn3samples_template.xlsx"
     generator: Generator | None = None
     buffer = BytesIO()
 
     with BytesIO() as buffer:
-        pd.DataFrame(data, columns=all_field_verbose_names[:-1]).to_excel(
+        pd.DataFrame(data, columns=columns).to_excel(
             buffer, index=False
         )
         buffer.seek(0)
