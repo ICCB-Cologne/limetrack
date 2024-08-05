@@ -147,7 +147,7 @@ class SampleForm(ModelForm):
 
             # widgets with additional features
             "tissue_quality": forms.NumberInput(
-                attrs={'min':1,'max': 5,'type': 'number'}
+                attrs={'min':0, 'max': 5, 'type': 'number'}
             ),
 
             # Datepicker widgets
@@ -347,7 +347,7 @@ class SampleFormTUM(ModelForm):
         fields = all_field_names
         widgets = {
                 "tissue_quality": forms.NumberInput(
-                attrs={'min':1,'max': '5','type': 'number'}
+                attrs={'min':0, 'max': 5, 'type': 'number'}
             ),
 
         } | disabled_spl_dict | disabled_sclab_dict \
