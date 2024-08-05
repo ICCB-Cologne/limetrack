@@ -27,7 +27,7 @@ Samples Overview
         </div>
         
 
-        
+        {% comment %} column filters {% endcomment %}
         <div class="row">
           <div class="col-auto"> 
             <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
@@ -51,7 +51,6 @@ Samples Overview
                 {% endfor %}
 
               </ul>
-            
           </div>
 
           {% comment %} Search bar {% endcomment %}
@@ -62,7 +61,7 @@ Samples Overview
                 
                 {% if samples.0 %}
                   {% for key, _ in samples.0 %}
-                    {% if key and key != "ID" %}
+                    {% if key and key != "ID" and key != "Created at" %}
                       <option value="{{ key }}" >{{ key }}</option>
                     {% endif %}
                   {% endfor %}
@@ -73,7 +72,9 @@ Samples Overview
           </div>
           {% comment %} End of search bar {% endcomment %}
 
+
     </form>
+        {% comment %} Download buttons {% endcomment %}
           <div class="col-auto">
             <div class="dropdown">
               <button id="download-dropdown-button" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -84,9 +85,9 @@ Samples Overview
                 <li><a id="download-dropdown-button-EXCEL" class="dropdown-item" href="#" onclick="downloadWithFilter('Excel')"> Download for Excel (.xlsx) </a></li>
               </ul>
             </div>
-            
-            
           </div>
+        {% comment %} Download buttons end {% endcomment %}
+
         </div>
         
       </div>
@@ -104,7 +105,7 @@ Samples Overview
             {% if samples.0 %}
             {% for key, _ in samples.0 %}
               {% if key %}
-                {% if key == "ID" %}
+                {% if key == "ID" or key == "Created at" %}
                 <th hidden class="bg-light">{{ key }}</th>
                 {% else %}
                 <th name="{{key}}" class="bg-light"> {{ key }}
@@ -126,7 +127,7 @@ Samples Overview
           <tr>
             {% for key, value in item %}
             {% if key %}
-                {% if key == "ID" %}
+                {% if key == "ID" or key == "Created at" %}
                 <td hidden >{{ value }}</td>
                 {% else %}
                   {% comment %} localize off is necessary to get the date format from the settings file {% endcomment %}

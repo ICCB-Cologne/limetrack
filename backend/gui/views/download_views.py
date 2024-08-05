@@ -68,7 +68,7 @@ class Echo:
 def csv_template_download_csv(request):
     pseudo_buffer = Echo()
     filename = "saturn3samples_template.csv"
-    data = [all_field_verbose_names, example_sample]
+    data = [all_field_verbose_names[:-1], example_sample]
     writer = csv.writer(pseudo_buffer)
 
     return StreamingHttpResponse(
@@ -81,13 +81,14 @@ def csv_template_download_csv(request):
 
 
 def csv_template_download_excel(request):
-    data = [all_field_verbose_names, example_sample]
+    data = [example_sample]
+    columns = all_field_verbose_names[:-1] # created at excluded
     filename = "saturn3samples_template.xlsx"
     generator: Generator | None = None
     buffer = BytesIO()
 
     with BytesIO() as buffer:
-        pd.DataFrame(data[1:], columns=all_field_verbose_names).to_excel(
+        pd.DataFrame(data, columns=columns).to_excel(
             buffer, index=False
         )
         buffer.seek(0)
