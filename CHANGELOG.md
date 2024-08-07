@@ -1,4 +1,8 @@
 ## Change Log
+---
+### 2024-08-07
+
+- __New:__ Entity filters for *SATURN3 Sample Code* column
 
 ---
 
