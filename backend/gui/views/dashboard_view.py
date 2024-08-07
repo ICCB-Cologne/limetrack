@@ -68,7 +68,7 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
         fig.update_xaxes(type='category')
         fig.update_xaxes(categoryorder='total descending')
         fig.update_xaxes(title_text="Entity")
-        fig.update_yaxes(title_text="Number of Samples")
+        fig.update_yaxes(title_text="Number of samples")
 
         plot = fig.to_html(full_html=False)
         plot_dicts.append({"plot": plot, "heading": headings[c]})
@@ -78,7 +78,7 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
 
 def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
 
-    data = {"Site": [], "Entity": [], "Count": []}
+    data = {"Site": [], "Entity": [], "Number of samples": []}
 
     site_sample_pairs = [
         [getattr(instance, field.name)
@@ -104,15 +104,15 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
     for site in entity_counter.keys():
         data["Site"].append(site)
         data["Entity"].append("CRC")
-        data["Count"].append(entity_counter[site][0])
+        data["Number of samples"].append(entity_counter[site][0])
         data["Site"].append(site)
         data["Entity"].append("BC")
-        data["Count"].append(entity_counter[site][1])
+        data["Number of samples"].append(entity_counter[site][1])
         data["Site"].append(site)
         data["Entity"].append("PDAC")
-        data["Count"].append(entity_counter[site][2])
+        data["Number of samples"].append(entity_counter[site][2])
 
-    fig = px.bar(data, x="Site", y="Count", color="Entity",
+    fig = px.bar(data, x="Site", y="Number of samples", color="Entity",
                  color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX,
                                           Saturn3Colors.AQUA_HEX,
                                           Saturn3Colors.KHAKI_HEX],
