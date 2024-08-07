@@ -48,6 +48,7 @@ function getColumnValues(id, index) {
   selectAll.innerHTML += " Select all";
   dropdown.appendChild(selectAll);
 
+  // append entity filters
   if (dropdownID == "dropdown for SATURN3 Sample Code") {
     addEntityFilters(dropdownID, " PDAC");
     addEntityFilters(dropdownID, " CRC");
@@ -159,6 +160,7 @@ function updateActiveFilters(id) {
   var dropdownFilter = document.getElementById(id);
   var inputs = dropdownFilter.getElementsByTagName("input");
   var checkedInputs = [];
+
   // get all unchecked inputs of the column
   for (let input of inputs) {
     if (input.checked == false) {
@@ -302,6 +304,7 @@ function selectAllFiltersForEntity(entity, dropdownID) {
   const all_inputs = dropdown.getElementsByTagName("input");
   const all_labels = dropdown.getElementsByTagName("label");
   var index;
+
   switch (entity) {
     case " PDAC":
       index = 1;
@@ -318,12 +321,15 @@ function selectAllFiltersForEntity(entity, dropdownID) {
     if (all_labels[i].innerText.slice(1, 4) == entityMap.get(entity)) {
       var input = all_labels[i].getElementsByTagName("input")[0];
       if (all_inputs[index].checked == false) {
-        all_inputs[i].checked && all_inputs[i].click();
+        all_inputs[i].checked = false;
+        // all_inputs[i].checked && all_inputs[i].click();
       } else {
-        all_inputs[i].checked || all_inputs[i].click();
+        all_inputs[i].checked = true;
+        // all_inputs[i].checked || all_inputs[i].click();
       }
     }
   }
+  filterColumn(dropdownID);
 }
 
 function selectAllColumnFilters(dropdownID) {
@@ -331,9 +337,12 @@ function selectAllColumnFilters(dropdownID) {
   const all_inputs = dropdown.getElementsByTagName("input");
   for (let i = 1; i < all_inputs.length; i++) {
     if (all_inputs[0].checked == false) {
-      all_inputs[i].checked && all_inputs[i].click();
+      all_inputs[i].checked = false;
+      // all_inputs[i].checked && all_inputs[i].click();
     } else {
-      all_inputs[i].checked || all_inputs[i].click();
+      all_inputs[i].checked = true;
+      // all_inputs[i].checked || all_inputs[i].click();
     }
   }
+  filterColumn(dropdownID);
 }
