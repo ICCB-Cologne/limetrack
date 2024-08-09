@@ -1,10 +1,16 @@
 ## Change Log
+
 ---
+### 2024-08-09
+
+- Added FAQ regarding the structure of the SATURN3 sample code
+
+---
+
 ### 2024-08-07
 
-- __New:__ Entity filters for *SATURN3 Sample Code* column
-- __Modification following user request:__ Possible input values for the field *Tissue Quality* (TUM group) were restricted to 0-5
-
+- **New:** Entity filters for *SATURN3 Sample Code* column
+- **Modification following user request:** Possible input values for the field *Tissue Quality* (TUM group) were restricted to 0-5
 ---
 
 ### 2024-07-23
