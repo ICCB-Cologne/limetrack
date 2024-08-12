@@ -1,6 +1,5 @@
-from django import forms
-from django.forms import ModelForm
 from .models import HistopathologicalSample, CHARFIELD_MAXLEN
+from .utils.fields import SampleCodeField, SampleCodeWidget
 from .utils.model_choices import (
                      SITE_CHOICES, SEX_CHOICES,
                      TISSUE_TYPES, INTERVENTION_TYPES,
@@ -8,14 +7,15 @@ from .utils.model_choices import (
                      CORRESPONDING_ORGANOID_CHOICES,
                      LOCALISATION_CHOICE)
 from tempus_dominus.widgets import DatePicker
+from django.forms import ModelForm
+from django import forms
 # documentation https://github.com/FlipperPA/django-tempus-dominus
-from .utils.fields import SampleCodeField, SampleCodeWidget
 
 
 all_field_verbose_names = []
 all_field_names = []
 
-# exclude primary key "ID" by indexing
+# exclude primary key "ID" by indexing -> not indexing, but slicing
 # for we dont want it displayed
 all_fields = HistopathologicalSample._meta.get_fields()[1:]
 
@@ -113,12 +113,13 @@ class SampleForm(ModelForm):
     required_css_class = "required"
     # error_css_class = "error-field"
 
-    saturn3_sample_code = SampleCodeField(required=True,
-                                          widget=SampleCodeWidget(),
-                                          label="SATURN3 Sample Code")
+    saturn3_sample_code = SampleCodeField(
+        required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code"
+    )
 
     class Meta:
         model = HistopathologicalSample
+        # exclude = ["id"]
         fields = all_field_names + odcf_fields
 
         widgets = {
@@ -372,7 +373,7 @@ class SampleFormSPL(SampleFormTUM):
                 options={"allowInputToggle": True},
                 attrs={"input_group": False}),
 
-        } | disabled_tum_dict | disabled_sclab_dict \
+        } | disabled_sclab_dict \
             | disabled_spatial_dict | disabled_lb_dict
 
 

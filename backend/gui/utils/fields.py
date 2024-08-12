@@ -132,7 +132,6 @@ class SampleCodeWidget(MultiWidget):
     """
 
     def __init__(self, widgets=None, attrs=None) -> None:
-
         widgets = [
             Select(
                 attrs={"data-toggle": "tooltip",
