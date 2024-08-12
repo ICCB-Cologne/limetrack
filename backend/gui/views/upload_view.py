@@ -1,5 +1,6 @@
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.uploadedfile import UploadedFile
 from django.utils.decorators import method_decorator
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
@@ -21,7 +22,8 @@ from ..models import (
 )
 
 from .views import (
-    check_existing_input_for_group, record_already_exists,
+    check_existing_input_for_group, 
+    record_already_exists,
     get_form, handle_form,
     no_sample_code_found
 )
@@ -32,6 +34,7 @@ from ..forms import (
     UploadForm,
     SearchForm
 )
+from pathlib import Path
 import pandas as pd
 import logging
 
@@ -70,14 +73,20 @@ class UploadView(LoginRequiredMixin, TemplateView):
         return HttpResponseRedirect(reverse("sample_tracking"))
 
     @staticmethod
-    def handle_file(file, request: HttpRequest):
+    def handle_file(file: UploadedFile, request: HttpRequest):
         """
         TODO: needs to be adapted to the different
         sorts of forms / group memberships
         """
+        file_ending = file.name.split(".")[-1]
 
         try:
-            df = pd.read_csv(file, sep=",", keep_default_na=False)
+            match file_ending:
+                case "xlsx":
+                    df = pd.read_excel(file, keep_default_na=False)
+                case _:
+                    df = pd.read_csv(file, sep=",", keep_default_na=False)
+                    
         except UnicodeDecodeError:
             messages.error(request, "File upload failed!", extra_tags="file")
             msg = "Cannot read file. Please make sure your file \

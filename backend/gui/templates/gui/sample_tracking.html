@@ -193,17 +193,17 @@ Sample Tracking
     {% csrf_token %}
     <div class="form-containerino">
       <div>
-        <h2> CSV File Upload <i class="bi bi-upload"></i> </h2>
+        <h2> File Upload <i class="bi bi-upload"></i> </h2>
         <hr>
       </div>
       <div class="custom-row">
-        <input id="{{ upload_form.file.auto_id }}" name="{{upload_form.file.name}}" type="file">
+        <input id="{{ upload_form.file.auto_id }}" name="{{upload_form.file.name}}" type="file" title="Upload excel or csv sample sheets">
         <button type="submit" class="btn btn-primary" id="end-of-page">
           Submit
         </button>
       </div>
       <div>
-        <label>Download CSV-Template:</label>
+        <label>Download Upload-Template:</label>
       </div>
       <div class="dropdown">
         <button id="download-dropdown-button" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
