@@ -495,7 +495,7 @@ class SampleFormDataPaths(SampleFormTUM):
 
 
 class UploadForm(forms.Form):
-    file = forms.FileField()
+    file = forms.FileField(help_text="Upload '.csv' or '.xlsx' files.", allow_empty_file=False)
 
 
 class GroupFilterForm(forms.Form):

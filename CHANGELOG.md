@@ -1,9 +1,12 @@
 ## Change Log
 
 ---
-### 2024-08-09
+### 2024-08-12
 
 - Added FAQ regarding the structure of the SATURN3 sample code
+- Files can now also be imported formatted in MS Excel
+- TUM can now edit fields formerly reserved for SPL
+- Security Updates
 
 ---
 
