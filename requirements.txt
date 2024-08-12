@@ -1,4 +1,4 @@
-aiohttp==3.9.5
+aiohttp==3.10.3
 aiosignal==1.3.1
 annotated-types==0.6.0
 asgiref==3.8.1
@@ -9,8 +9,6 @@ certifi==2024.7.4
 charset-normalizer==3.3.0
 Django==5.1
 django-appconf==1.0.6
-# django-compressor==4.4
-# django-libsass==0.9
 django-tempus-dominus==5.1.2.17
 et-xmlfile==1.1.0
 frozenlist==1.4.0
