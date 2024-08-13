@@ -21,25 +21,6 @@
 
       <div class="accordion-item">
         <h2 class="accordion-header">
-          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            <strong> How to open a CSV file in Excel? </strong>
-          </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
-            <ol>
-            <li> Open a new file in Excel. </li>
-            <li> Click on the <i>Data</i> tab. </li> 
-            <li> Click <i> Get External Data From Text</i>. </li>
-            <li> Choose Text/CSV as data source. Search your system for the CSV file. Select it, click Import and then Continue. </li>
-            <li> Now the data is displayed as a preview. Click on the Load button and a new table is created on your excel sheet. </li>
-            </ol>
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
             <strong> What's the best practice to upload new samples? </strong>
           </button>
@@ -47,14 +28,16 @@
         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <ol>
-              <li> Download the template file. </li>
-              <li> Fill out the fields according to your group membership. </li>
-              <li> Make sure that you meet the constraints on each field. <br>
+              <li>Open the <b>Sample Tracking</b> Tab.</li>
+              <li>Download the <b>template file</b></li>
+              <li>Fill out the fields according to your group membership.</li>
+              <li>
+                Make sure you meet the constraints on each field.<br>
                 Meaning: check the permitted inputs, format dates in the required style etc. <br>
                 You can take the example sample in the template as an reference on how the inputs are supposed to look.
               </li>
-              <li> Upload file in the upload section. </li>
-              </ol>
+              <li> Upload file in the upload section in the <b>Sample Tracking</b> Tab.</li>
+            </ol>
           </div>
         </div>
       </div>
@@ -68,13 +51,14 @@
         <div id="collapseTwoA" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <ol>
-              <li> Download the whole sample view table. </li>
-              <li> Fill out the fields according to your group membership. </li>
+              <li> Open the <b>Samples Overview</b> Tab</li>
+              <li> Use the <b>Filter columns button</b> on the left to filter for columns according to your group membership.</li>
+              <li>Download the filtered sample view table.</li>
               <li> Make sure that you meet the constraints on each field. <br>
                 Meaning: check the permitted inputs, format dates in the required style etc. <br>
                 You can take the example sample in the template as an reference on how the inputs are supposed to look.
               </li>
-              <li> Upload file in the upload section. </li>
+              <li> Upload file in the upload section in the <b>Sample Tracking</b> Tab</li>
               </ol>
           </div>
         </div>
@@ -82,46 +66,30 @@
 
       <div class="accordion-item">
         <h2 class="accordion-header">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-            <strong> Why is CSV UTF-8 encoding important? </strong>
-          </button>
-        </h2>
-        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-          <div class="accordion-body">
-            <p>
-              For the handling of special characters, uploaded files must be encoded in UTF-8. <br>
-              UTF-8 is the dominant standard encoding on the web. <br>
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div class="accordion-item">
-        <h2 class="accordion-header">
           <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-            <strong> How to use the filters over the samples table? </strong>
+            <strong> How to use the filters in the Samples Overview Tab?</strong>
           </button>
         </h2>
         <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
           <div class="accordion-body">
             <p>
               <u> Filter out columns:</u>
-              Click the "Filter Columns" button to open a dropdown where you can select the columns displayed in the table. <br>
+              Click the <b>Filter Columns button</b> to open a dropdown where you can select the columns displayed in the table. <br>
               You can filter out columns of the different groups involved in the SATURN3 Sample Tracking. <br>
               This makes it possible to e.g. only look at the data provided by the SPL. <br>
-              Click the "Apply" button to apply.
+              Click the <b>Apply button</b> to apply.
             </p>
             <p>
               <u> Search filter:</u>
-              Select a column you like to have searched. Then type in what you're searching for. <br>
-              The search is not case sensitive and gives out all occurrences of the input characters. <br>
-              Example: Searching for "S3C-" in the "SATURN3 Sample Code" column will present you all the records whose SATURN3 Sample Codes include "S3C-".
+              Use the <b>Search section</b> in the center above the table. Select a column you like to have searched. Then type in what you are searching for.
+              The search is not case sensitive and gives out all occurrences of the input characters.<br>
+              <b>Example:</b> Searching for "S3C-" in the "SATURN3 Sample Code" column will present you all the records whose SATURN3 Sample Codes include "S3C-".
             </p>
             <p>
               <u> Filter within individual columns:</u>
-              Click on the small arrow beside a column's heading. <br>
+              Click on the <b>small arrow</b> beside a column's heading. <br>
               Here you have the opportunity to select and deselect values you want or do not want to see in the table. <br>
-              Example: If you only want male patients to appear in the table, you can hide the female patients' records by unchecking the "f" in column "Sex".
+              <b>Example:</b> If you only want male patients to appear in the table, you can hide the female patients' records by unchecking the "f" in column "Sex".
             </p>
 
           </div>
