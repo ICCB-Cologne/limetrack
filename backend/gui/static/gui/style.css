@@ -124,12 +124,24 @@ ol {
 }
 
 .stripedtable td {
+    /* word-wrap: break-word;
+    overflow-wrap: break-word;  */
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 25em;
+    min-width: 7em;
     border: 1px solid #ffffff;
     text-align: left;
     padding: 8px;
     color: black;
 }
+
+/* 
+.stripedtable td:hover {
+    overflow: visible;
+} */
+
 
 /* Table inside confirmation modal */
 #modalBody tr {
