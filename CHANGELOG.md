@@ -1,6 +1,6 @@
 ## Change Log
 ---
-### 2024-08-13
+### 2024-09-05
 
 - **New:**
     - Sample table: Limited both visible string size and overall width of the columns.
