@@ -5,6 +5,7 @@
 - **New:**
     - Sample table: Limited both visible string size and overall width of the columns.
     - Input restriction for comment and note fields: Commas are prohibited now.
+    - Dashboard: Sample processing plot now also displays the percentage of samples in WGS.
 
 ---
 ### 2024-08-13

@@ -135,8 +135,6 @@ def sample_process_plot(samples: list[HistopathologicalSample]):
         for instance in samples
     ]
 
-    print(received_dates)
-
     for dates in received_dates:
         if dates[2] and dates[2] != "None":
             data["number"][3] += 1
@@ -195,6 +193,18 @@ def map_plot(samples: list[HistopathologicalSample]):
                             zoom=5,
                             center=dict(lat=51.19, lon=10.459),
                             height=800)
+
+
+    fig.add_trace(go.Scattermapbox(lat=[c[0] + 0.2  for c in list(coordinates.values())],
+                               lon=[c[1] for c in list(coordinates.values())],
+                               mode='text+markers',
+                               text=list(coordinates.keys()),
+                               textposition='middle center',
+                               textfont=dict(color=Saturn3Colors.DARK_BLUE_HEX),
+                               marker_size=1,
+                               marker_color=Saturn3Colors.DARK_BLUE_HEX,
+                               hoverinfo="skip"
+                                ))
 
     if token:
         fig.update_layout(mapbox_style="light",
