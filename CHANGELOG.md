@@ -1,9 +1,10 @@
 ## Change Log
 ---
-### 2024-09-05
+### 2024-09-06
 
 - **New:**
     - Sample table: Limited both visible string size and overall width of the columns.
+    - Input restriction for comment and note fields: Commas are prohibited now.
 
 ---
 ### 2024-08-13

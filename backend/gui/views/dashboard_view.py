@@ -135,6 +135,8 @@ def sample_process_plot(samples: list[HistopathologicalSample]):
         for instance in samples
     ]
 
+    print(received_dates)
+
     for dates in received_dates:
         if dates[2]:
             data["number"][3] += 1
