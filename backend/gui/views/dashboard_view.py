@@ -138,11 +138,11 @@ def sample_process_plot(samples: list[HistopathologicalSample]):
     print(received_dates)
 
     for dates in received_dates:
-        if dates[2]:
+        if dates[2] and dates[2] != "None":
             data["number"][3] += 1
-        elif dates[1]:
+        elif dates[1] and dates[1] != "None":
             data["number"][2] += 1
-        elif dates[0]:
+        elif dates[0] and dates[0] != "None":
             data["number"][1] += 1
         else:
             data["number"][0] += 1
