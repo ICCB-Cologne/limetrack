@@ -123,19 +123,22 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
 
 
 def sample_process_plot(samples: list[HistopathologicalSample]):
-    data = {"received at": ["none", "spl", "sclab"],
-            "number": [0, 0, 0]}
+    data = {"received at": ["none", "spl", "sclab", "wgs"],
+            "number": [0, 0, 0, 0]}
 
     received_dates = [
         [getattr(instance, field.name)
             for field in instance._meta.fields
             if field.name == "spl_received" or
-            field.name == "sclab_received"]
+            field.name == "sclab_received" or
+            field.name == "wgs_bam"]
         for instance in samples
     ]
 
     for dates in received_dates:
-        if dates[1]:
+        if dates[2]:
+            data["number"][3] += 1
+        elif dates[1]:
             data["number"][2] += 1
         elif dates[0]:
             data["number"][1] += 1
@@ -145,7 +148,9 @@ def sample_process_plot(samples: list[HistopathologicalSample]):
     fig = px.pie(data, values='number', names='received at', opacity=0.8,
                  color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX,
                                           Saturn3Colors.AQUA_HEX,
-                                          Saturn3Colors.KHAKI_HEX],
+                                          Saturn3Colors.KHAKI_HEX,
+                                          Saturn3Colors.BLUE_GREEN_HEX
+                                          ],
                  height=800)
     fig.update_layout(margin_b=150, margin_t=150, margin_l=150, margin_r=150)
     return fig.to_html

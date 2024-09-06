@@ -64,6 +64,10 @@ def check_sat3_sample_code_with_none_analyte(string):
 def check_eleven_figures(number: str):
     if len(number) != 11 and len(number) != 5:
         raise ValidationError("Value has to consist of exactly 5 or 11 characters")
+    
+def no_commas_allowed(comment: str):
+    if "," in comment:
+        raise ValidationError("Commas are not permitted.")
 
 # Create your models here.
 
@@ -116,7 +120,8 @@ class HistopathologicalSample(models.Model):
     note = models.TextField(
         max_length=350,
         verbose_name="Note", blank=True,
-        null=True)
+        null=True,
+        validators=[no_commas_allowed])
 
     sampling_date = models.DateField(verbose_name="Sampling Date")
     tissue_type = models.CharField(
@@ -159,7 +164,8 @@ class HistopathologicalSample(models.Model):
 
     comment_tumor_cell_content = models.TextField(
         blank=True, null=True,
-        verbose_name="Comment tumor cell content")
+        verbose_name="Comment tumor cell content",
+        validators=[no_commas_allowed])
 
     # SPL ###
     spl_received = models.DateField(
@@ -223,7 +229,8 @@ class HistopathologicalSample(models.Model):
     sclab_comment = models.TextField(max_length=CHARFIELD_MAXLEN,
                                      blank=True,
                                      null=True,
-                                     verbose_name="scLab Comment"
+                                     verbose_name="scLab Comment",
+                                     validators=[no_commas_allowed]
                                      )
 
     # Spatial ###
@@ -272,7 +279,8 @@ class HistopathologicalSample(models.Model):
                               validators=[zero_to_a_hundred])
 
     spatial_comment = models.TextField(blank=True, null=True,
-                                       verbose_name="Spatial Comment")
+                                       verbose_name="Spatial Comment",
+                                       validators=[no_commas_allowed])
 
     # LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,

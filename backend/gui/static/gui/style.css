@@ -137,10 +137,10 @@ ol {
     color: black;
 }
 
-/* 
+ 
 .stripedtable td:hover {
-    overflow: visible;
-} */
+    text-overflow: clip;
+}
 
 
 /* Table inside confirmation modal */
