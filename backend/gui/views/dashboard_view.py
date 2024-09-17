@@ -151,8 +151,6 @@ def sample_process_plot(samples: QuerySet[HistopathologicalSample, Histopatholog
         for instance in samples
     ]
 
-    print(received_dates)
-
     for dates in received_dates:
         if dates[2] and dates[2] != "None":
             data["number"][3] += 1
