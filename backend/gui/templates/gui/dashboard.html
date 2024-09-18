@@ -46,6 +46,20 @@
     <div class="col-1"> </div>
   </div>
 
+
+  <div class="row mt-5">
+    <div class="col-1"> </div>
+    {% for figure in row3%}
+      <div class="col-5">
+        <h5> {{figure.heading}} </h5>
+        {% autoescape off %}
+        {{figure.plot}}
+        {% endautoescape %}
+      </div>
+    {% endfor %}
+    <div class="col-1"> </div>
+  </div>
+
   </div>
 
 </div>
