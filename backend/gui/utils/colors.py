@@ -7,9 +7,9 @@ class Saturn3Colors:
     BLUE_GREEN_HEX = "#47b384"
     GREY_HEX = "#7a8081"
 
-    BLUE_RGB = "rgb(20,42,98)"
+    DARK_BLUE_RGB = "rgb(20,42,98)"
     KHAKI_RGB = "rgb(226,226,207)"
     AQUA_RGB = "rgb(100,202,211)"
-    LIGHT_GREEN_HEX = "rgb(202,211,5)"
-    BLUE_GREEN_HEX = "rgb(71,179,132)"
-    GREY_HEX = "rgb(122,128,129)"
+    LIGHT_GREEN_RGB = "rgb(202,211,5)"
+    BLUE_GREEN_RGB = "rgb(71,179,132)"
+    GREY_RGB = "rgb(122,128,129)"

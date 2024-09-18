@@ -184,15 +184,15 @@ def map_plot(samples: list[HistopathologicalSample]):
 
     df = pd.DataFrame(data=data)
 
-    fig = px.scatter_mapbox(df, lat="lat", lon="lon", size="Samples",
-                            hover_name="site",
-                            hover_data={"Samples": True,
-                                        "lat": False,
-                                        "lon": False},
-                            color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX],
-                            zoom=5,
-                            center=dict(lat=51.19, lon=10.459),
-                            height=800)
+    # fig = px.scatter_mapbox(df, lat="lat", lon="lon", size="Samples",
+    #                         hover_name="site",
+    #                         hover_data={"Samples": True,
+    #                                     "lat": False,
+    #                                     "lon": False},
+    #                         color_discrete_sequence=[Saturn3Colors.BLUE_GREEN_HEX],
+    #                         zoom=5,
+    #                         center=dict(lat=51.19, lon=10.459),
+    #                         height=800)
     
     fig1 = px.scatter_geo(
         df,
@@ -215,10 +215,9 @@ def map_plot(samples: list[HistopathologicalSample]):
         locations = ['Germany'],
         z = [0],
         hoverinfo="skip",
-        colorscale = [[0, "#ccd2ff"], [1, "#ccd2ff"]],
+        colorscale = [[0, "rgba(71, 179, 132, 0.5)"], [1, "rgba(71, 179, 132, 0.5)"]],
         autocolorscale = False,
         showscale = False,
-        
     ))
 
     # fig1 = go.Figure(data=go.Scattergeo(
@@ -242,6 +241,9 @@ def map_plot(samples: list[HistopathologicalSample]):
             lonaxis_range= [5.6, 15.4 ],
             lataxis_range= [47.3, 55.25],
             landcolor = "rgb(229, 229, 229)",
+            framecolor = "rgb(0, 0, 0)",
+            # showocean = True,
+            # oceancolor  = "#96ccff",
         ),
         margin={"r": 20, "t": 20, "l": 20, "b": 20}
     )
@@ -259,16 +261,17 @@ def map_plot(samples: list[HistopathologicalSample]):
     #                             ))
 
 
-    if token:
-        fig.update_layout(mapbox_style="light",
-                          mapbox_accesstoken=token)
-    else:
-        fig.update_layout(mapbox_style="carto-positron")
+    # if token:
+    #     fig.update_layout(mapbox_style="light",
+    #                       mapbox_accesstoken=token)
+    # else:
+    #     fig.update_layout(mapbox_style="carto-positron")
 
-    fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
-    fig.update_layout(mapbox_bounds={"west": 3, "east": 18,
-                                     "south": 47.1, "north": 55.2})
-    return fig.to_html(full_html=False), fig1.to_html(full_html=False)
+    # fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
+    # fig.update_layout(mapbox_bounds={"west": 3, "east": 18,
+    #                                  "south": 47.1, "north": 55.2})
+
+    return fig1.to_html(full_html=False) #, fig.to_html(full_html=False)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -291,12 +294,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
             row1.append(dic)
 
-        map_plot1, map_plot2 = map_plot(samples)
+        map_plot1 = map_plot(samples)
         row2.append({"heading": "Samples by sites - Map",
                      "plot": map_plot1})
         
-        row3.append({"heading": "Samples by sites - Map1",
-                     "plot": map_plot2})
+        # row3.append({"heading": "Samples by sites - Map1",
+        #              "plot": map_plot2})
 
         row1.append({"heading": "Samples by entity and site",
                      "plot": count_samples_by_site_and_entity(samples)})
@@ -309,6 +312,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                                    # need to check the user's attributes
             "row1": row1,
             "row2": row2,
-            "row3": row3
+            #"row3": row3
             }
         return render(request, template_name, context=context)
