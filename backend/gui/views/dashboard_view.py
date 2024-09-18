@@ -202,30 +202,94 @@ def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]
 
     df = pd.DataFrame(data=data)
 
-    fig = px.scatter_mapbox(
+    # fig = px.scatter_mapbox(df, lat="lat", lon="lon", size="Samples",
+    #                         hover_name="site",
+    #                         hover_data={"Samples": True,
+    #                                     "lat": False,
+    #                                     "lon": False},
+    #                         color_discrete_sequence=[Saturn3Colors.BLUE_GREEN_HEX],
+    #                         zoom=5,
+    #                         center=dict(lat=51.19, lon=10.459),
+    #                         height=800)
+    
+    fig1 = px.scatter_geo(
         df,
-        lat="lat",
-        lon="lon",
-        size="Samples",
+        lat="lat", lon="lon", size="Samples",
         hover_name="site",
-        hover_data={"Samples": True, "lat": False, "lon": False},
+        hover_data={"Samples": True,
+                    "lat": False,
+                    "lon": False},
+        text="site",
         color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX],
-        zoom=5,
-        center=dict(lat=51.19, lon=10.459),
+        projection="mercator"
+    )
+
+    fig1.update_traces(
+        textposition="top center",
+        mode='markers+text')
+    
+    fig1.add_trace(go.Choropleth(
+        locationmode = 'country names',
+        locations = ['Germany'],
+        z = [0],
+        hoverinfo="skip",
+        colorscale = [[0, "rgba(71, 179, 132, 0.5)"], [1, "rgba(71, 179, 132, 0.5)"]],
+        autocolorscale = False,
+        showscale = False,
+    ))
+
+    # fig1 = go.Figure(data=go.Scattergeo(
+    #     lon = df["lon"],
+    #     lat = df["lat"],
+    #     mode = "markers",
+    #     #hover_name=df["site"],
+    #     hovertext={"Samples": True,
+    #                 "lat": False,
+    #                 "lon": False},
+    #     marker= dict(size = df["Samples"] * 5),
+    #     ))
+
+    
+    fig1.update_layout(
+        geo_scope='europe',
         height=800,
+        geo=dict(
+            scope = 'europe',
+            resolution = 50,
+            lonaxis_range= [5.6, 15.4 ],
+            lataxis_range= [47.3, 55.25],
+            landcolor = "rgb(229, 229, 229)",
+            framecolor = "rgb(0, 0, 0)",
+            # showocean = True,
+            # oceancolor  = "#96ccff",
+        ),
+        margin={"r": 20, "t": 20, "l": 20, "b": 20}
     )
 
-    if token:
-        fig.update_layout(mapbox_style="light", mapbox_accesstoken=token)
-    else:
-        fig.update_layout(mapbox_style="carto-positron")
+    # fig.add_trace(go.Scattermapbox(lat=[c[0] + 0.2  for c in list(coordinates.values())],
+    #                            lon=[c[1] for c in list(coordinates.values())],
+    #                            mode='text+markers',
+    #                            text=list(coordinates.keys()),
+    #                            textposition='middle center',
+    #                            textfont=dict(color=Saturn3Colors.DARK_BLUE_HEX),
+    #                            marker_size=1,
+    #                            marker_color=Saturn3Colors.DARK_BLUE_HEX,
+    #                            hoverinfo="skip",
+    #                            showlegend=False
+    #                             ))
 
-    fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
-    fig.update_layout(
-        mapbox_bounds={"west": 3, "east": 18, "south": 47.1, "north": 55.2}
-    )
 
-    return fig.to_html(full_html=False)
+    # if token:
+    #     fig.update_layout(mapbox_style="light",
+    #                       mapbox_accesstoken=token)
+    # else:
+    #     fig.update_layout(mapbox_style="carto-positron")
+
+    # fig.update_layout(margin={"r": 20, "t": 20, "l": 20, "b": 20})
+    # fig.update_layout(mapbox_bounds={"west": 3, "east": 18,
+    #                                  "south": 47.1, "north": 55.2})
+
+    return fig1.to_html(full_html=False) #, fig.to_html(full_html=False)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -235,13 +299,20 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         samples = HistopathologicalSample.objects.all()
         plot_dict = count_samples_by_category(samples)
 
-        row1, row2 = [], []
+        row1, row2, row3 = [], [], []
         for dic in plot_dict:
 
             row1.append(dic)
 
         map_plot1 = map_plot(samples)
-        row2.append({"heading": "Samples by sites - Map", "plot": map_plot1})
+
+
+        row2.append({"heading": "Samples by sites - Map",
+                     "plot": map_plot1})
+        
+        # row3.append({"heading": "Samples by sites - Map1",
+        #              "plot": map_plot2})
+
 
         row1.append(
             {
@@ -259,5 +330,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             # need to check the user's attributes
             "row1": row1,
             "row2": row2,
-        }
+            #"row3": row3
+            }
+
         return render(request, template_name, context=context)
