@@ -5,6 +5,7 @@ from django.utils.decorators import method_decorator
 from django.core.exceptions import ValidationError
 from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
+from ...settings import FILE_TRACEBACK_DIR
 from django.shortcuts import render
 from django.contrib import messages
 from django.forms import ModelForm
@@ -35,7 +36,9 @@ from ..forms import (
     SearchForm
 )
 from pathlib import Path
+from time import time
 import pandas as pd
+from os import path
 import logging
 
 app_log = logging.getLogger("s3sample")
@@ -71,9 +74,25 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
         messages.error(request, "File upload failed!", extra_tags="file")
         return HttpResponseRedirect(reverse("sample_tracking"))
+    
+    def save_file(self, file: pd.DataFrame, request: HttpRequest):
+        storage_dir = Path(FILE_TRACEBACK_DIR)
+        username: str = request.user.username # type: ignore
 
-    @staticmethod
-    def handle_file(file: UploadedFile, request: HttpRequest):
+        if not storage_dir.exists():
+            storage_dir.mkdir()
+
+        filename = f"{username}_{int(time())}.upload"
+        filepath = storage_dir / filename
+        counter = 0
+
+        while filepath.exists():
+            filename = f"{filename}.{counter}"
+            filepath = storage_dir / filename
+
+        file.to_csv(filepath)
+
+    def handle_file(self, file: UploadedFile, request: HttpRequest):
         """
         TODO: needs to be adapted to the different
         sorts of forms / group memberships
@@ -86,7 +105,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     df = pd.read_excel(file, keep_default_na=False)
                 case _:
                     df = pd.read_csv(file, sep=",", keep_default_na=False)
-                    
+
         except UnicodeDecodeError:
             messages.error(request, "File upload failed!", extra_tags="file")
             msg = "Cannot read file. Please make sure your file \
@@ -94,6 +113,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
             messages.error(request, msg, extra_tags="file")
             return HttpResponseRedirect(request.path_info)
 
+        self.save_file(df, request)
+        
         first_error = True
         valid_forms: list[ModelForm] = []
         row_number = 1

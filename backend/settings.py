@@ -245,3 +245,5 @@ MARKDOWNIFY = {
         ]
     }
 }
+
+FILE_TRACEBACK_DIR = "/tmp"

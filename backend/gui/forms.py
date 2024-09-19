@@ -6,7 +6,7 @@ from .utils.model_choices import (
                      GRADING,
                      CORRESPONDING_ORGANOID_CHOICES,
                      LOCALISATION_CHOICE)
-from tempus_dominus.widgets import DatePicker
+from tempus_dominus.widgets import DatePicker #type: ignore
 from django.forms import ModelForm
 from django import forms
 # documentation https://github.com/FlipperPA/django-tempus-dominus
