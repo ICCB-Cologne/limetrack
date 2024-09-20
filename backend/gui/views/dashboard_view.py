@@ -233,9 +233,9 @@ def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]
         locations = ['Germany'],
         z = [0],
         hoverinfo="skip",
-        colorscale = [[0, "rgba(71, 179, 132, 0.5)"], [1, "rgba(71, 179, 132, 0.5)"]],
+        colorscale = [[0, "rgba(20, 42, 98, 0.3)"], [1, "rgba(20, 42, 98, 0.3)"]],
         autocolorscale = False,
-        showscale = False,
+        showscale = False
     ))
 
     # fig1 = go.Figure(data=go.Scattergeo(
@@ -260,8 +260,12 @@ def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]
             lataxis_range= [47.3, 55.25],
             landcolor = "rgb(229, 229, 229)",
             framecolor = "rgb(0, 0, 0)",
-            # showocean = True,
-            # oceancolor  = "#96ccff",
+            framewidth= 10,
+            showframe = True,
+            showlakes = False,
+            showocean = True,
+            oceancolor  = "rgba(220, 236, 247, 0.5)",
+            showrivers = False,
         ),
         margin={"r": 20, "t": 20, "l": 20, "b": 20}
     )
