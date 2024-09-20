@@ -1,15 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import (
-    HttpRequest, HttpResponse)
-from django.views.generic import TemplateView
-from django.shortcuts import render
-from ..models import HistopathologicalSample
-from typing import Any
-import plotly.graph_objects as go
-import plotly.express as px
-import pandas as pd
-from django.conf import settings
 from backend.gui.utils.colors import Saturn3Colors
+from django.http import HttpRequest, HttpResponse
+from django.views.generic import TemplateView
+from ..models import HistopathologicalSample
+from django.db.models import QuerySet
+from django.shortcuts import render
+import plotly.graph_objects as go                               # type: ignore
+from django.conf import settings
+import plotly.express as px                                     # type: ignore
+from typing import Any
+import pandas as pd
 
 coordinates = {
     "Göttingen": (51.542674085238346, 9.913804090413405),
@@ -26,20 +26,21 @@ entity_dict = {"S3M": "BC", "S3P": "PDAC", "S3C": "CRC"}
 token = settings.SETTINGS.MAPPLOT_TOKEN
 
 
-def count_samples_by_category(samples: list[HistopathologicalSample]):
-
-    headings = {"recruiting_site": "Samples by recruiting site",
-                "saturn3_sample_code": "Samples by entity - total"}
-
-    plot_dicts = []
-
+def count_samples_by_category(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
+    headings = {
+        "recruiting_site": "Samples by recruiting site",
+        "saturn3_sample_code": "Samples by entity - total",
+    }
+    plot_dicts: list[dict[str, str | dict[str, str]]] = []
     count_by = ["saturn3_sample_code"]
 
     for c in count_by:
         key_value_pairs = [
-            [getattr(instance, field.name)
+            [
+                getattr(instance, field.name)
                 for field in instance._meta.fields
-                if field.name == c]
+                if field.name == c
+            ]
             for instance in samples
         ]
         keys = [site[0] for site in key_value_pairs]
@@ -59,41 +60,47 @@ def count_samples_by_category(samples: list[HistopathologicalSample]):
                 counter_dict[key_value[0]] += 1
 
         fig = go.Figure(
-            data=[go.Bar(x=list(counter_dict.keys()),
-                         y=list(counter_dict.values()),
-                         marker_color=Saturn3Colors.DARK_BLUE_HEX,
-                         opacity=0.8)])
-                         
+            data=[
+                go.Bar(
+                    x=list(counter_dict.keys()),
+                    y=list(counter_dict.values()),
+                    marker_color=Saturn3Colors.DARK_BLUE_HEX,
+                    opacity=0.8,
+                )
+            ]
+        )
 
-        fig.update_xaxes(type='category')
-        fig.update_xaxes(categoryorder='total descending')
+        fig.update_xaxes(type="category")
+        fig.update_xaxes(categoryorder="total descending")
         fig.update_xaxes(title_text="Entity")
         fig.update_yaxes(title_text="Number of samples")
 
-        plot = fig.to_html(full_html=False)
+        plot: str = fig.to_html(full_html=False)
         plot_dicts.append({"plot": plot, "heading": headings[c]})
 
     return plot_dicts
 
 
-def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
-
-    data = {"Site": [], "Entity": [], "Number of samples": []}
-
+def count_samples_by_site_and_entity(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
+    data: dict[str, list] = {"Site": [], "Entity": [], "Number of samples": []}
     site_sample_pairs = [
-        [getattr(instance, field.name)
+        [
+            getattr(instance, field.name)
             for field in instance._meta.fields
-            if field.name == "recruiting_site" or
-            field.name == "saturn3_sample_code"]
+            if field.name == "recruiting_site" or field.name == "saturn3_sample_code"
+        ]
         for instance in samples
     ]
+    entity_counter: dict[str, list[int]] = {}
 
-    entity_counter = {}
     for sample in site_sample_pairs:
         site = sample[0]
+
         if site not in entity_counter:
             entity_counter.update({sample[0]: [0, 0, 0]})
+
         entity = sample[1][0:3]
+
         if entity == "S3C":
             entity_counter[site][0] += 1
         elif entity == "S3M":
@@ -112,22 +119,31 @@ def count_samples_by_site_and_entity(samples: list[HistopathologicalSample]):
         data["Entity"].append("PDAC")
         data["Number of samples"].append(entity_counter[site][2])
 
-    fig = px.bar(data, x="Site", y="Number of samples", color="Entity",
-                 color_discrete_sequence=[Saturn3Colors.DARK_BLUE_HEX,
-                                          Saturn3Colors.AQUA_HEX,
-                                          Saturn3Colors.KHAKI_HEX],
-                 opacity=0.8)
-    fig.update_xaxes(type='category')
-    fig.update_xaxes(categoryorder='total descending')
+    fig = px.bar(
+        data,
+        x="Site",
+        y="Number of samples",
+        color="Entity",
+        color_discrete_sequence=[
+            Saturn3Colors.DARK_BLUE_HEX,
+            Saturn3Colors.AQUA_HEX,
+            Saturn3Colors.KHAKI_HEX,
+        ],
+        opacity=0.8,
+    )
+    fig.update_xaxes(type="category")
+    fig.update_xaxes(categoryorder="total descending")
+
     return fig.to_html()
 
 
-def sample_process_plot(samples: list[HistopathologicalSample]):
-    data = {"received at": ["none", "spl", "sclab", "wgs"],
+def sample_process_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
+    data: dict[str, list] = {"received at": ["none", "spl", "sclab", "wgs"],
             "number": [0, 0, 0, 0]}
 
     received_dates = [
-        [getattr(instance, field.name)
+        [
+            getattr(instance, field.name)
             for field in instance._meta.fields
             if field.name == "spl_received" or
             field.name == "sclab_received" or
@@ -153,19 +169,21 @@ def sample_process_plot(samples: list[HistopathologicalSample]):
                                           ],
                  height=800)
     fig.update_layout(margin_b=150, margin_t=150, margin_l=150, margin_r=150)
+
     return fig.to_html
 
 
-def map_plot(samples: list[HistopathologicalSample]):
-
-    data = {"lat": [], "lon": [], "Samples": [], "site": []}
+def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
+    data: dict[str, list] = {"lat": [], "lon": [], "Samples": [], "site": []}
 
     key_value_pairs = [
-            [getattr(instance, field.name)
-                for field in instance._meta.fields
-                if field.name == "recruiting_site"]
-            for instance in samples
+        [
+            getattr(instance, field.name)
+            for field in instance._meta.fields
+            if field.name == "recruiting_site"
         ]
+        for instance in samples
+    ]
     keys = [site[0] for site in key_value_pairs]
     keys = list(set(keys))
     counter_dict = dict()
@@ -279,18 +297,10 @@ def map_plot(samples: list[HistopathologicalSample]):
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest,
-            *args: Any, **kwargs: Any) -> HttpResponse:
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/dashboard.html"
         samples = HistopathologicalSample.objects.all()
-
-        # get_dict = request.GET
-
-        # if get_dict.get("count_what"):
-        #     count_this = get_dict["count_what"]
-        # else:
-        #     count_this = "recruiting_site"
-
         plot_dict = count_samples_by_category(samples)
 
         row1, row2, row3 = [], [], []
@@ -299,23 +309,32 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             row1.append(dic)
 
         map_plot1 = map_plot(samples)
+
+
         row2.append({"heading": "Samples by sites - Map",
                      "plot": map_plot1})
         
         # row3.append({"heading": "Samples by sites - Map1",
         #              "plot": map_plot2})
 
-        row1.append({"heading": "Samples by entity and site",
-                     "plot": count_samples_by_site_and_entity(samples)})
 
-        row2.append({"heading": "Sample Processing",
-                     "plot": sample_process_plot(samples)})
+        row1.append(
+            {
+                "heading": "Samples by entity and site",
+                "plot": count_samples_by_site_and_entity(samples),
+            }
+        )
+
+        row2.append(
+            {"heading": "Sample Processing", "plot": sample_process_plot(samples)}
+        )
 
         context = {
             "user": request.user,  # user, not username because we
-                                   # need to check the user's attributes
+            # need to check the user's attributes
             "row1": row1,
             "row2": row2,
             #"row3": row3
             }
+
         return render(request, template_name, context=context)
