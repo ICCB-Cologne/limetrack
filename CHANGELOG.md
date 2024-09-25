@@ -1,5 +1,12 @@
 ## Change Log
+
+### 2024-09-25
+
+- **New:**
+    - Sample table: The downloaded files retain the filter settings and therefore contain only the previously filtered data
+
 ---
+
 ### 2024-09-06
 
 - **New:**
@@ -7,6 +14,7 @@
     - Input restriction for comment and note fields: Commas are prohibited now.
     - Dashboard: Sample processing plot now also displays the percentage of samples in WGS.
 ---
+
 ### 2024-08-13
 
 - **New:**
@@ -23,6 +31,7 @@
 
 - **New:** Entity filters for *SATURN3 Sample Code* column
 - **Modification following user request:** Possible input values for the field *Tissue Quality* (TUM group) were restricted to 0-5
+
 ---
 
 ### 2024-07-23

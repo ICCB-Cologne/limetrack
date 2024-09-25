@@ -164,7 +164,7 @@ Samples Overview
 {% block head_scripts%}
   {% load static %}
   <script src="{% static 'gui/sample_table_scripts/generateColumnFilters.js' %}"></script>
-
+  <script src="{% static 'gui/sample_table_scripts/filtered_download.js' %}"></script>
   <script>
     // delete record with ID id
     function submitForm(id) {
@@ -208,60 +208,6 @@ Samples Overview
 
       form.submit();      
     }
-
-    // takes form data out of the filter dropdown and posts it as 
-    // a new form to FilteredDownloadView
-    function downloadWithFilter(type){
-      const form = document.getElementById('column-filter');
-      var formData = new FormData(form);
-
-      
-      const downloadForm = document.getElementById('filter-download');
-      
-      // Clear existing inputs
-      downloadForm.innerHTML = '';
-  
-      // Add CSRF token input
-      const csrfTokenInput = document.createElement('input');
-      csrfTokenInput.type = 'hidden';
-      csrfTokenInput.name = 'csrfmiddlewaretoken';
-      csrfTokenInput.value = '{{ csrf_token }}';
-      downloadForm.appendChild(csrfTokenInput);
-
-      // file type (csv for excel or normal csv)
-      newInput = document.createElement('input');
-      newInput.type = "hidden";
-      newInput.name = "file_type"
-      newInput.value = type
-      downloadForm.appendChild(newInput);
-      
-      const all_inputs = form.getElementsByTagName("input");
-
-      // transform input elements into form
-      // (probably to complicated: try to get input values without form data)
-      for (let i = 1; i < all_inputs.length; i++) {
-        var name = all_inputs[i].name;
-        if (formData.has(name)){
-          newInput = document.createElement('input');
-          newInput.type = "hidden";
-          newInput.name = name
-          newInput.value = "on"
-          if (all_inputs[i].type == "text"){
-            newInput.value = all_inputs[i].value;
-          }
-
-          downloadForm.appendChild(newInput);
-        };
-      };
-      downloadForm.submit();
-    }
-
-    // filter out group specific columns ("filter colums" dropdown)
-    function applyFilter(){
-      const form = document.getElementById('column-filter');
-      form.submit();
-    }
-
     // check or uncheck all checkboxes of "filter columns" dropdown
     function selectAllFilters(){
       const form = document.getElementById('id-group-filters');
@@ -279,10 +225,10 @@ Samples Overview
 
   <script src="{% static 'gui/sample_table_scripts/searchSampleTable.js' %}"> </script>
   
-  {% endblock head_scripts %}
+{% endblock head_scripts %}
 
 
-  {% block body_scripts%}
+{% block body_scripts%}
   {% load static %}
     <script>
       const tableHead = document.querySelector("#head-row")
@@ -307,8 +253,7 @@ Samples Overview
       }
       patientNumber = document.getElementById("id-patient-number");
       patientNumber.innerHTML = patients.size;
-    
-
     </script>
-
   {% endblock body_scripts %}
+
+

@@ -1,25 +1,20 @@
-from ..forms import (
-    all_field_verbose_names, field_dict,
-    GroupFilterForm,
-
-)
-from ..models import HistopathologicalSample
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
-    HttpRequest, HttpResponseRedirect,
+    HttpRequest,
+    HttpResponseRedirect,
     StreamingHttpResponse,
+    HttpResponse,
 )
 from django.views.generic import TemplateView
-from typing import Any, Generator
+from typing import Any, Generator, Iterable
+from base64 import b64encode
 from io import BytesIO
-
+from ..forms import (
+    all_field_verbose_names,
+)
 import pandas as pd
-
-# from django.urls import reverse
-
-
 import logging
+import json
 import csv
 
 app_log = logging.getLogger("s3sample")
@@ -65,10 +60,10 @@ class Echo:
         return value
 
 
-def csv_template_download_csv(request):
+def csv_template_download_csv(request: HttpRequest):
     pseudo_buffer = Echo()
     filename = "saturn3samples_template.csv"
-    data = [all_field_verbose_names[:-1], example_sample]
+    data: list[Iterable[Any]] = [all_field_verbose_names[:-1], example_sample]
     writer = csv.writer(pseudo_buffer)
 
     return StreamingHttpResponse(
@@ -79,8 +74,7 @@ def csv_template_download_csv(request):
             f"attachment; filename={filename}"},
     )
 
-
-def csv_template_download_excel(request):
+def csv_template_download_excel(request: HttpRequest):
     data = [example_sample]
     columns = all_field_verbose_names[:-1] # created at excluded
     filename = "saturn3samples_template.xlsx"
@@ -104,69 +98,37 @@ def csv_template_download_excel(request):
 
 
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
-    # def get(self, request: HttpRequest,
-    #         *args: Any, **kwargs: Any) -> HttpResponse:
-    #     return HttpResponseRedirect(reverse("all_samples"))
+    def post(self, request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
+        data = request.POST.get("data")
+        file_type = request.GET.get("type", "CSV")
+        
+        if data:
+            records: list[dict] = json.loads(data)
+            df = pd.DataFrame.from_records(records)
+            content_type="text/csv;base64"
 
-    def get(self, request: HttpRequest,
-            *args: Any,
-            **kwargs: Any) -> StreamingHttpResponse | HttpResponseRedirect:
+            with BytesIO() as buffer:
+                file_name = "saturn3samples"
 
-        pseudo_buffer = Echo()
-
-        file_type = request.GET.get("file_type")
-        if file_type is None:
-            return HttpResponseRedirect(request.path_info)
-
-        form = GroupFilterForm(request.GET)
-        if form.is_valid():
-            all_filters = []
-            for group in form.cleaned_data:
-                all_filters += field_dict[group] \
-                    if form.cleaned_data[group] else []
-
-            samples = HistopathologicalSample.objects.all()
-            fields_and_values_list = [
-                [(field.verbose_name, getattr(instance, field.name))
-                 for field in instance._meta.fields
-                    if field.name in all_filters]
-                for instance in samples
-            ]
-            rows = []
-            headers = [i[0] for i in fields_and_values_list[0]]
-            rows.append(headers)
-            data = [[i[1] for i in sublist]
-                    for sublist in fields_and_values_list]
-            data.insert(0, headers)
-
-            if file_type == "Excel":
-                response: Generator | None = None
-                file_name = "saturn3samples.xlsx"
-
-                with BytesIO() as buffer:
-                    pd.DataFrame(data[1:], columns=headers). \
-                        to_excel(buffer, index=False)
-                    buffer.seek(0)
-                    response = StreamingHttpResponse(
-                        (line for line in buffer.readlines()),
-                        content_type="application/vnd.ms-excel",
-                        headers={
-                            "Content-Disposition": f"inline; filename={file_name}"
-                        },
-                    )
-
-                return response
-
-            elif file_type == "CSV":
-                writer = csv.writer(pseudo_buffer,
-                                    delimiter=",")
-                content_type = "text/csv"
-                file_name = "saturn3samples.csv"
-
-                return StreamingHttpResponse(
-                    (writer.writerow(row) for row in data),
+                if file_type == "Excel":
+                    file_name += ".xlsx"
+                    content_type="text/plain;base64"
+                    df.to_excel(buffer, index=False)
+                
+                else:
+                    file_name += ".csv"
+                    df.to_csv(buffer, index=False)
+                
+                buffer.seek(0)
+                response = HttpResponse(
+                    b64encode(buffer.read()),
                     content_type=content_type,
-                    headers={"Content-Disposition":
-                             f'attachment; filename="{file_name}"'})
+                    headers={
+                        "Content-Disposition": f'attachment; filename="{file_name}"',
+                        "filename": file_name
+                    },
+                )
+                    
+            return response
 
-        return HttpResponseRedirect(request.path_info)
+        return HttpResponseRedirect("/samples/")
