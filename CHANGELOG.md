@@ -5,7 +5,9 @@
 - **New:**
     - Sample table: The downloaded files retain the filter settings and therefore contain only the previously filtered data
     - Dashboard: Mapplot type changed
-
+    - Read-only users
+- **Bug fixes:**
+    - Removed initial values from disabled fields
 ---
 
 ### 2024-09-06
