@@ -4,6 +4,7 @@
 
 - **New:**
     - Sample table: The downloaded files retain the filter settings and therefore contain only the previously filtered data
+    - Dashboard: Mapplot type changed
 
 ---
 
