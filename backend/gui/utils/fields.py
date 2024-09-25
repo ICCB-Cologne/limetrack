@@ -4,6 +4,7 @@ from django.forms.fields import (MultiValueField, CharField,
                                  IntegerField, ChoiceField)
 from django.forms import Select, MultiWidget, TextInput, NumberInput
 from backend.gui.models import validate_alphanumeric
+from django.utils.datastructures import MultiValueDictKeyError
 import re
 
 ENTITY = [
@@ -221,12 +222,15 @@ class SampleCodeWidget(MultiWidget):
         if "saturn3_sample_code" in data:
             return self.decompress(data["saturn3_sample_code"])
         decompressed_list = []
-        decompressed_list.append(data["saturn3_sample_code_0"])
-        decompressed_list.append(data["saturn3_sample_code_1"])
-        decompressed_list.append(data["saturn3_sample_code_2"])
-        decompressed_list.append(data["saturn3_sample_code_3"])
-        decompressed_list.append(data["saturn3_sample_code_4"])
-        decompressed_list.append(data["saturn3_sample_code_5"])
-        decompressed_list.append(data["saturn3_sample_code_6"])
-        decompressed_list.append(data["saturn3_sample_code_7"])
+        try:
+            decompressed_list.append(data["saturn3_sample_code_0"])
+            decompressed_list.append(data["saturn3_sample_code_1"])
+            decompressed_list.append(data["saturn3_sample_code_2"])
+            decompressed_list.append(data["saturn3_sample_code_3"])
+            decompressed_list.append(data["saturn3_sample_code_4"])
+            decompressed_list.append(data["saturn3_sample_code_5"])
+            decompressed_list.append(data["saturn3_sample_code_6"])
+            decompressed_list.append(data["saturn3_sample_code_7"])
+        except MultiValueDictKeyError:
+            return decompressed_list
         return decompressed_list
