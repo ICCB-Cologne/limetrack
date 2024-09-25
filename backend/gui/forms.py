@@ -493,6 +493,26 @@ class SampleFormDataPaths(SampleFormTUM):
         } | disabled_tum_dict | disabled_spl_dict \
             | disabled_sclab_dict | disabled_spatial_dict \
             | disabled_lb_dict
+        
+
+class SampleFormReadOnly(SampleFormTUM):
+    """
+    Only for ReadOnly group members.
+    Basically a form with disabled fields only.
+    """
+
+    saturn3_sample_code = SampleCodeField(required=True,
+                                          widget=SampleCodeWidget(disabled=True),
+                                          label="SATURN3 Sample Code")
+
+    class Meta:
+        model = HistopathologicalSample
+        fields = all_field_names
+        widgets = {
+
+        } | disabled_tum_dict | disabled_spl_dict \
+            | disabled_sclab_dict | disabled_spatial_dict \
+            | disabled_lb_dict
 
 
 class UploadForm(forms.Form):

@@ -131,12 +131,15 @@ class SampleCodeWidget(MultiWidget):
     Widget representing the SATURN3-Sample-Code field.
     """
 
-    def __init__(self, widgets=None, attrs=None) -> None:
+    def __init__(self, disabled=False, widgets=None, attrs=None) -> None: 
+        
+        disabled = {"disabled" : "true"} if disabled else {}
+        
         widgets = [
             Select(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "Entity"},
+                       "title": "Entity"} | disabled,
                 choices=ENTITY),
 
             TextInput(
@@ -145,43 +148,47 @@ class SampleCodeWidget(MultiWidget):
                        "data-placement": "top",
                        "title": "5-digit SATURN3 \
                         pseudonym (by Treuhandstelle Freiburg)"}
+                        | disabled
                         ),
 
             NumberInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
                        "title": "Sampling timepoint 0, 1, 2 etc.",
-                       "min": "0"}),
+                       "min": "0"} | disabled),
 
             Select(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "Tissue type"},
+                       "title": "Tissue type"}
+                       | disabled,
                 choices=TISSUE_TYPE),
 
             NumberInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
                        "title": "Tissue type - order number",
-                       "min": "0"}),
+                       "min": "0"} | disabled),
 
             Select(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "Storage format"},
+                       "title": "Storage format"}
+                       | disabled,
                 choices=STORAGE_FORMAT),
 
             Select(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "Analyte type"},
+                       "title": "Analyte type"}
+                       | disabled,
                 choices=ANALYTE_TYPE),
 
             NumberInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
                        "title": "Analyte type - order number",
-                       "min": "0"})]
+                       "min": "0"} | disabled)]
 
         super().__init__(widgets, attrs)
 

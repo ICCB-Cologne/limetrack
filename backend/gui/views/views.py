@@ -3,7 +3,8 @@ from ..forms import (
     SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, LoginForm,
-    SearchForm, SampleFormDataPaths, SampleFormSpatial
+    SearchForm, SampleFormDataPaths, SampleFormSpatial,
+    SampleFormReadOnly
 )
 from ..models import HistopathologicalSample
 
@@ -51,6 +52,8 @@ def get_form(
             form = SampleFormDataPaths(data=data)
         case "spatial":
             form = SampleFormSpatial(data=data)
+        case "readonly":
+            form = SampleFormReadOnly(data=data)
         case _:
             form = SampleForm(data=data)
     return form
