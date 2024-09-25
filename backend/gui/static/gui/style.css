@@ -337,7 +337,6 @@ select[disabled="true"] {
     width: 50%;
     font-size: large;
     background: rgb(163, 157, 157);
-    color: rgba(163, 157, 157, 0);
 }
 
 /* Style the select fields */

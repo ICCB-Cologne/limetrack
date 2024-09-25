@@ -258,12 +258,11 @@ class SampleFormTUM(ModelForm):
     recruiting_site = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(
+        widget=forms.TextInput(
             attrs={
-                "onchange": "autoFillPatient(this.value)",
                 "disabled": "true"
                 },
-            choices=SITE_CHOICES)
+            )
         )
 
     patient_identifier = forms.CharField(
@@ -281,9 +280,9 @@ class SampleFormTUM(ModelForm):
     sex = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(
+        widget=forms.TextInput(
             attrs={"disabled": "true"},
-            choices=SEX_CHOICES))
+            ))
 
     died = forms.DateField(
         required=False,
@@ -309,36 +308,36 @@ class SampleFormTUM(ModelForm):
     tissue_type = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(
+        widget=forms.TextInput(
             attrs={"disabled": "true"},
-            choices=TISSUE_TYPES))
+            ))
 
     type_of_intervention = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(
+        widget=forms.TextInput(
             attrs={"disabled": "true"},
-            choices=INTERVENTION_TYPES))
+            ))
 
     localisation = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(
+        widget=forms.TextInput(
             attrs={"disabled": "true"},
-            choices=LOCALISATION_CHOICE))
+            ))
 
     corresponding_organoid = forms.BooleanField(
         required=False,
-        widget=forms.Select(
+        widget=forms.TextInput(
             attrs={"disabled": "true"},
-            choices=CORRESPONDING_ORGANOID_CHOICES))
+            ))
 
     grading = forms.CharField(
         max_length=CHARFIELD_MAXLEN,
         required=False,
-        widget=forms.Select(
+        widget=forms.TextInput(
             attrs={"disabled": "true"},
-            choices=GRADING))
+            ))
     
 
     # end of disabling required fields
