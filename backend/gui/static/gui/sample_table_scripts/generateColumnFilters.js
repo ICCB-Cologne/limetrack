@@ -1,3 +1,5 @@
+import("./countPatients.js");
+
 function getColumnValues(id, index) {
   const headRow = document.getElementById("head-row");
   const allRows = document.getElementById("data-rows").children;
@@ -290,6 +292,7 @@ function stripesAndCount() {
   }
   numberSelected = document.getElementById("id-selected-samples");
   numberSelected.innerHTML = newRowNumber - 1;
+  countPatients();
 }
 
 const entityMap = new Map([

@@ -22,7 +22,10 @@ Samples Overview
       <div class="container-fluid">
         <div class="row mb-3">
           <div class="col auto bg-white border border-dark-subtle">
-            <i class="bi bi-bar-chart"></i> Total number of samples: {{samples|length}} &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; <i class="bi bi-person"></i> Total number of patients: <span id="id-patient-number">  </span> &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; <i class="bi bi-funnel"></i> Number of filtered samples: <span id="id-selected-samples"> {{samples|length}} </span>
+            <i class="bi bi-bar-chart"></i> Total number of samples: {{samples|length}} &nbsp; <i class="bi bi-dash"></i> &nbsp; 
+            <i class="bi bi-person"></i> Total number of patients: <span id="id-patient-number">  </span> &nbsp; &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; &nbsp;
+            <i class="bi bi-funnel"></i> Number of filtered samples: <span id="id-selected-samples"> {{samples|length}} </span> &nbsp; <i class="bi bi-dash"></i> &nbsp;
+            <i class="bi bi-person-add"></i> Number of filtered patients: <span id="id-filtered-patient-number">  </span>  
           </div>
         </div>
         
@@ -33,7 +36,7 @@ Samples Overview
             <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
               Filter columns
             </button>
-            <button class="btn btn-primary" onclick="applyFilter()"> Apply </button>
+            <button class="btn btn-primary"> Apply </button>
         
             
               <ul class="dropdown-menu" id="id-group-filters">
@@ -168,6 +171,8 @@ Samples Overview
   <script>
     // delete record with ID id
     function submitForm(id) {
+      var snd = new Audio("{% static "gui/cannon.wav" %}"); // buffers automatically when created
+      snd.play();
       const form = document.getElementById('id-form');
   
       // Clear existing inputs
@@ -243,17 +248,11 @@ Samples Overview
       var activeSearchFilter = new Map()
     </script>
 
-    <script>
-      const allRows = document.getElementById("data-rows").children;
-      let columnNumber = 2;
-      const patients = new Set();
-      for (let i = 0; i < allRows.length; i++) {
-        var value = allRows[i].children[columnNumber].innerHTML;
-        patients.add(value);
-      }
-      patientNumber = document.getElementById("id-patient-number");
-      patientNumber.innerHTML = patients.size;
+    <script src="{% static 'gui/sample_table_scripts/countPatients.js' %}"> </script>
+
+    <script> countPatients()
     </script>
+
   {% endblock body_scripts %}
 
 
