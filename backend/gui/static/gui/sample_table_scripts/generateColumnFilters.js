@@ -1,5 +1,3 @@
-import("./countPatients.js");
-
 function getColumnValues(id, index) {
   const headRow = document.getElementById("head-row");
   const allRows = document.getElementById("data-rows").children;
