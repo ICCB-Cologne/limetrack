@@ -25,6 +25,10 @@ function countPatients() {
   }
   filteredPatientNumber = document.getElementById("id-filtered-patient-number");
   filteredPatientNumber.innerHTML = filteredPatients.size;
+  console.log("Filtered");
+  console.log(filteredPatients.size);
   patientNumber = document.getElementById("id-patient-number");
   patientNumber.innerHTML = patients.size;
+  console.log("All");
+  console.log(patients.size);
 }
