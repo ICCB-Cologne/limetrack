@@ -1,5 +1,4 @@
 function getColumnValues(id, index) {
-  const headRow = document.getElementById("head-row");
   const allRows = document.getElementById("data-rows").children;
   const numberOfRows = allRows.length;
 
@@ -95,18 +94,18 @@ function sortTable(index) {
   table = document.getElementById("sampleTable");
   switching = true;
   /* Make a loop that will continue until
-  no switching has been done: */
+    no switching has been done: */
   while (switching) {
     // Start by saying: no switching is done:
     switching = false;
     rows = table.rows;
     /* Loop through all table rows (except the
-    first, which contains table headers): */
+      first, which contains table headers): */
     for (i = 1; i < rows.length - 1; i++) {
       // Start by saying there should be no switching:
       shouldSwitch = false;
       /* Get the two elements you want to compare,
-      one from current row and one from the next: */
+        one from current row and one from the next: */
       x = rows[i].getElementsByTagName("TD")[index + 1];
       y = rows[i + 1].getElementsByTagName("TD")[index + 1];
       // Check if the two rows should switch place:
@@ -118,7 +117,7 @@ function sortTable(index) {
     }
     if (shouldSwitch) {
       /* If a switch has been marked, make the switch
-      and mark that a switch has been done: */
+        and mark that a switch has been done: */
       rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
       switching = true;
     }
@@ -168,7 +167,7 @@ function updateActiveFilters(id) {
       checkedInputs.push(value.slice(1));
     }
   }
-  for (i = 0; i < ths.length; i++) {
+  for (let i = 0; i < ths.length; i++) {
     if (ths[i].getAttribute("name") == column) {
       activeFilters.set(i, checkedInputs);
     }
@@ -194,18 +193,7 @@ function updateSearchFilter() {
 }
 
 function filterTable() {
-  var input,
-    searchFilter,
-    table,
-    tr,
-    td,
-    tds,
-    ths,
-    i,
-    txtValue,
-    idx,
-    column,
-    searchIndex;
+  var searchFilter, table, tr, td, ths, i, txtValue, searchIndex;
 
   // get table and table rows
   table = document.getElementById("sampleTable");
@@ -268,6 +256,37 @@ function filterTable() {
     }
   }
   stripesAndCount();
+}
+
+function countPatients() {
+  var filteredPatientNumber;
+  var patientNumber;
+
+  const allRows = document.getElementById("data-rows").children;
+  const headRow = document.getElementById("head-row").children;
+
+  var SAT3Index;
+  for (let i = 0; i < headRow.length; i++) {
+    var value = headRow[i].getAttribute("name");
+    if (value == "SATURN3 Sample Code") {
+      SAT3Index = i;
+      break;
+    }
+  }
+  let columnNumber = SAT3Index;
+  const filteredPatients = new Set();
+  const patients = new Set();
+  for (let i = 0; i < allRows.length; i++) {
+    let patientID = allRows[i].children[columnNumber].innerHTML.slice(4, 9);
+    if (allRows[i].style.display != "none") {
+      filteredPatients.add(patientID);
+    }
+    patients.add(patientID);
+  }
+  filteredPatientNumber = document.getElementById("id-filtered-patient-number");
+  filteredPatientNumber.innerHTML = filteredPatients.size;
+  patientNumber = document.getElementById("id-patient-number");
+  patientNumber.innerHTML = patients.size;
 }
 
 function stripesAndCount() {

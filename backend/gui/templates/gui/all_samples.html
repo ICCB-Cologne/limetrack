@@ -166,7 +166,7 @@ Samples Overview
 
 {% block head_scripts%}
   {% load static %}
-  <script src="{% static 'gui/sample_table_scripts/generateColumnFilters.js' %}"></script>
+  <script src="{% static 'gui/sample_table_scripts/generateColumnsFilters.js' %}"></script>
   <script src="{% static 'gui/sample_table_scripts/filtered_download.js' %}"></script>
   <script>
     // delete record with ID id
@@ -248,7 +248,8 @@ Samples Overview
       var activeSearchFilter = new Map()
     </script>
 
-    <script> countPatients()
+    <script>
+      countPatients();
     </script>
   {% endblock body_scripts %}
 
