@@ -4,11 +4,18 @@ function getColumnValues(id, index) {
 
   // get all distinct values of the selected column
   let columnNumber = index + 1;
-  const column = new Set();
+  const columnSet = new Set();
   for (let i = 0; i < numberOfRows; i++) {
     var value = allRows[i].children[columnNumber].innerHTML;
-    column.add(value);
+    columnSet.add(value);
   }
+
+  const column = [];
+  columnSet.forEach((v) => column.push(v));
+  console.log(column);
+  column.sort(function (a, b) {
+    return a.toLowerCase().localeCompare(b.toLowerCase());
+  });
 
   var dropdownID = id.replace("button", "dropdown");
   const dropdown = document.getElementById(dropdownID);
