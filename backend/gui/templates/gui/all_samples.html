@@ -143,7 +143,7 @@ Samples Overview
             {% endfor %}
             <td>
               {% if user.is_superuser or user.name == "root" or user.groups.first.name == "coordinators" or user.groups.first.name == "admins" %}
-              <button id="Delete {{item.5.1}}" type="button" onclick="submitForm({{ item.0.1 }})">Delete</button>
+              <button id="Delete {{item.5.1}}" type="button" onclick="deleteID({{ item.0.1 }}, '{{csrf_token}}' )">Delete</button>
               {% endif %}
             </td>
             
@@ -168,49 +168,12 @@ Samples Overview
   {% load static %}
   <script src="{% static 'gui/sample_table_scripts/generateColumnsFilters.js' %}"></script>
   <script src="{% static 'gui/sample_table_scripts/filtered_download.js' %}"></script>
+  <script src="{% static 'gui/sample_table_scripts/deleteRecord.js' %}"></script>
+  <script src="{% static 'gui/sample_table_scripts/filterTable.js' %}"></script>
+  <script src="{% static 'gui/sample_table_scripts/searchTable.js' %}"></script>
+  <script src="{% static 'gui/sample_table_scripts/sortTable.js' %}"></script>
+
   <script>
-    // delete record with ID id
-    function submitForm(id) {
-      const form = document.getElementById('id-form');
-  
-      // Clear existing inputs
-      form.innerHTML = '';
-  
-      // Add CSRF token input
-      const csrfTokenInput = document.createElement('input');
-      csrfTokenInput.type = 'hidden';
-      csrfTokenInput.name = 'csrfmiddlewaretoken';
-      csrfTokenInput.value = '{{ csrf_token }}';
-      form.appendChild(csrfTokenInput);
-  
-      // Add ID input
-      const idInput = document.createElement('input');
-      idInput.type = 'hidden';
-      idInput.name = 'id';
-      idInput.value = id;
-      form.appendChild(idInput);
-
-      const filterForm = document.getElementById('column-filter');
-      var formData = new FormData(filterForm);
-      const all_inputs = filterForm.getElementsByTagName("input");
-
-      for (let i = 1; i < all_inputs.length; i++) {
-        var name = all_inputs[i].name;
-        if (formData.has(name)){
-          newInput = document.createElement('input');
-          newInput.type = "hidden";
-          newInput.name = name
-          newInput.value = "on"
-          if (all_inputs[i].type == "text"){
-            newInput.value = all_inputs[i].value;
-          }
-
-          form.appendChild(newInput);
-        };
-      };
-
-      form.submit();      
-    }
     // check or uncheck all checkboxes of "filter columns" dropdown
     function selectAllFilters(){
       const form = document.getElementById('id-group-filters');
