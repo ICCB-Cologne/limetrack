@@ -171,7 +171,7 @@ SPATIAL_STATUS = [
 ]
 
 SCANALYSIS_CHOICES = [
+    ("count files", "count files"),
     ("demultiplexed", "demultiplexed"),
-    ("demultiplexed + QC", "demultiplexed + QC"),
-    ("QC failed", "QC failed")
+    ("demultiplexed + QC", "demultiplexed + QC")
 ]
