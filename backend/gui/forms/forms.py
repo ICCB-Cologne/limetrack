@@ -1,6 +1,6 @@
-from .models import HistopathologicalSample, CHARFIELD_MAXLEN
-from .utils.fields import SampleCodeField, SampleCodeWidget
-from .utils.model_choices import (
+from ..models import HistopathologicalSample, CHARFIELD_MAXLEN
+from ..utils.fields import SampleCodeField, SampleCodeWidget
+from ..utils.model_choices import (
                      SITE_CHOICES, SEX_CHOICES,
                      TISSUE_TYPES, INTERVENTION_TYPES,
                      GRADING,

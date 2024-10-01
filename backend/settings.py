@@ -44,6 +44,7 @@ class Settings(BaseSettings):
     DJANGO_DEBUG: bool
     CSFR_COOKIE_SECURE: bool
     SESSION_COOKIE_SECURE: bool
+    EMAIL_BASE_URL: str
     MAPPLOT_TOKEN: Optional[str] = None
 
 
@@ -217,7 +218,9 @@ LOGGING = {
 # Mail server settings
 
 EMAIL_HOST = "smtp.uniklinik-freiburg.de"
-# EMAIL_HOST_USER = "saturn3@uniklinik-freiburg.de"
+EMAIL_HOST_USER = "saturn3@uniklinik-freiburg.de"
+EMAIL_ACCOUNT_CREATION_PATH = "reset"
+EMAIL_BASE_URL = SETTINGS.EMAIL_BASE_URL
 EMAIL_PORT = 25
 EMAIL_SUBJECT_PREFIX = "[SATURN3 SAMPLE TRACKING] "
 MARKDOWNIFY = {

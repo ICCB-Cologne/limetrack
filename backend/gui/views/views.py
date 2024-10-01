@@ -1,4 +1,4 @@
-from ..forms import (
+from ..forms.forms import (
     all_field_names, odcf_fields, field_dict,
     SampleFormScLab, SampleFormRec,
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,

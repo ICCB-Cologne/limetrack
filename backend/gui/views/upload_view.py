@@ -28,7 +28,7 @@ from .views import (
     get_form, handle_form,
     no_sample_code_found
 )
-from ..forms import (
+from ..forms.forms import (
     all_field_verbose_names,
     all_field_names,
     odcf_fields,

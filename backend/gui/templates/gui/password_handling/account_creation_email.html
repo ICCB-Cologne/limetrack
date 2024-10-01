@@ -1,0 +1,13 @@
+{% load i18n %}{% autoescape off %}
+Dear user {{ user.get_username }},
+
+You're receiving this email because an account at {{ site_name }} has been created for you.
+
+Please go to the following page and set your password:
+
+{{ base_url }}/{{ path }}/{{ uidb }}/{{ token }}
+
+Kind regards
+The Saturn3 Sample Tracking Team
+
+{% endautoescape %}

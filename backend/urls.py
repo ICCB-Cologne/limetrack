@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from backend.gui.views.upload_users_bulk import UsersBulkView
 from backend.gui.views.dashboard_view import DashboardView
 from backend.gui.views.samples_view import AllSamplesView
 from backend.gui.views.upload_view import UploadView
@@ -54,6 +55,7 @@ urlpatterns = [
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", log_out, name="logout"),
     path("search/", SearchView.as_view(), name="search"),
+    path("users/users_bulk/", UsersBulkView.as_view(), name="users_bulk"),
 
     # Password reset / change section #
     path("password_change/",
@@ -92,6 +94,5 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(
              template_name="gui/password_handling/password_reset_complete.html",
              extra_context={'user': None}),
-         name="password_reset_complete"),
-
+         name="password_reset_complete")
 ]

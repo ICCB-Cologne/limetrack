@@ -9,7 +9,7 @@ from django.views.generic import TemplateView
 from typing import Any, Generator, Iterable
 from base64 import b64encode
 from io import BytesIO
-from ..forms import (
+from ..forms.forms import (
     all_field_verbose_names,
 )
 import pandas as pd
