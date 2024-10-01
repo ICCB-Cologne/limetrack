@@ -4,6 +4,7 @@
 
 - **New:**
     - Added bulk upload for users
+---
 
 ### 2024-09-25
 
