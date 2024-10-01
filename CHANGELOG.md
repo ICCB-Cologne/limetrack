@@ -1,5 +1,10 @@
 ## Change Log
 
+### 2024-10-01
+
+- **New:**
+    - Added bulk upload for users
+
 ### 2024-09-25
 
 - **New:**
