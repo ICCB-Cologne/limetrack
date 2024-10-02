@@ -23,13 +23,14 @@ function getColumnValues(id, index) {
   // create and style sort button
   var sortPanel = document.createElement("li");
   var sortButton = document.createElement("button");
+  sortButton.value = "unsorted";
   sortButton.type = "button";
   sortButton.className = "btn btn-secondary ";
   sortButton.style.width = "100%";
   sortPanel.className = "dropdown-item";
   sortButton.innerHTML = "Sort";
   sortButton.addEventListener("click", function () {
-    sortTable(index);
+    sortTable(index, sortButton);
   });
   sortPanel.appendChild(sortButton);
   dropdown.appendChild(sortPanel);

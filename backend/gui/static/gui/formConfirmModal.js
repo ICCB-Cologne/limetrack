@@ -16,7 +16,7 @@ if (exampleModal) {
     for (let i = 0; i < labels.length; i++) {
       labelNames.push(labels[i].innerHTML.slice(0, -1));
     }
-    console.log(labelNames);
+    // console.log(labelNames);
 
     // Update the modal's content.
     modalBody.innerHTML = "";

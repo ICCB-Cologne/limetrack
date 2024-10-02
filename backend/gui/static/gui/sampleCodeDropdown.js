@@ -40,9 +40,9 @@ const analyteType = new Map([
 ]);
 
 function fullName() {
-  console.log(this.options);
+  // console.log(this.options);
   for (option of this.options) {
-    console.log(option.textContent);
+    // console.log(option.textContent);
     switch (this.name) {
       case "saturn3_sample_code_0":
         option.textContent = entitiy.get(option.value);
@@ -64,7 +64,7 @@ function fullName() {
 }
 
 function antiFullName() {
-  console.log(this.options);
+  // console.log(this.options);
   for (option of this.options) {
     if (this.name == "saturn3_sample_code_0") {
       option.textContent = option.value[2];
