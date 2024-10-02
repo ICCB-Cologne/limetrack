@@ -43,6 +43,7 @@ function sortTable(index, button) {
         comparePattern =
           (numericPattern.test(xString) && numericPattern) ||
           (datePattern.test(xString) && datePattern);
+        patternSet = true;
       }
 
       let compareX, compareY;
