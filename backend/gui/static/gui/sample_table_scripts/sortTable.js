@@ -62,7 +62,7 @@ function sortTable(index, button) {
       }
 
       // if not sorted or reversed sort it forward
-      if (button.value == "unsorted" || button.value == "reversed") {
+      if (button.value != "forward") {
         if (compareX > compareY) {
           shouldSwitch = true;
           break;
