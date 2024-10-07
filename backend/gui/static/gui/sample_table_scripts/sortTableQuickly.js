@@ -22,6 +22,7 @@ function compareRows(comparePattern, index, direction) {
       return -1;
     }
 
+    let compare1, compare2;
     // handle different data types
     if (String(comparePattern) == String(numericPattern)) {
       compare1 = parseFloat(value1);
@@ -30,6 +31,8 @@ function compareRows(comparePattern, index, direction) {
     } else if (String(comparePattern) == String(datePattern)) {
       split1 = value1.split("-");
       split2 = value2.split("-");
+      compare1 = new Date(split1[2], split1[1] - 1, split1[0]);
+      compare2 = new Date(split2[2], split2[1] - 1, split2[0]);
     } else {
       compare1 = value1;
       compare2 = value2;
