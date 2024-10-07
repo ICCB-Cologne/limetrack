@@ -1,6 +1,6 @@
 function compareRows(comparePattern, index, direction) {
   return function (row1, row2) {
-    const numericPattern = /^\d+\.?\d+$/;
+    const numericPattern = /(^\d+\.?\d+$)|(^\d+$)/;
     const datePattern = /^\d{2}-\d{2}-\d{4}$/;
 
     // extract values from html elements
@@ -23,15 +23,13 @@ function compareRows(comparePattern, index, direction) {
     }
 
     // handle different data types
-    if (comparePattern == numericPattern) {
+    if (String(comparePattern) == String(numericPattern)) {
       compare1 = parseFloat(value1);
       compare2 = parseFloat(value2);
-      return compare1 - compare2;
-    } else if (comparePattern == datePattern) {
+      return direction == "forward" ? compare1 - compare2 : compare2 - compare1;
+    } else if (String(comparePattern) == String(datePattern)) {
       split1 = value1.split("-");
       split2 = value2.split("-");
-      compare1 = new Date(split1[2], split1[1] - 1, split1[0]);
-      compare2 = new Date(split2[2], split2[1] - 1, split2[0]);
     } else {
       compare1 = value1;
       compare2 = value2;
@@ -49,7 +47,7 @@ function compareRows(comparePattern, index, direction) {
 }
 
 function findOutDataType(array, index) {
-  const numericPattern = /^\d+\.?\d+$/;
+  const numericPattern = /(^\d+\.?\d+$)|(^\d+$)/;
   const datePattern = /^\d{2}-\d{2}-\d{4}$/;
   let comparePattern;
 
@@ -57,6 +55,7 @@ function findOutDataType(array, index) {
     value = array[i]
       .getElementsByTagName("TD")
       [index + 1].innerHTML.toLowerCase();
+
     if (value != "None") {
       comparePattern =
         (numericPattern.test(value) && numericPattern) ||
