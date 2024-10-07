@@ -190,7 +190,8 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             "form": form,
             "upload_form": UploadForm(),
             "search_form": SearchForm(),
-            "user": request.user.get_username()
+            "user": request.user.get_username(),
+            "user_group": str(request.user.groups.first()).lower()
         }
 
         return render(request, template_name, context=context)

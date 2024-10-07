@@ -30,7 +30,7 @@ function getColumnValues(id, index) {
   sortPanel.className = "dropdown-item";
   sortButton.innerHTML = "Sort";
   sortButton.addEventListener("click", function () {
-    sortTable(index, sortButton);
+    sortTableFunctional(index, sortButton);
   });
   sortPanel.appendChild(sortButton);
   dropdown.appendChild(sortPanel);
