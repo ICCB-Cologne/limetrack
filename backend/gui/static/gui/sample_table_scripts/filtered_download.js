@@ -1,4 +1,4 @@
-function extract_keys(headers) {
+function extract_keys(headers, exclude=[]) {
   let keys = [];
 
   headers.querySelectorAll("th:not([hidden])").forEach(
@@ -6,8 +6,11 @@ function extract_keys(headers) {
       for (child of element.childNodes) {
         if (child.nodeType === Node.TEXT_NODE) {
           let name = child.textContent.trim();
-          keys.push(name);
-          break;
+
+          if (exclude.includes(name) === false) {
+            keys.push(name);
+            break;
+          }
         }
       }
     }
@@ -16,7 +19,7 @@ function extract_keys(headers) {
   return keys
 }
 
-function create_record(keys, row) {
+function create_record(keys, row, date=[]) {
   let record = {};
 
   row.querySelectorAll("td:not([hidden])").forEach(
@@ -25,7 +28,7 @@ function create_record(keys, row) {
         if (child.nodeType === Node.TEXT_NODE) {
           let text = child.textContent.trim();
 
-          if (text !== "") {
+          if (text !== "" && text !== "None") {
             record[keys[index]] = text;
             break;
           }
