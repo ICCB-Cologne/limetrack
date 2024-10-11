@@ -1,8 +1,42 @@
+function compareValues(value1, value2, comparePattern, direction = "forward") {
+  const numericPattern = /(^\d+\.?\d+$)|(^\d+$)/;
+  const datePattern = /^\d{2}-\d{2}-\d{4}$/;
+
+  // keep empty values at the bottom of the table
+  if ((value1 == "none" || value1 == "") && value2 != "none" && value2 != "") {
+    return 1;
+  } else if (value2 == "none" || value2 == "") {
+    return -1;
+  }
+
+  let compare1, compare2;
+  // handle different data types
+  if (String(comparePattern) == String(numericPattern)) {
+    compare1 = parseFloat(value1);
+    compare2 = parseFloat(value2);
+    return direction == "forward" ? compare1 - compare2 : compare2 - compare1;
+  } else if (String(comparePattern) == String(datePattern)) {
+    split1 = value1.split("-");
+    split2 = value2.split("-");
+    compare1 = new Date(split1[2], split1[1] - 1, split1[0]);
+    compare2 = new Date(split2[2], split2[1] - 1, split2[0]);
+  } else {
+    compare1 = value1;
+    compare2 = value2;
+  }
+
+  // eventually the comparison between the values
+  if (compare1 > compare2) {
+    return direction == "forward" ? 1 : -1;
+  } else if (compare1 < compare2) {
+    return direction == "forward" ? -1 : 1;
+  } else {
+    return 0;
+  }
+}
+
 function compareRows(comparePattern, index, direction) {
   return function (row1, row2) {
-    const numericPattern = /(^\d+\.?\d+$)|(^\d+$)/;
-    const datePattern = /^\d{2}-\d{2}-\d{4}$/;
-
     // extract values from html elements
     let value1 = row1
       .getElementsByTagName("TD")
@@ -11,41 +45,7 @@ function compareRows(comparePattern, index, direction) {
       .getElementsByTagName("TD")
       [index + 1].innerHTML.toLowerCase();
 
-    // keep empty values at the bottom of the table
-    if (
-      (value1 == "none" || value1 == "") &&
-      value2 != "none" &&
-      value2 != ""
-    ) {
-      return 1;
-    } else if (value2 == "none" || value2 == "") {
-      return -1;
-    }
-
-    let compare1, compare2;
-    // handle different data types
-    if (String(comparePattern) == String(numericPattern)) {
-      compare1 = parseFloat(value1);
-      compare2 = parseFloat(value2);
-      return direction == "forward" ? compare1 - compare2 : compare2 - compare1;
-    } else if (String(comparePattern) == String(datePattern)) {
-      split1 = value1.split("-");
-      split2 = value2.split("-");
-      compare1 = new Date(split1[2], split1[1] - 1, split1[0]);
-      compare2 = new Date(split2[2], split2[1] - 1, split2[0]);
-    } else {
-      compare1 = value1;
-      compare2 = value2;
-    }
-
-    // eventually the comparison between the values
-    if (compare1 > compare2) {
-      return direction == "forward" ? 1 : -1;
-    } else if (compare1 < compare2) {
-      return direction == "forward" ? -1 : 1;
-    } else {
-      return 0;
-    }
+    return compareValues(value1, value2, comparePattern, direction);
   };
 }
 

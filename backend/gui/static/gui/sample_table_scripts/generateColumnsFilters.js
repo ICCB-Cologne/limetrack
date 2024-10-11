@@ -1,6 +1,9 @@
 function getColumnValues(id, index) {
   const allRows = document.getElementById("data-rows").children;
   const numberOfRows = allRows.length;
+  const numericPattern = /(^\d+\.?\d+$)|(^\d+$)/;
+  const datePattern = /^\d{2}-\d{2}-\d{4}$/;
+  let comparePattern;
 
   // get all distinct values of the selected column
   let columnNumber = index + 1;
@@ -12,10 +15,28 @@ function getColumnValues(id, index) {
 
   const column = [];
   columnSet.forEach((v) => column.push(v));
+
+  // find out data type
+  for (let i = 0; i < column.length; i++) {
+    let value = column[i];
+    if (value != "None") {
+      comparePattern =
+        (numericPattern.test(value) && numericPattern) ||
+        (datePattern.test(value) && datePattern);
+      break;
+    }
+  }
+
   column.sort(function (a, b) {
-    return a.toLowerCase().localeCompare(b.toLowerCase());
+    return compareValues(
+      a.toLowerCase(),
+      b.toLowerCase(),
+      comparePattern,
+      "forward"
+    );
   });
 
+  // dropdown button
   var dropdownID = id.replace("button", "dropdown");
   const dropdown = document.getElementById(dropdownID);
   dropdown.innerHTML = "";
