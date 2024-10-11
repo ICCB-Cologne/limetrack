@@ -74,6 +74,7 @@ function sortTableFunctional(index, button) {
   table = document.getElementById("sampleTable");
   rows = table.rows;
 
+  // ignore hidden ID column
   arrayRows = Array.prototype.slice.call(rows).slice(1);
 
   comparePattern = findOutDataType(arrayRows, index);
@@ -82,14 +83,13 @@ function sortTableFunctional(index, button) {
 
   sortedRows = arrayRows.sort(compareRows(comparePattern, index, direction));
 
+  // replace table body
   let new_tbody = document.createElement("tbody");
   new_tbody.id = "data-rows";
   for (let i = 0; i < sortedRows.length; i++) {
     new_tbody.appendChild(sortedRows[i]);
   }
-
   let old_tbody = document.getElementById("data-rows");
-
   table.replaceChild(new_tbody, old_tbody);
 
   stripesAndCount();
