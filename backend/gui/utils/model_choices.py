@@ -1,5 +1,9 @@
 LOCALISATION_CHOICE = [
-    ("Pancreas", "Pancreas"),
+    ("Diaphragm", "Diaphragm"),
+    ("Visceral fat", "Visceral fat"),
+    ("Pancreas tail", "Pancreas tail"),
+    ("Pancreas head", "Pancreas head"),
+    ("Pancreas body", "Pancreas body"),
     ("Breast", "Breast"),
     ("Colon", "Colon"),
     ("Liver", "Liver"),
