@@ -67,3 +67,5 @@ wsproto==1.2.0
 yarl==1.17.2
 zope.event==5.0
 zope.interface==6.1
+django-markdownify==0.9.5
+email-validator==2.2.0
