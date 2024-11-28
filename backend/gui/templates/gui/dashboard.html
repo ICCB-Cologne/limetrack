@@ -16,49 +16,49 @@
 
 <div class="containerino">
   <div id="main_form" class="form-containerino">
-  
-  <h2> Dashboard <i class="bi bi-clipboard-data"></i>  </h2> 
-  <hr>
+    
+    <h2> Dashboard <i class="bi bi-clipboard-data"></i>  </h2> 
+    <hr>
 
-  <div class="row mt-5">
-    <div class="col-1"> </div>
-    {% for figure in row1%}
-      <div class="col-5">
-        <h5> {{figure.heading}} </h5>
-        {% autoescape off %}
-        {{figure.plot}}
-        {% endautoescape %}
-      </div>
-    {% endfor %}
-    <div class="col-1"> </div>
-  </div>
+    <div class="row mt-5">
+      <div class="col-1"> </div>
+      {% for figure in row1%}
+        <div class="col-5">
+          <h5> {{figure.heading}} </h5>
+          {% autoescape off %}
+          {{figure.plot}}
+          {% endautoescape %}
+        </div>
+      {% endfor %}
+      <div class="col-1"> </div>
+    </div>
 
-  <div class="row mt-5">
-    <div class="col-1"> </div>
-    {% for figure in row2%}
-      <div class="col-5">
-        <h5> {{figure.heading}} </h5>
-        {% autoescape off %}
-        {{figure.plot}}
-        {% endautoescape %}
-      </div>
-    {% endfor %}
-    <div class="col-1"> </div>
-  </div>
+    <div class="row mt-5">
+      <div class="col-1"> </div>
+      {% for figure in row2%}
+        <div class="col-5">
+          <h5> {{figure.heading}} </h5>
+          {% autoescape off %}
+          {{figure.plot}}
+          {% endautoescape %}
+        </div>
+      {% endfor %}
+      <div class="col-1"> </div>
+    </div>
 
 
-  <div class="row mt-5">
-    <div class="col-1"> </div>
-    {% for figure in row3%}
-      <div class="col-5">
-        <h5> {{figure.heading}} </h5>
-        {% autoescape off %}
-        {{figure.plot}}
-        {% endautoescape %}
-      </div>
-    {% endfor %}
-    <div class="col-1"> </div>
-  </div>
+    <div class="row mt-5">
+      <div class="col-1"> </div>
+      {% for figure in row3%}
+        <div class="col-5">
+          <h5> {{figure.heading}} </h5>
+          {% autoescape off %}
+          {{figure.plot}}
+          {% endautoescape %}
+        </div>
+      {% endfor %}
+      <div class="col-1"> </div>
+    </div>
 
   </div>
 
