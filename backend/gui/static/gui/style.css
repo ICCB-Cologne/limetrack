@@ -52,7 +52,7 @@ ol {
     justify-content: center;
     align-items: center;
     border: #385573 solid 0px;
-    flex-direction: column-reverse;
+    flex-direction: column;
     margin: 0px 100px 10px 100px;
 }
 
