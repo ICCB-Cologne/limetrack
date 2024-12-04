@@ -23,7 +23,7 @@ Sample Tracking
       </div>
       <div class="custom-row">
         <input id="{{ upload_form.file.auto_id }}" name="{{upload_form.file.name}}" type="file" title="Upload excel or csv sample sheets">
-        <button type="submit" {% if user_group == "readonly" %} class="btn btn-secondary" disabled {% else %} class="btn btn-primary" {% endif %} id="end-of-page">
+        <button type="submit" {% if user_group == "readonly" %} class="btn btn-secondary" disabled {%else%} class="btn btn-primary"  {% endif %}  id="end-of-page"  >
           Submit
         </button>
       </div>
@@ -72,7 +72,8 @@ Sample Tracking
         <input 
           id="{{ search_form.search_field.auto_id }}" 
           name="{{ search_form.search_field.name }}"
-          type="text">
+          type="text"
+        >
         <button type="submit" class="btn btn-primary" id="search-button" >
           Search
         </button>
@@ -110,45 +111,103 @@ Sample Tracking
       
       {% for field in form %}
        {# splitting the form visually in sections for the different user groups #}
-        {% if field.name in "recruiting_site, tissue_quality, spl_received, sclab_received, spatial_method, lb_analyte_type, sc_analysis_status" %}
+        {%if field.name in "recruiting_site, tissue_quality, spl_received, sclab_received, spatial_method, lb_analyte_type, scrna_r1"%}
           <hr>
-        {% endif %}
+        {%endif%}
 
-      {# DISPLAY THE FIELDS #}
+      {# DISPLAY THE FORM DEPENDING ON WHETHER THERE'S BEEN #}
+      {# (1) A SUBMISSION WITH ERRORS #}
+      {# (2) A SUBMISSION WITHOUT ERRORS #}
+      {# (3) NO SUBMISSION #}
 
-        {# highlight errorneous field if there's been an error in the submissed form field #}
-        <div id="{{field.name}}" {% if field.errors %} class="wrong_input" {% else %} class="form-row" {% endif %}> 
-                {{field.label_tag}}
-                {% if field.name == "saturn3_sample_code" %}
-                <div class="input-group">
-                    <label class="input-group-text" for="id_saturn3_sample_code_0">S3</label>
+        {# (1) or (2) IF THERE'S BEEN A SUBMISSION #}
+        {% if messages %}
+          {# (1) IF THERE'S BEEN ERRORS IN THE SUBMITTED FORM #}
+          {# highlight errorneous field if there's been an error in the submissed form field #}
+          {% if field.name in form.errors %}
+    
+            <div id="{{field.name}}" class="wrong_input"> 
+
+                  {{field.label_tag}}
+
+                  {% if field.name == "saturn3_sample_code" %}
+                    <div class="input-group">
+                      <label class="input-group-text" for="id_saturn3_sample_code_0">S3</label>
+                      {{field}}
+                      {{field.help_text}}
+
+                      {% comment %} <input id="sat3-generated" type="text" class="ms-5"> </input> {% endcomment %}
+                    </div>
+                  {% else %}
+
+                    {{field}}
+                    {{field.help_text}}
+
+                  {% endif %}
+            </div>
+            {# error message right below the respective field #}
+            <ul class="messages">
+              {% for message in messages %}
+                {%if field.name == message.extra_tags %} 
+                <li class=" {{ message.tags }} "> {{ message }} </li>
+                {%endif%}
+              {% endfor %}
+            </ul>
+
+          {# (2) SUBMITTED FORM WITHOUT ERRORS #}
+          {# if there has been no error in the submitted form #}
+          {% else %}
+
+
+          <div id="{{ field.name }}" class="form-row">
+            {{field.label_tag}} 
+            {% if field.name == "saturn3_sample_code" %}
+
+               <div class="input-group">
+                  <label class="input-group-text" for="id_saturn3_sample_code_0">S3</label>
                     {{field}}
                     {{field.help_text}}
                 </div>
-                {% else %}
-                {{field}}
-                {{field.help_text}}
-                {% endif %}
-        </div>
+                {% comment %} <input id="sat3-generated" type="text" class="ws-100">  </input> {% endcomment %}
 
-        {# error message right below the respective field #}
-        {% if field.errors %}
-        <ul class="messages">
-            {% for message in messages %}
-            {% if field.name == message.extra_tags %} 
-                <li class=" {{ message.tags }} "> {{ message }} </li>
+            {% else %}
+
+              {{field}}
+              {{field.help_text}}
+
             {% endif %}
-            {% endfor %}
-        </ul>
-        {% endif %}
+            </div>
+          {% endif %}
+            
+        {# (3) NO MESSAGES / NO FROM SUBMITTED YET #}
+        {% else %} 
+            
+              <div id="{{ field.name }}" class="form-row">
+                {{field.label_tag}}
+                 {% if field.name == "saturn3_sample_code" %}
 
+                <div class="input-group">
+                  <label class="input-group-text" for="id_saturn3_sample_code_0">S3</label>
+                  {{field}}
+                </div>
+                
+                {% comment %} <input id="sat3-generated" type="text" class="w-50" style="max-width : 20em">  </input> {% endcomment %}
+                {% else %}
+
+              {{field}}
+              {{field.help_text}}
+
+            {% endif %}
+            </div>
+            
+        {% endif %} 
       {% endfor %}
       {# END OF INPUT FIELDS #}
 
       <div class="text-center">
-        <!-- "Submit" button that triggers modal -->
+        <!-- Submit button that triggers modal -->
         <button type="button" {% if user_group == "readonly" %} class="btn btn-secondary" disabled {% else %} class="btn btn-primary" {% endif %}
-          onclick="startModal()">
+          data-bs-toggle="modal" data-bs-target="#exampleModal" id="modalButton">
           Submit 
         </button>
       </div>
@@ -204,25 +263,10 @@ Sample Tracking
     document.getElementById("exampleModal").style.display = "none";
     form.submit();
   }
+  
 </script>
 
-
-<script>
-    {% comment %}
-        This function validates the form's inputs on html level and if the form is validate
-        shows the modal to let the user check their inputs to confirm or cancel them.
-    {% endcomment %}
-    function startModal(){
-        if (! $('#start-of-form')[0].checkValidity()) {
-            $('#start-of-form')[0].reportValidity()
-        }
-        else{
-            $('#exampleModal').modal('show');
-        }
-    }
-</script>
-
-{# a script that autofills a field with content of another field #}
+{# a script that autofills a field with content of other fields #}
 <script>
   function autoFillPatient(val) {
 
@@ -239,6 +283,8 @@ Sample Tracking
   });
 </script>
 
+
+  
 
 {% endblock content %}
 
