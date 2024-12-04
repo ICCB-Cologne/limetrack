@@ -147,7 +147,7 @@ Sample Tracking
 
       <div class="text-center">
         <!-- "Submit" button that triggers modal -->
-        <button type="button" {% if user_group == "readonly" %} class="btn btn-secondary" disabled {% else %} class="btn btn-primary" {% endif %}
+        <button id="modalButton" type="button" {% if user_group == "readonly" %} class="btn btn-secondary" disabled {% else %} class="btn btn-primary" {% endif %}
           onclick="startModal()">
           Submit 
         </button>
