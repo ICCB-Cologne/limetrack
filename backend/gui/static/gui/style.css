@@ -365,6 +365,14 @@ select.form-control {
     width: 50%;
 }
 
+.wrong_input .input-group input{
+    border: 2px solid #ff6347;
+}
+
+.wrong_input .input-group select{
+    border: 2px solid #ff6347;
+}
+
 .overdiv .input-group {
     width: 75%;
 }
