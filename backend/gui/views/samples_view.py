@@ -37,6 +37,8 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
             ]
             filters = GroupFilterForm()
 
+        # check which groups are checked in the filter form
+        # and then only display 
         else:
             filtered_form = GroupFilterForm(request.GET)
             if filtered_form.is_valid():
@@ -44,7 +46,6 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
                 for group in filtered_form.cleaned_data:
                     all_filters += field_dict[group] \
                         if filtered_form.cleaned_data[group] else []
-
                 samples = HistopathologicalSample.objects.all()
                 fields_and_values_list = [
                     [(field.verbose_name, getattr(instance, field.name))
@@ -78,10 +79,12 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         filtered_form = GroupFilterForm(post_data)
         if filtered_form.is_valid():
             all_filters = ["id"]
+            # get all fields that belong to the filtered user groups
             for group in filtered_form.cleaned_data:
                 all_filters += field_dict[group] \
                     if filtered_form.cleaned_data[group] else []
 
+            # find all columns/fields that are part of the all filters list to display only those
             samples = HistopathologicalSample.objects.all()
             fields_and_values_list = [
                 [(field.verbose_name, getattr(instance, field.name))

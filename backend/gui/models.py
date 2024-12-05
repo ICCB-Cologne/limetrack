@@ -311,6 +311,12 @@ class HistopathologicalSample(models.Model):
 
     # Datapaths ###
 
+    sc_analysis_status = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="scAnalysis status",
+        choices=SCANALYSIS_CHOICES)
+
     scrna_r1 = models.CharField(
         blank=True,
         null=True,
@@ -334,12 +340,6 @@ class HistopathologicalSample(models.Model):
         blank=True,
         null=True,
         verbose_name="scATAC I2")
-
-    sc_analysis_status = models.CharField(
-        blank=True,
-        null=True,
-        verbose_name="scAnalysis status",
-        choices=SCANALYSIS_CHOICES)
 
     wgs_r1 = models.CharField(
         blank=True,

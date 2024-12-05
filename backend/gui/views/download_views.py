@@ -31,7 +31,7 @@ example_sample = [
     # sclab
     "2023-12-17", "2023-12-17", "77",
     "45", "successful RNA", "ATAC",
-    "Yes", "214", "123456", "123456", "Comment",
+    "Yes", "5S9QY", "123456", "123456", "Comment",
     # spatial
     "Xenium", "Xenium failed", "2023-12-19",
     "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
@@ -41,7 +41,7 @@ example_sample = [
     "Plasma", "2023-12-17", "2023-12-17", "4", "2023-12-17",
     "111", "sequencing successful",
     # ocdf
-    "pool10",
+    "demultiplexed + QC",
     "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",

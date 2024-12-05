@@ -231,6 +231,11 @@ class TestAllUserGroupsForm(BasicTestClass):
         self.search_record()
 
         self.driver.find_element(
+            By.ID,
+            "id_sc_analysis_status").send_keys(
+                RecordGenerator.random_scanalysis_choice())
+
+        self.driver.find_element(
             By.ID, "id_scrna_r1").send_keys("omics/schmomociks")
 
         self.driver.find_element(
@@ -244,11 +249,6 @@ class TestAllUserGroupsForm(BasicTestClass):
 
         self.driver.find_element(
             By.ID, "id_scatac_i2").send_keys("omics/schmomociks")
-
-        self.driver.find_element(
-            By.ID,
-            "id_sc_analysis_status").send_keys(
-                RecordGenerator.random_scanalysis_choice())
 
         self.driver.find_element(
             By.ID, "id_wgs_r1").send_keys("omics/schmomociks")

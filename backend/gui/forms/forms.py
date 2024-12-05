@@ -24,7 +24,7 @@ for field in all_fields:
 
 for field in all_fields:
     # exclude odcf
-    if field.name == "scrna_r1":
+    if field.name == "sc_analysis_status":
         break
     all_field_names.append(field.name)
 
@@ -100,6 +100,18 @@ disabled_lb_dict = {
     lb_fields[i]: forms.TextInput(
         attrs={"disabled": "true"}) for i in range(1, len(lb_fields))
 }
+
+def adapt_list_for_group_filter_display(key, list):
+    """
+    If groups want to have fields displayed in the table, that don't belong to the group these
+    fields kan be added here
+    """
+    if key == "ODCF":
+        list.append("location")
+    return list 
+
+field_dict_for_group_filters = { key: adapt_list_for_group_filter_display(key, field_dict[key]) for key in field_dict }
+
 
 
 class SampleForm(ModelForm):
