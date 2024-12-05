@@ -1,5 +1,13 @@
 ## Change Log
 
+---
+
+### 2024-12-06
+
+- **Housekeeping:**
+    - Implemented [gunicorn](https://gunicorn.org/) to be used instead of django default server
+---
+
 ### 2024-10-01
 
 - **New:**
