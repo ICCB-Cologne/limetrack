@@ -6,6 +6,11 @@
 
 - **Housekeeping:**
     - Implemented [gunicorn](https://gunicorn.org/) to be used instead of django default server
+    - Cleaned up Django templates 
+- **Sample table:**
+    - Rearranged ODCF's "ScAnalysis status" column to the left
+- **Form input confirmation**
+    - If a user types in wrong data types, the form now asks the user to correct their input before displaying the data confirmation view
 ---
 
 ### 2024-10-01
