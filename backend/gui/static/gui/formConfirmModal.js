@@ -1,3 +1,6 @@
+// This script fills the modal that pops up after clicking on submit
+// with the input form data so a user can check and confirm their inputs
+
 // Get the modal
 var modal = document.getElementById("exampleModal");
 var modalBody = document.getElementById("modalBody");
