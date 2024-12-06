@@ -94,7 +94,7 @@ INSTALLED_APPS = [
 ]
 
 TEMPUS_DOMINUS_DATE_FORMAT = "YYYY-MM-DD"
-DATE_FORMAT = "d-m-Y"
+DATE_FORMAT = "Y-m-d"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
