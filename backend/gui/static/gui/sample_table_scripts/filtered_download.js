@@ -1,43 +1,42 @@
-function extract_keys(headers, exclude=[]) {
+function extract_keys(headers, exclude = []) {
   let keys = [];
 
-  headers.querySelectorAll("th:not([hidden])").forEach(
-    element => {
-      for (child of element.childNodes) {
-        if (child.nodeType === Node.TEXT_NODE) {
-          let name = child.textContent.trim();
+  headers.querySelectorAll("th:not([hidden])").forEach((element) => {
+    for (child of element.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        let name = child.textContent.trim();
 
-          if (exclude.includes(name) === false) {
-            keys.push(name);
-            break;
-          }
+        if (exclude.includes(name) === false) {
+          keys.push(name);
+          break;
         }
       }
     }
-  );
+  });
 
-  return keys
+  return keys;
 }
 
-function create_record(keys, row, date=[]) {
+function create_record(keys, row, date = []) {
   let record = {};
 
-  row.querySelectorAll("td:not([hidden])").forEach(
-    (element, index) => {
-      for (child of element.childNodes) {
-        if (child.nodeType === Node.TEXT_NODE) {
-          let text = child.textContent.trim();
+  row.querySelectorAll("td:not([hidden])").forEach((element, index) => {
+    for (child of element.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        let text = child.textContent.trim();
 
-          if (text !== "" && text !== "None") {
-            record[keys[index]] = text;
-            break;
-          }
+        if (text !== "" && text !== "None") {
+          record[keys[index]] = text;
+          break;
+        } else {
+          record[keys[index]] = "";
+          break;
         }
       }
     }
-  )
+  });
 
-  return record
+  return record;
 }
 
 function table_to_json(tablename) {
@@ -45,7 +44,9 @@ function table_to_json(tablename) {
 
   let table = document.getElementById(tablename);
   let rows = table.querySelectorAll("tr:not([style*='display: none;'])");
-  let keys = extract_keys(rows[0])
+  let keys = extract_keys(rows[0]);
+  console.log("KEYS");
+  console.log(keys);
 
   for (let i = 1; i < rows.length; i++) {
     let record = create_record(keys, rows[i]);
@@ -57,15 +58,15 @@ function table_to_json(tablename) {
 
 function download(filename, type, text) {
   let mime_type = "text/csv;base64";
-  
+
   if (type == "Excel") {
     mime_type = "application/vnd.ms-excel;base64";
   }
 
-  let element = document.createElement('a');
-  element.setAttribute('href', `data:${mime_type},${encodeURIComponent(text)}`);
-  element.setAttribute('download', filename);
-  element.style.display = 'none';
+  let element = document.createElement("a");
+  element.setAttribute("href", `data:${mime_type},${encodeURIComponent(text)}`);
+  element.setAttribute("download", filename);
+  element.style.display = "none";
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);
@@ -78,7 +79,8 @@ function downloadWithFilter(type) {
     type: "POST",
     url: `/filtered_download/?type=${type}`,
     data: {
-      csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+      csrfmiddlewaretoken: document.getElementsByName("csrfmiddlewaretoken")[0]
+        .value,
       data: data,
     },
     dataType: "text",
