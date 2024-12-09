@@ -235,12 +235,33 @@ def check_records_existence(request: HttpRequest,
     SATURN3-Sample-Code.
 
     Returns error if record exists and user has no permission to change it.
+    Or returns error if users with no permission to create records try to upload non-existent
+    Sample Codes
     """
+    # special case just for the time before we re-structure the models and permissions etc
+    # LB user needs recruiter permissions addtional to LB 
+    if request.user.get_username() == "Liquid_HD":
+        if (HistopathologicalSample.
+                objects.filter(saturn3_sample_code=sat3_code).exists() and not
+                request.user.has_perm("gui.change_histopathologicalsample")):
+            messages.error(request,
+                           f"File upload failed!"
+                           f" Record with SATURN3 Sample Code "
+                           f"{str(sat3_code)} already exists.",
+                           extra_tags=tag)
 
-    if (request.user.groups.filter(
+            return render(request, "gui/sample_tracking.html",
+                          context={
+                              "form": (form if tag == "general"
+                                       else get_form(request.user)),
+                              "upload_form": UploadForm(),
+                              "search_form": SearchForm(),
+                              "jump_to": ("form" if tag == "general"
+                                          else None)})
+
+    elif (request.user.groups.filter(
             name__in=["SPL", "TUM", "scOpenLab",
                       "LiquidBiopsy", "OmicsPath", "Spatial"]).exists()):
-
         # if data for the group specific fields already exists
         # and the user has no permission for editing
         # -> no update -> error message

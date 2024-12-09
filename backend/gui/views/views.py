@@ -288,57 +288,57 @@ def  handle_form(form: ModelForm,
     a file or filling in the form
 
     """
-    if request.user.groups.filter(
+    
+    # special case just for the time before we re-structure the models and permissions etc
+    # LB user needs recruiter permissions addtional to LB 
+    if request.user.get_username() == "Liquid_HD":
+
+        if (HistopathologicalSample.
+            objects.filter(
+                saturn3_sample_code=sat3_code).exists()):
+
+            if request.user.has_perm("gui.change_histopathologicalsample"):
+                return update_record(request, form,
+                                    request.user, data, sat3_code, tag)
+            else:
+                messages.error(request,
+                            "Submission unsuccessful!"
+                            " Record with SATURN3 Sample Code "
+                            f"{str(sat3_code)} already exists.",
+                            extra_tags=tag)
+
+                return render(request, "gui/sample_tracking.html",
+                            context={"form": form,
+                                    "upload_form": UploadForm(),
+                                    "search_form": SearchForm(),
+                                    "jump_to": ("form" if tag == "general"
+                                                else None)})
+        if tag == "general":
+            form.save()
+        else:
+            # this is important for the file upload since
+            # handle_file() also takes fields from the
+            # csv file which do not belong to the
+            # group of the uploading user.
+            # Thus form.save() would also save fields
+            # that must not be filled by the recruiter group
+
+            update_dict = {}
+            for field in field_dict["recruiter"]:
+                update_dict.update({field: data[field]})
+            for field in field_dict["liquidbiopsy"]:
+                update_dict.update({field: data[field]})
+
+            HistopathologicalSample.objects.filter(
+            saturn3_sample_code=sat3_code).create(
+                **update_dict)
+            
+    
+    elif request.user.groups.filter(
         name__in=["SPL", "TUM", "LiquidBiopsy",
                   "scOpenLab",
                   "OmicsPath", "Spatial"]).exists():
-        
-        # special case just for the time before we re-structure the models and permissions etc
-        # LB user needs recruiter permissions addtional to LB 
-        if request.user.get_username() == "Liquid_HD":
-            if (HistopathologicalSample.
-                objects.filter(
-                    saturn3_sample_code=sat3_code).exists()):
-
-                if request.user.has_perm("gui.change_histopathologicalsample"):
-                    return update_record(request, form,
-                                        request.user, data, sat3_code, tag)
-                else:
-                    messages.error(request,
-                                "Submission unsuccessful!"
-                                " Record with SATURN3 Sample Code "
-                                f"{str(sat3_code)} already exists.",
-                                extra_tags=tag)
-
-                    return render(request, "gui/sample_tracking.html",
-                                context={"form": form,
-                                        "upload_form": UploadForm(),
-                                        "search_form": SearchForm(),
-                                        "jump_to": ("form" if tag == "general"
-                                                    else None)})
-            if tag == "general":
-                form.save()
-            else:
-                # this is important for the file upload since
-                # handle_file() also takes fields from the
-                # csv file which do not belong to the
-                # group of the uploading user.
-                # Thus form.save() would also save fields
-                # that must not be filled by the recruiter group
-
-                update_dict = {}
-                for field in field_dict["recruiter"]:
-                    update_dict.update({field: data[field]})
-                for field in field_dict["liquidbiopsy"]:
-                    update_dict.update({field: data[field]})
-
-                HistopathologicalSample.objects.filter(
-                saturn3_sample_code=sat3_code).create(
-                    **update_dict)
-                
-                return
-            
-            
+                        
         return update_record(request, form,
                              request.user,
                              data, sat3_code, tag)
