@@ -49,7 +49,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
             *args: Any, **kwargs: Any) -> HttpResponse:
 
         template_name = "gui/sample_tracking.html"
-        form = get_form(str(request.user.groups.first()).lower())
+        form = get_form(request.user)
         context = {
             "form": form,
             "upload_form": UploadForm(),
@@ -165,7 +165,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 data.update({field_name: value})
 
-            form = get_form(str(request.user.groups.first()).lower(), data)
+            form = get_form(request.user, data)
 
             if form.is_valid():
                 # append every valid form to valid_forms list
@@ -277,9 +277,7 @@ def check_records_existence(request: HttpRequest,
             return render(request, "gui/sample_tracking.html",
                           context={
                               "form": (form if tag == "general"
-                                       else get_form(
-                                           str(request.user.groups.
-                                               first()).lower())),
+                                       else get_form(request.user)),
                               "upload_form": UploadForm(),
                               "search_form": SearchForm(),
                               "jump_to": ("form" if tag == "general"

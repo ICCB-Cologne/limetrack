@@ -489,6 +489,59 @@ class SampleFormLB(SampleFormTUM):
             | disabled_spatial_dict
 
 
+class SampleFormLBRecruiter(SampleFormRec):
+    """
+    Temporal form to enable a specific LB User to create samples
+    """ 
+
+    class Meta:
+        model = HistopathologicalSample
+        fields = all_field_names
+
+        widgets = {
+            # include tooltips into widgets
+            "patient_identifier": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "5-digit SATURN3 \
+                        pseudonym (by Treuhandstelle Freiburg)",
+                       "onchange": "autoFillPatient(this.value)"}
+                       ),
+
+            "died": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}
+                ),
+
+            "sampling_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}
+                ),
+
+            "corresponding_organoid": forms.Select(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "generated from the same biopsy/tissue piece"},
+                       ),
+
+            # DatePickers:
+            'lb_sampling_date': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            'lb_received': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            'lb_date_of_isolation': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+        } | disabled_tum_dict | disabled_spl_dict \
+            | disabled_sclab_dict | disabled_spatial_dict
+    
+
+
 class SampleFormDataPaths(SampleFormTUM):
     """
     For DataPath group members only
