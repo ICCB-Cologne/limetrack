@@ -77,6 +77,9 @@ field_dict = {
 
 # dicts for disabling (+ grey display of)
 # the widgets/input fields of individual groups
+# here we only have the groups "original" fields
+# not additional, e.g. disabled_spl_dict has only disabled spl fields 
+# and no tum fields included 
 
 disabled_tum_dict = {
     tum_fields[i]: forms.TextInput(
@@ -85,7 +88,8 @@ disabled_tum_dict = {
 
 disabled_spl_dict = {
     spl_fields[i]: forms.TextInput(
-        attrs={"disabled": "true"}) for i in range(1, len(spl_fields))
+        attrs={"disabled": "true"}) 
+        for i in range(len(tum_fields), len(spl_fields))
 }
 
 disabled_sclab_dict = {
