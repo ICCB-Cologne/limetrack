@@ -196,7 +196,7 @@ def record_already_exists(request: HttpRequest, sat3_code: str,
 
     msg = f"{fail} {group_name} data for " \
         "record with SATURN3 Sample Code " \
-        f"{str(sat3_code)} already exists."
+        f"{str(sat3_code)} already exists and you are not permitted to edit it."
 
     messages.error(request,
                    msg,
@@ -313,22 +313,30 @@ def  handle_form(form: ModelForm,
             objects.filter(
                 saturn3_sample_code=sat3_code).exists()):
 
+            
             if request.user.has_perm("gui.change_histopathologicalsample"):
-                return update_record(request, form,
-                                    request.user, data, sat3_code, tag)
+                    return update_record(request, form,
+                                            request.user, data, sat3_code, tag)
             else:
-                messages.error(request,
-                            "Submission unsuccessful!"
-                            " Record with SATURN3 Sample Code "
-                            f"{str(sat3_code)} already exists.",
-                            extra_tags=tag)
+                update_dict = {}
+                for field in field_dict["liquidbiopsy"]:
+                    update_dict.update({field: data[field]})
+                if not check_existing_input_for_group("Liquid_HD", sat3_code, update_dict):
+                    return update_record(request, form,
+                                            request.user, data, sat3_code, tag)
+                else:
+                    messages.error(request,
+                                "Submission unsuccessful!"
+                                " Record with SATURN3 Sample Code "
+                                f"{str(sat3_code)} already exists and you are not permitted to edit it.",
+                                extra_tags=tag)
 
-                return render(request, "gui/sample_tracking.html",
-                            context={"form": form,
-                                    "upload_form": UploadForm(),
-                                    "search_form": SearchForm(),
-                                    "jump_to": ("form" if tag == "general"
-                                                else None)})
+                    return render(request, "gui/sample_tracking.html",
+                                context={"form": form,
+                                        "upload_form": UploadForm(),
+                                        "search_form": SearchForm(),
+                                        "jump_to": ("form" if tag == "general"
+                                                    else None)})
         if tag == "general":
             form.save()
         else:
@@ -373,7 +381,7 @@ def  handle_form(form: ModelForm,
                 messages.error(request,
                                "Submission unsuccessful!"
                                " Record with SATURN3 Sample Code "
-                               f"{str(sat3_code)} already exists.",
+                               f"{str(sat3_code)} already exists and you are not permitted to edit it.",
                                extra_tags=tag)
 
                 return render(request, "gui/sample_tracking.html",
