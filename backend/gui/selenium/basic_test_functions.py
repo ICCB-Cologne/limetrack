@@ -62,6 +62,7 @@ class BasicTestClass():
     def check_submission(self):
         message_container = self.driver.find_element(By.CLASS_NAME, "messages")
         message = message_container.find_element(By.TAG_NAME, "li")
+        print(message.text)
         assert (message.text == "Submission successful!")
 
         for m in message_container.find_elements(By.TAG_NAME, "li"):
