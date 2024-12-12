@@ -4,7 +4,7 @@ from ..forms.forms import (
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, LoginForm,
     SearchForm, SampleFormDataPaths, SampleFormSpatial,
-    SampleFormReadOnly
+    SampleFormReadOnly, SampleFormLBRecruiter
 )
 from ..models import HistopathologicalSample
 
@@ -22,7 +22,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.forms import ModelForm
 from django.urls import reverse
-
+from django.contrib.auth.models import User
 from typing import Any
 
 
@@ -34,9 +34,14 @@ app_log = logging.getLogger("s3sample")
 
 
 def get_form(
-        group_name: str,
-        data: QueryDict = None
-):
+        user: User,
+        data: QueryDict = None):
+    
+    group_name = str(user.groups.first()).lower()
+
+    if user.get_username() == "Liquid_HD":
+        return SampleFormLBRecruiter(data=data)
+
     match group_name.lower():
         case "spl":
             form = SampleFormSPL(data=data)
@@ -59,7 +64,7 @@ def get_form(
     return form
 
 
-def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
+def check_existing_input_for_group(group_name: str, sat3_code: str, update_dict: dict) -> bool:
     """
     Checks whether a group's specific fields already has entries.
     """
@@ -69,16 +74,22 @@ def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
     existing_fields = record._meta.get_fields()
     already_filled = False
     for field in existing_fields:
-        if (field.name in field_dict[group_name][1:]
-                and getattr(record, field.name) is not None
-                and getattr(record, field.name) != ""):  # for TextArea fields
-            already_filled = True
-            break
+        if (field.name in update_dict):
+                existing_field_value = getattr(record, field.name)
+                new_field_value = update_dict[field.name]
+                if (existing_field_value is not None
+                    and existing_field_value != "" # for TextArea fields
+                    and str(existing_field_value) != str(new_field_value)
+                    and new_field_value is not None
+                    and new_field_value != ""):  # for TextArea fields
+                    already_filled = True
+                    break
+
     return already_filled
 
 
 def update_record(request: HttpRequest,
-                  form, group_name: str,
+                  form, user: User,
                   data: dict, sat3_code: str, tag: str):
     """
     Updates existing records in the db or returns error.
@@ -87,8 +98,18 @@ def update_record(request: HttpRequest,
     Allows users to fill in data in the empty fields of their respective group.
     Edits a record's fields if the user has the permission to edit
     """
+
+    group_name = user.groups.first().name.lower()
+
     update_dict = {}
-    if group_name != "recruiter":
+    
+    if user.get_username() == "Liquid_HD":
+        for field in field_dict[group_name]:
+            update_dict.update({field: data[field]})
+        for field in field_dict["recruiter"]:
+            update_dict.update({field: data[field]})
+    # exclude SATURN3 Sample Code if the user is not recruiter (field_dict[group_name][1:])
+    elif group_name != "recruiter":
         for field in field_dict[group_name][1:]:
             update_dict.update({field: data[field]})
     else:
@@ -98,8 +119,13 @@ def update_record(request: HttpRequest,
     if (HistopathologicalSample.
             objects.filter(saturn3_sample_code=sat3_code).exists()):
 
+        if user.get_username() == "Liquid_HD":
+            has_entries = check_existing_input_for_group(group_name, sat3_code, update_dict) and check_existing_input_for_group("recruiter", sat3_code, update_dict)
+        else:
+            has_entries = check_existing_input_for_group(group_name, sat3_code, update_dict)
+    
         if (not request.user.has_perm("gui.change_histopathologicalsample") and
-                check_existing_input_for_group(group_name, sat3_code)):
+            has_entries):
 
             return record_already_exists(request,
                                          sat3_code, tag, form, group_name)
@@ -141,9 +167,7 @@ def no_sample_code_found(request: HttpRequest,
 
     return render(request, "gui/sample_tracking.html",
                   context={"form": (form if tag == "general"
-                                    else get_form(
-                                        str(request.user.groups
-                                            .first()).lower())),
+                                    else get_form(request.user)),
                            "upload_form": UploadForm(),
                            "search_form": SearchForm(),
                            "jump_to": ("form" if tag == "general" else None)})
@@ -162,7 +186,7 @@ def record_already_exists(request: HttpRequest, sat3_code: str,
 
     msg = f"{fail} {group_name} data for " \
         "record with SATURN3 Sample Code " \
-        f"{str(sat3_code)} already exists."
+        f"{str(sat3_code)} already exists and you are not permitted to edit it."
 
     messages.error(request,
                    msg,
@@ -170,8 +194,7 @@ def record_already_exists(request: HttpRequest, sat3_code: str,
 
     return render(request, "gui/sample_tracking.html",
                   context={"form": (form if tag == "general"
-                                    else get_form(str(
-                                        request.user.groups.first()).lower())),
+                                    else get_form(request.user)),
                            "upload_form": UploadForm(),
                            "search_form": SearchForm(),
                            "jump_to": ("form" if tag == "general" else None)})
@@ -184,7 +207,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             *args: Any,
             **kwargs: Any
     ) -> HttpResponse:
-        form = get_form(str(request.user.groups.first()).lower())
+        form = get_form(request.user)
         template_name = "gui/sample_tracking.html"
         context = {
             "form": form,
@@ -203,7 +226,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
             *args: Any,
             **kwargs: Any
     ) -> HttpResponse:
-        form = get_form(str(request.user.groups.first()).lower(), request.POST)
+        form = get_form(request.user, request.POST)
 
         if form.is_valid():
             data = form.cleaned_data
@@ -271,30 +294,84 @@ def  handle_form(form: ModelForm,
     a file or filling in the form
 
     """
-    if request.user.groups.filter(
+    
+    # special case just for the time before we re-structure the models and permissions etc
+    # LB user needs recruiter permissions addtional to LB 
+    if request.user.get_username() == "Liquid_HD":
+
+        if (HistopathologicalSample.
+            objects.filter(
+                saturn3_sample_code=sat3_code).exists()):
+
+            
+            if request.user.has_perm("gui.change_histopathologicalsample"):
+                    return update_record(request, form,
+                                            request.user, data, sat3_code, tag)
+            else:
+                update_dict = {}
+                for field in field_dict["liquidbiopsy"]:
+                    update_dict.update({field: data[field]})
+                if not check_existing_input_for_group("Liquid_HD", sat3_code, update_dict):
+                    return update_record(request, form,
+                                            request.user, data, sat3_code, tag)
+                else:
+                    messages.error(request,
+                                "Submission unsuccessful!"
+                                " Record with SATURN3 Sample Code "
+                                f"{str(sat3_code)} already exists and you are not permitted to edit it.",
+                                extra_tags=tag)
+
+                    return render(request, "gui/sample_tracking.html",
+                                context={"form": form,
+                                        "upload_form": UploadForm(),
+                                        "search_form": SearchForm(),
+                                        "jump_to": ("form" if tag == "general"
+                                                    else None)})
+        if tag == "general":
+            form.save()
+        else:
+            # this is important for the file upload since
+            # handle_file() also takes fields from the
+            # csv file which do not belong to the
+            # group of the uploading user.
+            # Thus form.save() would also save fields
+            # that must not be filled by the recruiter group
+
+            update_dict = {}
+            for field in field_dict["recruiter"]:
+                update_dict.update({field: data[field]})
+            for field in field_dict["liquidbiopsy"]:
+                update_dict.update({field: data[field]})
+
+            HistopathologicalSample.objects.filter(
+            saturn3_sample_code=sat3_code).create(
+                **update_dict)
+            
+    
+    elif request.user.groups.filter(
         name__in=["SPL", "TUM", "LiquidBiopsy",
                   "scOpenLab",
                   "OmicsPath", "Spatial"]).exists():
-
+                        
         return update_record(request, form,
-                             request.user.groups.first().name.lower(),
+                             request.user,
                              data, sat3_code, tag)
 
     elif request.user.groups.filter(name="Recruiter").exists():
-
+        # if theres already a record with the given sample code try to edit/update it
         if (HistopathologicalSample.
             objects.filter(
                 saturn3_sample_code=sat3_code).exists()):
 
             if request.user.has_perm("gui.change_histopathologicalsample"):
                 return update_record(request, form,
-                                     "recruiter", data, sat3_code, tag)
+                                     request.user, data, sat3_code, tag)
 
             else:
                 messages.error(request,
                                "Submission unsuccessful!"
                                " Record with SATURN3 Sample Code "
-                               f"{str(sat3_code)} already exists.",
+                               f"{str(sat3_code)} already exists and you are not permitted to edit it.",
                                extra_tags=tag)
 
                 return render(request, "gui/sample_tracking.html",
@@ -359,7 +436,7 @@ def  handle_form(form: ModelForm,
                 "gui/sample_tracking.html",
                 context={
                     "jump_to": "form",
-                    "form": get_form(str(request.user.groups.first()).lower()),
+                    "form": get_form(request.user),
                     "upload_form": UploadForm(),
                     "search_form": SearchForm()
                 }
@@ -402,7 +479,7 @@ class LoginView(TemplateView):
 class SearchView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest,
             *args: Any, **kwargs: Any) -> HttpResponse:
-        form = get_form(str(request.user.groups.first()).lower())
+        form = get_form(request.user)
         template_name = "gui/sample_tracking.html"
         context = {
             "form": form,
@@ -426,8 +503,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
                     objects.get(saturn3_sample_code=search)
                 model_dict = model_to_dict(found_record)
                 model_dict.pop("id")
-                form = get_form(
-                    str(request.user.groups.first()).lower(), model_dict)
+                form = get_form(request.user, model_dict)
 
             elif (HistopathologicalSample.
                     objects.filter(patient_identifier=search).exists()):
@@ -444,7 +520,7 @@ class SearchView(LoginRequiredMixin, TemplateView):
                                    "sex", "died"]:
                         model_dict[key] = ""
 
-                form = get_form(str(request.user.groups.first()).lower(),
+                form = get_form(request.user,
                                 model_dict)
 
             else:

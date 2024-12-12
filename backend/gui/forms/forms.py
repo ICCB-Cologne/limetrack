@@ -40,11 +40,13 @@ tum_fields = ["saturn3_sample_code"] + \
         all_field_names.index("tissue_quality"):
         all_field_names.index("comment_tumor_cell_content") + 1]
 
+# spl group is allowed to fill spl & tum fields
 spl_fields = ["saturn3_sample_code"] + \
     all_field_names[
-        all_field_names.index("spl_received"):
+        all_field_names.index("tissue_quality"):
         all_field_names.index("spl_sequencing_type") + 1]
 
+# sclab group is allowed permissions to fill sclab & spatial fields
 sclab_fields = ["saturn3_sample_code"] + \
     all_field_names[
         all_field_names.index("sclab_received"):
@@ -75,6 +77,9 @@ field_dict = {
 
 # dicts for disabling (+ grey display of)
 # the widgets/input fields of individual groups
+# here we only have the groups "original" fields
+# not additional, e.g. disabled_spl_dict has only disabled spl fields 
+# and no tum fields included 
 
 disabled_tum_dict = {
     tum_fields[i]: forms.TextInput(
@@ -83,7 +88,8 @@ disabled_tum_dict = {
 
 disabled_spl_dict = {
     spl_fields[i]: forms.TextInput(
-        attrs={"disabled": "true"}) for i in range(1, len(spl_fields))
+        attrs={"disabled": "true"}) 
+        for i in range(len(tum_fields), len(spl_fields))
 }
 
 disabled_sclab_dict = {
@@ -487,6 +493,59 @@ class SampleFormLB(SampleFormTUM):
 
         } | disabled_tum_dict | disabled_spl_dict | disabled_sclab_dict \
             | disabled_spatial_dict
+
+
+class SampleFormLBRecruiter(SampleFormRec):
+    """
+    Temporal form to enable a specific LB User to create samples
+    """ 
+
+    class Meta:
+        model = HistopathologicalSample
+        fields = all_field_names
+
+        widgets = {
+            # include tooltips into widgets
+            "patient_identifier": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "5-digit SATURN3 \
+                        pseudonym (by Treuhandstelle Freiburg)",
+                       "onchange": "autoFillPatient(this.value)"}
+                       ),
+
+            "died": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}
+                ),
+
+            "sampling_date": DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}
+                ),
+
+            "corresponding_organoid": forms.Select(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "generated from the same biopsy/tissue piece"},
+                       ),
+
+            # DatePickers:
+            'lb_sampling_date': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            'lb_received': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+            'lb_date_of_isolation': DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False}),
+
+        } | disabled_tum_dict | disabled_spl_dict \
+            | disabled_sclab_dict | disabled_spatial_dict
+    
 
 
 class SampleFormDataPaths(SampleFormTUM):

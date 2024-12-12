@@ -30,6 +30,7 @@ from .views import (
 )
 from ..forms.forms import (
     all_field_verbose_names,
+    field_dict,
     all_field_names,
     odcf_fields,
     UploadForm,
@@ -49,7 +50,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
             *args: Any, **kwargs: Any) -> HttpResponse:
 
         template_name = "gui/sample_tracking.html"
-        form = get_form(str(request.user.groups.first()).lower())
+        form = get_form(request.user)
         context = {
             "form": form,
             "upload_form": UploadForm(),
@@ -165,7 +166,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 data.update({field_name: value})
 
-            form = get_form(str(request.user.groups.first()).lower(), data)
+            form = get_form(request.user, data)
 
             if form.is_valid():
                 # append every valid form to valid_forms list
@@ -175,8 +176,31 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 form_data = form.cleaned_data
                 sat3_code = form.cleaned_data["saturn3_sample_code"]
 
+                user = request.user
+
+                if user.groups.first():
+                    group_name = user.groups.first().name.lower()
+
+                    update_dict = {}
+                    
+                    if user.get_username() == "Liquid_HD":
+                        for field in field_dict[group_name]:
+                            update_dict.update({field: data[field]})
+                        for field in field_dict["recruiter"]:
+                            update_dict.update({field: data[field]})
+                    # exclude SATURN3 Sample Code if the user is not recruiter (field_dict[group_name][1:])
+                    elif group_name != "recruiter":
+                        for field in field_dict[group_name][1:]:
+                            update_dict.update({field: data[field]})
+                    else:
+                        for field in field_dict[group_name]:
+                            update_dict.update({field: data[field]})
+                else:
+                    update_dict = form_data
+
+                
                 possible_response = check_records_existence(request, sat3_code,
-                                                            "file", form)
+                                                            "file", form, update_dict)
                 # check_records_existence returns None if there are no errors
                 # if it's not None it's an error response which has to
                 # be returned
@@ -228,19 +252,46 @@ class UploadView(LoginRequiredMixin, TemplateView):
 def check_records_existence(request: HttpRequest,
                             sat3_code: str,
                             tag: str,
-                            form: ModelForm):
+                            form: ModelForm,
+                            update_dict: dict):
     """
     This function is required for handling files.
     It checks the database for a existing record with given
     SATURN3-Sample-Code.
 
     Returns error if record exists and user has no permission to change it.
+    Or returns error if users with no permission to create records try to upload non-existent
+    Sample Codes
     """
 
-    if (request.user.groups.filter(
+    # special case just for the time before we re-structure the models and permissions etc
+    # LB user needs recruiter permissions addtional to LB 
+    if request.user.get_username() == "Liquid_HD":
+        if (HistopathologicalSample.
+                objects.filter(saturn3_sample_code=sat3_code).exists()):
+            
+            if(not request.user.has_perm("gui.change_histopathologicalsample")):
+                    
+                if (check_existing_input_for_group("Liquid_HD", sat3_code, update_dict)):
+                        messages.error(request,
+                                    f"File upload failed!"
+                                    f" Record with SATURN3 Sample Code "
+                                    f"{str(sat3_code)} already exists.",
+                                    extra_tags=tag)
+
+                        return render(request, "gui/sample_tracking.html",
+                                    context={
+                                        "form": (form if tag == "general"
+                                                else get_form(request.user)),
+                                        "upload_form": UploadForm(),
+                                        "search_form": SearchForm(),
+                                        "jump_to": ("form" if tag == "general"
+                                                    else None)})
+
+
+    elif (request.user.groups.filter(
             name__in=["SPL", "TUM", "scOpenLab",
                       "LiquidBiopsy", "OmicsPath", "Spatial"]).exists()):
-
         # if data for the group specific fields already exists
         # and the user has no permission for editing
         # -> no update -> error message
@@ -250,7 +301,7 @@ def check_records_existence(request: HttpRequest,
             if not request.user.has_perm("gui.change_histopathologicalsample"):
                 group_name = str(request.user.groups.first()).lower()
 
-                if check_existing_input_for_group(group_name, sat3_code):
+                if check_existing_input_for_group(group_name, sat3_code, update_dict):
 
                     return record_already_exists(request,
                                                  sat3_code,
@@ -277,9 +328,7 @@ def check_records_existence(request: HttpRequest,
             return render(request, "gui/sample_tracking.html",
                           context={
                               "form": (form if tag == "general"
-                                       else get_form(
-                                           str(request.user.groups.
-                                               first()).lower())),
+                                       else get_form(request.user)),
                               "upload_form": UploadForm(),
                               "search_form": SearchForm(),
                               "jump_to": ("form" if tag == "general"

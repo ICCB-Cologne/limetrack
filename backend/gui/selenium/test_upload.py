@@ -7,11 +7,11 @@ import os
 class TestUpload(BasicTestClass):
 
     def test_upload_root(self):
+
         self.login("root", "root")
         self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
-
+        
         self.upload_file("one_record.csv")
-
         # download
         self.driver.find_element(By.ID, "all-samples-nav").click()
         self.driver.find_element(
