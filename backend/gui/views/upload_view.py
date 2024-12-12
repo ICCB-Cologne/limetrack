@@ -264,10 +264,6 @@ def check_records_existence(request: HttpRequest,
     Sample Codes
     """
 
-    print("CHECK RECORDS EXISTENCE -----------------")
-    print(f"It's user {request.user.get_username()}")
-
-
     # special case just for the time before we re-structure the models and permissions etc
     # LB user needs recruiter permissions addtional to LB 
     if request.user.get_username() == "Liquid_HD":

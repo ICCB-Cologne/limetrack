@@ -72,28 +72,18 @@ def check_existing_input_for_group(group_name: str, sat3_code: str, update_dict:
         filter(saturn3_sample_code=sat3_code).first()
 
     existing_fields = record._meta.get_fields()
-    print("THESE FIELDS EXIST: ")
-    print(existing_fields)
-    print("THESE FIELDS I WANT TO ADD: ")
-    print(update_dict)
     already_filled = False
     for field in existing_fields:
-        print(f"----> FIELD: {field}")
         if (field.name in update_dict):
-                print("IN UPDATE DICT")
                 existing_field_value = getattr(record, field.name)
-                print(f"EXISTING VALUE: {existing_field_value}")
                 new_field_value = update_dict[field.name]
-                print(f"NEW VALUE: {new_field_value}")
                 if (existing_field_value is not None
                     and existing_field_value != "" # for TextArea fields
                     and str(existing_field_value) != str(new_field_value)
                     and new_field_value is not None
                     and new_field_value != ""):  # for TextArea fields
-                    print("NOT ALLOWED!!!")
                     already_filled = True
                     break
-                print("NO PROBLEMO!!!")
 
     return already_filled
 

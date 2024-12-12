@@ -42,16 +42,13 @@ class BasicTestClass():
         self.driver.find_element(By.ID, "sample-tracking-nav").click()
 
     def logout(self):
-        print("logout started")
         dropdown = self.driver.find_element(
             by=By.ID, value="navbarScrollingDropdown")
         dropdown.click()
-        print("dropdown clicked")
         dropdown_menu = self.driver.find_element(
             by=By.ID, value="dropdown-login")
         logout = dropdown_menu.find_elements(
             by=By.CLASS_NAME, value="dropdown-item")[1]
-        print("click now")
         logout.click()
 
     def submit_record(self):
@@ -62,7 +59,6 @@ class BasicTestClass():
     def check_submission(self):
         message_container = self.driver.find_element(By.CLASS_NAME, "messages")
         message = message_container.find_element(By.TAG_NAME, "li")
-        print(message.text)
         assert (message.text == "Submission successful!")
 
         for m in message_container.find_elements(By.TAG_NAME, "li"):
