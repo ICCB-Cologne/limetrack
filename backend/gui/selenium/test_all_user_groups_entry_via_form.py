@@ -9,8 +9,11 @@ from .basic_test_functions import BasicTestClass
 class TestAllUserGroupsForm(BasicTestClass):
 
     def test_all_users_input(self):
+        print("start")
         self.recruiter_create()
+        print("recruiter done")
         self.tum_input()
+        print("tum done")
         self.spl_input()
         self.sclab_input()
         self.spatial_input()

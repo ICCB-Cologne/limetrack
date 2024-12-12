@@ -58,7 +58,7 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest --ignore=./pg_data
+        pytest -s --ignore=./pg_data
     - name: Upload geckodriver log
       if: failure()
       uses: actions/upload-artifact@v4
