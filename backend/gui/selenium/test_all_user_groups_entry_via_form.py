@@ -83,7 +83,10 @@ class TestAllUserGroupsForm(BasicTestClass):
         self.submit_record()
         print("submitted")
         self.check_submission()
+        print("checked")
         self.logout()
+        
+
 
     def sclab_input(self):
         self.login("test_ScLab", "test4life")
