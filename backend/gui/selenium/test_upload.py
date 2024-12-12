@@ -7,11 +7,14 @@ import os
 class TestUpload(BasicTestClass):
 
     def test_upload_root(self):
+        print("root")
+
         self.login("root", "root")
         self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
-
+        
+        print("upload here")
         self.upload_file("one_record.csv")
-
+        print("not here")
         # download
         self.driver.find_element(By.ID, "all-samples-nav").click()
         self.driver.find_element(
@@ -33,7 +36,9 @@ class TestUpload(BasicTestClass):
                       "test_Omics"]
 
         for user in user_names:
+            print(user)
             self.login(user, "test4life")
+            print(user)
             self.upload_file("one_record.csv")
             self.check_upload()
             self.logout()
@@ -62,6 +67,7 @@ class TestUpload(BasicTestClass):
 
             li = message.find_elements(By.TAG_NAME, "li")
             if len(li) != 0:
+                print(li[0].text)
                 assert (li[0].text == "File upload successful!")
 
     def upload_file(self, file_name):
@@ -69,4 +75,5 @@ class TestUpload(BasicTestClass):
           By.ID, "id_file").send_keys(
               os.path.abspath(f"./csv-files/{file_name}"))
         self.driver.find_element(By.ID, "end-of-page").click()
+        print("CLICKED UPLOAD")
         self.check_upload()

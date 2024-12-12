@@ -64,7 +64,7 @@ def get_form(
     return form
 
 
-def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
+def check_existing_input_for_group(group_name: str, sat3_code: str, update_dict: dict) -> bool:
     """
     Checks whether a group's specific fields already has entries.
     """
@@ -74,11 +74,16 @@ def check_existing_input_for_group(group_name: str, sat3_code: str) -> bool:
     existing_fields = record._meta.get_fields()
     already_filled = False
     for field in existing_fields:
-        if (field.name in field_dict[group_name][1:]
-                and getattr(record, field.name) is not None
-                and getattr(record, field.name) != ""):  # for TextArea fields
-            already_filled = True
-            break
+        if (field.name in update_dict):
+                existing_field_value = getattr(record, field.name)
+                new_field_value = update_dict[field.name]
+                if (existing_field_value is not None
+                    and existing_field_value != "" # for TextArea fields
+                    and existing_field_value != new_field_value
+                    and new_field_value is not None
+                    and new_field_value != ""):  # for TextArea fields
+                    already_filled = True
+                    break
     return already_filled
 
 
@@ -114,9 +119,9 @@ def update_record(request: HttpRequest,
             objects.filter(saturn3_sample_code=sat3_code).exists()):
 
         if user.get_username() == "Liquid_HD":
-            has_entries = check_existing_input_for_group(group_name, sat3_code) and check_existing_input_for_group("recruiter", sat3_code)
+            has_entries = check_existing_input_for_group(group_name, sat3_code, update_dict) and check_existing_input_for_group("recruiter", sat3_code, update_dict)
         else:
-            has_entries = check_existing_input_for_group(group_name, sat3_code)
+            has_entries = check_existing_input_for_group(group_name, sat3_code, update_dict)
     
         if (not request.user.has_perm("gui.change_histopathologicalsample") and
             has_entries):

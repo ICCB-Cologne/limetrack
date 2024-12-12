@@ -30,6 +30,7 @@ from .views import (
 )
 from ..forms.forms import (
     all_field_verbose_names,
+    field_dict,
     all_field_names,
     odcf_fields,
     UploadForm,
@@ -175,8 +176,31 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 form_data = form.cleaned_data
                 sat3_code = form.cleaned_data["saturn3_sample_code"]
 
+                user = request.user
+
+                if user.groups.first():
+                    group_name = user.groups.first().name.lower()
+
+                    update_dict = {}
+                    
+                    if user.get_username() == "Liquid_HD":
+                        for field in field_dict[group_name]:
+                            update_dict.update({field: data[field]})
+                        for field in field_dict["recruiter"]:
+                            update_dict.update({field: data[field]})
+                    # exclude SATURN3 Sample Code if the user is not recruiter (field_dict[group_name][1:])
+                    elif group_name != "recruiter":
+                        for field in field_dict[group_name][1:]:
+                            update_dict.update({field: data[field]})
+                    else:
+                        for field in field_dict[group_name]:
+                            update_dict.update({field: data[field]})
+                else:
+                    update_dict = form_data
+
+                
                 possible_response = check_records_existence(request, sat3_code,
-                                                            "file", form)
+                                                            "file", form, update_dict)
                 # check_records_existence returns None if there are no errors
                 # if it's not None it's an error response which has to
                 # be returned
@@ -228,7 +252,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
 def check_records_existence(request: HttpRequest,
                             sat3_code: str,
                             tag: str,
-                            form: ModelForm):
+                            form: ModelForm,
+                            update_dict: dict):
     """
     This function is required for handling files.
     It checks the database for a existing record with given
@@ -271,7 +296,7 @@ def check_records_existence(request: HttpRequest,
             if not request.user.has_perm("gui.change_histopathologicalsample"):
                 group_name = str(request.user.groups.first()).lower()
 
-                if check_existing_input_for_group(group_name, sat3_code):
+                if check_existing_input_for_group(group_name, sat3_code, update_dict):
 
                     return record_already_exists(request,
                                                  sat3_code,
