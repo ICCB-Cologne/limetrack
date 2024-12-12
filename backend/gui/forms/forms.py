@@ -43,7 +43,7 @@ tum_fields = ["saturn3_sample_code"] + \
 # spl group is allowed to fill spl & tum fields
 spl_fields = ["saturn3_sample_code"] + \
     all_field_names[
-        all_field_names.index("spl_received"):
+        all_field_names.index("tissue_quality"):
         all_field_names.index("spl_sequencing_type") + 1]
 
 # sclab group is allowed permissions to fill sclab & spatial fields
