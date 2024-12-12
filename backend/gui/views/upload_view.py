@@ -263,26 +263,35 @@ def check_records_existence(request: HttpRequest,
     Or returns error if users with no permission to create records try to upload non-existent
     Sample Codes
     """
+
+    print("CHECK RECORDS EXISTENCE -----------------")
+    print(f"It's user {request.user.get_username()}")
+
+
     # special case just for the time before we re-structure the models and permissions etc
     # LB user needs recruiter permissions addtional to LB 
     if request.user.get_username() == "Liquid_HD":
         if (HistopathologicalSample.
-                objects.filter(saturn3_sample_code=sat3_code).exists() and not
-                request.user.has_perm("gui.change_histopathologicalsample")):
-            messages.error(request,
-                           f"File upload failed!"
-                           f" Record with SATURN3 Sample Code "
-                           f"{str(sat3_code)} already exists.",
-                           extra_tags=tag)
+                objects.filter(saturn3_sample_code=sat3_code).exists()):
+            
+            if(not request.user.has_perm("gui.change_histopathologicalsample")):
+                    
+                if (check_existing_input_for_group("Liquid_HD", sat3_code, update_dict)):
+                        messages.error(request,
+                                    f"File upload failed!"
+                                    f" Record with SATURN3 Sample Code "
+                                    f"{str(sat3_code)} already exists.",
+                                    extra_tags=tag)
 
-            return render(request, "gui/sample_tracking.html",
-                          context={
-                              "form": (form if tag == "general"
-                                       else get_form(request.user)),
-                              "upload_form": UploadForm(),
-                              "search_form": SearchForm(),
-                              "jump_to": ("form" if tag == "general"
-                                          else None)})
+                        return render(request, "gui/sample_tracking.html",
+                                    context={
+                                        "form": (form if tag == "general"
+                                                else get_form(request.user)),
+                                        "upload_form": UploadForm(),
+                                        "search_form": SearchForm(),
+                                        "jump_to": ("form" if tag == "general"
+                                                    else None)})
+
 
     elif (request.user.groups.filter(
             name__in=["SPL", "TUM", "scOpenLab",
