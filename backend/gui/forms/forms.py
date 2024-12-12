@@ -43,7 +43,7 @@ tum_fields = ["saturn3_sample_code"] + \
 # spl group is allowed to fill spl & tum fields
 spl_fields = ["saturn3_sample_code"] + \
     all_field_names[
-        all_field_names.index("spl_received"):
+        all_field_names.index("tissue_quality"):
         all_field_names.index("spl_sequencing_type") + 1]
 
 # sclab group is allowed permissions to fill sclab & spatial fields
@@ -69,7 +69,7 @@ field_dict = {
     "recruiter": recruiter_fields,
     "omicspath": odcf_fields,
     "tum": tum_fields,
-    "spl": tum_fields[1:] + spl_fields,
+    "spl": spl_fields,
     "scopenlab": sclab_fields,
     "spatial": spatial_fields,
     "liquidbiopsy": lb_fields,

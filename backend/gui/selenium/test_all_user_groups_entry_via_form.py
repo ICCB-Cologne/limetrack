@@ -15,10 +15,15 @@ class TestAllUserGroupsForm(BasicTestClass):
         self.tum_input()
         print("tum done")
         self.spl_input()
+        print("spl done")
         self.sclab_input()
+        print("scLab done")
         self.spatial_input()
+        print("saptial done")
         self.lb_input()
+        print("lb done")
         self.omics_input()
+        print("omics done")
         self.login("root", "root")
 
     def search_record(self):
@@ -57,24 +62,26 @@ class TestAllUserGroupsForm(BasicTestClass):
     def spl_input(self):
         self.login("test_SPL", "test4life")
         self.search_record()
+        print("spl record searched")
 
         self.driver.find_element(
             By.ID,
             "id_spl_received").send_keys(RecordGenerator.random_date())
-
+        print("spl received")
         spl_status = self.driver.find_element(
             By.ID, "id_spl_status")
         select_spl_status = Select(spl_status)
         select_spl_status.select_by_visible_text(
             RecordGenerator.random_spl_status())
-
+        print("spl status")
         spl_sequencing_type = self.driver.find_element(
             By.ID, "id_spl_sequencing_type")
         select_spl_sequencing_type = Select(spl_sequencing_type)
         select_spl_sequencing_type.select_by_visible_text(
             RecordGenerator.random_spl_sequencing())
-
+        print("spl seq")
         self.submit_record()
+        print("submitted")
         self.check_submission()
         self.logout()
 
