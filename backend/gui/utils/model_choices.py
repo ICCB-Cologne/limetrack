@@ -9,14 +9,16 @@ LOCALISATION_CHOICE = [
     ("Liver", "Liver"),
     ("Brain", "Brain"),
     ("Lung", "Lung"),
-    ("Thorax Wall", "Thorax Wall"),
-    ("Pleura Punctate", "Pleura Punctate"),
+    ("Thorax wall", "Thorax wall"),
+    ("Pleura punctate", "Pleura punctate"),
     ("Ascites", "Ascites"),
     ("Blood", "Blood"),
     ("Peritoneum", "Peritoneum"),
-    ("Lymph Node", "Lymph Node"),
+    ("Lymph node", "Lymph node"),
     ("Spleen", "Spleen"),
     ("Skin", "Skin"),
+    ("Peripancreatic fat", "Peripancreatic fat")
+
 ]
 
 SITE_CHOICES = [
@@ -48,7 +50,8 @@ INTERVENTION_TYPES = [
     ("Resection", "Resection"),
     ("Biopsy", "Biopsy"),
     ("Blood withdrawal", "Blood withdrawal"),
-    ("Punctate", "Punctate")
+    ("Punctate", "Punctate"),
+    ("Autopsy", "Autopsy")
 ]
 
 GRADING = [
