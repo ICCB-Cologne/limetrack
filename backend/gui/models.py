@@ -14,7 +14,8 @@ from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   LB_STATUS_CHOICES,
                                   SPATIAL_METHOD,
                                   SPATIAL_STATUS,
-                                  SCANALYSIS_CHOICES)
+                                  SCANALYSIS_CHOICES,
+                                  LB_SEQUENCING_STATUS_CHOICES)
 
 CHARFIELD_MAXLEN = 200
 
@@ -81,6 +82,14 @@ class HistopathologicalSample(models.Model):
     Meaning: go to forms.py and make sure
     that the lists and dicts on the top of
     the file include all model fields.
+    If you add date fields give them a DatePicker widget.
+    
+    Don't forget to change the downloadable template csv file (views/download_views.py)
+    and to adapt the test csv files (at least the one_record.csv file).
+
+
+    Last but not least include the new fields into the selenium tests. (gui/selenium/)
+
     """
 
     def generate_patient_id(self):
@@ -287,9 +296,16 @@ class HistopathologicalSample(models.Model):
                                        blank=True, null=True,
                                        verbose_name="LB analyte type",
                                        choices=LB_ANALYTE_TYPES)
-    lb_sampling_date = models.DateField(null=True,
-                                        blank=True,
-                                        verbose_name="LB Sampling Date")
+    lb_panel_r1 = models.CharField(blank=True, null=True,
+                                   verbose_name="LB panel R1")
+    
+    lb_panel_r2 = models.CharField(blank=True, null=True,
+                                   verbose_name="LB panel R2")
+
+    lb_sequencing_status = models.CharField(blank=True, null=True,
+                                            verbose_name="LB Sequencing Status",
+                                            choices=LB_SEQUENCING_STATUS_CHOICES)
+
     lb_received = models.DateField(null=True,
                                    blank=True, verbose_name="LB Received")
     lb_sample_volume = models.DecimalField(null=True, max_digits=4, decimal_places=1,

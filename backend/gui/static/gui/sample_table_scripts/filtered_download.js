@@ -21,14 +21,18 @@ function create_record(keys, row, date = []) {
   let record = {};
 
   row.querySelectorAll("td:not([hidden])").forEach((element, index) => {
+    // if td elements are "filled" with an empty string then
+    // they don't have childNodes. That's taken in account here.
+    if (!element.hasChildNodes()) {
+      record[keys[index]] = "";
+    }
     for (child of element.childNodes) {
       if (child.nodeType === Node.TEXT_NODE) {
         let text = child.textContent.trim();
-
         if (text !== "" && text !== "None") {
           record[keys[index]] = text;
           break;
-        } else {
+        } else if (keys[index] !== "Action") {
           record[keys[index]] = "";
           break;
         }
@@ -45,8 +49,6 @@ function table_to_json(tablename) {
   let table = document.getElementById(tablename);
   let rows = table.querySelectorAll("tr:not([style*='display: none;'])");
   let keys = extract_keys(rows[0]);
-  console.log("KEYS");
-  console.log(keys);
 
   for (let i = 1; i < rows.length; i++) {
     let record = create_record(keys, rows[i]);

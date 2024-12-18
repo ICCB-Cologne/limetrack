@@ -6,6 +6,9 @@ from ..utils.model_choices import (
                      GRADING,
                      CORRESPONDING_ORGANOID_CHOICES,
                      LOCALISATION_CHOICE)
+from ..utils.model_to_form import(
+    create_date_picker_dicts
+)
 from tempus_dominus.widgets import DatePicker #type: ignore
 from django.forms import ModelForm
 from django import forms
@@ -14,6 +17,7 @@ from django import forms
 
 all_field_verbose_names = []
 all_field_names = []
+date_pickers = {}
 
 # exclude primary key "ID" by indexing -> not indexing, but slicing
 # for we dont want it displayed
@@ -21,6 +25,12 @@ all_fields = HistopathologicalSample._meta.get_fields()[1:]
 
 for field in all_fields:
     all_field_verbose_names.append(field.verbose_name)
+    if field.get_internal_type() == "DateField":
+        date_pickers.update(
+            {field.name : DatePicker(
+                options={"allowInputToggle": True},
+                attrs={"input_group": False})
+                })
 
 for field in all_fields:
     # exclude odcf
@@ -108,6 +118,12 @@ disabled_lb_dict = {
 }
 
 
+# date picker dicts for each group
+recruiter_date_pickers, tum_date_pickers, \
+    spl_date_pickers, sclab_date_pickers, \
+        spatial_date_pickers, lb_date_pickers, \
+              odcf_date_pickers = create_date_picker_dicts(date_pickers, field_dict)
+
 
 class SampleForm(ModelForm):
     """
@@ -157,48 +173,7 @@ class SampleForm(ModelForm):
             "tissue_quality": forms.NumberInput(
                 attrs={'min':0, 'max': 5, 'type': 'number'}
             ),
-
-            # Datepicker widgets
-            "died": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "sampling_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "spl_received": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "sclab_received": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "sclab_extraction_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "xenium_run_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "merscope_run_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "lb_sampling_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "lb_received": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "lb_date_of_isolation": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-        }
+        } | date_pickers
 
 
 class SampleFormRec(ModelForm):
@@ -228,16 +203,6 @@ class SampleFormRec(ModelForm):
                        "onchange": "autoFillPatient(this.value)"}
                        ),
 
-            "died": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}
-                ),
-
-            "sampling_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}
-                ),
-
             "corresponding_organoid": forms.Select(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
@@ -246,7 +211,8 @@ class SampleFormRec(ModelForm):
 
         } | disabled_tum_dict | disabled_spl_dict \
             | disabled_sclab_dict | disabled_spatial_dict \
-            | disabled_lb_dict
+            | disabled_lb_dict \
+            | recruiter_date_pickers
 
 
 class SampleFormTUM(ModelForm):
@@ -358,7 +324,8 @@ class SampleFormTUM(ModelForm):
             ),
 
         } | disabled_spl_dict | disabled_sclab_dict \
-            | disabled_spatial_dict | disabled_lb_dict
+            | disabled_spatial_dict | disabled_lb_dict \
+            | tum_date_pickers
 
 
 class SampleFormSPL(SampleFormTUM):
@@ -373,14 +340,9 @@ class SampleFormSPL(SampleFormTUM):
         fields = all_field_names
         widgets = {
 
-            # DatePickers
-
-            'spl_received': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
         } | disabled_sclab_dict \
-            | disabled_spatial_dict | disabled_lb_dict
+            | disabled_spatial_dict | disabled_lb_dict \
+            | spl_date_pickers
 
 
 class SampleFormScLab(SampleFormTUM):
@@ -402,27 +364,10 @@ class SampleFormScLab(SampleFormTUM):
                        "data-placement": "top",
                        "title": "Quality meassure: RNA \
                         molecules larger than 200 bp [%]"}
-                        ),
+                        )
 
-            # DatePickers:
-
-            'sclab_received': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            'sclab_extraction_date': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "xenium_run_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "merscope_run_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-        } | disabled_tum_dict | disabled_spl_dict | disabled_lb_dict
+        } | disabled_tum_dict | disabled_spl_dict | disabled_lb_dict \
+            | sclab_date_pickers
 
 
 class SampleFormSpatial(SampleFormTUM):
@@ -439,19 +384,11 @@ class SampleFormSpatial(SampleFormTUM):
                        "data-placement": "top",
                        "title": "Quality meassure: RNA \
                         molecules larger than 200 bp [%]"}
-                        ),
-
-            # date pickers
-            "xenium_run_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            "merscope_run_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
+                        )
 
         } | disabled_tum_dict | disabled_spl_dict | disabled_lb_dict \
-            | disabled_sclab_dict
+            | disabled_sclab_dict \
+            | spatial_date_pickers
 
 
 class SampleFormLB(SampleFormTUM):
@@ -466,22 +403,9 @@ class SampleFormLB(SampleFormTUM):
         fields = all_field_names
         widgets = {
 
-            # DatePickers:
-
-            'lb_sampling_date': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            'lb_received': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            'lb_date_of_isolation': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
         } | disabled_tum_dict | disabled_spl_dict | disabled_sclab_dict \
-            | disabled_spatial_dict
+            | disabled_spatial_dict \
+            | lb_date_pickers
 
 
 class SampleFormLBRecruiter(SampleFormRec):
@@ -503,37 +427,15 @@ class SampleFormLBRecruiter(SampleFormRec):
                        "onchange": "autoFillPatient(this.value)"}
                        ),
 
-            "died": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}
-                ),
-
-            "sampling_date": DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}
-                ),
-
             "corresponding_organoid": forms.Select(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
                        "title": "generated from the same biopsy/tissue piece"},
-                       ),
-
-            # DatePickers:
-            'lb_sampling_date': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            'lb_received': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
-
-            'lb_date_of_isolation': DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False}),
+                       )
 
         } | disabled_tum_dict | disabled_spl_dict \
-            | disabled_sclab_dict | disabled_spatial_dict
+            | disabled_sclab_dict | disabled_spatial_dict \
+            | lb_date_pickers | recruiter_date_pickers
     
 
 
@@ -551,7 +453,8 @@ class SampleFormDataPaths(SampleFormTUM):
 
         } | disabled_tum_dict | disabled_spl_dict \
             | disabled_sclab_dict | disabled_spatial_dict \
-            | disabled_lb_dict
+            | disabled_lb_dict \
+            | odcf_date_pickers
         
 
 class SampleFormReadOnly(SampleFormTUM):
