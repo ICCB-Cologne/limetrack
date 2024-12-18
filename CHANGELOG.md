@@ -5,6 +5,20 @@
 
 - **New**
     - Added Sign Up with Google Forms link on login page
+    - New user Liquid_HD with special permissions
+- **Updated Liquid Biopsy data fields**
+    - 3 fields added: *LB Panel R1*, *LB Panel R2*, *LB Sequencing Status*
+    - 1 field removed: *LB Sampling Date*
+    - 1 field modified: *LB Sample Volume* data type changed to decimal number with max 4 digits and 1 decimal number.
+- **Updated OMICS data fields**
+    - 2 fields added: *Request Execution of*, *Cellranger-arc run*
+- **Updated Recruiter data fields**
+    - 2 fields modified: *Type of Intervention* has a new option in its dropdown field: "Autopsy", *Localisation* has a new option in its dropdown field: "Pancreatic fat"
+- **Sample table**
+    - Rearranged OMICS columns when filtering out all other groups.
+    - Date format reset to YYYY-MM-DD (international)
+- **Bug fixes**
+    - Issue with filtered table download resolved.
 ---
 
 ### 2024-12-06

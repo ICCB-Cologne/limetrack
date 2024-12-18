@@ -111,7 +111,6 @@ LB_STATUS_CHOICES = [
 ]
 
 LB_SEQUENCING_STATUS_CHOICES = [
-    ("None", "None"),
     ("sWGS", "sWGS"),
     ("Panel", "Panel"),
     ("sWGS & Panel", "sWGS & Panel")
