@@ -36,7 +36,6 @@ class TestAllUserGroupsForm(BasicTestClass):
     def tum_input(self):
         self.login("test_TUM", "test4life")
         self.search_record()
-        self.driver.save_screenshot("screenie.png")
         self.driver.find_element(By.ID, "id_tissue_quality").send_keys(
             RecordGenerator.random_integer_from_1_to_5())
         self.driver.find_element(By.ID, "id_tumor_cell_content").send_keys(
@@ -205,7 +204,7 @@ class TestAllUserGroupsForm(BasicTestClass):
                 RecordGenerator.random_date())
 
         self.driver.find_element(By.ID, "id_lb_sample_volume").send_keys(
-            RecordGenerator.random_integer_from_0_to_100())
+            RecordGenerator.random_decimal_with_max_4_digits_and_1_decimal_place())
 
         self.driver.find_element(By.ID, "id_lb_date_of_isolation").send_keys(
                 RecordGenerator.random_date())
@@ -228,6 +227,16 @@ class TestAllUserGroupsForm(BasicTestClass):
     def omics_input(self):
         self.login("test_Omics", "test4life")
         self.search_record()
+
+        self.driver.find_element(
+            By.ID,
+            "id_request_execution_of").send_keys(
+                RecordGenerator.random_string_of_length(10))
+
+        self.driver.find_element(
+            By.ID,
+            "id_cell_ranger_arc_run").send_keys(
+                RecordGenerator.random_date())
 
         self.driver.find_element(
             By.ID,

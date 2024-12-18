@@ -20,6 +20,7 @@ from backend.gui.utils.model_choices import (ENTITY, TISSUE_TYPE,
 import random
 import string
 import time
+import decimal
 import datetime
 
 
@@ -149,6 +150,10 @@ class RecordGenerator:
     @staticmethod
     def random_integer_from_0_to_100():
         return str(random.choice(range(0, 101)))
+    
+    @staticmethod
+    def random_decimal_with_max_4_digits_and_1_decimal_place():
+        return str(decimal.Decimal(random.randrange(0, 9999))/10)
 
     @staticmethod
     def random_integer_from_1_to_5():

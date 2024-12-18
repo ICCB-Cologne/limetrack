@@ -1,7 +1,16 @@
+"""
+This view handles the sample tracking table site.
+For rendering the template gui/all_samples.html is utilized.
+
+The view's post function handles deletion of entries.
+The 'get' as well as the 'post' function can accept group filters within the HttpRequest as input
+and return only the fields that belong to given groups.
+"""
+
+
 from ..forms.forms import (
     field_dict,
     GroupFilterForm,
-
 )
 from ..models import HistopathologicalSample
 
@@ -22,6 +31,16 @@ import logging
 
 app_log = logging.getLogger("s3sample")
 
+def adapt_list_for_group_filter_display(key, field_list: list):
+    """
+    If groups want to have fields displayed in the table, that don't belong to this group these
+    fields can be added here. This only works if all other groups are filtered out.
+    """
+    if key == "omicspath":
+        field_list = field_list[:1] + ["localisation"] + field_list[1:]
+    return field_list
+
+field_dict_for_group_filters = { key: adapt_list_for_group_filter_display(key, field_dict[key]) for key in field_dict }
 
 class AllSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest,
@@ -42,16 +61,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         else:
             filtered_form = GroupFilterForm(request.GET)
             if filtered_form.is_valid():
-                all_filters = ["id"]
-                for group in filtered_form.cleaned_data:
-                    all_filters += field_dict[group] \
-                        if filtered_form.cleaned_data[group] else []
-                samples = HistopathologicalSample.objects.all()
-                fields_and_values_list = [
-                    [(field.verbose_name, getattr(instance, field.name))
-                        if field.name in all_filters else (None, None)
-                        for field in instance._meta.fields]
-                    for instance in samples]
+                fields_and_values_list = filter_table_with_group_filter(filtered_form.cleaned_data)
             filters = filtered_form
 
         context = {
@@ -78,19 +88,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
 
         filtered_form = GroupFilterForm(post_data)
         if filtered_form.is_valid():
-            all_filters = ["id"]
-            # get all fields that belong to the filtered user groups
-            for group in filtered_form.cleaned_data:
-                all_filters += field_dict[group] \
-                    if filtered_form.cleaned_data[group] else []
-
-            # find all columns/fields that are part of the all filters list to display only those
-            samples = HistopathologicalSample.objects.all()
-            fields_and_values_list = [
-                [(field.verbose_name, getattr(instance, field.name))
-                    if field.name in all_filters else (None, None)
-                    for field in instance._meta.fields]
-                for instance in samples]
+            fields_and_values_list = filter_table_with_group_filter(filtered_form.cleaned_data)
         filters = filtered_form
 
         context = {
@@ -100,3 +98,33 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
                                   # need to check the user's attributes
         }
         return render(request, template_name, context=context)
+
+
+def filter_table_with_group_filter(group_filter: dict[str, Any]):
+        all_filters = ["id"]
+        samples = HistopathologicalSample.objects.all()
+
+        # this part is for displaying the table with one group filter only
+        # in case some groups want an individual filtering of the columns
+        if sum(list(group_filter.values())) == 1:
+            for group in field_dict_for_group_filters:
+                    if group_filter[group]:
+                        all_filters += field_dict_for_group_filters[group]
+            fields_and_values_list = []
+            for instance in samples:
+                instance_list = []                        
+                for field_name in all_filters:
+                    instance_list.append(
+                        (instance._meta.get_field(field_name).verbose_name, getattr(instance, field_name)))
+                fields_and_values_list.append(instance_list)
+        else:
+            for group in group_filter:
+                all_filters += field_dict[group] \
+                    if group_filter[group] else []
+            fields_and_values_list = [
+                [(field.verbose_name, getattr(instance, field.name))
+                    if field.name in all_filters else (None, None)
+                    for field in instance._meta.fields]
+                for instance in samples]
+            
+        return fields_and_values_list

@@ -12,8 +12,21 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
         self.create_minimal_test_record()
 
+        # TUM
+
+        self.driver.find_element(By.ID, "id_tissue_quality").send_keys(
+            RecordGenerator.random_integer_from_1_to_5())
+
         self.driver.find_element(By.ID, "id_tumor_cell_content").send_keys(
             RecordGenerator.random_integer_from_0_to_100())
+        
+        self.driver.find_element(By.ID, "id_percent_avital_cells").send_keys(
+            RecordGenerator.random_integer_from_0_to_100())
+        
+        self.driver.find_element(By.ID, "id_comment_tumor_cell_content").send_keys(
+            RecordGenerator.random_string_of_length(50))
+
+        # SPL
 
         self.driver.find_element(
             By.ID,
@@ -30,6 +43,9 @@ class TestRootCreateRecordViaForm(BasicTestClass):
         select_spl_sequencing_type = Select(spl_sequencing_type)
         select_spl_sequencing_type.select_by_visible_text(
             RecordGenerator.random_spl_sequencing())
+        
+
+        # ScLab
 
         self.driver.find_element(
             By.ID,
@@ -85,6 +101,8 @@ class TestRootCreateRecordViaForm(BasicTestClass):
             By.ID,
             "id_sclab_comment").send_keys(
                 RecordGenerator.random_string_of_length(100))
+        
+        # Spatial 
 
         spatial_method = self.driver.find_element(
             By.ID, "id_spatial_method")
@@ -127,6 +145,8 @@ class TestRootCreateRecordViaForm(BasicTestClass):
         self.driver.find_element(By.ID, "id_spatial_comment").send_keys(
             RecordGenerator.random_string_of_length(50))
 
+        # LB
+
         lb_analyte_type = self.driver.find_element(
             By.ID, "id_lb_analyte_type")
         select_lb_analyte_type = Select(lb_analyte_type)
@@ -144,7 +164,7 @@ class TestRootCreateRecordViaForm(BasicTestClass):
                 RecordGenerator.random_date())
 
         self.driver.find_element(By.ID, "id_lb_sample_volume").send_keys(
-            RecordGenerator.random_integer_from_0_to_100())
+            RecordGenerator.random_decimal_with_max_4_digits_and_1_decimal_place())
 
         self.driver.find_element(By.ID, "id_lb_date_of_isolation").send_keys(
                 RecordGenerator.random_date())
@@ -159,6 +179,23 @@ class TestRootCreateRecordViaForm(BasicTestClass):
         select_lb_status = Select(lb_status)
         select_lb_status.select_by_visible_text(
             RecordGenerator.random_lb_status_choice())
+        
+        # OMICS
+
+        self.driver.find_element(
+            By.ID,
+            "id_request_execution_of").send_keys(
+                RecordGenerator.random_string_of_length(10))
+
+        self.driver.find_element(
+            By.ID,
+            "id_cell_ranger_arc_run").send_keys(
+                RecordGenerator.random_date())
+
+        self.driver.find_element(
+            By.ID,
+            "id_sc_analysis_status").send_keys(
+                RecordGenerator.random_scanalysis_choice())
 
         self.driver.find_element(
             By.ID, "id_scrna_r1").send_keys("omics/schmomociks")
@@ -174,11 +211,6 @@ class TestRootCreateRecordViaForm(BasicTestClass):
 
         self.driver.find_element(
             By.ID, "id_scatac_i2").send_keys("omics/schmomociks")
-
-        self.driver.find_element(
-            By.ID,
-            "id_sc_analysis_status").send_keys(
-                RecordGenerator.random_scanalysis_choice())
 
         self.driver.find_element(
             By.ID, "id_wgs_r1").send_keys("omics/schmomociks")

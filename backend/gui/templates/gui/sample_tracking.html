@@ -110,7 +110,7 @@ Sample Tracking
       
       {% for field in form %}
        {# splitting the form visually in sections for the different user groups #}
-        {% if field.name in "recruiting_site, tissue_quality, spl_received, sclab_received, spatial_method, lb_analyte_type, sc_analysis_status" %}
+        {% if field.name in "recruiting_site, tissue_quality, spl_received, sclab_received, spatial_method, lb_analyte_type, request_execution_of" %}
           <hr>
         {% endif %}
 

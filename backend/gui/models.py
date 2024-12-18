@@ -292,7 +292,7 @@ class HistopathologicalSample(models.Model):
                                         verbose_name="LB Sampling Date")
     lb_received = models.DateField(null=True,
                                    blank=True, verbose_name="LB Received")
-    lb_sample_volume = models.IntegerField(null=True,
+    lb_sample_volume = models.DecimalField(null=True, max_digits=4, decimal_places=1,
                                            blank=True,
                                            verbose_name="LB Sample"
                                                         " Volume [ml]")
@@ -309,7 +309,19 @@ class HistopathologicalSample(models.Model):
                                  verbose_name="LB Status",
                                  choices=LB_STATUS_CHOICES)
 
-    # Datapaths ###
+    # Datapaths ### 
+
+    request_execution_of = models.CharField(
+        blank=True,
+        null=True,
+        verbose_name="Request execution of"
+    )
+
+    cell_ranger_arc_run = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name="Cellranger-arc run"
+    )
 
     sc_analysis_status = models.CharField(
         blank=True,
