@@ -1,6 +1,11 @@
 ## Change Log
 
 ---
+### 2024-12-18
+
+- **New**
+    - Added Sign Up with Google Forms link on login page
+---
 
 ### 2024-12-06
 
