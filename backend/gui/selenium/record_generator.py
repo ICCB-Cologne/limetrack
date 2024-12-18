@@ -11,7 +11,8 @@ from backend.gui.utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                              LB_STATUS_CHOICES,
                                              SPATIAL_METHOD,
                                              SPATIAL_STATUS,
-                                             SCANALYSIS_CHOICES)
+                                             SCANALYSIS_CHOICES,
+                                             LB_SEQUENCING_STATUS_CHOICES)
 
 from backend.gui.utils.model_choices import (ENTITY, TISSUE_TYPE,
                                              STORAGE_FORMAT,
@@ -158,3 +159,7 @@ class RecordGenerator:
     @staticmethod
     def random_integer_from_1_to_5():
         return str(random.choice(range(1, 6)))
+    
+    @staticmethod
+    def random_lb_sequencing_status():
+        return random.choice(LB_SEQUENCING_STATUS_CHOICES)[0]

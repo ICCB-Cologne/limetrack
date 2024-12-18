@@ -110,6 +110,13 @@ LB_STATUS_CHOICES = [
     ("sequencing successful", "sequencing successful"),
 ]
 
+LB_SEQUENCING_STATUS_CHOICES = [
+    ("None", "None"),
+    ("sWGS", "sWGS"),
+    ("Panel", "Panel"),
+    ("sWGS & Panel", "sWGS & Panel")
+]
+
 SEX_CHOICES = [
     ("f", "f"),
     ("m", "m")

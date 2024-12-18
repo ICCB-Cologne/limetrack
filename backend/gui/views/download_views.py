@@ -38,7 +38,7 @@ example_sample = [
     "2023-12-19", "RUNID98124987412", "PANELID98124987412",
     "85", "Spatial Comment",
     # lb
-    "Plasma", "2023-12-17", "2023-12-17", "4.1", "2023-12-17",
+    "Plasma", "lb/panel/path1", "lb/panel/path2", "sWGS","2023-12-17", "4.1", "2023-12-17",
     "111", "sequencing successful",
     # ocdf
     "test", "2021-11-29",

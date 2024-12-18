@@ -193,10 +193,19 @@ class TestAllUserGroupsForm(BasicTestClass):
         select_lb_analyte_type.select_by_visible_text(
             RecordGenerator.random_lb_analyte_types())
 
-        self.driver.find_element(
-            By.ID,
-            "id_lb_sampling_date").send_keys(
-                RecordGenerator.random_date())
+        self.driver.find_element(By.ID,
+                                 "id_lb_panel_r1").send_keys(
+                                     RecordGenerator.random_string_of_length(100))
+        self.driver.find_element(By.ID,
+                                 "id_lb_panel_r2").send_keys(
+                                     RecordGenerator.random_string_of_length(100))
+
+        lb_sequencing_status = self.driver.find_element(
+            By.ID, "id_lb_sequencing_status")
+        select_lb_sequencing_status = Select(lb_sequencing_status)
+        select_lb_sequencing_status.select_by_visible_text(
+            RecordGenerator.random_lb_sequencing_status())
+
 
         self.driver.find_element(
             By.ID,

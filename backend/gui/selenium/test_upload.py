@@ -9,7 +9,7 @@ class TestUpload(BasicTestClass):
     def test_upload_root(self):
 
         self.login("root", "root")
-        self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
+        self.sat3_sample_code = "S3C-TESTY-0-M1-V-R1"
         
         self.upload_file("one_record.csv")
         # download
@@ -26,7 +26,7 @@ class TestUpload(BasicTestClass):
         (for they have write permissions on spatial fields)
         """
 
-        self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
+        self.sat3_sample_code = "S3C-TESTY-0-M1-V-R1"
 
         user_names = ["test_Recruiter", "test_TUM", "test_SPL",
                       "test_ScLab", "test_LB",
@@ -42,7 +42,7 @@ class TestUpload(BasicTestClass):
 
     def test_upload_spatial(self):
 
-        self.sat3_sample_code = "S3C-maynz-0-M1-V-R1"
+        self.sat3_sample_code = "S3C-TESTY-0-M1-V-R1"
 
         user_names = ["test_Recruiter", "test_Spatial"]
 
@@ -69,4 +69,5 @@ class TestUpload(BasicTestClass):
           By.ID, "id_file").send_keys(
               os.path.abspath(f"./csv-files/{file_name}"))
         self.driver.find_element(By.ID, "end-of-page").click()
+        self.driver.save_screenshot("Srececs.png")
         self.check_upload()
