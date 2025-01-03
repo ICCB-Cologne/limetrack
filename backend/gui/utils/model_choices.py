@@ -43,7 +43,8 @@ TISSUE_TYPES = [
     ("Plasma", "Plasma"),
     ("ctDNA", "ctDNA"),
     ("Whole blood", "Whole blood"),
-    ("Organoid", "Organoid")
+    ("Organoid", "Organoid"),
+    ("Buffy coat", "Buffy coat")
 ]
 
 INTERVENTION_TYPES = [

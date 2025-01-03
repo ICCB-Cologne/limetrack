@@ -43,8 +43,12 @@ for field in all_fields:
 # TODO: after adding new model fields
 # change indexes here by changing the first
 # and the last model field name of a group
+# if necessary
+
+# recruiter fields: from 'recruiting_site' to 'grading'
 recruiter_fields = all_field_names[:all_field_names.index("grading") + 1]
 
+# tum fields: from 'tissue_quality' to 'comment_tumor_cell_content'
 tum_fields = ["saturn3_sample_code"] + \
     all_field_names[
         all_field_names.index("tissue_quality"):
