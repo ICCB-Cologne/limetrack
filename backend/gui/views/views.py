@@ -4,10 +4,10 @@ from ..forms.forms import (
     SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
     UploadForm, LoginForm,
     SearchForm, SampleFormDataPaths, SampleFormSpatial,
-    SampleFormReadOnly, SampleFormLBRecruiter
+    SampleFormReadOnly, SampleFormLBRecruiter, FlexibleSampleForm
 )
 from ..models import HistopathologicalSample
-
+from ..utils.permission_manager import get_all_permitted_fields
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
@@ -38,6 +38,9 @@ def get_form(
         data: QueryDict = None):
     
     group_name = str(user.groups.first()).lower()
+
+    
+    return FlexibleSampleForm(data=data, user=user)
 
     if user.get_username() == "Liquid_HD":
         return SampleFormLBRecruiter(data=data)
@@ -286,7 +289,7 @@ def  handle_form(form: ModelForm,
     """
     Updates existing patient records
     or creates new patient records
-    depending on user group and user permissions.
+    depending on group and user permissions.
 
     variables:
     tag = "general" or "file"
@@ -294,7 +297,42 @@ def  handle_form(form: ModelForm,
     a file or filling in the form
 
     """
-    
+    user = request.user
+
+    if user.has_perm("gui.recruiter_fields"):
+        
+        if (HistopathologicalSample.
+            objects.filter(
+                saturn3_sample_code=sat3_code).exists()):
+            
+            if request.user.has_perm("gui.change_histopathologicalsample"):
+                    return update_record(request, form,
+                                            request.user, data, sat3_code, tag)
+            
+            else:
+                update_dict = {}
+                for field in get_all_permitted_fields(user):
+                    update_dict.update({field: data[field]})
+                if not check_existing_input_for_group("Liquid_HD", sat3_code, update_dict):
+                    return update_record(request, form,
+                                            request.user, data, sat3_code, tag)
+                else:
+                    messages.error(request,
+                                "Submission unsuccessful!"
+                                " Record with SATURN3 Sample Code "
+                                f"{str(sat3_code)} already exists and you are not permitted to edit it.",
+                                extra_tags=tag)
+
+                    return render(request, "gui/sample_tracking.html",
+                                context={"form": form,
+                                        "upload_form": UploadForm(),
+                                        "search_form": SearchForm(),
+                                        "jump_to": ("form" if tag == "general"
+                                                    else None)})
+
+
+        
+
     # special case just for the time before we re-structure the models and permissions etc
     # LB user needs recruiter permissions addtional to LB 
     if request.user.get_username() == "Liquid_HD":

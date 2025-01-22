@@ -95,6 +95,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
     def handle_file(self, file: UploadedFile, request: HttpRequest):
         """
+
         TODO: needs to be adapted to the different
         sorts of forms / group memberships
         """
@@ -178,6 +179,15 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 user = request.user
 
+                user_permissions = user.get_user_permissions()
+                if "histopathological_sample.readonly" in user_permissions:
+                    pass
+                for permission in user_permissions:
+                    group_section = permission.split(".")[1].split("_")[0]
+                    for field in field_dict[group_section]:
+                        update_dict.update({field: data[field]})
+                
+                
                 if user.groups.first():
                     group_name = user.groups.first().name.lower()
 

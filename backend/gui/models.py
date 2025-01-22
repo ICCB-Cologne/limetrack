@@ -92,6 +92,22 @@ class HistopathologicalSample(models.Model):
 
     """
 
+    class Meta:
+
+        # naming constraints:
+        # official group name found in admin console + _fields e.g. recruiter_fields
+        permissions = [
+            ("recruiter_fields", "Can edit empty recruiter fields & create records."),
+            ("tum_fields", "Can edit empty TUM fields."),
+            ("spl_fields", "Can edit empty SPL fields."),
+            ("scopenlab_fields", "Can edit empty SCLab fields."),
+            ("spatial_fields", "Can edit empty Spatial fields."),
+            ("liquidbiopsy_fields", "Can edit empty LB fields."),
+            ("omicspath_fields", "Can edit empty Omics fields."),
+            # ("readonly", "Can only read data."),
+            # ("all_fields", "Can edit all empty fields.")
+        ]
+
     def generate_patient_id(self):
         return self.patient_identifier + self.recruiting_site
 

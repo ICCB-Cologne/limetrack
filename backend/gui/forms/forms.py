@@ -12,6 +12,7 @@ from ..utils.model_to_form import(
 from tempus_dominus.widgets import DatePicker #type: ignore
 from django.forms import ModelForm
 from django import forms
+from django.contrib.auth.models import User
 # documentation https://github.com/FlipperPA/django-tempus-dominus
 
 
@@ -41,9 +42,9 @@ for field in all_fields:
 
 # lists of fields for individual groups
 # TODO: after adding new model fields
+# if necessary
 # change indexes here by changing the first
 # and the last model field name of a group
-# if necessary
 
 # recruiter fields: from 'recruiting_site' to 'grading'
 recruiter_fields = all_field_names[:all_field_names.index("grading") + 1]
@@ -54,17 +55,16 @@ tum_fields = ["saturn3_sample_code"] + \
         all_field_names.index("tissue_quality"):
         all_field_names.index("comment_tumor_cell_content") + 1]
 
-# spl group is allowed to fill spl & tum fields
 spl_fields = ["saturn3_sample_code"] + \
     all_field_names[
-        all_field_names.index("tissue_quality"):
+        all_field_names.index("spl_received"):
         all_field_names.index("spl_sequencing_type") + 1]
 
 # sclab group is allowed permissions to fill sclab & spatial fields
 sclab_fields = ["saturn3_sample_code"] + \
     all_field_names[
         all_field_names.index("sclab_received"):
-        all_field_names.index("spatial_comment") + 1]
+        all_field_names.index("sclab_comment") + 1]
 
 spatial_fields = ["saturn3_sample_code"] + \
     all_field_names[
@@ -178,6 +178,121 @@ class SampleForm(ModelForm):
                 attrs={'min':0, 'max': 5, 'type': 'number'}
             ),
         } | date_pickers
+
+
+class FlexibleSampleForm(ModelForm):
+    """
+    This form disables fields depending on the permissions a user has. 
+    Only works for users with permissons to create records.
+    """
+    required_css_class = "required"
+    # error_css_class = "error-field"
+
+    saturn3_sample_code = SampleCodeField(
+        required=True, widget=SampleCodeWidget(), label="SATURN3 Sample Code")
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')
+        super().__init__(*args, **kwargs)
+        self.disable_widgets(user)
+
+    def disable_widgets(self, user: User):
+        """
+        Disables the widgets of the form's fields depending on the user's permissions 
+        so unauthorized users cannot enter data, yet still see the fields (in a disabled state).
+        """
+        # if user.has_perm("histopathological_sample.all_fields"):
+        #     return
+        
+        # if user.has_perm("histopathological_sample.readonly"):
+        #     for field in self.fields:
+        #         self.fields[field].widget = forms.TextInput(attrs={"disabled": "true"})
+        #     return
+        
+        print("Doing SOMETHING")
+
+        if not user.has_perm("gui.recruiter_fields"):
+            for field_name in recruiter_fields:
+                self.disable_single_widget(field_name)
+                self.disable_required_fields(field_name)
+
+        if not user.has_perm("gui.tum_fields"):
+            for field_name in tum_fields:
+                self.disable_single_widget(field_name)
+
+        if not user.has_perm("gui.spl_fields"):
+            for field_name in spl_fields:
+                print(field_name)
+                self.disable_single_widget(field_name)
+
+        if not user.has_perm("gui.sclab_fields"):
+            for field_name in sclab_fields:
+                self.disable_single_widget(field_name)
+
+        if not user.has_perm("gui.spatial_fields"):
+            for field_name in spatial_fields:
+                self.disable_single_widget(field_name)
+
+        if not user.has_perm("gui.lb_fields"):
+            for field_name in lb_fields:
+                self.disable_single_widget(field_name)
+
+        if not user.has_perm("gui.omics_fields"):
+            for field_name in odcf_fields:
+                self.disable_single_widget(field_name)
+
+    def disable_single_widget(self, field_name):
+        # SAT3 Sample Code field is always enabled for users with write permissions.
+        if not field_name == "saturn3_sample_code":
+            self.fields[field_name].widget = forms.TextInput(attrs={"disabled": "true"})
+
+    def disable_required_fields(self, field_name):
+        """
+        Required fields are necessary only when creating a new record
+        i.e. if a user has the form's "recruiter_fields" set on enabled.
+        If a user does not have these fields, then the fields must be set to not required
+        in order to allow a form being submitted without said fields.
+        """
+        if not field_name == "saturn3_sample_code":
+            if self.fields[field_name].required:
+                self.fields[field_name].required = False
+
+
+    class Meta:
+        model = HistopathologicalSample
+        # exclude = ["id"]
+        fields = all_field_names + odcf_fields
+
+
+        widgets = {
+
+            # include tooltips into widgets
+            "patient_identifier": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "5-digit SATURN3 pseudonym \
+                        (by Treuhandstelle Freiburg)",
+                       "onchange": "autoFillPatient(this.value)"}
+                       ),
+
+            "corresponding_organoid": forms.Select(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "generated from the same biopsy/tissue piece"}
+                       ),
+
+            "dv_200": forms.TextInput(
+                attrs={"data-toggle": "tooltip",
+                       "data-placement": "top",
+                       "title": "Quality meassure: RNA \
+                        molecules larger than 200 bp [%]"}
+                        ),
+
+            # widgets with additional features
+            "tissue_quality": forms.NumberInput(
+                attrs={'min':0, 'max': 5, 'type': 'number'}
+            ),
+        } | date_pickers 
 
 
 class SampleFormRec(ModelForm):
