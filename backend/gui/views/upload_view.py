@@ -32,7 +32,6 @@ from ..forms.forms import (
     all_field_verbose_names,
     field_dict,
     all_field_names,
-    odcf_fields,
     UploadForm,
     SearchForm
 )
@@ -124,7 +123,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
             data = {}
             for field_name, verbose_field_name in zip(all_field_names +
-                                                      odcf_fields[1:],
+                                                      field_dict["omicspath"][1:],
                                                       all_field_verbose_names):
 
                 value: str = row.get(verbose_field_name)

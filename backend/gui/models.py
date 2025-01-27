@@ -70,11 +70,41 @@ def no_commas_allowed(comment: str):
     if "," in comment:
         raise ValidationError("Commas are not permitted.")
 
-# Create your models here.
+# dictionary for splitting the model into sections
+# put in last field name for each section
+# TODO: if no sections needed: handling of empty dict 
+# needs to be implemented in forms, views etc.
+end_of_model_section_dict = {
+    "recruiter" : "grading",
+    "tum" : "comment_tumor_cell_content",
+    "spl" : "spl_sequencing_type",
+    "scopenlab" : "sclab_comment",
+    "spatial" : "spatial_comment",
+    "liquidbiopsy" : "lb_status",
+    "omicspath" : "wgs_vcf",
+}
 
 
 class HistopathologicalSample(models.Model):
     """
+    In the SATURN3 Sample Tracker the model is split into
+    7 'sections' (e.g., SPL, Recruiter ...) which
+    users can access only if they have the respective permissions.
+    For the forms in the front-end this means, that form fields
+    a user has no permissions to edit are greyed out and disabled.
+    In the back-end data input is handled in a similar way.
+    Data is processed only for the sections a user has permissions to edit.
+
+    2 fields are idependent of these sections and not editable:
+    id (generated automatically by django)
+    created (time stamp)
+
+    The saturn3_sample_code field can only be created by users with
+    the permission to create new records. Other users utilize it
+    to refer to existing samples in order to edit
+    the sample's sections they're allowed to change.
+
+    --- IMPORTANT INSTRUCTIONS ---
     When adding fields to the model,
     remember to make changes to
     the forms.py file accordingly.
@@ -87,15 +117,21 @@ class HistopathologicalSample(models.Model):
     Don't forget to change the downloadable template csv file (views/download_views.py)
     and to adapt the test csv files (at least the one_record.csv file).
 
-
     Last but not least include the new fields into the selenium tests. (gui/selenium/)
+
+    ! If you change the last field of a section: Edit the end_of_model_section_dict accordingly.
 
     """
 
+
     class Meta:
+
+        # these permissions regulate which 'sections' of the model
+        # a user or a user group has access to
 
         # naming constraints:
         # official group name found in admin console + _fields e.g. recruiter_fields
+        
         permissions = [
             ("recruiter_fields", "Can edit empty recruiter fields & create records."),
             ("tum_fields", "Can edit empty TUM fields."),
@@ -107,9 +143,6 @@ class HistopathologicalSample(models.Model):
             # ("readonly", "Can only read data."),
             # ("all_fields", "Can edit all empty fields.")
         ]
-
-    def generate_patient_id(self):
-        return self.patient_identifier + self.recruiting_site
 
     # recruiter - 11 fields ###
 

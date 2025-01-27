@@ -1,10 +1,8 @@
 from ..forms.forms import (
-    all_field_names, odcf_fields, field_dict,
-    SampleFormScLab, SampleFormRec,
-    SampleFormSPL, SampleFormTUM, SampleFormLB, SampleForm,
+    all_field_names, field_dict,
     UploadForm, LoginForm,
-    SearchForm, SampleFormDataPaths, SampleFormSpatial,
-    SampleFormReadOnly, SampleFormLBRecruiter, FlexibleSampleForm
+    SearchForm,
+    FlexibleSampleForm
 )
 from ..models import HistopathologicalSample
 from ..utils.permission_manager import get_all_permitted_fields
@@ -76,6 +74,32 @@ def check_existing_input_for_group(group_name: str, sat3_code: str, update_dict:
 
     existing_fields = record._meta.get_fields()
     already_filled = False
+    # TODO: think about iterating update_dict
+    for field in existing_fields:
+        if (field.name in update_dict):
+                existing_field_value = getattr(record, field.name)
+                new_field_value = update_dict[field.name]
+                if (existing_field_value is not None
+                    and existing_field_value != "" # for TextArea fields
+                    and str(existing_field_value) != str(new_field_value)
+                    and new_field_value is not None
+                    and new_field_value != ""):  # for TextArea fields
+                    already_filled = True
+                    break
+
+    return already_filled
+
+
+def check_existing_input_for_user(user: User, sat3_code: str, update_dict: dict) -> bool:
+    """
+    Checks whether a group's specific fields already has entries.
+    """
+    record = HistopathologicalSample.objects. \
+        filter(saturn3_sample_code=sat3_code).first()
+
+    existing_fields = record._meta.get_fields()
+    already_filled = False
+    # TODO: think about iterating update_dict
     for field in existing_fields:
         if (field.name in update_dict):
                 existing_field_value = getattr(record, field.name)
@@ -98,34 +122,20 @@ def update_record(request: HttpRequest,
     Updates existing records in the db or returns error.
 
     If record with given sat3_code exists:
-    Allows users to fill in data in the empty fields of their respective group.
+    Allows users to fill in data in the empty fields of their respective permissions.
     Edits a record's fields if the user has the permission to edit
     """
 
     group_name = user.groups.first().name.lower()
 
     update_dict = {}
-    
-    if user.get_username() == "Liquid_HD":
-        for field in field_dict[group_name]:
-            update_dict.update({field: data[field]})
-        for field in field_dict["recruiter"]:
-            update_dict.update({field: data[field]})
-    # exclude SATURN3 Sample Code if the user is not recruiter (field_dict[group_name][1:])
-    elif group_name != "recruiter":
-        for field in field_dict[group_name][1:]:
-            update_dict.update({field: data[field]})
-    else:
-        for field in field_dict[group_name]:
-            update_dict.update({field: data[field]})
+    for field in get_all_permitted_fields(user):
+        update_dict.update({field: data[field]})
 
     if (HistopathologicalSample.
             objects.filter(saturn3_sample_code=sat3_code).exists()):
 
-        if user.get_username() == "Liquid_HD":
-            has_entries = check_existing_input_for_group(group_name, sat3_code, update_dict) and check_existing_input_for_group("recruiter", sat3_code, update_dict)
-        else:
-            has_entries = check_existing_input_for_group(group_name, sat3_code, update_dict)
+        has_entries = check_existing_input_for_user(user, sat3_code, update_dict)
     
         if (not request.user.has_perm("gui.change_histopathologicalsample") and
             has_entries):
@@ -299,8 +309,10 @@ def  handle_form(form: ModelForm,
     """
     user = request.user
 
-    if user.has_perm("gui.recruiter_fields"):
+    if user.has_perm("gui.add_histopathologicalsample"):
         
+        ## TODO: here we maybe could check if it not exists and then do the else part below
+        ## if it does exist we might only need the update_record function
         if (HistopathologicalSample.
             objects.filter(
                 saturn3_sample_code=sat3_code).exists()):
@@ -330,7 +342,54 @@ def  handle_form(form: ModelForm,
                                         "jump_to": ("form" if tag == "general"
                                                     else None)})
 
+        else:
+            creation_dict = {}
+            for field in get_all_permitted_fields(user):
+                creation_dict.update({field: data[field]})
+            
+            # TODO: check if we could just give the creation dict
+            # to a new instance of the form and do a form.save()
+            # instead of the solution below
+            # ATTENTION: CSV UPLOADS STILL NEED TO BE ADDED IN THIS WAY
+            HistopathologicalSample.objects.filter(
+               saturn3_sample_code=sat3_code).create(
+                **update_dict)
+            
+    elif len(user.get_user_permissions()) > 0:
+        ## TODO: here we need a check if the user has any permissions at all.
+        return update_record(request, form,
+                        request.user,
+                        data, sat3_code, tag)
 
+    else:
+        messages.error(request,
+                       "Submission failed!"
+                       " Not permitted!",
+                       extra_tags=tag)
+
+        return render(request, "gui/sample_tracking.html",
+                      context={"form": form,
+                               "upload_form": UploadForm(),
+                               "search_form": SearchForm(),
+                               "jump_to": ("form" if tag == "general"
+                                           else None)})
+    
+    if tag.lower() == "general":
+        # if form's been input by using the webpages form
+        messages.success(request, "Submission successful!", extra_tags=tag)
+        return render(
+                request,
+                "gui/sample_tracking.html",
+                context={
+                    "jump_to": "form",
+                    "form": get_form(request.user),
+                    "upload_form": UploadForm(),
+                    "search_form": SearchForm()
+                }
+            )
+    else:
+        # if a CSV file's been submitted
+        return
         
 
     # special case just for the time before we re-structure the models and permissions etc
@@ -443,7 +502,7 @@ def  handle_form(form: ModelForm,
         if (HistopathologicalSample.
                 objects.filter(saturn3_sample_code=sat3_code).exists()):
             update_dict = {}
-            for field in all_field_names + odcf_fields:
+            for field in all_field_names + field_dict["omics_path"]:
                 update_dict.update({field: data[field]})
 
             HistopathologicalSample.objects.filter(
