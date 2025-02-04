@@ -69,7 +69,8 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [
     "http://0.0.0.0",
     "https://ibsm-saturn3.uniklinik-freiburg.de",
-    "https://saturn3.uniklinik-freiburg.de"
+    "https://saturn3.uniklinik-freiburg.de",
+    "https://test.saturn3.uniklinik-freiburg.de"
 ]
 
 CSRF_COOKIE_SECURE = SETTINGS.CSFR_COOKIE_SECURE
