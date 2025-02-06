@@ -65,7 +65,6 @@ ALLOWED_HOSTS = [
     "localhost",
     "ibsm-saturn3.uniklinik-freiburg.de",
     "saturn3.uniklinik-freiburg.de"
-    "saturn3.uniklinik-freiburg.de"
 ]
 CSRF_TRUSTED_ORIGINS = [
     "http://0.0.0.0",
