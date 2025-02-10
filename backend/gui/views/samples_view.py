@@ -33,6 +33,7 @@ app_log = logging.getLogger("s3sample")
 
 def adapt_list_for_group_filter_display(key, field_list: list):
     """
+    Custom group filters
     If groups want to have fields displayed in the table, that don't belong to this group these
     fields can be added here. This only works if all other groups are filtered out.
     """
@@ -101,7 +102,10 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
 
 
 def filter_table_with_group_filter(group_filter: dict[str, Any]):
-        all_filters = ["id"]
+        
+        # if recruiter_fields are filtered out, we need to display sample code explicitly
+        all_filters = ["id"] if group_filter["recruiter"] else ["id", "saturn3_sample_code"]
+
         samples = HistopathologicalSample.objects.all()
 
         # this part is for displaying the table with one group filter only

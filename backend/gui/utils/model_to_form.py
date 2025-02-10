@@ -62,7 +62,6 @@ def create_field_dict(model_section_dict,
       "tum" : [...],
       ...
     }
-
     
     """
 
@@ -72,6 +71,8 @@ def create_field_dict(model_section_dict,
         section_end = model_section_dict[section]
         end_index = all_field_names.index(section_end)
         section_fields = all_field_names[start_index:end_index+1]
-        field_dict.update({section_end : section_fields})
+        field_dict.update({section   : section_fields})
+        start_index = end_index + 1
     
+    print(field_dict)
     return field_dict

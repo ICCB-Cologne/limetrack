@@ -16,8 +16,10 @@ from django.contrib.auth.models import User
 # documentation https://github.com/FlipperPA/django-tempus-dominus
 
 
+# all displayed fields' names and verbose_names
 all_field_verbose_names = []
 all_field_names = []
+
 date_pickers = {}
 
 # exclude primary key "ID" & field "created" by slicing
@@ -75,7 +77,7 @@ class FlexibleSampleForm(ModelForm):
         #     for field in self.fields:
         #         self.fields[field].widget = forms.TextInput(attrs={"disabled": "true"})
         #     return
-        
+        # TODO: generalize this!
         if not user.has_perm("gui.recruiter_fields"):
             for field_name in field_dict["recruiter"]:
                 self.disable_single_widget(field_name)

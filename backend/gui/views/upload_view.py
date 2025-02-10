@@ -15,6 +15,7 @@ from django.http import (
     HttpRequest,
     HttpResponse,
 )
+from ..utils.permission_manager import get_all_permitted_fields
 from typing import Any
 from ..models import (
     HistopathologicalSample,
@@ -24,6 +25,7 @@ from ..models import (
 
 from .views import (
     check_existing_input_for_group, 
+    check_existing_entries,
     record_already_exists,
     get_form, handle_form,
     no_sample_code_found
@@ -102,10 +104,14 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
         try:
             match file_ending:
+                # TODO: check whether its possible to parse values like 00000
+                # not as 0
                 case "xlsx":
                     df = pd.read_excel(file, keep_default_na=False)
                 case _:
-                    df = pd.read_csv(file, sep=",", keep_default_na=False)
+                    df = pd.read_csv(file, sep=",", keep_default_na=False,
+                                     # na_values= [""],
+                                     dtype=str)
 
         except UnicodeDecodeError:
             messages.error(request, "File upload failed!", extra_tags="file")
@@ -122,11 +128,16 @@ class UploadView(LoginRequiredMixin, TemplateView):
         for index, row in df.iterrows():
 
             data = {}
-            for field_name, verbose_field_name in zip(all_field_names +
-                                                      field_dict["omicspath"][1:],
+            for field_name, verbose_field_name in zip(all_field_names,
                                                       all_field_verbose_names):
+                
 
                 value: str = row.get(verbose_field_name)
+
+                if field_name == "atac_isle_id":
+                    print("value")
+                    print(value)
+
 
                 # allowing yes and no
                 # as Boolean values in file upload
@@ -166,6 +177,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 data.update({field_name: value})
 
+            
             form = get_form(request.user, data)
 
             if form.is_valid():
@@ -178,35 +190,26 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 user = request.user
 
-                user_permissions = user.get_user_permissions()
+                user_permissions = user.get_all_permissions()
                 if "histopathological_sample.readonly" in user_permissions:
-                    pass
-                for permission in user_permissions:
-                    group_section = permission.split(".")[1].split("_")[0]
-                    for field in field_dict[group_section]:
-                        update_dict.update({field: data[field]})
-                
-                
-                if user.groups.first():
-                    group_name = user.groups.first().name.lower()
+                    messages.error(request,
+                       "File upload failed!"
+                       " Not permitted!")
 
-                    update_dict = {}
-                    
-                    if user.get_username() == "Liquid_HD":
-                        for field in field_dict[group_name]:
-                            update_dict.update({field: data[field]})
-                        for field in field_dict["recruiter"]:
-                            update_dict.update({field: data[field]})
-                    # exclude SATURN3 Sample Code if the user is not recruiter (field_dict[group_name][1:])
-                    elif group_name != "recruiter":
-                        for field in field_dict[group_name][1:]:
-                            update_dict.update({field: data[field]})
-                    else:
-                        for field in field_dict[group_name]:
-                            update_dict.update({field: data[field]})
-                else:
-                    update_dict = form_data
+                    return render(request, "gui/sample_tracking.html",
+                      context={"form": form,
+                               "upload_form": UploadForm(),
+                               "search_form": SearchForm(),})
 
+
+                permitted_fields = get_all_permitted_fields(user)
+                update_dict = {}
+
+                for field in permitted_fields:
+                    update_dict.update({field: data[field]}) 
+                
+                print("update_dict")
+                print(update_dict)
                 
                 possible_response = check_records_existence(request, sat3_code,
                                                             "file", form, update_dict)
@@ -216,6 +219,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 if possible_response is not None:
                     return possible_response
+                
+                print("We got here")
 
                 valid_forms.append(form)
 
@@ -273,97 +278,36 @@ def check_records_existence(request: HttpRequest,
     Sample Codes
     """
 
-    # special case just for the time before we re-structure the models and permissions etc
-    # LB user needs recruiter permissions addtional to LB 
-    if request.user.get_username() == "Liquid_HD":
-        if (HistopathologicalSample.
-                objects.filter(saturn3_sample_code=sat3_code).exists()):
-            
-            if(not request.user.has_perm("gui.change_histopathologicalsample")):
-                    
-                if (check_existing_input_for_group("Liquid_HD", sat3_code, update_dict)):
-                        messages.error(request,
-                                    f"File upload failed!"
-                                    f" Record with SATURN3 Sample Code "
-                                    f"{str(sat3_code)} already exists.",
-                                    extra_tags=tag)
-
-                        return render(request, "gui/sample_tracking.html",
-                                    context={
-                                        "form": (form if tag == "general"
-                                                else get_form(request.user)),
-                                        "upload_form": UploadForm(),
-                                        "search_form": SearchForm(),
-                                        "jump_to": ("form" if tag == "general"
-                                                    else None)})
-
-
-    elif (request.user.groups.filter(
-            name__in=["SPL", "TUM", "scOpenLab",
-                      "LiquidBiopsy", "OmicsPath", "Spatial"]).exists()):
-        # if data for the group specific fields already exists
-        # and the user has no permission for editing
-        # -> no update -> error message
-        if HistopathologicalSample.objects. \
-                filter(saturn3_sample_code=sat3_code).exists():
-
-            if not request.user.has_perm("gui.change_histopathologicalsample"):
-                group_name = str(request.user.groups.first()).lower()
-
-                if check_existing_input_for_group(group_name, sat3_code, update_dict):
-
-                    return record_already_exists(request,
-                                                 sat3_code,
-                                                 tag, form, group_name)
-
-        # no record with given sat3code exists &
-        # these groups are not allowed to create records -> error message
-        else:
-            return no_sample_code_found(request, sat3_code, tag, form)
-
-    # if record with given sat3sample already exists and
-    # recruiter is not allowed to edit data -> error message
-    elif request.user.groups.filter(name="Recruiter").exists():
-
-        if (HistopathologicalSample.
-                objects.filter(saturn3_sample_code=sat3_code).exists() and not
-                request.user.has_perm("gui.change_histopathologicalsample")):
-            messages.error(request,
-                           f"File upload failed!"
-                           f" Record with SATURN3 Sample Code "
-                           f"{str(sat3_code)} already exists.",
-                           extra_tags=tag)
-
-            return render(request, "gui/sample_tracking.html",
-                          context={
-                              "form": (form if tag == "general"
-                                       else get_form(request.user)),
-                              "upload_form": UploadForm(),
-                              "search_form": SearchForm(),
-                              "jump_to": ("form" if tag == "general"
-                                          else None)})
-
-    # superuser, admins and coordinators are allowed to
-    # overwrite all existing data -> update record
-    elif (request.user.is_superuser
-          or request.user.groups.filter(
-              name__in=["superuser", "admins", "coordinators"]).exists()
-          or request.user.has_perm("gui.change_histopathologicalsample")):
-        return
-
     # unauthorized users -> error message
-    else:
-        messages.error(request,
+    if len(request.user.get_all_permissions()) == 0:
+            messages.error(request,
                        "File upload failed!"
                        " Not permitted!",
                        extra_tags=tag)
-
-        return render(request, "gui/sample_tracking.html",
+            
+            return render(request, "gui/sample_tracking.html",
                       context={"form": form,
                                "upload_form": UploadForm(),
                                "search_form": SearchForm(),
                                "jump_to": ("form" if tag == "general"
                                            else None)})
 
+    if (HistopathologicalSample.
+            objects.filter(saturn3_sample_code=sat3_code).exists()):
+        
+        print("EXIST")
+        
+        # no editing permissions and filled data fields -> error message
+        if(not request.user.has_perm("gui.change_histopathologicalsample")):
+            if (check_existing_entries(request.user, sat3_code, update_dict)):
+                return record_already_exists(request, sat3_code, "file", form, request.user.groups.first())
+        
+    else:
+        print("NOT EXIST")
+
+        # no permission to create -> error message
+        if not request.user.has_perm("gui.add_histopathologicalsample"):
+            return no_sample_code_found(request, sat3_code, tag, form)
+        
     # if there is no existing data conflicting with the input data
     return

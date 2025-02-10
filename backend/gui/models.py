@@ -128,9 +128,8 @@ class HistopathologicalSample(models.Model):
 
         # these permissions regulate which 'sections' of the model
         # a user or a user group has access to
-
         # naming constraints:
-        # official group name found in admin console + _fields e.g. recruiter_fields
+        # official group/section name + _fields e.g. recruiter_fields
         
         permissions = [
             ("recruiter_fields", "Can edit empty recruiter fields & create records."),

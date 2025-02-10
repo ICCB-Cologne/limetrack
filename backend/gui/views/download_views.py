@@ -23,7 +23,7 @@ example_sample = [
     # recruiter
     "München", "BSP12", "f", "2021-02-10", "S3C-BSP12-0-M1-V-R1",
     "This is an example sat3 sample", "2021-02-10", "CTC",
-    "Blood withdrawal", "Lung", "No", "G2",
+    "Blood withdrawal", "Lung", "False", "G2",
     # tum
     "2", "15", "59", "Comment",
     # spl
@@ -31,7 +31,7 @@ example_sample = [
     # sclab
     "2023-12-17", "2023-12-17", "77",
     "45", "successful RNA", "ATAC",
-    "Yes", "5S9QY", "123456", "123456", "Comment",
+    "True", "5S9QY", "12345", "12345", "Comment",
     # spatial
     "Xenium", "Xenium failed", "2023-12-19",
     "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
@@ -46,7 +46,7 @@ example_sample = [
     "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
-    "/omics/odcf/example", "/omics/odcf/example"
+    "/omics/odcf/example"
     ]
 
 
