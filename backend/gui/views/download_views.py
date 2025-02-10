@@ -31,7 +31,7 @@ example_sample = [
     # sclab
     "2023-12-17", "2023-12-17", "77",
     "45", "successful RNA", "ATAC",
-    "Yes", "5S9QY", "123456", "123456", "Comment",
+    "Yes", "5S9QY", "12345", "12345", "Comment",
     # spatial
     "Xenium", "Xenium failed", "2023-12-19",
     "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
