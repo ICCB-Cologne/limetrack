@@ -189,6 +189,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
                         for field in field_dict["recruiter"]:
                             update_dict.update({field: data[field]})
                     # exclude SATURN3 Sample Code if the user is not recruiter (field_dict[group_name][1:])
+                    elif group_name == "admins":
+                        update_dict = form_data    
                     elif group_name != "recruiter":
                         for field in field_dict[group_name][1:]:
                             update_dict.update({field: data[field]})
