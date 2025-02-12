@@ -11,7 +11,7 @@ groups_and_their_permissions = {
     "Recruiter" : ["recruiter_fields"],
     "LiquidBiopsy" : ["liquidbiopsy_fields"],
     "scOpenLab" : ["scopenlab_fields"],
-    "OmicsPath" : ["spl_fields"],
+    "OmicsPath" : ["omicspath_fields"],
     "TUM" : ["tum_fields"],
     "Spatial" : ["spatial_fields"],
 
