@@ -9,6 +9,7 @@ from .basic_test_functions import BasicTestClass
 class TestAllUserGroupsForm(BasicTestClass):
 
     def test_all_users_input(self):
+        print("0")
         self.recruiter_create()
         print("1")
         self.tum_input()

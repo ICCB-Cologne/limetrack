@@ -10,6 +10,7 @@ def get_all_permitted_fields(user: User):
             if not "_fields" in permission:
                   continue
             # e.g. gui.recruiter_fields -> recruiter
+            print(permission)
             model_section = permission.split("_")[0].split(".")[1]
             print("model_section")
             print(model_section)

@@ -29,5 +29,7 @@ for group in groups_and_their_permissions:
         print("we here")
         new_group.permissions.add(new_permission)
         print("we not here")
+    print(user)
+    print(user.get_all_permissions())
     new_group.save()
     user.save()
