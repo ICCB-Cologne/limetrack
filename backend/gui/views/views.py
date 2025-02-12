@@ -40,30 +40,6 @@ def get_form(
     
     return FlexibleSampleForm(data=data, user=user)
 
-    if user.get_username() == "Liquid_HD":
-        return SampleFormLBRecruiter(data=data)
-
-    match group_name.lower():
-        case "spl":
-            form = SampleFormSPL(data=data)
-        case "tum":
-            form = SampleFormTUM(data=data)
-        case "scopenlab":
-            form = SampleFormScLab(data=data)
-        case "liquidbiopsy":
-            form = SampleFormLB(data=data)
-        case "recruiter":
-            form = SampleFormRec(data=data)
-        case "omicspath":
-            form = SampleFormDataPaths(data=data)
-        case "spatial":
-            form = SampleFormSpatial(data=data)
-        case "readonly":
-            form = SampleFormReadOnly(data=data)
-        case _:
-            form = SampleForm(data=data)
-    return form
-
 
 def check_existing_input_for_group(group_name: str, sat3_code: str, update_dict: dict) -> bool:
     """
