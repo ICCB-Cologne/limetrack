@@ -14,7 +14,6 @@ groups_and_their_permissions = {
     "OmicsPath" : ["omicspath_fields"],
     "TUM" : ["tum_fields"],
     "Spatial" : ["spatial_fields"],
-
 }
 
 # here we create one user for each group and each group has only permissions for their original section in the model 
@@ -26,5 +25,8 @@ for group in groups_and_their_permissions:
     new_group.user_set.add(user)
     for permission in groups_and_their_permissions[group]:
         new_permission = Permission.objects.get_or_create(name=permission, codename=f"codename_{permission}", content_type=ct)
-        new_group.permissions.add(new_permission)
+        print("we here")
+        new_group.permissions.set(new_permission)
+        print("we not here")
+    new_group.save()
     user.save()
