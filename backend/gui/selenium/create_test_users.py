@@ -27,7 +27,7 @@ for group in groups_and_their_permissions:
         print("we here33333")
         new_permission = Permission.objects.get(codename=permission, content_type=ct)
         print("we here")
-        new_group.permissions.add(new_permission[0])
+        new_group.permissions.add(new_permission)
         print("we not here")
     new_group.save()
     user.save()
