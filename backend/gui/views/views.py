@@ -289,6 +289,9 @@ def handle_form(form: ModelForm,
     """
     user = request.user
 
+    if user.get_username() == "test_Recruiter":
+        raise KeyError(f"{user.get_all_permissions()} is stupid!!!!")
+
     if user.has_perm("gui.add_histopathologicalsample"):
         
         ## TODO: here we maybe could check if it not exists and then do the else part below

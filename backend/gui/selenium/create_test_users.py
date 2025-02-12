@@ -28,8 +28,10 @@ for group in groups_and_their_permissions:
         new_permission = Permission.objects.get(codename=permission, content_type=ct)
         print("we here")
         new_group.permissions.add(new_permission)
+        new_permission.save()
         print("we not here")
     print(user)
     print(user.get_all_permissions())
     new_group.save()
     user.save()
+    
