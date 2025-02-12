@@ -10,12 +10,19 @@ class TestAllUserGroupsForm(BasicTestClass):
 
     def test_all_users_input(self):
         self.recruiter_create()
+        print("1")
         self.tum_input()
+        print("2")
         self.spl_input()
+        print("3")
         self.sclab_input()
+        print("4")
         self.spatial_input()
+        print("5")
         self.lb_input()
+        print("6")
         self.omics_input()
+        print("7")
         self.login("root", "root")
 
     def search_record(self):
@@ -31,8 +38,11 @@ class TestAllUserGroupsForm(BasicTestClass):
         self.login("test_Recruiter", "test4life")
         print("herereerre2")
         self.create_minimal_test_record()
+        print("herereerre3")
         self.submit_record()
+        print("herereerre4")
         self.check_submission()
+        print("herereerre5")
         self.logout()
 
     def tum_input(self):
