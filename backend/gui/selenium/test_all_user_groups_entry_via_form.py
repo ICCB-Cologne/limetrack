@@ -27,7 +27,9 @@ class TestAllUserGroupsForm(BasicTestClass):
         self.driver.find_element(By.ID, "search-button").click()
 
     def recruiter_create(self):
+        print("herereerre")
         self.login("test_Recruiter", "test4life")
+        print("herereerre2")
         self.create_minimal_test_record()
         self.submit_record()
         self.check_submission()
