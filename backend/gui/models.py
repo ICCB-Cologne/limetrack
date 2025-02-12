@@ -132,13 +132,13 @@ class HistopathologicalSample(models.Model):
         # official group/section name + _fields e.g. recruiter_fields
         
         permissions = [
-            ("recruiter_fields", "Can edit empty recruiter fields & create records."),
-            ("tum_fields", "Can edit empty TUM fields."),
-            ("spl_fields", "Can edit empty SPL fields."),
-            ("scopenlab_fields", "Can edit empty SCLab fields."),
-            ("spatial_fields", "Can edit empty Spatial fields."),
-            ("liquidbiopsy_fields", "Can edit empty LB fields."),
-            ("omicspath_fields", "Can edit empty Omics fields."),
+            ("recruiter_fields", "Recruiter fields permission"),
+            ("tum_fields", "TUM fields permission"),
+            ("spl_fields", "SPL fields permission"),
+            ("scopenlab_fields", "ScLab fields permission"),
+            ("spatial_fields", "Spatial fields permission"),
+            ("liquidbiopsy_fields", "LB fields permission"),
+            ("omicspath_fields", "OMICS fields permission"),
             # ("readonly", "Can only read data."),
             # ("all_fields", "Can edit all empty fields.")
         ]

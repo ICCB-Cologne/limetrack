@@ -13,3 +13,7 @@ Docker
 ### Persist Volumes On Reboot
 
 `docker compose -f docker-compose.yml -f docker-compose-develop.yml up --remove-orphans`
+
+### For local development and debugging
+
+`docker compose -f docker-compose-local.yml -f docker-compose-develop.yml up --remove-orphans`
