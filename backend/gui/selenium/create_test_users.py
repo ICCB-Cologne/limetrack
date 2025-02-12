@@ -25,7 +25,7 @@ for group in groups_and_their_permissions:
     new_group.user_set.add(user)
     for permission in groups_and_their_permissions[group]:
         print("we here33333")
-        new_permission = Permission.objects.get_or_create(name=f"{permission}_permission", codename=permission, content_type=ct)
+        new_permission = Permission.objects.get(codename=permission, content_type=ct)
         print("we here")
         new_group.permissions.add(new_permission[0])
         print("we not here")
