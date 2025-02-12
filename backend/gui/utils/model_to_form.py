@@ -78,7 +78,6 @@ def create_field_dict(model_section_dict,
         field_dict.update({section   : section_fields})
         start_index = end_index + 1
     
-    print(field_dict)
     return field_dict
 
 

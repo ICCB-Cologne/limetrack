@@ -134,11 +134,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 value: str = row.get(verbose_field_name)
 
-                if field_name == "atac_isle_id":
-                    print("value")
-                    print(value)
-
-
                 # allowing yes and no
                 # as Boolean values in file upload
                 if (field_name == "corresponding_organoid" or
@@ -208,8 +203,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 for field in permitted_fields:
                     update_dict.update({field: data[field]}) 
                 
-                print("update_dict")
-                print(update_dict)
                 
                 possible_response = check_records_existence(request, sat3_code,
                                                             "file", form, update_dict)
@@ -220,8 +213,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 if possible_response is not None:
                     return possible_response
                 
-                print("We got here")
-
                 valid_forms.append(form)
 
             else:
@@ -294,16 +285,13 @@ def check_records_existence(request: HttpRequest,
 
     if (HistopathologicalSample.
             objects.filter(saturn3_sample_code=sat3_code).exists()):
-        
-        print("EXIST")
-        
+                
         # no editing permissions and filled data fields -> error message
         if(not request.user.has_perm("gui.change_histopathologicalsample")):
             if (check_existing_entries(request.user, sat3_code, update_dict)):
                 return record_already_exists(request, sat3_code, "file", form, request.user.groups.first())
         
     else:
-        print("NOT EXIST")
 
         # no permission to create -> error message
         if not request.user.has_perm("gui.add_histopathologicalsample"):

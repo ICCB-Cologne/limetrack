@@ -70,7 +70,6 @@ class BasicTestClass():
         Minimal record in the sense of having all recruiter fields filled out.
         Not only the required ones.
         """
-        print("Weeeee hererererereLOLOLOLO")
         self.driver.save_screenshot("screenie.png")
         recruiting_site = self.driver.find_element(
             By.ID, "id_recruiting_site")
@@ -91,8 +90,6 @@ class BasicTestClass():
         self.driver.find_element(By.ID, "id_died").send_keys(Keys.ENTER)
 
         # SATURN3 Sample Code #
-        print("Weeeee hererererereLOLOLOLO")
-
         # Entity
         sat3_code_entity = RecordGenerator.random_sample_code_entity_choice()
         saturn3_sample_code_0 = self.driver.find_element(
@@ -124,9 +121,6 @@ class BasicTestClass():
             By.ID, "id_saturn3_sample_code_4").send_keys(
                 sat3_code_tissue_type_order_number)
         
-        print("Weeeee hererererereLOLOLOLO")
-
-
         # storage format
         sat3_code_storage_format = RecordGenerator.random_storage_format()
         saturn3_sample_code_5 = self.driver.find_element(
@@ -158,7 +152,6 @@ class BasicTestClass():
             "-" + sat3_code_analyte_type + sat3_code_analyte_type_order_number
 
         # End of SATURN3 Sample Code section
-        print("Weeeee hererererereLOLOLOLO")
 
         self.driver.find_element(
             By.ID,
