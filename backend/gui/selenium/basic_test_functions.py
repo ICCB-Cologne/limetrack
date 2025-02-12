@@ -71,7 +71,7 @@ class BasicTestClass():
         Not only the required ones.
         """
         print("Weeeee hererererereLOLOLOLO")
-        self.driver.save_screenshot("CRETE.png")
+        self.driver.save_screenshot("screenie.png")
         recruiting_site = self.driver.find_element(
             By.ID, "id_recruiting_site")
         select_recruiting_site = Select(recruiting_site)
