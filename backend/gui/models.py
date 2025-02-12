@@ -71,8 +71,8 @@ def no_commas_allowed(comment: str):
         raise ValidationError("Commas are not permitted.")
 
 # dictionary for splitting the model into sections
-# put in last field name for each section
-# TODO: if no sections needed: handling of empty dict 
+# keys: sections, values: put in the last field name of each section
+# TODO: if no sections needed: handling of empty dict
 # needs to be implemented in forms, views etc.
 end_of_model_section_dict = {
     "recruiter" : "grading",
