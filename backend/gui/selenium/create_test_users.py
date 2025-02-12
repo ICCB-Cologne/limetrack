@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 
 groups_and_their_permissions = {
     "SPL" : ["spl_fields"],
-    "Recruiter" : ["recruiter_fields, add_histopathologicalsample"],
+    "Recruiter" : ["recruiter_fields, gui.add_histopathologicalsample"],
     "LB" : ["liquidbiopsy_fields"],
     "ScLab" : ["scopenlab_fields"],
     "Omics" : ["omicspath_fields"],
