@@ -5,36 +5,6 @@ from django.contrib.auth.models import User
 from django import forms
 
 
-
-def create_date_picker_dicts(date_pickers: dict[str: DatePicker], field_dict):
-
-    recruiter_date_pickers = {field_name : date_pickers.get(field_name)
-                            for field_name in date_pickers if field_name in field_dict["recruiter"]}
-
-    tum_date_pickers = {field_name : date_pickers.get(field_name)
-                            for field_name in date_pickers if field_name in field_dict["tum"]}
-
-    spl_date_pickers = {field_name : date_pickers.get(field_name)
-                            for field_name in date_pickers if field_name in field_dict["spl"]}
-
-    sclab_date_pickers = {field_name : date_pickers.get(field_name)
-                            for field_name in date_pickers if field_name in field_dict["scopenlab"]}
-
-    spatial_date_pickers = {field_name : date_pickers.get(field_name)
-                            for field_name in date_pickers if field_name in field_dict["spatial"]}
-
-    lb_date_pickers = {field_name : date_pickers.get(field_name)
-                            for field_name in date_pickers if field_name in field_dict["liquidbiopsy"]}
-
-    odcf_date_pickers = {field_name : date_pickers.get(field_name)
-                            for field_name in date_pickers if field_name in field_dict["omicspath"]}
-    
-    return recruiter_date_pickers, tum_date_pickers, \
-           spl_date_pickers, sclab_date_pickers, \
-           spatial_date_pickers, \
-           lb_date_pickers, odcf_date_pickers
-
-
 def fill_form_collections(all_fields, all_field_verbose_names, date_pickers, all_field_names):
     """
     TODO: exchange a call of this function with the code block in forms.py
@@ -49,8 +19,6 @@ def fill_form_collections(all_fields, all_field_verbose_names, date_pickers, all
                     options={"allowInputToggle": True},
                     attrs={"input_group": False})
                     })
-
-
 
 
 def create_field_dict(model_section_dict,
@@ -85,6 +53,7 @@ def adapt_form(form: ModelForm, user: User, field_dict: dict):
     """
     Disables the widgets of the form's fields depending on the user's permissions 
     so unauthorized users cannot enter data, yet still see the fields (in a disabled state).
+    TODO: generalize
     """
     # if user.has_perm("histopathological_sample.all_fields"):
     #     return

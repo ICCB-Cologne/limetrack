@@ -35,9 +35,6 @@ def get_form(
         user: User,
         data: QueryDict = None):
     
-    group_name = str(user.groups.first()).lower()
-
-    
     return FlexibleSampleForm(data=data, user=user)
 
 
@@ -104,8 +101,10 @@ def update_record(request: HttpRequest,
     Allows users to fill in data in the empty fields of their respective permissions.
     Edits a record's fields if the user has the permission to edit
     """
-
-    group_name = user.groups.first().name.lower()
+    if user.groups.first():
+        group_name = user.groups.first().name.lower()
+    else:
+        group_name = ""
 
     update_dict = {}
     for field in get_all_permitted_fields(user):

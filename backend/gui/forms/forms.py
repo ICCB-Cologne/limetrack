@@ -1,11 +1,5 @@
 from ..models import HistopathologicalSample, CHARFIELD_MAXLEN, end_of_model_section_dict
 from ..utils.fields import SampleCodeField, SampleCodeWidget
-from ..utils.model_choices import (
-                     SITE_CHOICES, SEX_CHOICES,
-                     TISSUE_TYPES, INTERVENTION_TYPES,
-                     GRADING,
-                     CORRESPONDING_ORGANOID_CHOICES,
-                     LOCALISATION_CHOICE)
 from ..utils import(
     model_to_form
 )
@@ -109,7 +103,7 @@ class UploadForm(forms.Form):
 
 class GroupFilterForm(forms.Form):
     """
-    Enables filtering of the sample tables's columns.
+    Enables filtering of the sample tables's columns by section.
     """
     recruiter = forms.BooleanField(initial=True,
                                    required=False,

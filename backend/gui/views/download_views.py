@@ -46,7 +46,7 @@ example_sample = [
     "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
-    "/omics/odcf/example"
+    "/omics/odcf/example", "/omics/odcf/example" 
     ]
 
 
@@ -64,7 +64,7 @@ class Echo:
 def csv_template_download_csv(request: HttpRequest):
     pseudo_buffer = Echo()
     filename = "saturn3samples_template.csv"
-    data: list[Iterable[Any]] = [all_field_verbose_names[:-1], example_sample]
+    data: list[Iterable[Any]] = [all_field_verbose_names, example_sample]
     writer = csv.writer(pseudo_buffer)
 
     return StreamingHttpResponse(
@@ -77,7 +77,7 @@ def csv_template_download_csv(request: HttpRequest):
 
 def csv_template_download_excel(request: HttpRequest):
     data = [example_sample]
-    columns = all_field_verbose_names[:-1] # created at excluded
+    columns = all_field_verbose_names
     filename = "saturn3samples_template.xlsx"
     generator: Generator | None = None
     buffer = BytesIO()

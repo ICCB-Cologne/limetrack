@@ -87,40 +87,43 @@ end_of_model_section_dict = {
 
 class HistopathologicalSample(models.Model):
     """
+    --- PERMISSION MANAGEMENT ---
     In the SATURN3 Sample Tracker the model is split into
     7 'sections' (e.g., SPL, Recruiter ...) which
     users can access only if they have the respective permissions.
     For the forms in the front-end this means, that form fields
     a user has no permissions to edit are greyed out and disabled.
-    In the back-end data input is handled in a similar way.
+    In the back-end, data input is handled in a similar way.
     Data is processed only for the sections a user has permissions to edit.
 
     2 fields are idependent of these sections and not editable:
     id (generated automatically by django)
     created (time stamp)
 
-    The saturn3_sample_code field can only be created by users with
-    the permission to create new records. Other users utilize it
-    to refer to existing samples in order to edit
+    New samples can only be created by users with
+    the permission to create new records ("gui.add_histopathologicalsample" permission).
+    Other users utilize the sat3 sample code to refer to existing samples in order to edit
     the sample's sections they're allowed to change.
 
-    --- IMPORTANT INSTRUCTIONS ---
-    When adding fields to the model,
-    remember to make changes to
-    the forms.py file accordingly.
+    Data fields that are already filled with data can only be changed by users that
+    have the "gui.change_histopathologicalsample" permission.
 
-    Meaning: go to forms.py and make sure
-    that the lists and dicts on the top of
-    the file include all model fields.
-    If you add date fields give them a DatePicker widget.
+    --- IMPORTANT INSTRUCTIONS ---
+    When adding fields to the model or
+    especially creating a whole new model or multiple models,
+    remember to make changes to the dependent code accordingly.
+
+    Meaning: go to forms.py & utils/model_to_form and make sure
+    the model is transformed to a form (or multiple forms) correctly.
     
     Don't forget to change the downloadable template csv file (views/download_views.py)
     and to adapt the test csv files (at least the one_record.csv file).
 
     Last but not least include the new fields into the selenium tests. (gui/selenium/)
+    This includes also the create_test_users.py script for the github actions
 
-    ! If you change the last field of a section: Edit the end_of_model_section_dict accordingly.
-
+    If your changes of the model affect the last field of a section:
+    Edit the end_of_model_section_dict accordingly.
     """
 
 
@@ -143,7 +146,7 @@ class HistopathologicalSample(models.Model):
             # ("all_fields", "Can edit all empty fields.")
         ]
 
-    # recruiter - 11 fields ###
+    # Section: Recruiter - 12 fields ###
 
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES,
@@ -154,15 +157,10 @@ class HistopathologicalSample(models.Model):
         validators=[validate_alphanumeric],
         verbose_name="Patient Identifier")
 
-    # patient = models.CharField( max_length=CHARFIELD_MAXLEN)
-    # skip for prototype
     sex = models.CharField(max_length=CHARFIELD_MAXLEN, choices=SEX_CHOICES,
                            verbose_name="Sex")
     died = models.DateField(null=True, blank=True, verbose_name="Died")
-    # tissue_name = models.CharField(max_length=CHARFIELD_MAXLEN)
-    # skip for prototype
-    # used_in = models.CharField(max_length=CHARFIELD_MAXLEN)
-    # skip for prototype
+
     saturn3_sample_code = models.CharField(
         max_length=CHARFIELD_MAXLEN,
         validators=[check_sat3_sample_code],
@@ -198,10 +196,8 @@ class HistopathologicalSample(models.Model):
     grading = models.CharField(max_length=CHARFIELD_MAXLEN, choices=GRADING,
                                verbose_name="Grading", blank=True,
                                null=True)
-    # histology_subtype = models.CharField(max_length=CHARFIELD_MAXLEN)
-    # skip for prototype
 
-    # TUM Pathology ###
+    # Section: TUM Pathology ###
 
     tissue_quality = models.IntegerField(
         blank=True, null=True,
@@ -224,7 +220,7 @@ class HistopathologicalSample(models.Model):
         verbose_name="Comment tumor cell content",
         validators=[no_commas_allowed])
 
-    # SPL ###
+    # Section: SPL ###
     spl_received = models.DateField(
         null=True, blank=True, verbose_name="SPL Received")
     spl_status = models.CharField(
@@ -238,7 +234,7 @@ class HistopathologicalSample(models.Model):
         choices=SPL_SEQUENCING_TYPES,
         verbose_name="SPL Analysis Type")
 
-    # scLab ###
+    # Section: ScLab ###
     sclab_received = models.DateField(
         null=True, blank=True, verbose_name="scLab Received")
     sclab_extraction_date = models.DateField(null=True,
@@ -290,7 +286,7 @@ class HistopathologicalSample(models.Model):
                                      validators=[no_commas_allowed]
                                      )
 
-    # Spatial ###
+    # Section: Spatial ###
     spatial_method = models.CharField(blank=True, null=True,
                                       verbose_name="Spatial Method",
                                       choices=SPATIAL_METHOD)
@@ -339,7 +335,7 @@ class HistopathologicalSample(models.Model):
                                        verbose_name="Spatial Comment",
                                        validators=[no_commas_allowed])
 
-    # LB ###
+    # Section: LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                        blank=True, null=True,
                                        verbose_name="LB analyte type",
@@ -373,7 +369,7 @@ class HistopathologicalSample(models.Model):
                                  verbose_name="LB Status",
                                  choices=LB_STATUS_CHOICES)
 
-    # Datapaths ### 
+    # Section: OmicsDatapaths ### 
 
     request_execution_of = models.CharField(
         blank=True,
