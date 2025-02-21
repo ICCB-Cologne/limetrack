@@ -19,6 +19,8 @@ import csv
 
 app_log = logging.getLogger("s3sample")
 
+# sample for csv/excel template download
+# update when model is updated
 example_sample = [
     # recruiter
     "München", "BSP12", "f", "2021-02-10", "S3C-BSP12-0-M1-V-R1",

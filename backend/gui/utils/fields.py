@@ -1,3 +1,11 @@
+"""
+This module contains the handling of the SATURN3 Sample Code field.
+
+The process of converting a field composed of multiple dropdown and number fields
+into a coherent string value in the database, and the other way round, is a bit complicated.
+The value_from_datadict & decompress functions take care of that.
+"""
+
 from collections.abc import Sequence
 from typing import Any
 from django.forms.fields import (MultiValueField, CharField,
@@ -58,7 +66,7 @@ class CustomSelect(Select):
 
 class SampleCodeField(MultiValueField):
     """
-    Supposed to split the Saturn3-Sample-Code field into 8 different fields
+    Splits the Saturn3-Sample-Code field into 8 different fields
     """
     def __init__(self, **kwargs):
 

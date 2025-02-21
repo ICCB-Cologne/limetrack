@@ -14,6 +14,7 @@ from django.contrib.auth.models import User
 all_field_verbose_names = []
 all_field_names = []
 
+# date_picker widgets for the form
 date_pickers = {}
 
 # exclude primary key "ID" & "created" field by slicing
@@ -46,7 +47,7 @@ field_dict = model_to_form.create_field_dict(model_section_dict=end_of_model_sec
 class FlexibleSampleForm(ModelForm):
     """
     This form disables fields depending on the permissions a user has. 
-    Only works for users with permissons to create records.
+
     """
     required_css_class = "required"
     # error_css_class = "error-field"
@@ -96,9 +97,18 @@ class FlexibleSampleForm(ModelForm):
             ),
         } | date_pickers 
 
+def validate_file_extension(value):
+    import os
+    from django.core.exceptions import ValidationError
+    ext = os.path.splitext(value.name)[1]  # [0] returns path+filename
+    valid_extensions = ['.xlsx', '.csv', '.xls']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError('Unsupported file extension.')
 
 class UploadForm(forms.Form):
-    file = forms.FileField(help_text="Upload '.csv' or '.xlsx' files.", allow_empty_file=False)
+    file = forms.FileField(help_text="Upload '.csv' or '.xlsx' files.", allow_empty_file=False,
+                           validators=[validate_file_extension])
+
 
 
 class GroupFilterForm(forms.Form):

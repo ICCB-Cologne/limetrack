@@ -1,3 +1,9 @@
+"""
+The functions in this module take care of adapting the permissions and sections of the data model 
+to the model form.
+"""
+
+
 from tempus_dominus.widgets import DatePicker
 from django.db.models.fields import Field
 from django.forms import ModelForm
@@ -5,9 +11,16 @@ from django.contrib.auth.models import User
 from django import forms
 
 
-def fill_form_collections(all_fields, all_field_verbose_names, date_pickers, all_field_names):
+def fill_form_collections(all_fields: list[Field],
+                          all_field_verbose_names: list[str],
+                          date_pickers,
+                          all_field_names: list[str]):
     """
+    Not used yet...
     TODO: exchange a call of this function with the code block in forms.py
+
+    Here we fill the all_field_verbose_names and all_field_names lists as well as
+    the date picker dictionary that are required for creating the field dict
     """
     
     for field in all_fields:

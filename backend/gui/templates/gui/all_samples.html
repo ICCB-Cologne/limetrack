@@ -19,6 +19,7 @@ Samples Overview
     <form action={% url "all_samples" %} method="get" enctype="multipart/form-data" id="column-filter">
         {% csrf_token %}
 
+      {% comment %} Counters above sample table {% endcomment %}
       <div class="container-fluid">
         <div class="row mb-3">
           <div class="col auto bg-white border border-dark-subtle">
@@ -37,8 +38,7 @@ Samples Overview
               Filter columns
             </button>
             <button class="btn btn-primary"> Apply </button>
-        
-            
+ 
               <ul class="dropdown-menu" id="id-group-filters">
                 <label class="dropdown-item"> 
                   <input type="checkbox" name="all" id="id_all_group_filters" checked="" onclick="selectAllFilters()">
@@ -98,7 +98,7 @@ Samples Overview
     </div>
 
     
-   
+    {% comment %} SAMPLE TABLE {% endcomment %}
     <div class="tablediv">
       <form method="post" id="id-form">{% csrf_token %}</form>
 
@@ -125,6 +125,7 @@ Samples Overview
             {%endif%}
           </tr>
         </thead>
+
         <tbody id="data-rows">
           {% for item in samples %}
           <tr>
@@ -141,6 +142,7 @@ Samples Overview
                 {% endif %}
             {% endif %}
             {% endfor %}
+            {% comment %} Delete button {% endcomment %}
             <td>
               {% if 'gui.add_histopathologicalsample' in user.get_all_permissions %}
               <button id="Delete {{item.5.1}}" type="button" onclick="deleteID({{ item.0.1 }}, '{{csrf_token}}' )">Delete</button>

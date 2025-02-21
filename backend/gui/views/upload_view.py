@@ -73,8 +73,10 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     filled out properly (i.e. correct data type etc)."
                 messages.error(request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
-
+        
         messages.error(request, "File upload failed!", extra_tags="file")
+        msg = "Cannot read file. Invalid file extension. Allowed extensions are .csv & .xlsx"
+        messages.error(request, msg, extra_tags="file")
         return HttpResponseRedirect(reverse("sample_tracking"))
     
     def save_file(self, file: pd.DataFrame, request: HttpRequest):
@@ -96,16 +98,17 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
     def handle_file(self, file: UploadedFile, request: HttpRequest):
         """
+        Here the uploaded csv/excel file is processed line by line.
+        Every line e.g. sample is checked for errors. If an error is detected,
+        an error message is displayed with information about the error and where
+        to find the record with the erroneous data.
 
-        TODO: needs to be adapted to the different
-        sorts of forms / group memberships
+        Changes to the database are made only if all samples are correct.
         """
         file_ending = file.name.split(".")[-1]
 
         try:
             match file_ending:
-                # TODO: check whether its possible to parse values like 00000
-                # not as 0
                 case "xlsx":
                     df = pd.read_excel(file, keep_default_na=False)
                 case _:
@@ -136,6 +139,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 # allowing yes and no
                 # as Boolean values in file upload
+                # TODO: probably can be deleted
                 if (field_name == "corresponding_organoid" or
                         field_name == "sclab_sorting"):
                     if type(value) is not str:
@@ -172,7 +176,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
                 data.update({field_name: value})
 
-            
+            # put the data of each line into a form
             form = get_form(request.user, data)
 
             if form.is_valid():
@@ -236,6 +240,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
 
             row_number += 1
 
+        # the actual handling of the valid records
         for form in valid_forms:
             form_data = form.cleaned_data
             saturn3_sample_code = form_data["saturn3_sample_code"]

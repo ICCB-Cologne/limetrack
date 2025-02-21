@@ -5,6 +5,7 @@ def get_all_permitted_fields(user: User):
         
         permitted_fields = []
         for permission in user.get_all_permissions():
+            # exclude permissions that have nothing to do with models sections
             if not "_fields" in permission:
                   continue
             # e.g. gui.recruiter_fields -> recruiter
