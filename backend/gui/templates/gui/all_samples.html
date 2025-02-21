@@ -142,7 +142,7 @@ Samples Overview
             {% endif %}
             {% endfor %}
             <td>
-              {% if user.is_superuser or user.name == "root" or user.groups.first.name == "coordinators" or user.groups.first.name == "admins" %}
+              {% if 'gui.add_histopathologicalsample' in user.get_all_permissions %}
               <button id="Delete {{item.5.1}}" type="button" onclick="deleteID({{ item.0.1 }}, '{{csrf_token}}' )">Delete</button>
               {% endif %}
             </td>
