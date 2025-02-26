@@ -40,7 +40,8 @@ example_sample = [
     "2023-12-19", "RUNID98124987412", "PANELID98124987412",
     "85", "Spatial Comment",
     # lb
-    "Plasma", "lb/panel/path1", "lb/panel/path2", "sWGS","2023-12-17", "4.1", "2023-12-17",
+    "Plasma", "lb/panel/path1", "lb/panel/path2", "sWGS",
+    "2023-12-17", "4.1", "2023-12-17",
     "111", "sequencing successful",
     # ocdf
     "test", "2021-11-29",
@@ -48,7 +49,7 @@ example_sample = [
     "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
-    "/omics/odcf/example", "/omics/odcf/example" 
+    "/omics/odcf/example", "/omics/odcf/example"
     ]
 
 
@@ -77,6 +78,7 @@ def csv_template_download_csv(request: HttpRequest):
             f"attachment; filename={filename}"},
     )
 
+
 def csv_template_download_excel(request: HttpRequest):
     data = [example_sample]
     columns = all_field_verbose_names
@@ -101,27 +103,28 @@ def csv_template_download_excel(request: HttpRequest):
 
 
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
-    def post(self, request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
+    def post(self,
+             request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         data = request.POST.get("data")
         file_type = request.GET.get("type", "CSV")
-        
+
         if data:
             records: list[dict] = json.loads(data)
             df = pd.DataFrame.from_records(records)
-            content_type="text/csv;base64"
+            content_type = "text/csv;base64"
 
             with BytesIO() as buffer:
                 file_name = "saturn3samples"
 
                 if file_type == "Excel":
                     file_name += ".xlsx"
-                    content_type="text/plain;base64"
+                    content_type = "text/plain;base64"
                     df.to_excel(buffer, index=False)
-                
+
                 else:
                     file_name += ".csv"
                     df.to_csv(buffer, index=False)
-                
+
                 buffer.seek(0)
                 response = HttpResponse(
                     b64encode(buffer.read()),
@@ -131,7 +134,7 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
                         "filename": file_name
                     },
                 )
-                    
+
             return response
 
         return HttpResponseRedirect("/samples/")

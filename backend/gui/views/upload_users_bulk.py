@@ -46,7 +46,9 @@ class Error:
             "severity": self.severity
         }
 
+
 logger = logging.getLogger("s3sample")
+
 
 class UsersBulkView(LoginRequiredMixin, TemplateView):
     def _append_and_log_error(
@@ -58,16 +60,17 @@ class UsersBulkView(LoginRequiredMixin, TemplateView):
     ) -> list[Error]:
         errors.append(
             Error(
-                name = name,
-                description= description,
-                severity = logging.getLevelName(level)
+                name=name,
+                description=description,
+                severity=logging.getLevelName(level)
             )
         )
         logger.log(level=level, msg=f"{name}: {description}")
 
         return errors
-    
-    def _build_response_json(self, created: list[str], errors: list[Error]) -> str:
+
+    def _build_response_json(self,
+                             created: list[str], errors: list[Error]) -> str:
         response = {
             "created": created,
             "errors": list(
@@ -108,12 +111,13 @@ class UsersBulkView(LoginRequiredMixin, TemplateView):
                     except (ValidationError, IntegrityError) as e:
                         name = type(e).__name__
                         description = str(e)
-                        errors = self._append_and_log_error(name, description, errors)
+                        errors = self._append_and_log_error(name,
+                                                            description,
+                                                            errors)
 
         else:
             name = "Missing Data"
             description = "Upload does not contain any data"
             errors = self._append_and_log_error(name, description, errors)
-
 
         return HttpResponse(content=self._build_response_json(created, errors))

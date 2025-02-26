@@ -1,5 +1,4 @@
 from ..forms.forms import (
-    all_field_names, field_dict,
     UploadForm, LoginForm,
     SearchForm,
     FlexibleSampleForm
@@ -34,11 +33,12 @@ app_log = logging.getLogger("s3sample")
 def get_form(
         user: User,
         data: QueryDict = None):
-    
+
     return FlexibleSampleForm(data=data, user=user)
 
 
-def check_existing_input_for_group(group_name: str, sat3_code: str, update_dict: dict) -> bool:
+def check_existing_input_for_group(group_name: str,
+                                   sat3_code: str, update_dict: dict) -> bool:
     """
     Checks whether a group's specific fields already has entries.
     """
@@ -50,20 +50,21 @@ def check_existing_input_for_group(group_name: str, sat3_code: str, update_dict:
     # TODO: think about iterating update_dict
     for field in existing_fields:
         if (field.name in update_dict):
-                existing_field_value = getattr(record, field.name)
-                new_field_value = update_dict[field.name]
-                if (existing_field_value is not None
-                    and existing_field_value != "" # for TextArea fields
-                    and str(existing_field_value) != str(new_field_value)
-                    and new_field_value is not None
+            existing_field_value = getattr(record, field.name)
+            new_field_value = update_dict[field.name]
+            if (existing_field_value is not None
+                and existing_field_value != ""  # for TextArea fields
+                and str(existing_field_value) != str(new_field_value)
+                and new_field_value is not None
                     and new_field_value != ""):  # for TextArea fields
-                    already_filled = True
-                    break
+                already_filled = True
+                break
 
     return already_filled
 
 
-def check_existing_entries(user: User, sat3_code: str, update_dict: dict) -> bool:
+def check_existing_entries(user: User,
+                           sat3_code: str, update_dict: dict) -> bool:
     """
     Checks whether a group's specific fields already has entries.
     Returns:
@@ -78,15 +79,15 @@ def check_existing_entries(user: User, sat3_code: str, update_dict: dict) -> boo
     # TODO: think about iterating update_dict
     for field in existing_fields:
         if (field.name in update_dict):
-                existing_field_value = getattr(record, field.name)
-                new_field_value = update_dict[field.name]
-                if (existing_field_value is not None
-                    and existing_field_value != "" # for TextArea fields
-                    and str(existing_field_value) != str(new_field_value)
-                    and new_field_value is not None
+            existing_field_value = getattr(record, field.name)
+            new_field_value = update_dict[field.name]
+            if (existing_field_value is not None
+                and existing_field_value != ""  # for TextArea fields
+                and str(existing_field_value) != str(new_field_value)
+                and new_field_value is not None
                     and new_field_value != ""):  # for TextArea fields
-                    already_filled = True
-                    break
+                already_filled = True
+                break
 
     return already_filled
 
@@ -98,7 +99,8 @@ def update_record(request: HttpRequest,
     Updates existing records in the db or returns error.
 
     If record with given sat3_code exists:
-    Allows users to fill in data in the empty fields of their respective permissions.
+    Allows users to fill in data in the empty fields
+    of their respective permissions.
     Edits a record's fields if the user has the permission to edit
     """
     if user.groups.first():
@@ -114,9 +116,9 @@ def update_record(request: HttpRequest,
             objects.filter(saturn3_sample_code=sat3_code).exists()):
 
         has_entries = check_existing_entries(user, sat3_code, update_dict)
-    
+
         if (not request.user.has_perm("gui.change_histopathologicalsample") and
-            has_entries):
+                has_entries):
 
             return record_already_exists(request,
                                          sat3_code, tag, form, group_name)
@@ -169,7 +171,8 @@ def record_already_exists(request: HttpRequest, sat3_code: str,
     """
     Returns HttpResponse with error message stating that a
     input with given sat3_code is not possible.
-    TODO: change group name display into fields or section that is already filled / exist
+    TODO: change group name display into fields
+    or section that is already filled / exist
     """
     if tag == "file":
         fail = "File upload failed!"
@@ -178,7 +181,8 @@ def record_already_exists(request: HttpRequest, sat3_code: str,
 
     msg = f"{fail} {group_name} data for " \
         "record with SATURN3 Sample Code " \
-        f"{str(sat3_code)} already exists and you are not permitted to edit it."
+        f"{str(sat3_code)} already exists and you \
+            are not permitted to edit it."
 
     messages.error(request,
                    msg,
@@ -232,7 +236,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
                 form,
                 saturn3_sample_code,
                 data,
-                request,    
+                request,
                 "general"
             )
 
@@ -289,43 +293,46 @@ def handle_form(form: ModelForm,
     user = request.user
 
     if user.has_perm("gui.add_histopathologicalsample"):
-        
-        ## TODO: here we maybe could check if it not exists and then do the else part below
-        ## if it does exist we might only need the update_record function
+
+        # TODO: here we maybe could check if it not exists and then
+        # do the else part below
+        # if it does exist we might only need the update_record function
         if (HistopathologicalSample.
             objects.filter(
                 saturn3_sample_code=sat3_code).exists()):
-            
+
             if request.user.has_perm("gui.change_histopathologicalsample"):
-                    return update_record(request, form,
-                                            request.user, data, sat3_code, tag)
-            
+                return update_record(request, form,
+                                     request.user, data, sat3_code, tag)
+
             else:
                 update_dict = {}
                 for field in get_all_permitted_fields(user):
                     update_dict.update({field: data[field]})
                 if not check_existing_entries(user, sat3_code, update_dict):
                     return update_record(request, form,
-                                            request.user, data, sat3_code, tag)
+                                         request.user, data, sat3_code, tag)
                 else:
                     messages.error(request,
-                                "Submission unsuccessful!"
-                                " Record with SATURN3 Sample Code "
-                                f"{str(sat3_code)} already exists and you are not permitted to edit it.",
-                                extra_tags=tag)
+                                   "Submission unsuccessful!"
+                                   " Record with SATURN3 Sample Code "
+                                   f"{str(sat3_code)} already exists and \
+                                      you are not permitted to edit it.",
+                                   extra_tags=tag)
 
                     return render(request, "gui/sample_tracking.html",
-                                context={"form": form,
-                                        "upload_form": UploadForm(),
-                                        "search_form": SearchForm(),
-                                        "jump_to": ("form" if tag == "general"
-                                                    else None)})
+                                  context={"form": form,
+                                           "upload_form": UploadForm(),
+                                           "search_form": SearchForm(),
+                                           "jump_to": ("form"
+                                                       if tag == "general"
+                                                       else None)})
 
         else:
             creation_dict = {}
             for field in get_all_permitted_fields(user):
                 creation_dict.update({field: data[field]})
-            
+
             # TODO: check if we could just give the creation dict
             # to a new instance of the form and do a form.save()
             # instead of the solution below
@@ -333,12 +340,12 @@ def handle_form(form: ModelForm,
             HistopathologicalSample.objects.filter(
                saturn3_sample_code=sat3_code).create(
                 **creation_dict)
-            
+
     elif len(user.get_all_permissions()) > 0:
-        ## TODO: here we need a check if the user has any permissions at all.
+        # TODO: here we need a check if the user has any permissions at all.
         return update_record(request, form,
-                        request.user,
-                        data, sat3_code, tag)
+                             request.user,
+                             data, sat3_code, tag)
 
     # unauthorized users -> error message
     else:
@@ -353,7 +360,7 @@ def handle_form(form: ModelForm,
                                "search_form": SearchForm(),
                                "jump_to": ("form" if tag == "general"
                                            else None)})
-    
+
     if tag.lower() == "general":
         # if form's been input by using the webpages form
         messages.success(request, "Submission successful!", extra_tags=tag)
@@ -372,6 +379,7 @@ def handle_form(form: ModelForm,
         # we return None because we iterate multiple forms
         # returning a response would cancel the iteration prematurely
         return
+
 
 def log_out(request: HttpRequest):
     logout(request)

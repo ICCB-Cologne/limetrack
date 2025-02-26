@@ -1,8 +1,10 @@
 """
 This module contains the handling of the SATURN3 Sample Code field.
 
-The process of converting a field composed of multiple dropdown and number fields
-into a coherent string value in the database, and the other way round, is a bit complicated.
+The process of converting a field composed of
+multiple dropdown and number fields
+into a coherent string value in the database,
+and the other way round, is a bit complicated.
 The value_from_datadict & decompress functions take care of that.
 """
 
@@ -140,10 +142,10 @@ class SampleCodeWidget(MultiWidget):
     Widget representing the SATURN3-Sample-Code field.
     """
 
-    def __init__(self, disabled=False, widgets=None, attrs=None) -> None: 
-        
-        disabled = {"disabled" : "true"} if disabled else {}
-        
+    def __init__(self, disabled=False, widgets=None, attrs=None) -> None:
+
+        disabled = {"disabled": "true"} if disabled else {}
+
         widgets = [
             Select(
                 attrs={"data-toggle": "tooltip",
@@ -152,13 +154,14 @@ class SampleCodeWidget(MultiWidget):
                 choices=ENTITY),
 
             TextInput(
-                attrs={"maxlength": 5,
-                       "data-toggle": "tooltip",
-                       "data-placement": "top",
-                       "title": "5-digit SATURN3 \
+                attrs={
+                    "maxlength": 5,
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    "title": "5-digit SATURN3 \
                         pseudonym (by Treuhandstelle Freiburg)"}
-                        | disabled
-                        ),
+                | disabled
+                ),
 
             NumberInput(
                 attrs={"data-toggle": "tooltip",
@@ -167,10 +170,11 @@ class SampleCodeWidget(MultiWidget):
                        "min": "0"} | disabled),
 
             Select(
-                attrs={"data-toggle": "tooltip",
-                       "data-placement": "top",
-                       "title": "Tissue type"}
-                       | disabled,
+                attrs={
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    "title": "Tissue type"}
+                | disabled,
                 choices=TISSUE_TYPE),
 
             NumberInput(
@@ -180,17 +184,19 @@ class SampleCodeWidget(MultiWidget):
                        "min": "0"} | disabled),
 
             Select(
-                attrs={"data-toggle": "tooltip",
-                       "data-placement": "top",
-                       "title": "Storage format"}
-                       | disabled,
+                attrs={
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    "title": "Storage format"}
+                | disabled,
                 choices=STORAGE_FORMAT),
 
             Select(
-                attrs={"data-toggle": "tooltip",
-                       "data-placement": "top",
-                       "title": "Analyte type"}
-                       | disabled,
+                attrs={
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    "title": "Analyte type"}
+                | disabled,
                 choices=ANALYTE_TYPE),
 
             NumberInput(

@@ -1,4 +1,5 @@
-from django.contrib.auth.tokens import PasswordResetTokenGenerator, default_token_generator
+from django.contrib.auth.tokens import (
+    PasswordResetTokenGenerator, default_token_generator)
 from django.utils.http import urlsafe_base64_encode
 from django.core.mail import EmailMultiAlternatives
 from django.core.exceptions import ValidationError
@@ -18,12 +19,15 @@ import logging
 
 logger = logging.getLogger("s3sample")
 
+
 @receiver(post_save, sender=User)
 def on_user_created(sender: User, instance: User, created: bool, **kwargs):
     try:
         if created:
-            token_generator: PasswordResetTokenGenerator = default_token_generator
-            tmp = get_template("gui/password_handling/account_creation_email.html")
+            token_generator: PasswordResetTokenGenerator
+            token_generator = default_token_generator
+            tmp = get_template(
+                "gui/password_handling/account_creation_email.html")
             token = token_generator.make_token(instance)
             uidb = urlsafe_base64_encode(str(instance.pk).encode("utf-8"))
             validate_email(instance.username)

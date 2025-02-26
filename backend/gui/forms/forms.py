@@ -1,13 +1,12 @@
-from ..models import HistopathologicalSample, CHARFIELD_MAXLEN, end_of_model_section_dict
+from ..models import HistopathologicalSample, end_of_model_section_dict
 from ..utils.fields import SampleCodeField, SampleCodeWidget
-from ..utils import(
-    model_to_form
-)
-from tempus_dominus.widgets import DatePicker #type: ignore
+from ..utils import model_to_form
+from tempus_dominus.widgets import DatePicker  # type: ignore
 from django.forms import ModelForm
 from django import forms
-from django.contrib.auth.models import User
-# documentation on DatePickers https://github.com/FlipperPA/django-tempus-dominus
+
+# documentation on DatePickers
+# https://github.com/FlipperPA/django-tempus-dominus
 
 
 # all displayed fields' names and verbose_names
@@ -24,29 +23,27 @@ all_fields = HistopathologicalSample._meta.get_fields()[1:-1]
 for field in all_fields:
     all_field_verbose_names.append(field.verbose_name)
     all_field_names.append(field.name)
-    # creation of DatePicker widgets for each DateField 
+    # creation of DatePicker widgets for each DateField
     if field.get_internal_type() == "DateField":
         date_pickers.update(
-            {field.name : DatePicker(
-                options={"allowInputToggle": True},
-                attrs={"input_group": False})
-                })
-    
+            {
+                field.name: DatePicker(
+                    options={"allowInputToggle": True},
+                    attrs={"input_group": False})
+            })
 
 
-# create dictionary with lists of fields for the individual groups or data model sections
-# TODO: after adding new model fields
-# if necessary
-# change indexes here by changing the first
-# and the last model field name of a group
+# create dictionary with lists of fields for the
+# individual groups or data model sections
+field_dict = model_to_form.create_field_dict(
+    model_section_dict=end_of_model_section_dict,
+    all_fields=all_fields,
+    all_field_names=all_field_names)
 
-field_dict = model_to_form.create_field_dict(model_section_dict=end_of_model_section_dict,
-                  all_fields=all_fields,
-                  all_field_names=all_field_names)
 
 class FlexibleSampleForm(ModelForm):
     """
-    This form disables fields depending on the permissions a user has. 
+    This form disables fields depending on the permissions a user has.
 
     """
     required_css_class = "required"
@@ -60,15 +57,12 @@ class FlexibleSampleForm(ModelForm):
         super().__init__(*args, **kwargs)
         model_to_form.adapt_form(self, user, field_dict)
 
-
     class Meta:
         model = HistopathologicalSample
         # exclude = ["id"]
         fields = all_field_names
 
-
         widgets = {
-
             # include tooltips into widgets
             "patient_identifier": forms.TextInput(
                 attrs={"data-toggle": "tooltip",
@@ -93,9 +87,10 @@ class FlexibleSampleForm(ModelForm):
 
             # widgets with additional features
             "tissue_quality": forms.NumberInput(
-                attrs={'min':0, 'max': 5, 'type': 'number'}
+                attrs={'min': 0, 'max': 5, 'type': 'number'}
             ),
-        } | date_pickers 
+        } | date_pickers
+
 
 def validate_file_extension(value):
     import os
@@ -105,10 +100,11 @@ def validate_file_extension(value):
     if not ext.lower() in valid_extensions:
         raise ValidationError('Unsupported file extension.')
 
-class UploadForm(forms.Form):
-    file = forms.FileField(help_text="Upload '.csv' or '.xlsx' files.", allow_empty_file=False,
-                           validators=[validate_file_extension])
 
+class UploadForm(forms.Form):
+    file = forms.FileField(help_text="Upload '.csv' or '.xlsx' files.",
+                           allow_empty_file=False,
+                           validators=[validate_file_extension])
 
 
 class GroupFilterForm(forms.Form):

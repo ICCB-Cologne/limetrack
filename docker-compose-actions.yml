@@ -1,4 +1,5 @@
 # version: "3"
+# this docker compose yml is for github actions
 
 services:
   saturn3sample-django:

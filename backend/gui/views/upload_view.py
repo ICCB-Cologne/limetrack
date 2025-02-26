@@ -22,9 +22,7 @@ from ..models import (
     check_sat3_sample_code_with_none_analyte,
     check_sat3_sample_code,
 )
-
 from .views import (
-    check_existing_input_for_group, 
     check_existing_entries,
     record_already_exists,
     get_form, handle_form,
@@ -32,7 +30,6 @@ from .views import (
 )
 from ..forms.forms import (
     all_field_verbose_names,
-    field_dict,
     all_field_names,
     UploadForm,
     SearchForm
@@ -40,7 +37,6 @@ from ..forms.forms import (
 from pathlib import Path
 from time import time
 import pandas as pd
-from os import path
 import logging
 
 app_log = logging.getLogger("s3sample")
@@ -73,15 +69,16 @@ class UploadView(LoginRequiredMixin, TemplateView):
                     filled out properly (i.e. correct data type etc)."
                 messages.error(request, msg, extra_tags="file")
                 return HttpResponseRedirect(request.path_info)
-        
+
         messages.error(request, "File upload failed!", extra_tags="file")
-        msg = "Cannot read file. Invalid file extension. Allowed extensions are .csv & .xlsx"
+        msg = "Cannot read file. Invalid file extension. \
+            Allowed extensions are .csv & .xlsx"
         messages.error(request, msg, extra_tags="file")
         return HttpResponseRedirect(reverse("sample_tracking"))
-    
+
     def save_file(self, file: pd.DataFrame, request: HttpRequest):
         storage_dir = Path(FILE_TRACEBACK_DIR)
-        username: str = request.user.username # type: ignore
+        username: str = request.user.username  # type: ignore
 
         if not storage_dir.exists():
             storage_dir.mkdir()
@@ -100,8 +97,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
         """
         Here the uploaded csv/excel file is processed line by line.
         Every line e.g. sample is checked for errors. If an error is detected,
-        an error message is displayed with information about the error and where
-        to find the record with the erroneous data.
+        an error message is displayed with information about the error
+        and where to find the record with the erroneous data.
 
         Changes to the database are made only if all samples are correct.
         """
@@ -124,7 +121,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
             return HttpResponseRedirect(request.path_info)
 
         self.save_file(df, request)
-        
+
         first_error = True
         valid_forms: list[ModelForm] = []
         row_number = 1
@@ -133,7 +130,6 @@ class UploadView(LoginRequiredMixin, TemplateView):
             data = {}
             for field_name, verbose_field_name in zip(all_field_names,
                                                       all_field_verbose_names):
-                
 
                 value: str = row.get(verbose_field_name)
 
@@ -192,31 +188,32 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 user_permissions = user.get_all_permissions()
                 if "histopathological_sample.readonly" in user_permissions:
                     messages.error(request,
-                       "File upload failed!"
-                       " Not permitted!")
+                                   "File upload failed!"
+                                   " Not permitted!")
 
                     return render(request, "gui/sample_tracking.html",
-                      context={"form": form,
-                               "upload_form": UploadForm(),
-                               "search_form": SearchForm(),})
-
+                                  context={"form": form,
+                                           "upload_form": UploadForm(),
+                                           "search_form": SearchForm(),
+                                           })
 
                 permitted_fields = get_all_permitted_fields(user)
                 update_dict = {}
 
                 for field in permitted_fields:
-                    update_dict.update({field: data[field]}) 
-                
-                
+                    update_dict.update({field: data[field]})
+
                 possible_response = check_records_existence(request, sat3_code,
-                                                            "file", form, update_dict)
+                                                            "file", form,
+                                                            update_dict)
+
                 # check_records_existence returns None if there are no errors
                 # if it's not None it's an error response which has to
                 # be returned
 
                 if possible_response is not None:
                     return possible_response
-                
+
                 valid_forms.append(form)
 
             else:
@@ -270,18 +267,19 @@ def check_records_existence(request: HttpRequest,
     SATURN3-Sample-Code.
 
     Returns error if record exists and user has no permission to change it.
-    Or returns error if users with no permission to create records try to upload non-existent
+    Or returns error if users with no permission
+    to create records try to upload non-existent
     Sample Codes
     """
 
     # unauthorized users -> error message
     if len(request.user.get_all_permissions()) == 0:
-            messages.error(request,
+        messages.error(request,
                        "File upload failed!"
                        " Not permitted!",
                        extra_tags=tag)
-            
-            return render(request, "gui/sample_tracking.html",
+
+        return render(request, "gui/sample_tracking.html",
                       context={"form": form,
                                "upload_form": UploadForm(),
                                "search_form": SearchForm(),
@@ -290,17 +288,19 @@ def check_records_existence(request: HttpRequest,
 
     if (HistopathologicalSample.
             objects.filter(saturn3_sample_code=sat3_code).exists()):
-                
+
         # no editing permissions and filled data fields -> error message
-        if(not request.user.has_perm("gui.change_histopathologicalsample")):
+        if (not request.user.has_perm("gui.change_histopathologicalsample")):
             if (check_existing_entries(request.user, sat3_code, update_dict)):
-                return record_already_exists(request, sat3_code, "file", form, request.user.groups.first())
-        
+                return record_already_exists(request, sat3_code,
+                                             "file", form,
+                                             request.user.groups.first())
+
     else:
 
         # no permission to create -> error message
         if not request.user.has_perm("gui.add_histopathologicalsample"):
             return no_sample_code_found(request, sat3_code, tag, form)
-        
+
     # if there is no existing data conflicting with the input data
     return

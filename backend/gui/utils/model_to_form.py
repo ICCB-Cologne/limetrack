@@ -1,6 +1,6 @@
 """
-The functions in this module take care of adapting the permissions and sections of the data model 
-to the model form.
+The functions in this module take care of adapting the permissions
+and sections of the data model to the model form.
 """
 
 
@@ -13,25 +13,27 @@ from django import forms
 
 def fill_form_collections(all_fields: list[Field],
                           all_field_verbose_names: list[str],
-                          date_pickers,
+                          date_pickers: dict,
                           all_field_names: list[str]):
     """
     Not used yet...
     TODO: exchange a call of this function with the code block in forms.py
 
-    Here we fill the all_field_verbose_names and all_field_names lists as well as
-    the date picker dictionary that are required for creating the field dict
+    Here we fill the all_field_verbose_names and all_field_names lists
+    as well as the date picker dictionary.
+    These are required for creating the field dict
     """
-    
+
     for field in all_fields:
         all_field_verbose_names.append(field.verbose_name)
         all_field_names.append(field.name)
         if field.get_internal_type() == "DateField":
             date_pickers.update(
-                {field.name : DatePicker(
-                    options={"allowInputToggle": True},
-                    attrs={"input_group": False})
-                    })
+                {
+                    field.name: DatePicker(
+                        options={"allowInputToggle": True},
+                        attrs={"input_group": False})
+                })
 
 
 def create_field_dict(model_section_dict,
@@ -40,14 +42,15 @@ def create_field_dict(model_section_dict,
     """
     We need a dict that contains the names of all sections (keys) and
     their respective field names (values).
-    This allows us to always check which permissions allow writing to which fields.
-    
+    This allows us to always check which permissions
+    allow writing to which fields.
+
     returns:
     { "recruiter" : ["recruiting_site", "sex", ...],
       "tum" : [...],
       ...
     }
-    
+
     """
 
     field_dict = {}
@@ -56,26 +59,21 @@ def create_field_dict(model_section_dict,
         section_end = model_section_dict[section]
         end_index = all_field_names.index(section_end)
         section_fields = all_field_names[start_index:end_index+1]
-        field_dict.update({section   : section_fields})
+        field_dict.update({section: section_fields})
         start_index = end_index + 1
-    
+
     return field_dict
 
 
 def adapt_form(form: ModelForm, user: User, field_dict: dict):
     """
-    Disables the widgets of the form's fields depending on the user's permissions 
-    so unauthorized users cannot enter data, yet still see the fields (in a disabled state).
+    Disables the widgets of the form's fields
+    depending on the user's permissions
+    so unauthorized users cannot enter data,
+    yet still see the fields (in a disabled state).
     TODO: generalize
     """
-    # if user.has_perm("histopathological_sample.all_fields"):
-    #     return
-    
-    # if user.has_perm("histopathological_sample.readonly"):
-    #     for field in self.fields:
-    #         self.fields[field].widget = forms.TextInput(attrs={"disabled": "true"})
-    #     return
-    # TODO: generalize this!
+
     if not user.has_perm("gui.recruiter_fields"):
         for field_name in field_dict["recruiter"]:
             disable_single_widget(form, field_name)
@@ -105,22 +103,27 @@ def adapt_form(form: ModelForm, user: User, field_dict: dict):
         for field_name in field_dict["omicspath"]:
             disable_single_widget(form, field_name)
             # TODO: generalize this if necessary
-            # In our form we do not 
+            # In our form we do not
             # want to visualize the odcf fields
             # for not-odcf-users
             if not field_name == "saturn3_sample_code":
                 form.fields.pop(field_name)
 
+
 def disable_single_widget(form: ModelForm, field_name):
-    # SAT3 Sample Code field is always enabled for users with write permissions.
+    # SAT3 Sample Code field is always enabled
+    # for users with write permissions.
     if not field_name == "saturn3_sample_code":
-        form.fields[field_name].widget = forms.TextInput(attrs={"disabled": "true"})
+        form.fields[field_name].widget = forms.TextInput(
+            attrs={"disabled": "true"})
+
 
 def disable_required_fields(form: ModelForm, field_name):
     """
     Required fields are necessary only when creating a new record
     i.e. if a user has the form's "recruiter_fields" set on enabled.
-    If a user does not have these fields, then the fields must be set to not required
+    If a user does not have these fields,
+    then the fields must be set to not required
     in order to allow a form being submitted without said fields.
     """
     if not field_name == "saturn3_sample_code":
