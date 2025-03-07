@@ -142,7 +142,7 @@ Samples Overview
             {% endfor %}
             {% comment %} Delete button {% endcomment %}
             <td>
-              {% if 'gui.add_histopathologicalsample' in user.get_all_permissions %}
+              {% if 'gui.delete_histopathologicalsample' in user.get_all_permissions or user.get_user_name == "root"%}
               <button id="Delete {{item.5.1}}" type="button" onclick="deleteID({{ item.0.1 }}, '{{csrf_token}}' )">Delete</button>
               {% endif %}
             </td>
