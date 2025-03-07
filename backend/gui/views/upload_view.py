@@ -125,6 +125,20 @@ class UploadView(LoginRequiredMixin, TemplateView):
         first_error = True
         valid_forms: list[ModelForm] = []
         row_number = 1
+
+        for column in df.columns:
+            if column not in all_field_verbose_names:
+                error = f"Column name '{column}' \
+                    is not a part of the data model. <br/> \
+                    Please refer to the the template for \
+                    the latest column names."
+                messages.error(request,
+                               mark_safe(error),
+                               extra_tags="file",
+                               )
+
+                return HttpResponseRedirect(request.path_info)
+
         for index, row in df.iterrows():
 
             data = {}
