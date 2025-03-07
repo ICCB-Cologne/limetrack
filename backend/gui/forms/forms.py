@@ -109,7 +109,9 @@ class UploadForm(forms.Form):
 
 class GroupFilterForm(forms.Form):
     """
-    Enables filtering of the sample tables's columns by section.
+    Enables filtering of the sample tables's columns by section and/or
+    customly defined sets of data fields.
+    The actual filtering is handled in samples_view.py
     """
     recruiter = forms.BooleanField(initial=True,
                                    required=False,
@@ -138,6 +140,18 @@ class GroupFilterForm(forms.Form):
     omicspath = forms.BooleanField(initial=True,
                                    required=False,
                                    label="ODCF")
+
+    scrnaseq = forms.BooleanField(initial=True,
+                                  required=False,
+                                  label="ScRNASeq")
+
+    wgs = forms.BooleanField(initial=True,
+                             required=False,
+                             label="WGS")
+
+    variantcalling = forms.BooleanField(initial=True,
+                                        required=False,
+                                        label="Variant Calling")
 
 
 class LoginForm(forms.Form):

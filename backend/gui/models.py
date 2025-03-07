@@ -131,11 +131,19 @@ class HistopathologicalSample(models.Model):
 
     If your changes of the model affect the last field of a section:
     Edit the end_of_model_section_dict accordingly.
+
+    --- APPLY YOUR OWN MODEL ---
+    If you intend to use your own model and create a new class
+    with a new name, note that LiMeTrack's code is build on this
+    single django data model.
+    Choosing a name different from HistopathologicalSample will result in
+    having to make changes everywhere the model explicitly occurs
+    in the project.
     """
 
     class Meta:
         """
-        these permissions regulate which 'sections' of the model
+        These permissions regulate which 'sections' of the model
         a user or a user group has access to
         naming constraints:
         official group/section name + _fields e.g. recruiter_fields

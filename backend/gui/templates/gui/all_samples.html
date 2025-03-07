@@ -22,11 +22,9 @@ Samples Overview
       {% comment %} Counters above sample table {% endcomment %}
       <div class="container-fluid">
         <div class="row mb-3">
-          <div class="col auto bg-white border border-dark-subtle">
-            <i class="bi bi-bar-chart"></i> Total number of samples: {{samples|length}} &nbsp; <i class="bi bi-dash"></i> &nbsp; 
-            <i class="bi bi-person"></i> Total number of patients: <span id="id-patient-number">  </span> &nbsp; &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; &nbsp;
-            <i class="bi bi-funnel"></i> Number of filtered samples: <span id="id-selected-samples"> {{samples|length}} </span> &nbsp; <i class="bi bi-dash"></i> &nbsp;
-            <i class="bi bi-person-add"></i> Number of filtered patients: <span id="id-filtered-patient-number">  </span>  
+          <div class="col auto border border-dark-subtle">
+            Filtered / Total number of samples: <span id="id-selected-samples"> {{samples|length}} </span> / {{samples|length}}   &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; 
+            Filtered / Total number of patients: <span id="id-filtered-patient-number">  </span> / <span id="id-patient-number"> </span> 
           </div>
         </div>
         

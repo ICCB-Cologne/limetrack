@@ -32,6 +32,16 @@ import logging
 
 app_log = logging.getLogger("s3sample")
 
+# lists of data fields for the column filters
+# that are not filtering model sections but
+# custom views of the table
+column_filters_no_group = {
+    "scrnaseq": ["sclab_pool", "scrna_r1", "scrna_r2",
+                 "scatac_r1", "scatac_r2", "scatac_i2"],
+    "wgs": ["wgs_r1", "wgs_r2", "wgs_bam", "wgs_vcf"],
+    "variantcalling": ["wgs_r1", "wgs_r2", "wgs_bam"]
+}
+
 
 def adapt_list_for_group_filter_display(key, field_list: list):
     """
@@ -46,7 +56,7 @@ def adapt_list_for_group_filter_display(key, field_list: list):
 
 
 field_dict_for_group_filters = {key: adapt_list_for_group_filter_display(
-    key, field_dict[key]) for key in field_dict}
+    key, field_dict[key]) for key in field_dict} | column_filters_no_group
 
 
 class AllSamplesView(LoginRequiredMixin, TemplateView):
@@ -133,7 +143,7 @@ def filter_table_with_group_filter(group_filter: dict[str, Any]):
             fields_and_values_list.append(instance_list)
     else:
         for group in group_filter:
-            all_filters += field_dict[group] \
+            all_filters += field_dict_for_group_filters[group] \
                 if group_filter[group] else []
         fields_and_values_list = [
             [(field.verbose_name, getattr(instance, field.name))
