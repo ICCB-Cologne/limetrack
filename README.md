@@ -4,6 +4,9 @@ Users can submit data either by filling out a web form or uploading CSV/Excel fi
 Accepted data is displayed as records in a filterable and searchable sample table.  
 We aim to eliminate data inconsistencies caused by scattered excel spreadsheets.  
 
+We are still working on a generalization of our application.  
+However, at present, it is still necessary to adapt the code in many places according to the requirements of other projects.
+
 ## Prerequisites
 Docker, Knowledge of Django & Python 
 
@@ -15,7 +18,7 @@ in several ways:
 The **LiMeTrack** code is built on dealing with a single django data model.  
 You can define the data fields for your model in `backend/gui/model.py`.  
 In our use case we defined a single model divided into multiple "sections"  
-to manage user permissions (`end_of_model_section_dict`)  
+to manage user permissions (`end_of_model_section_dict` & `permissions`)
 
 Users can get permissions to
 1) **fill in** empty fields of specified sections
