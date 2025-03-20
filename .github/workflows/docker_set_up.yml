@@ -3,7 +3,7 @@ run-name: SetUp Sample Tracking Tool and Run Selenium Tests
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "one_model_more_forms"]
   pull_request:
     branches: [ "main" ]
 
@@ -47,8 +47,7 @@ jobs:
           export DJANGO_SUPERUSER_USERNAME=root
           export DJANGO_SUPERUSER_EMAIL=test.lol@testomail.de
           python3 manage.py createsuperuser --noinput
-          chmod +x ./backend/gui/selenium/create_test_users.sh
-          ./backend/gui/selenium/create_test_users.sh
+          python3 manage.py shell < ./backend/gui/selenium/create_test_users.py
           "
     - name: Lint with flake8
       run: |

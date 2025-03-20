@@ -3,14 +3,15 @@ from django.views.generic import TemplateView
 from django.shortcuts import render
 from django.core.files import File
 from django.http import (
-    HttpRequest, 
+    HttpRequest,
     HttpResponse
 )
 from typing import Any
 
 
 class HomeView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self,
+            request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/home.html"
         context = {}
 

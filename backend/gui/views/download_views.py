@@ -19,11 +19,13 @@ import csv
 
 app_log = logging.getLogger("s3sample")
 
+# sample for csv/excel template download
+# update when model is updated
 example_sample = [
     # recruiter
     "München", "BSP12", "f", "2021-02-10", "S3C-BSP12-0-M1-V-R1",
     "This is an example sat3 sample", "2021-02-10", "CTC",
-    "Blood withdrawal", "Lung", "No", "G2",
+    "Blood withdrawal", "Lung", "False", "G2",
     # tum
     "2", "15", "59", "Comment",
     # spl
@@ -31,14 +33,15 @@ example_sample = [
     # sclab
     "2023-12-17", "2023-12-17", "77",
     "45", "successful RNA", "ATAC",
-    "Yes", "5S9QY", "12345", "12345", "Comment",
+    "True", "5S9QY", "12345", "12345", "Comment",
     # spatial
     "Xenium", "Xenium failed", "2023-12-19",
     "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
     "2023-12-19", "RUNID98124987412", "PANELID98124987412",
     "85", "Spatial Comment",
     # lb
-    "Plasma", "lb/panel/path1", "lb/panel/path2", "sWGS","2023-12-17", "4.1", "2023-12-17",
+    "Plasma", "lb/panel/path1", "lb/panel/path2", "sWGS",
+    "2023-12-17", "4.1", "2023-12-17",
     "111", "sequencing successful",
     # ocdf
     "test", "2021-11-29",
@@ -64,7 +67,7 @@ class Echo:
 def csv_template_download_csv(request: HttpRequest):
     pseudo_buffer = Echo()
     filename = "saturn3samples_template.csv"
-    data: list[Iterable[Any]] = [all_field_verbose_names[:-1], example_sample]
+    data: list[Iterable[Any]] = [all_field_verbose_names, example_sample]
     writer = csv.writer(pseudo_buffer)
 
     return StreamingHttpResponse(
@@ -75,9 +78,10 @@ def csv_template_download_csv(request: HttpRequest):
             f"attachment; filename={filename}"},
     )
 
+
 def csv_template_download_excel(request: HttpRequest):
     data = [example_sample]
-    columns = all_field_verbose_names[:-1] # created at excluded
+    columns = all_field_verbose_names
     filename = "saturn3samples_template.xlsx"
     generator: Generator | None = None
     buffer = BytesIO()
@@ -99,27 +103,28 @@ def csv_template_download_excel(request: HttpRequest):
 
 
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
-    def post(self, request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
+    def post(self,
+             request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         data = request.POST.get("data")
         file_type = request.GET.get("type", "CSV")
-        
+
         if data:
             records: list[dict] = json.loads(data)
             df = pd.DataFrame.from_records(records)
-            content_type="text/csv;base64"
+            content_type = "text/csv;base64"
 
             with BytesIO() as buffer:
                 file_name = "saturn3samples"
 
                 if file_type == "Excel":
                     file_name += ".xlsx"
-                    content_type="text/plain;base64"
+                    content_type = "text/plain;base64"
                     df.to_excel(buffer, index=False)
-                
+
                 else:
                     file_name += ".csv"
                     df.to_csv(buffer, index=False)
-                
+
                 buffer.seek(0)
                 response = HttpResponse(
                     b64encode(buffer.read()),
@@ -129,7 +134,7 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
                         "filename": file_name
                     },
                 )
-                    
+
             return response
 
         return HttpResponseRedirect("/samples/")

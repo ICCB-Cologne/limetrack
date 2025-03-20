@@ -13,6 +13,3 @@ class Saturn3Colors:
     LIGHT_GREEN_RGB = "rgb(202,211,5)"
     BLUE_GREEN_RGB = "rgb(71,179,132)"
     GREY_RGB = "rgb(122,128,129)"
-
-
-    

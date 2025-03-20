@@ -97,6 +97,7 @@ Sample Tracking
     <div id="main_form" class="form-containerino">
       <h2 id="top_of_form"> Form <i class="bi bi-pencil-square"></i> </h2> 
       <h8> Fields marked with * are mandatory. </h8>
+
       <!-- GENERAL MESSAGES -->
       {% if messages %}
       <ul class="messages">
@@ -108,6 +109,7 @@ Sample Tracking
       </ul>
       {% endif %}   
       
+      {% comment %} Start of actual form {% endcomment %}
       {% for field in form %}
        {# splitting the form visually in sections for the different user groups #}
         {% if field.name in "recruiting_site, tissue_quality, spl_received, sclab_received, spatial_method, lb_analyte_type, request_execution_of" %}
@@ -176,6 +178,7 @@ Sample Tracking
 
 
 <!-- Modal -->
+{% comment %} This is for double-checking the input data and confirming it {% endcomment %}
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-l modal-dialog-centered">
     <div class="modal-content">

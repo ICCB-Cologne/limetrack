@@ -19,13 +19,12 @@ Samples Overview
     <form action={% url "all_samples" %} method="get" enctype="multipart/form-data" id="column-filter">
         {% csrf_token %}
 
+      {% comment %} Counters above sample table {% endcomment %}
       <div class="container-fluid">
         <div class="row mb-3">
-          <div class="col auto bg-white border border-dark-subtle">
-            <i class="bi bi-bar-chart"></i> Total number of samples: {{samples|length}} &nbsp; <i class="bi bi-dash"></i> &nbsp; 
-            <i class="bi bi-person"></i> Total number of patients: <span id="id-patient-number">  </span> &nbsp; &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; &nbsp;
-            <i class="bi bi-funnel"></i> Number of filtered samples: <span id="id-selected-samples"> {{samples|length}} </span> &nbsp; <i class="bi bi-dash"></i> &nbsp;
-            <i class="bi bi-person-add"></i> Number of filtered patients: <span id="id-filtered-patient-number">  </span>  
+          <div class="col auto border border-dark-subtle">
+            Filtered / Total number of samples: <span id="id-selected-samples"> {{samples|length}} </span> / {{samples|length}}   &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; 
+            Filtered / Total number of patients: <span id="id-filtered-patient-number">  </span> / <span id="id-patient-number"> </span> 
           </div>
         </div>
         
@@ -37,8 +36,7 @@ Samples Overview
               Filter columns
             </button>
             <button class="btn btn-primary"> Apply </button>
-        
-            
+ 
               <ul class="dropdown-menu" id="id-group-filters">
                 <label class="dropdown-item"> 
                   <input type="checkbox" name="all" id="id_all_group_filters" checked="" onclick="selectAllFilters()">
@@ -98,7 +96,7 @@ Samples Overview
     </div>
 
     
-   
+    {% comment %} SAMPLE TABLE {% endcomment %}
     <div class="tablediv">
       <form method="post" id="id-form">{% csrf_token %}</form>
 
@@ -125,6 +123,7 @@ Samples Overview
             {%endif%}
           </tr>
         </thead>
+
         <tbody id="data-rows">
           {% for item in samples %}
           <tr>
@@ -141,8 +140,9 @@ Samples Overview
                 {% endif %}
             {% endif %}
             {% endfor %}
+            {% comment %} Delete button {% endcomment %}
             <td>
-              {% if user.is_superuser or user.name == "root" or user.groups.first.name == "coordinators" or user.groups.first.name == "admins" %}
+              {% if 'gui.delete_histopathologicalsample' in user.get_all_permissions or user.get_user_name == "root"%}
               <button id="Delete {{item.5.1}}" type="button" onclick="deleteID({{ item.0.1 }}, '{{csrf_token}}' )">Delete</button>
               {% endif %}
             </td>

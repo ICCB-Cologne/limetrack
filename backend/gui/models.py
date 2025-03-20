@@ -64,38 +64,102 @@ def check_sat3_sample_code_with_none_analyte(string):
 
 def check_eleven_figures(number: str):
     if len(number) != 11 and len(number) != 5:
-        raise ValidationError("Value has to consist of exactly 5 or 11 characters")
-    
+        error_mesage = "Value has to consist of exactly 5 or 11 characters"
+        raise ValidationError(error_mesage)
+
+
 def no_commas_allowed(comment: str):
     if "," in comment:
         raise ValidationError("Commas are not permitted.")
 
-# Create your models here.
+
+# dictionary for splitting the model into sections
+# keys: sections, values: put in the last field name of each section
+# TODO: if no sections needed: handling of empty dict
+# needs to be implemented in forms, views etc.
+end_of_model_section_dict = {
+    "recruiter": "grading",
+    "tum": "comment_tumor_cell_content",
+    "spl": "spl_sequencing_type",
+    "scopenlab": "sclab_comment",
+    "spatial": "spatial_comment",
+    "liquidbiopsy": "lb_status",
+    "omicspath": "wgs_vcf",
+}
 
 
 class HistopathologicalSample(models.Model):
     """
-    When adding fields to the model,
-    remember to make changes to
-    the forms.py file accordingly.
+    --- PERMISSION MANAGEMENT ---
+    In the SATURN3 Sample Tracker the model is split into
+    7 'sections' (e.g., SPL, Recruiter ...) which
+    users can access only if they have the respective permissions.
+    For the forms in the front-end this means, that form fields
+    a user has no permissions to edit are greyed out and disabled.
+    In the back-end, data input is handled in a similar way.
+    Data is processed only for the sections a user has permissions to edit.
 
-    Meaning: go to forms.py and make sure
-    that the lists and dicts on the top of
-    the file include all model fields.
-    If you add date fields give them a DatePicker widget.
-    
-    Don't forget to change the downloadable template csv file (views/download_views.py)
+    2 fields are idependent of these sections and not editable:
+    id (generated automatically by django)
+    created (time stamp)
+
+    New samples can only be created by users with the permission
+    to create new records ("gui.add_histopathologicalsample" permission).
+    Other users utilize the sat3 sample code
+    to refer to existing samples in order to edit
+    the sample's sections they're allowed to change.
+
+    Data fields that are already filled with data can only
+    be changed by users that have the
+    "gui.change_histopathologicalsample" permission.
+
+    --- IMPORTANT INSTRUCTIONS ---
+    When adding fields to the model or
+    especially creating a whole new model or multiple models,
+    remember to make changes to the dependent code accordingly.
+
+    Meaning: go to forms.py & utils/model_to_form and make sure
+    the model is transformed to a form (or multiple forms) correctly.
+
+    Don't forget to change the downloadable
+    template csv file (views/download_views.py)
     and to adapt the test csv files (at least the one_record.csv file).
 
+    Last but not least include the
+    new fields into the selenium integration tests. (gui/selenium/)
+    This includes also the create_test_users.py script for the github actions
 
-    Last but not least include the new fields into the selenium tests. (gui/selenium/)
+    If your changes of the model affect the last field of a section:
+    Edit the end_of_model_section_dict accordingly.
 
+    --- APPLY YOUR OWN MODEL ---
+    If you intend to use your own model and create a new class
+    with a new name, note that LiMeTrack's code is build on this
+    single django data model.
+    Choosing a name different from HistopathologicalSample will result in
+    having to make changes everywhere the model explicitly occurs
+    in the project.
     """
 
-    def generate_patient_id(self):
-        return self.patient_identifier + self.recruiting_site
+    class Meta:
+        """
+        These permissions regulate which 'sections' of the model
+        a user or a user group has access to
+        naming constraints:
+        official group/section name + _fields e.g. recruiter_fields
+        """
 
-    # recruiter - 11 fields ###
+        permissions = [
+            ("recruiter_fields", "Recruiter fields permission"),
+            ("tum_fields", "TUM fields permission"),
+            ("spl_fields", "SPL fields permission"),
+            ("scopenlab_fields", "ScLab fields permission"),
+            ("spatial_fields", "Spatial fields permission"),
+            ("liquidbiopsy_fields", "LB fields permission"),
+            ("omicspath_fields", "OMICS fields permission"),
+        ]
+
+    # Section: Recruiter - 12 fields ###
 
     recruiting_site = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=SITE_CHOICES,
@@ -106,15 +170,10 @@ class HistopathologicalSample(models.Model):
         validators=[validate_alphanumeric],
         verbose_name="Patient Identifier")
 
-    # patient = models.CharField( max_length=CHARFIELD_MAXLEN)
-    # skip for prototype
     sex = models.CharField(max_length=CHARFIELD_MAXLEN, choices=SEX_CHOICES,
                            verbose_name="Sex")
     died = models.DateField(null=True, blank=True, verbose_name="Died")
-    # tissue_name = models.CharField(max_length=CHARFIELD_MAXLEN)
-    # skip for prototype
-    # used_in = models.CharField(max_length=CHARFIELD_MAXLEN)
-    # skip for prototype
+
     saturn3_sample_code = models.CharField(
         max_length=CHARFIELD_MAXLEN,
         validators=[check_sat3_sample_code],
@@ -150,10 +209,8 @@ class HistopathologicalSample(models.Model):
     grading = models.CharField(max_length=CHARFIELD_MAXLEN, choices=GRADING,
                                verbose_name="Grading", blank=True,
                                null=True)
-    # histology_subtype = models.CharField(max_length=CHARFIELD_MAXLEN)
-    # skip for prototype
 
-    # TUM Pathology ###
+    # Section: TUM Pathology ###
 
     tissue_quality = models.IntegerField(
         blank=True, null=True,
@@ -176,7 +233,7 @@ class HistopathologicalSample(models.Model):
         verbose_name="Comment tumor cell content",
         validators=[no_commas_allowed])
 
-    # SPL ###
+    # Section: SPL ###
     spl_received = models.DateField(
         null=True, blank=True, verbose_name="SPL Received")
     spl_status = models.CharField(
@@ -190,7 +247,7 @@ class HistopathologicalSample(models.Model):
         choices=SPL_SEQUENCING_TYPES,
         verbose_name="SPL Analysis Type")
 
-    # scLab ###
+    # Section: ScLab ###
     sclab_received = models.DateField(
         null=True, blank=True, verbose_name="scLab Received")
     sclab_extraction_date = models.DateField(null=True,
@@ -242,7 +299,7 @@ class HistopathologicalSample(models.Model):
                                      validators=[no_commas_allowed]
                                      )
 
-    # Spatial ###
+    # Section: Spatial ###
     spatial_method = models.CharField(blank=True, null=True,
                                       verbose_name="Spatial Method",
                                       choices=SPATIAL_METHOD)
@@ -291,24 +348,27 @@ class HistopathologicalSample(models.Model):
                                        verbose_name="Spatial Comment",
                                        validators=[no_commas_allowed])
 
-    # LB ###
+    # Section: LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                        blank=True, null=True,
                                        verbose_name="LB analyte type",
                                        choices=LB_ANALYTE_TYPES)
     lb_panel_r1 = models.CharField(blank=True, null=True,
                                    verbose_name="LB panel R1")
-    
+
     lb_panel_r2 = models.CharField(blank=True, null=True,
                                    verbose_name="LB panel R2")
 
-    lb_sequencing_status = models.CharField(blank=True, null=True,
-                                            verbose_name="LB Sequencing Status",
-                                            choices=LB_SEQUENCING_STATUS_CHOICES)
+    lb_sequencing_status = models.CharField(
+        blank=True, null=True,
+        verbose_name="LB Sequencing Status",
+        choices=LB_SEQUENCING_STATUS_CHOICES)
 
     lb_received = models.DateField(null=True,
                                    blank=True, verbose_name="LB Received")
-    lb_sample_volume = models.DecimalField(null=True, max_digits=4, decimal_places=1,
+
+    lb_sample_volume = models.DecimalField(null=True, max_digits=4,
+                                           decimal_places=1,
                                            blank=True,
                                            verbose_name="LB Sample"
                                                         " Volume [ml]")
@@ -325,7 +385,7 @@ class HistopathologicalSample(models.Model):
                                  verbose_name="LB Status",
                                  choices=LB_STATUS_CHOICES)
 
-    # Datapaths ### 
+    # Section: OmicsDatapaths ###
 
     request_execution_of = models.CharField(
         blank=True,
@@ -388,4 +448,5 @@ class HistopathologicalSample(models.Model):
 
     # Timestamp ###
 
-    created = models.DateTimeField(null=True, blank=True, auto_now_add=True, verbose_name="Created at")
+    created = models.DateTimeField(null=True, blank=True, auto_now_add=True,
+                                   verbose_name="Created at")

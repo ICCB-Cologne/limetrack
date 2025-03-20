@@ -10,7 +10,7 @@ class TestUpload(BasicTestClass):
 
         self.login("root", "root")
         self.sat3_sample_code = "S3C-TESTY-0-M1-V-R1"
-        
+
         self.upload_file("one_record.csv")
         # download
         self.driver.find_element(By.ID, "all-samples-nav").click()

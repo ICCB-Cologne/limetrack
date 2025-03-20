@@ -7,6 +7,11 @@ from .basic_test_functions import BasicTestClass
 
 
 class TestAllUserGroupsForm(BasicTestClass):
+    """
+    Here we have a complete record created by having
+    all users distribute data for their respective
+    section one by one.
+    """
 
     def test_all_users_input(self):
         self.recruiter_create()
@@ -70,7 +75,6 @@ class TestAllUserGroupsForm(BasicTestClass):
         self.submit_record()
         self.check_submission()
         self.logout()
-
 
     def sclab_input(self):
         self.login("test_ScLab", "test4life")
@@ -193,12 +197,15 @@ class TestAllUserGroupsForm(BasicTestClass):
         select_lb_analyte_type.select_by_visible_text(
             RecordGenerator.random_lb_analyte_types())
 
-        self.driver.find_element(By.ID,
-                                 "id_lb_panel_r1").send_keys(
-                                     RecordGenerator.random_string_of_length(100))
-        self.driver.find_element(By.ID,
-                                 "id_lb_panel_r2").send_keys(
-                                     RecordGenerator.random_string_of_length(100))
+        self.driver.find_element(
+            By.ID,
+            "id_lb_panel_r1").send_keys(
+                RecordGenerator.random_string_of_length(100))
+
+        self.driver.find_element(
+            By.ID,
+            "id_lb_panel_r2").send_keys(
+                RecordGenerator.random_string_of_length(100))
 
         lb_sequencing_status = self.driver.find_element(
             By.ID, "id_lb_sequencing_status")
@@ -206,14 +213,16 @@ class TestAllUserGroupsForm(BasicTestClass):
         select_lb_sequencing_status.select_by_visible_text(
             RecordGenerator.random_lb_sequencing_status())
 
-
         self.driver.find_element(
             By.ID,
             "id_lb_received").send_keys(
                 RecordGenerator.random_date())
 
-        self.driver.find_element(By.ID, "id_lb_sample_volume").send_keys(
-            RecordGenerator.random_decimal_with_max_4_digits_and_1_decimal_place())
+        self.driver.find_element(
+            By.ID,
+            "id_lb_sample_volume").send_keys(
+                RecordGenerator.
+                random_decimal_4_digits_1_decimal())
 
         self.driver.find_element(By.ID, "id_lb_date_of_isolation").send_keys(
                 RecordGenerator.random_date())

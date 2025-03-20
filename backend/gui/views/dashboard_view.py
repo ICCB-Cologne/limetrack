@@ -26,7 +26,8 @@ entity_dict = {"S3M": "BC", "S3P": "PDAC", "S3C": "CRC"}
 token = settings.SETTINGS.MAPPLOT_TOKEN
 
 
-def count_samples_by_category(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
+def count_samples_by_category(samples: QuerySet[HistopathologicalSample,
+                                                HistopathologicalSample]):
     headings = {
         "recruiting_site": "Samples by recruiting site",
         "saturn3_sample_code": "Samples by entity - total",
@@ -81,13 +82,15 @@ def count_samples_by_category(samples: QuerySet[HistopathologicalSample, Histopa
     return plot_dicts
 
 
-def count_samples_by_site_and_entity(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
+def count_samples_by_site_and_entity(
+        samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
     data: dict[str, list] = {"Site": [], "Entity": [], "Number of samples": []}
     site_sample_pairs = [
         [
             getattr(instance, field.name)
             for field in instance._meta.fields
-            if field.name == "recruiting_site" or field.name == "saturn3_sample_code"
+            if (field.name == "recruiting_site" or
+                field.name == "saturn3_sample_code")
         ]
         for instance in samples
     ]
@@ -137,9 +140,10 @@ def count_samples_by_site_and_entity(samples: QuerySet[HistopathologicalSample, 
     return fig.to_html()
 
 
-def sample_process_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
+def sample_process_plot(samples: QuerySet[HistopathologicalSample,
+                                          HistopathologicalSample]):
     data: dict[str, list] = {"received at": ["none", "spl", "sclab", "wgs"],
-            "number": [0, 0, 0, 0]}
+                             "number": [0, 0, 0, 0]}
 
     received_dates = [
         [
@@ -173,7 +177,8 @@ def sample_process_plot(samples: QuerySet[HistopathologicalSample, Histopatholog
     return fig.to_html
 
 
-def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]):
+def map_plot(samples: QuerySet[HistopathologicalSample,
+                               HistopathologicalSample]):
     data: dict[str, list] = {"lat": [], "lon": [], "Samples": [], "site": []}
 
     key_value_pairs = [
@@ -211,7 +216,7 @@ def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]
     #                         zoom=5,
     #                         center=dict(lat=51.19, lon=10.459),
     #                         height=800)
-    
+
     fig1 = px.scatter_geo(
         df,
         lat="lat", lon="lon", size="Samples",
@@ -227,15 +232,16 @@ def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]
     fig1.update_traces(
         textposition="top center",
         mode='markers+text')
-    
+
     fig1.add_trace(go.Choropleth(
-        locationmode = 'country names',
-        locations = ['Germany'],
-        z = [0],
+        locationmode='country names',
+        locations=['Germany'],
+        z=[0],
         hoverinfo="skip",
-        colorscale = [[0, "rgba(20, 42, 98, 0.3)"], [1, "rgba(20, 42, 98, 0.3)"]],
-        autocolorscale = False,
-        showscale = False
+        colorscale=[[0, "rgba(20, 42, 98, 0.3)"],
+                    [1, "rgba(20, 42, 98, 0.3)"]],
+        autocolorscale=False,
+        showscale=False
     ))
 
     # fig1 = go.Figure(data=go.Scattergeo(
@@ -249,39 +255,25 @@ def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]
     #     marker= dict(size = df["Samples"] * 5),
     #     ))
 
-    
     fig1.update_layout(
         geo_scope='europe',
         height=800,
         geo=dict(
-            scope = 'europe',
-            resolution = 50,
-            lonaxis_range= [5.6, 15.4 ],
-            lataxis_range= [47.3, 55.25],
-            landcolor = "rgb(229, 229, 229)",
-            framecolor = "rgb(0, 0, 0)",
-            framewidth= 10,
-            showframe = True,
-            showlakes = False,
-            showocean = True,
-            oceancolor  = "rgba(220, 236, 247, 0.5)",
-            showrivers = False,
+            scope='europe',
+            resolution=50,
+            lonaxis_range=[5.6, 15.4],
+            lataxis_range=[47.3, 55.25],
+            landcolor="rgb(229, 229, 229)",
+            framecolor="rgb(0, 0, 0)",
+            framewidth=10,
+            showframe=True,
+            showlakes=False,
+            showocean=True,
+            oceancolor="rgba(220, 236, 247, 0.5)",
+            showrivers=False,
         ),
         margin={"r": 20, "t": 20, "l": 20, "b": 20}
     )
-
-    # fig.add_trace(go.Scattermapbox(lat=[c[0] + 0.2  for c in list(coordinates.values())],
-    #                            lon=[c[1] for c in list(coordinates.values())],
-    #                            mode='text+markers',
-    #                            text=list(coordinates.keys()),
-    #                            textposition='middle center',
-    #                            textfont=dict(color=Saturn3Colors.DARK_BLUE_HEX),
-    #                            marker_size=1,
-    #                            marker_color=Saturn3Colors.DARK_BLUE_HEX,
-    #                            hoverinfo="skip",
-    #                            showlegend=False
-    #                             ))
-
 
     # if token:
     #     fig.update_layout(mapbox_style="light",
@@ -293,30 +285,29 @@ def map_plot(samples: QuerySet[HistopathologicalSample, HistopathologicalSample]
     # fig.update_layout(mapbox_bounds={"west": 3, "east": 18,
     #                                  "south": 47.1, "north": 55.2})
 
-    return fig1.to_html(full_html=False) #, fig.to_html(full_html=False)
+    return fig1.to_html(full_html=False)
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
 
-    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(self,
+            request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         template_name = "gui/dashboard.html"
         samples = HistopathologicalSample.objects.all()
         plot_dict = count_samples_by_category(samples)
 
-        row1, row2, row3 = [], [], []
+        row1, row2 = [], []
         for dic in plot_dict:
 
             row1.append(dic)
 
         map_plot1 = map_plot(samples)
 
-
         row2.append({"heading": "Samples by sites - Map",
                      "plot": map_plot1})
-        
+
         # row3.append({"heading": "Samples by sites - Map1",
         #              "plot": map_plot2})
-
 
         row1.append(
             {
@@ -326,7 +317,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         )
 
         row2.append(
-            {"heading": "Sample Processing", "plot": sample_process_plot(samples)}
+            {"heading": "Sample Processing",
+             "plot": sample_process_plot(samples)}
         )
 
         context = {
@@ -334,7 +326,6 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             # need to check the user's attributes
             "row1": row1,
             "row2": row2,
-            #"row3": row3
             }
 
         return render(request, template_name, context=context)

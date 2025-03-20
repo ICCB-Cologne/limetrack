@@ -57,6 +57,7 @@ class BasicTestClass():
             By.CSS_SELECTOR, ".modal-footer > .btn-primary").click()
 
     def check_submission(self):
+        self.driver.save_screenshot("screenie.png")
         message_container = self.driver.find_element(By.CLASS_NAME, "messages")
         message = message_container.find_element(By.TAG_NAME, "li")
         assert (message.text == "Submission successful!")
@@ -69,7 +70,7 @@ class BasicTestClass():
         Minimal record in the sense of having all recruiter fields filled out.
         Not only the required ones.
         """
-
+        # self.driver.save_screenshot("screenie.png")
         recruiting_site = self.driver.find_element(
             By.ID, "id_recruiting_site")
         select_recruiting_site = Select(recruiting_site)
@@ -89,7 +90,6 @@ class BasicTestClass():
         self.driver.find_element(By.ID, "id_died").send_keys(Keys.ENTER)
 
         # SATURN3 Sample Code #
-
         # Entity
         sat3_code_entity = RecordGenerator.random_sample_code_entity_choice()
         saturn3_sample_code_0 = self.driver.find_element(

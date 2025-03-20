@@ -151,15 +151,15 @@ class RecordGenerator:
     @staticmethod
     def random_integer_from_0_to_100():
         return str(random.choice(range(0, 101)))
-    
+
     @staticmethod
-    def random_decimal_with_max_4_digits_and_1_decimal_place():
+    def random_decimal_4_digits_1_decimal():
         return str(decimal.Decimal(random.randrange(0, 9999))/10)
 
     @staticmethod
     def random_integer_from_1_to_5():
         return str(random.choice(range(1, 6)))
-    
+
     @staticmethod
     def random_lb_sequencing_status():
         return random.choice(LB_SEQUENCING_STATUS_CHOICES)[0]
