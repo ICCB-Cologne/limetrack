@@ -11,7 +11,5 @@ logs/
 production.env
 backend/static/
 !backend/gui/static/gui/img
-!backend/gui/migrations/0001_initial.py
-!backend/gui/migrations/0002_add_groups.py
 .pytest_cache
 backend/gui/migrations
