@@ -17,11 +17,11 @@ from django.http import (
 )
 from ..utils.permission_manager import get_all_permitted_fields
 from typing import Any
-from ..models import (
-    HistopathologicalSample,
+from ..utils.validators import (
     check_sat3_sample_code_with_none_analyte,
     check_sat3_sample_code,
 )
+from ..models import HistopathologicalSample
 from .views import (
     check_existing_entries,
     record_already_exists,
