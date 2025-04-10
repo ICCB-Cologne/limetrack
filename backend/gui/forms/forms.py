@@ -87,7 +87,11 @@ class FlexibleSampleForm(ModelForm):
 
             # widgets with additional features
             "tissue_quality": forms.NumberInput(
-                attrs={'min': 0, 'max': 5, 'type': 'number'}
+                attrs={
+                    "data-toggle": "tooltip",
+                    "data-placement": "top",
+                    "title": "Value  between 1 and 5",
+                    'min': 1, 'max': 5, 'type': 'number'}
             ),
         } | date_pickers
 

@@ -1,4 +1,11 @@
 ## Change Log
+### 2025-04-02
+
+- **New**
+    - User management based on permissions
+- **Sample table**
+    - Changed visualization of filtered patients & samples counter
+- ****
 
 ---
 ### 2024-12-18
