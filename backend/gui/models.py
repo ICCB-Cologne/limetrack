@@ -1,9 +1,9 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from utils.validators import (zero_to_a_hundred, validate_alphanumeric,
-                              check_eleven_figures,
-                              check_sat3_sample_code,
-                              no_commas_allowed)
+from .utils.validators import (zero_to_a_hundred, validate_alphanumeric,
+                               check_eleven_figures,
+                               check_sat3_sample_code,
+                               no_commas_allowed)
 from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   SEX_CHOICES,
                                   TISSUE_TYPES, INTERVENTION_TYPES,
