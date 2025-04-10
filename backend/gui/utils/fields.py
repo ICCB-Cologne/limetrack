@@ -13,7 +13,7 @@ from typing import Any
 from django.forms.fields import (MultiValueField, CharField,
                                  IntegerField, ChoiceField)
 from django.forms import Select, MultiWidget, TextInput, NumberInput
-from backend.gui.models import validate_alphanumeric
+from utils.validators import validate_alphanumeric
 from django.utils.datastructures import MultiValueDictKeyError
 import re
 

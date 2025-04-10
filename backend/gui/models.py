@@ -1,9 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from .utils.validators import (zero_to_a_hundred, validate_alphanumeric,
-                               check_eleven_figures,
-                               check_sat3_sample_code,
-                               no_commas_allowed)
+from .utils import validators
 from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   SEX_CHOICES,
                                   TISSUE_TYPES, INTERVENTION_TYPES,
@@ -117,7 +114,7 @@ class HistopathologicalSample(models.Model):
 
     patient_identifier = models.CharField(
         max_length=5,
-        validators=[validate_alphanumeric],
+        validators=[validators.validate_alphanumeric],
         verbose_name="Patient Identifier")
 
     sex = models.CharField(max_length=CHARFIELD_MAXLEN, choices=SEX_CHOICES,
@@ -126,7 +123,7 @@ class HistopathologicalSample(models.Model):
 
     saturn3_sample_code = models.CharField(
         max_length=CHARFIELD_MAXLEN,
-        validators=[check_sat3_sample_code],
+        validators=[validators.check_sat3_sample_code],
         verbose_name="SATURN3 Sample Code",
         help_text="S3 + Entity - "
                   "Patient Identifier - "
@@ -139,7 +136,7 @@ class HistopathologicalSample(models.Model):
         max_length=350,
         verbose_name="Note", blank=True,
         null=True,
-        validators=[no_commas_allowed])
+        validators=[validators.no_commas_allowed])
 
     sampling_date = models.DateField(verbose_name="Sampling Date")
     tissue_type = models.CharField(
@@ -171,18 +168,18 @@ class HistopathologicalSample(models.Model):
 
     tumor_cell_content = models.CharField(
         blank=True, null=True,
-        validators=[zero_to_a_hundred],
+        validators=[validators.zero_to_a_hundred],
         verbose_name="Tumor Cell Content")
 
     percent_avital_cells = models.IntegerField(
         blank=True, null=True,
-        validators=[zero_to_a_hundred],
+        validators=[validators.zero_to_a_hundred],
         verbose_name="Percentage avital cells")
 
     comment_tumor_cell_content = models.TextField(
         blank=True, null=True,
         verbose_name="Comment tumor cell content",
-        validators=[no_commas_allowed])
+        validators=[validators.no_commas_allowed])
 
     # Section: SPL ###
     spl_received = models.DateField(
@@ -233,21 +230,21 @@ class HistopathologicalSample(models.Model):
         null=True,
         blank=True,
         max_length=11,
-        validators=[check_eleven_figures],
+        validators=[validators.check_eleven_figures],
         verbose_name="RNA ILSE ID")
 
     atac_isle_id = models.CharField(
         null=True,
         blank=True,
         max_length=11,
-        validators=[check_eleven_figures],
+        validators=[validators.check_eleven_figures],
         verbose_name="ATAC ILSE ID")
 
     sclab_comment = models.TextField(max_length=CHARFIELD_MAXLEN,
                                      blank=True,
                                      null=True,
                                      verbose_name="scLab Comment",
-                                     validators=[no_commas_allowed]
+                                     validators=[validators.no_commas_allowed]
                                      )
 
     # Section: Spatial ###
@@ -293,11 +290,12 @@ class HistopathologicalSample(models.Model):
     dv_200 = models.CharField(blank=True, null=True,
                               max_length=3,
                               verbose_name="DV200",
-                              validators=[zero_to_a_hundred])
+                              validators=[validators.zero_to_a_hundred])
 
     spatial_comment = models.TextField(blank=True, null=True,
                                        verbose_name="Spatial Comment",
-                                       validators=[no_commas_allowed])
+                                       validators=[(validators
+                                                    .no_commas_allowed)])
 
     # Section: LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,
