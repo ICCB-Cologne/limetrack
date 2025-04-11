@@ -2,10 +2,10 @@
 ### 2025-04-02
 
 - **New**
-    - User management based on permissions
+    - User management system based on permissions, allowing more flexibility.
 - **Sample table**
-    - Changed visualization of filtered patients & samples counter
-- ****
+    - Changed visualization of filtered patients & samples counter bar
+    - New filters: "Variant calling", "ScRNASeq" & "WGS"
 
 ---
 ### 2024-12-18
