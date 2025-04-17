@@ -1,11 +1,16 @@
-# LiMeTrack - A Sample Tracking Tool
-**LiMeTrack** is a lightweight sample tracker designed for centralized collection and display of sample (meta-)data.  
+# LiMeTrack - A lightweight biosample management platform
+**LiMeTrack** is a lightweight biosample management platform for centralized research data management and sample tracking in biomedical research projects.
+
+Key features include customizable and user-friendly forms for data entry and a real-time dashboard providing an overview of project and sample status. 
+LiMeTrack simplifies the creation and export of standardized sample sheets, streamlining subsequent bioinformatics analyses and biomedical research workflows. 
+By integrating real-time monitoring with robust sample tracking and data management, LiMeTrack improves research transparency and reproducibility, ensures data integrity and optimizes workflows.
+
 Users can submit data either by filling out a web form or uploading CSV/Excel files.  
 Accepted data is displayed as records in a filterable and searchable sample table.  
-We aim to eliminate data inconsistencies caused by scattered excel spreadsheets.  
 
-We are still working on a generalization of our application.  
-However, at present, it is still necessary to adapt the code in many places according to the requirements of other projects.
+**LiMeTrack** is currently designed for the multicenter SATURN3 consortium (saturn3.org).
+To meet the requirements of other projects, code and data model need to be adapted.
+We are working on further simplifying the data models to be modularly adaptable for a wide range of projects.
 
 ## Prerequisites
 Docker, Knowledge of Django & Python 
