@@ -17,8 +17,10 @@ LOCALISATION_CHOICE = [
     ("Lymph node", "Lymph node"),
     ("Spleen", "Spleen"),
     ("Skin", "Skin"),
-    ("Peripancreatic fat", "Peripancreatic fat")
-
+    ("Peripancreatic fat", "Peripancreatic fat"),
+    ("Ovary", "Ovary"),
+    ("Adrenal gland", "Adrenal gland"),
+    ("Pericardium", "Pericardium")
 ]
 
 SITE_CHOICES = [

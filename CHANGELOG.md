@@ -1,4 +1,9 @@
 ## Change Log
+
+### 2025-04-17
+- **New**
+    - Localisation choices "Ovary", "Adrenal gland" & "Pericardium"
+
 ### 2025-04-02
 
 - **New**
