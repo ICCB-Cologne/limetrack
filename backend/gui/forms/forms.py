@@ -75,13 +75,13 @@ class FlexibleSampleForm(ModelForm):
             "corresponding_organoid": forms.Select(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "generated from the same biopsy/tissue piece"}
+                       "title": "Generated from the same biopsy/tissue piece"}
                        ),
 
             "dv_200": forms.TextInput(
                 attrs={"data-toggle": "tooltip",
                        "data-placement": "top",
-                       "title": "Quality meassure: RNA \
+                       "title": "Quality measure: RNA \
                         molecules larger than 200 bp [%]"}
                         ),
 
