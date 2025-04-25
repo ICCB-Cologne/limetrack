@@ -65,9 +65,9 @@ def check_eleven_figures(number: str):
 
 def no_commas_allowed(comment: str):
     if "," in comment:
-        raise ValidationError("Commas are not permitted.")
+        raise ValidationError("Commas are not permitted")
 
 
 def check_date(date: datetime):
     if datetime.today().date() < date:
-        raise ValidationError("Input date is in the future.")
+        raise ValidationError("Input date is in the future")

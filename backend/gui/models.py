@@ -146,16 +146,19 @@ class HistopathologicalSample(models.Model):
         max_length=CHARFIELD_MAXLEN,
         choices=TISSUE_TYPES,
         verbose_name="Tissue Type")
+
     type_of_intervention = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=INTERVENTION_TYPES,
         verbose_name="Type of Intervention")
+
     localisation = models.CharField(
         max_length=CHARFIELD_MAXLEN, choices=LOCALISATION_CHOICE,
         verbose_name="Localisation")
+
     corresponding_organoid = models.BooleanField(
         verbose_name="Corresponding Organoid",
-        choices=CORRESPONDING_ORGANOID_CHOICES
-    )
+        choices=CORRESPONDING_ORGANOID_CHOICES)
+
     grading = models.CharField(max_length=CHARFIELD_MAXLEN, choices=GRADING,
                                verbose_name="Grading", blank=True,
                                null=True)
@@ -169,29 +172,39 @@ class HistopathologicalSample(models.Model):
         verbose_name="Tissue Quality"
         )
 
-    tumor_cell_content = models.CharField(
+    tumor_cell_content = models.IntegerField(
         blank=True, null=True,
-        validators=[validators.zero_to_a_hundred],
-        verbose_name="Tumor Cell Content")
+        validators=[MinValueValidator(0,
+                                      "Percentage value between 0 and 100"),
+                    MinValueValidator(100,
+                                      "Percentage value between 0 and 100")],
+        verbose_name="Tumor Cell Content [%]")
 
     percent_avital_cells = models.IntegerField(
         blank=True, null=True,
-        validators=[validators.zero_to_a_hundred],
-        verbose_name="Percentage avital cells")
+        validators=[MinValueValidator(0,
+                                      "Percentage value between 0 and 100"),
+                    MinValueValidator(100,
+                                      "Percentage value between 0 and 100")],
+        verbose_name="Avital Cells [%]")
 
     comment_tumor_cell_content = models.TextField(
         blank=True, null=True,
-        verbose_name="Comment tumor cell content",
+        verbose_name="Comment Tumor Cell Content",
         validators=[validators.no_commas_allowed])
 
     # Section: SPL ###
     spl_received = models.DateField(
-        null=True, blank=True, verbose_name="SPL Received")
+        null=True, blank=True,
+        validators=[validators.check_date],
+        verbose_name="SPL Date Received")
+
     spl_status = models.CharField(
         max_length=CHARFIELD_MAXLEN,
         blank=True, null=True,
         choices=SPL_STATUS_CHOICES,
         verbose_name="SPL Status")
+
     spl_sequencing_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,
         blank=True, null=True,
@@ -200,43 +213,50 @@ class HistopathologicalSample(models.Model):
 
     # Section: ScLab ###
     sclab_received = models.DateField(
-        null=True, blank=True, verbose_name="scLab Received",
+        null=True, blank=True, verbose_name="ScLab Date Received",
         validators=[validators.check_date])
 
     sclab_extraction_date = (models.
                              DateField(null=True,
                                        blank=True,
-                                       verbose_name="scLab "
+                                       verbose_name="ScLab "
                                        "Extraction Date",
                                        validators=[validators.check_date]))
 
-    sclab_nuclei_yield = models.IntegerField(null=True,
-                                             blank=True,
-                                             verbose_name="scLab Nuclei Yield")
+    sclab_nuclei_yield = models.IntegerField(
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(0,
+                                      "Positiv integers only")],
+        verbose_name="ScLab Nuclei Yield")
 
-    sclab_nuclei_size = models.IntegerField(null=True,
-                                            blank=True,
-                                            verbose_name="scLab particles "
-                                                         "above 5 µm [%]")
+    sclab_nuclei_size = models.IntegerField(
+        null=True,
+        blank=True,
+        validators=[
+            MinValueValidator(0, "Percentage value between 0 and 100"),
+            MinValueValidator(100, "Percentage value between 0 and 100")],
+        verbose_name="ScLab Particles "
+                     "Above 5 µm [%]")
 
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                     blank=True, null=True,
-                                    verbose_name="scLab Status",
+                                    verbose_name="ScLab Status",
                                     choices=SCLAB_STATUS_CHOICES)
 
     sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True, null=True,
-                                             verbose_name="scLab"
+                                             verbose_name="ScLab"
                                                           " Sequencing Type",
                                              choices=SCLAB_SEQUENCING_TYPES)
 
     sclab_sorting = models.BooleanField(choices=CORRESPONDING_ORGANOID_CHOICES,
                                         blank=True, null=True,
-                                        verbose_name="scLab Sorting")
+                                        verbose_name="ScLab Sorting")
     sclab_pool = models.CharField(
         null=True,
         blank=True,
-        verbose_name="scLab Pool")
+        verbose_name="ScLab Pool")
 
     rna_isle_id = models.CharField(
         null=True,
@@ -255,7 +275,7 @@ class HistopathologicalSample(models.Model):
     sclab_comment = models.TextField(max_length=CHARFIELD_MAXLEN,
                                      blank=True,
                                      null=True,
-                                     verbose_name="scLab Comment",
+                                     verbose_name="ScLab Comment",
                                      validators=[validators.no_commas_allowed]
                                      )
 
@@ -288,6 +308,7 @@ class HistopathologicalSample(models.Model):
         verbose_name="Xenium Panel ID")
 
     merscope_run_date = models.DateField(blank=True, null=True,
+                                         validators=[validators.check_date],
                                          verbose_name="Merscope Run Date")
 
     merscope_run_id = models.CharField(
@@ -300,10 +321,14 @@ class HistopathologicalSample(models.Model):
         blank=True, null=True,
         verbose_name="Merscope Panel ID")
 
-    dv_200 = models.CharField(blank=True, null=True,
-                              max_length=3,
-                              verbose_name="DV200",
-                              validators=[validators.zero_to_a_hundred])
+    dv_200 = models.IntegerField(
+        blank=True, null=True,
+        max_length=3,
+        verbose_name="DV200",
+        validators=[
+            MinValueValidator(0, "Percentage value between 0 and 100"),
+            MinValueValidator(100, "Percentage value between 0 and 100")],
+                              )
 
     spatial_comment = models.TextField(blank=True, null=True,
                                        verbose_name="Spatial Comment",
@@ -313,14 +338,14 @@ class HistopathologicalSample(models.Model):
     # Section: LB ###
     lb_analyte_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                        blank=True, null=True,
-                                       verbose_name="LB analyte type",
+                                       verbose_name="LB Analyte Type",
                                        choices=LB_ANALYTE_TYPES)
 
     lb_panel_r1 = models.CharField(blank=True, null=True,
-                                   verbose_name="LB panel R1")
+                                   verbose_name="LB Panel R1")
 
     lb_panel_r2 = models.CharField(blank=True, null=True,
-                                   verbose_name="LB panel R2")
+                                   verbose_name="LB Panel R2")
 
     lb_sequencing_status = models.CharField(
         blank=True, null=True,
@@ -328,19 +353,22 @@ class HistopathologicalSample(models.Model):
         choices=LB_SEQUENCING_STATUS_CHOICES)
 
     lb_received = models.DateField(null=True,
-                                   blank=True, verbose_name="LB Received",
+                                   blank=True, verbose_name="LB Date Received",
                                    validators=[validators.check_date])
 
-    lb_sample_volume = models.DecimalField(null=True, max_digits=4,
-                                           decimal_places=1,
-                                           blank=True,
-                                           verbose_name="LB Sample"
-                                                        " Volume [ml]")
+    lb_sample_volume = models.DecimalField(
+        null=True, blank=True,
+        max_digits=4, decimal_places=1,
+        validators=[MinValueValidator(0, "Positive decimals only")],
+        verbose_name="LB Sample"
+                     " Volume [ml]")
+
     lb_date_of_isolation = models.DateField(null=True,
                                             blank=True,
                                             verbose_name="LB Date "
                                                          "of Isolation",
                                             validators=[validators.check_date])
+
     lb_total_isolated_cfdna = \
         models.IntegerField(null=True, blank=True,
                             verbose_name="LB Total Isolated cfDNA [ng]")
@@ -355,45 +383,45 @@ class HistopathologicalSample(models.Model):
     request_execution_of = models.CharField(
         blank=True,
         null=True,
-        verbose_name="Request execution of"
+        verbose_name="Request Execution of"
     )
 
     cell_ranger_arc_run = models.DateField(
         blank=True,
         null=True,
-        verbose_name="Cellranger-arc run",
+        verbose_name="Cellranger-arc Run",
         validators=[validators.check_date]
     )
 
     sc_analysis_status = models.CharField(
         blank=True,
         null=True,
-        verbose_name="scAnalysis status",
+        verbose_name="ScAnalysis Status",
         choices=SCANALYSIS_CHOICES)
 
     scrna_r1 = models.CharField(
         blank=True,
         null=True,
-        verbose_name="scRNA R1")
+        verbose_name="ScRNA R1")
 
     scrna_r2 = models.CharField(
         blank=True,
         null=True,
-        verbose_name="scRNA R2")
+        verbose_name="ScRNA R2")
     scatac_r1 = models.CharField(
         blank=True,
         null=True,
-        verbose_name="scATAC R1")
+        verbose_name="ScATAC R1")
 
     scatac_r2 = models.CharField(
         blank=True,
         null=True,
-        verbose_name="scATAC R2")
+        verbose_name="ScATAC R2")
 
     scatac_i2 = models.CharField(
         blank=True,
         null=True,
-        verbose_name="scATAC I2")
+        verbose_name="ScATAC I2")
 
     wgs_r1 = models.CharField(
         blank=True,
