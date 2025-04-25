@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 import re
-
+from datetime import datetime
 
 def validate_alphanumeric(value):
     char: str
@@ -53,3 +53,8 @@ def check_eleven_figures(number: str):
 def no_commas_allowed(comment: str):
     if "," in comment:
         raise ValidationError("Commas are not permitted.")
+
+
+def check_date(date: datetime):
+    if datetime.today() < datetime.strptime(date):
+        raise ValidationError("Input date is in the future.")

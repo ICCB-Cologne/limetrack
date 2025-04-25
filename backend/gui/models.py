@@ -119,7 +119,9 @@ class HistopathologicalSample(models.Model):
 
     sex = models.CharField(max_length=CHARFIELD_MAXLEN, choices=SEX_CHOICES,
                            verbose_name="Sex")
-    died = models.DateField(null=True, blank=True, verbose_name="Died")
+
+    died = models.DateField(null=True, blank=True, verbose_name="Died",
+                            validators=[validators.check_date])
 
     saturn3_sample_code = models.CharField(
         max_length=CHARFIELD_MAXLEN,
