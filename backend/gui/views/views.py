@@ -150,7 +150,7 @@ def no_sample_code_found(request: HttpRequest,
             f"{str(sat3_code)} found."
 
     else:
-        msg = f"Submission unsuccessful!" \
+        msg = f"Submission failed!" \
             " No record with SATURN3 Sample Code " \
             f"{str(sat3_code)} found."
 
@@ -177,7 +177,7 @@ def record_already_exists(request: HttpRequest, sat3_code: str,
     if tag == "file":
         fail = "File upload failed!"
     else:
-        fail = "Submission unsuccessful!"
+        fail = "Submission failed!"
 
     msg = f"{fail} {group_name} data for " \
         "record with SATURN3 Sample Code " \
@@ -245,7 +245,7 @@ class SampleTrackingView(LoginRequiredMixin, TemplateView):
         else:
             messages.error(
                 request,
-                "Submission unsuccessful!",
+                "Submission failed!",
                 extra_tags="general"
             )
 
@@ -314,7 +314,7 @@ def handle_form(form: ModelForm,
                                          request.user, data, sat3_code, tag)
                 else:
                     messages.error(request,
-                                   "Submission unsuccessful!"
+                                   "Submission failed!"
                                    " Record with SATURN3 Sample Code "
                                    f"{str(sat3_code)} already exists and \
                                       you are not permitted to edit it.",

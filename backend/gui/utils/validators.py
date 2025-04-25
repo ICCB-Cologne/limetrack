@@ -2,13 +2,26 @@ from django.core.exceptions import ValidationError
 import re
 from datetime import datetime
 
-def validate_alphanumeric(value):
-    char: str
+
+def validate_patient_identifier(value):
     if len(value) < 5:
         raise ValidationError("Lenght has to be exactly 5 characters")
+    validate_alphanumeric(value)
+    validate_uppercase(value)
+
+
+def validate_alphanumeric(value):
+    char: str
     for char in value:
         if not char.isalnum():
             raise ValidationError("Only letters and numbers allowed")
+
+
+def validate_uppercase(value):
+    char: str
+    for char in value:
+        if char.isalpha() and char.islower():
+            raise ValidationError("Only upper case letters allowed")
 
 
 def zero_to_a_hundred(value):
@@ -56,5 +69,5 @@ def no_commas_allowed(comment: str):
 
 
 def check_date(date: datetime):
-    if datetime.today() < datetime.strptime(date):
+    if datetime.today().date() < date:
         raise ValidationError("Input date is in the future.")

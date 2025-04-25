@@ -130,7 +130,7 @@ class UploadView(LoginRequiredMixin, TemplateView):
             if column not in all_field_verbose_names:
                 error = f"Column name '{column}' \
                     is not a part of the data model. <br/> \
-                    Please refer to the the template for \
+                    Please refer to the template for \
                     the latest column names."
                 messages.error(request,
                                mark_safe(error),

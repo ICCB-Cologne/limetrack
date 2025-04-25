@@ -114,7 +114,7 @@ class HistopathologicalSample(models.Model):
 
     patient_identifier = models.CharField(
         max_length=5,
-        validators=[validators.validate_alphanumeric],
+        validators=[validators.validate_patient_identifier],
         verbose_name="Patient Identifier")
 
     sex = models.CharField(max_length=CHARFIELD_MAXLEN, choices=SEX_CHOICES,
@@ -140,7 +140,8 @@ class HistopathologicalSample(models.Model):
         null=True,
         validators=[validators.no_commas_allowed])
 
-    sampling_date = models.DateField(verbose_name="Sampling Date")
+    sampling_date = models.DateField(verbose_name="Sampling Date",
+                                     validators=[validators.check_date])
     tissue_type = models.CharField(
         max_length=CHARFIELD_MAXLEN,
         choices=TISSUE_TYPES,
@@ -199,27 +200,36 @@ class HistopathologicalSample(models.Model):
 
     # Section: ScLab ###
     sclab_received = models.DateField(
-        null=True, blank=True, verbose_name="scLab Received")
-    sclab_extraction_date = models.DateField(null=True,
-                                             blank=True,
-                                             verbose_name="scLab "
-                                                          "Extraction Date")
+        null=True, blank=True, verbose_name="scLab Received",
+        validators=[validators.check_date])
+
+    sclab_extraction_date = (models.
+                             DateField(null=True,
+                                       blank=True,
+                                       verbose_name="scLab "
+                                       "Extraction Date",
+                                       validators=[validators.check_date]))
+
     sclab_nuclei_yield = models.IntegerField(null=True,
                                              blank=True,
                                              verbose_name="scLab Nuclei Yield")
+
     sclab_nuclei_size = models.IntegerField(null=True,
                                             blank=True,
                                             verbose_name="scLab particles "
                                                          "above 5 µm [%]")
+
     sclab_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                     blank=True, null=True,
                                     verbose_name="scLab Status",
                                     choices=SCLAB_STATUS_CHOICES)
+
     sclab_sequencing_type = models.CharField(max_length=CHARFIELD_MAXLEN,
                                              blank=True, null=True,
                                              verbose_name="scLab"
                                                           " Sequencing Type",
                                              choices=SCLAB_SEQUENCING_TYPES)
+
     sclab_sorting = models.BooleanField(choices=CORRESPONDING_ORGANOID_CHOICES,
                                         blank=True, null=True,
                                         verbose_name="scLab Sorting")
@@ -260,7 +270,8 @@ class HistopathologicalSample(models.Model):
 
     xenium_run_date = models.DateField(null=True,
                                        blank=True,
-                                       verbose_name="Xenium Run Date")
+                                       verbose_name="Xenium Run Date",
+                                       validators=[validators.check_date])
 
     xenium_slide_id = models.CharField(blank=True, null=True,
                                        max_length=10,
@@ -304,6 +315,7 @@ class HistopathologicalSample(models.Model):
                                        blank=True, null=True,
                                        verbose_name="LB analyte type",
                                        choices=LB_ANALYTE_TYPES)
+
     lb_panel_r1 = models.CharField(blank=True, null=True,
                                    verbose_name="LB panel R1")
 
@@ -316,7 +328,8 @@ class HistopathologicalSample(models.Model):
         choices=LB_SEQUENCING_STATUS_CHOICES)
 
     lb_received = models.DateField(null=True,
-                                   blank=True, verbose_name="LB Received")
+                                   blank=True, verbose_name="LB Received",
+                                   validators=[validators.check_date])
 
     lb_sample_volume = models.DecimalField(null=True, max_digits=4,
                                            decimal_places=1,
@@ -326,7 +339,8 @@ class HistopathologicalSample(models.Model):
     lb_date_of_isolation = models.DateField(null=True,
                                             blank=True,
                                             verbose_name="LB Date "
-                                                         "of Isolation")
+                                                         "of Isolation",
+                                            validators=[validators.check_date])
     lb_total_isolated_cfdna = \
         models.IntegerField(null=True, blank=True,
                             verbose_name="LB Total Isolated cfDNA [ng]")
@@ -347,7 +361,8 @@ class HistopathologicalSample(models.Model):
     cell_ranger_arc_run = models.DateField(
         blank=True,
         null=True,
-        verbose_name="Cellranger-arc run"
+        verbose_name="Cellranger-arc run",
+        validators=[validators.check_date]
     )
 
     sc_analysis_status = models.CharField(

@@ -23,6 +23,7 @@ class BasicTestClass():
         self.sat3_sample_code = ""
 
     def teardown_method(self, method):
+        # self.driver.save_screenshot("test.png")
         self.delete_test_record()
         self.logout()
         self.driver.close()
@@ -57,7 +58,7 @@ class BasicTestClass():
             By.CSS_SELECTOR, ".modal-footer > .btn-primary").click()
 
     def check_submission(self):
-        self.driver.save_screenshot("screenie.png")
+        # self.driver.save_screenshot("screenie.png")
         message_container = self.driver.find_element(By.CLASS_NAME, "messages")
         message = message_container.find_element(By.TAG_NAME, "li")
         assert (message.text == "Submission successful!")
