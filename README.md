@@ -1,83 +1,91 @@
-# LiMeTrack - A lightweight biosample management platform
-**LiMeTrack** is a lightweight biosample management platform for centralized research data management and sample tracking in biomedical research projects.
+[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/) ![version](https://img.shields.io/badge/version-1.0.0-blue)
 
-Key features include customizable and user-friendly forms for data entry and a real-time dashboard providing an overview of project and sample status. 
-LiMeTrack simplifies the creation and export of standardized sample sheets, streamlining subsequent bioinformatics analyses and biomedical research workflows. 
-By integrating real-time monitoring with robust sample tracking and data management, LiMeTrack improves research transparency and reproducibility, ensures data integrity and optimizes workflows.
+# LiMeTrack – Lightweight Biosample Management Platform
 
-Users can submit data either by filling out a web form or uploading CSV/Excel files.  
-Accepted data is displayed as records in a filterable and searchable sample table.  
+<p align="center">
+  <img src="docs/images/LiMeTrack_logo_no_text.png" alt="Logo" width="240"/>
+</p>
 
-**LiMeTrack** is currently designed for the multicenter SATURN3 consortium (saturn3.org).
-To meet the requirements of other projects, code and data model need to be adapted.
-We are working on further simplifying the data models to be modularly adaptable for a wide range of projects.
+**LiMeTrack** is a lightweight, modular biosample management platform designed to streamline centralized research data handling and sample tracking within biomedical research projects.
+
+Key features include an intuitive, customizable interface for data entry and a real-time dashboard providing clear insight into sample and project status. LiMeTrack simplifies the generation and export of standardized sample sheets, enhancing the efficiency of downstream bioinformatics analyses and overall research workflows. 
+By integrating robust data management with dynamic monitoring tools, LiMeTrack supports research transparency, promotes reproducibility, and ensures data integrity.
+Users can submit data through a web form or by uploading CSV/Excel files. Once accepted, submissions are presented in a searchable, filterable sample table.
+
+**LiMeTrack** was originally developed for the multicenter [SATURN3 consortium](https://saturn3.org). To adapt the platform to other use cases, the code and data model must be customized accordingly. We are actively working on modularizing the data models to facilitate broader adaptability across research projects.
+
+<p align="center">
+  <img src="docs/images/LiMeTrack_GraphicalAbstract_V2.png" alt="Overview" width="600"/>
+</p>
+
+---
 
 ## Prerequisites
-Docker, Knowledge of Django & Python 
 
-## Use your own data model
-To apply your own data model to **LiMeTrack** you will need to modify the code 
-in several ways:
+- [Docker](https://www.docker.com/get-started/)
+- Working knowledge of Django and Python
 
-### Define model fields, permissions & validators
-The **LiMeTrack** code is built on dealing with a single django data model.  
-You can define the data fields for your model in `backend/gui/model.py`.  
-In our use case we defined a single model divided into multiple "sections"  
-to manage user permissions (`end_of_model_section_dict` & `permissions`)
+---
 
-Users can get permissions to
-1) **fill in** empty fields of specified sections
-2) **edit already** filled fields of specified sections
-3) **add** new records
-4) **delete** existing records
+## Customizing LiMeTrack for Your Project
 
-Model specific permissions are defined inside the model class.
+To use LiMeTrack with your own data model, you’ll need to adjust several components:
 
-### Modify model form
-In the frontend, our single model is represented by a single form.  
-It is defined in `backend/gui/forms/forms.py`.  
-The module `backend/gui/utils/model_to_form.py` helps transforming the concept of our  
-single model with different sections into a corresponding form with the correct behaviour.  
-Our approach here is to show each user the complete form, including all its form fields.  
-However,
-- Fields that are not to be filled or edited by the user are disabled and grayed out.
-- An exception in our case are the omics fields,
-that are only displayed to users with permissions to fill or edit them.
+### 1. Define Model Fields, Permissions, and Validators
 
-### Modify template & example files
-In `backend/gui/views/download_views-py` you will find `example_sample`, a list that  
-serves as mock sample to give an idea on how a complete sample should look like.  
-The `csv-files/` directory contains csv-files (and xlsx-files) with example samples for file uploads.  
-When changing the model, update the template & example samples accordingly.  
+LiMeTrack is built on Django's ORM. Define your data fields in `backend/gui/model.py`.  
+In our reference use case, a single model is split into multiple *sections* to manage user permissions (`end_of_model_section_dict` & `permissions`).
 
-### Adapt column filters for the samples table
-Column filters are defined as a form in `backend/gui/forms/forms.py`.  
-They are meant to improve the overview of the samples table by displaying only  
-selected fields/columns.  
-The actual filtering logic is handled in `backend/gui/views/samples_view.py`.  
-Data field lists are defined here to specify which columns should be displayed for
-- every data model section
-- different groups of data fields that are relevant 
+User permissions can be defined for the ability to:
+1. **Fill in** empty fields of specified sections  
+2. **Edit** pre-filled fields  
+3. **Add** new records  
+4. **Delete** existing records  
 
-### Modify selenium test cases
-For basic integration tests we use Selenium to simulate user input (via web form and file upload).  
-Especially the web form inputs have to be adapted to a new model.  
-These tests can be found in `backend/gui/selenium/`.
+All permission logic is embedded within the model class itself.
 
-### More information
-For more detailed information, please refer to the documentation within the code.
+### 2. Modify the Model Form
 
-## Docker Setup
+The model is rendered as a single unified form in the frontend, located in `backend/gui/forms/forms.py`.  
+The module `backend/gui/utils/model_to_form.py` transforms the model structure into the appropriate form layout and logic.
 
-### For local development and debugging
+We display the full form to all users but restrict interaction based on permissions:
+- Fields not permitted for editing are disabled and grayed out.
+- Omics-related fields are only visible to users with the relevant permissions.
 
-`docker compose -f docker-compose-local.yml -f docker-compose-develop.yml up --remove-orphans`
+### 3. Update Templates and Example Files
 
-### Productive environment - Clean Volume On Reboot
+In `backend/gui/views/download_views.py`, the `example_sample` list provides a mock sample demonstrating what a fully completed entry should look like.  
+You can find sample upload files in the `csv-files/` directory (CSV and XLSX formats).  
+These should be updated to reflect changes to your data model.
 
-`docker compose -f docker-compose.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate`
+### 4. Adapt Column Filters in the Samples Table
 
-### Productive environment Persist Volumes On Reboot
+Column filters are defined in `backend/gui/forms/forms.py`.  
+These filters allow users to toggle between relevant subsets of data for clarity.  
 
-`docker compose -f docker-compose.yml -f docker-compose-develop.yml up --remove-orphans`
+Filtering logic is implemented in `backend/gui/views/samples_view.py`, which references predefined lists of fields that correspond to:
+- Model sections  
+- Logical field groupings relevant to specific workflows
 
+### 5. Update Selenium Test Cases
+
+We use Selenium for basic integration testing, simulating user input for both form-based and file-upload workflows.  
+Form inputs in particular will require updating to reflect changes in your model.  
+Tests are located in `backend/gui/selenium/`.
+
+### 6. Additional Information
+
+Refer to inline code documentation throughout the project for further details.
+
+---
+
+## Getting Started
+
+> ⚠️ **Important:** This repository is not intended for production use without thorough review and adaptation to your specific project requirements.
+
+### Local Development & Debugging
+
+```bash
+docker compose -f docker-compose-local.yml -f docker-compose-develop.yml up --remove-orphans
+```
