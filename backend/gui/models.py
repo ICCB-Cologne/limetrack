@@ -176,7 +176,7 @@ class HistopathologicalSample(models.Model):
         blank=True, null=True,
         validators=[MinValueValidator(0,
                                       "Percentage value between 0 and 100"),
-                    MinValueValidator(100,
+                    MaxValueValidator(100,
                                       "Percentage value between 0 and 100")],
         verbose_name="Tumor Cell Content [%]")
 
@@ -184,7 +184,7 @@ class HistopathologicalSample(models.Model):
         blank=True, null=True,
         validators=[MinValueValidator(0,
                                       "Percentage value between 0 and 100"),
-                    MinValueValidator(100,
+                    MaxValueValidator(100,
                                       "Percentage value between 0 and 100")],
         verbose_name="Avital Cells [%]")
 
@@ -227,7 +227,7 @@ class HistopathologicalSample(models.Model):
         null=True,
         blank=True,
         validators=[MinValueValidator(0,
-                                      "Positiv integers only")],
+                                      "Positive integers only")],
         verbose_name="ScLab Nuclei Yield")
 
     sclab_nuclei_size = models.IntegerField(
@@ -235,7 +235,7 @@ class HistopathologicalSample(models.Model):
         blank=True,
         validators=[
             MinValueValidator(0, "Percentage value between 0 and 100"),
-            MinValueValidator(100, "Percentage value between 0 and 100")],
+            MaxValueValidator(100, "Percentage value between 0 and 100")],
         verbose_name="ScLab Particles "
                      "Above 5 µm [%]")
 
@@ -256,6 +256,7 @@ class HistopathologicalSample(models.Model):
     sclab_pool = models.CharField(
         null=True,
         blank=True,
+        validators=[validators.sclab_pool_validator],
         verbose_name="ScLab Pool")
 
     rna_isle_id = models.CharField(
@@ -327,7 +328,7 @@ class HistopathologicalSample(models.Model):
         verbose_name="DV200",
         validators=[
             MinValueValidator(0, "Percentage value between 0 and 100"),
-            MinValueValidator(100, "Percentage value between 0 and 100")],
+            MaxValueValidator(100, "Percentage value between 0 and 100")],
                               )
 
     spatial_comment = models.TextField(blank=True, null=True,

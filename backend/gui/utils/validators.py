@@ -71,3 +71,12 @@ def no_commas_allowed(comment: str):
 def check_date(date: datetime):
     if datetime.today().date() < date:
         raise ValidationError("Input date is in the future")
+
+
+def sclab_pool_validator(pools: str):
+    regex = r"^[1-9][0-9]{0,2}(\+[1-9][0-9]{0,2})*$"
+    if not re.search(regex, pools):
+        raise ValidationError(
+            "ScLab Pool(s) input format: "
+            "Integer number between 1-200 or multiple such numbers "
+            "separated by '+' (12+44+...)")
