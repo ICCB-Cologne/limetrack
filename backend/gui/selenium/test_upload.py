@@ -69,5 +69,5 @@ class TestUpload(BasicTestClass):
           By.ID, "id_file").send_keys(
               os.path.abspath(f"./csv-files/{file_name}"))
         self.driver.find_element(By.ID, "end-of-page").click()
-        self.driver.save_screenshot("Srececs.png")
+        # self.driver.save_screenshot("Srececs.png")
         self.check_upload()
