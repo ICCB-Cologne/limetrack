@@ -1,14 +1,27 @@
 from django.core.exceptions import ValidationError
 import re
+from datetime import datetime
+
+
+def validate_patient_identifier(value):
+    if len(value) < 5:
+        raise ValidationError("Lenght has to be exactly 5 characters")
+    validate_alphanumeric(value)
+    validate_uppercase(value)
 
 
 def validate_alphanumeric(value):
     char: str
-    if len(value) < 5:
-        raise ValidationError("Lenght has to be exactly 5 characters")
     for char in value:
         if not char.isalnum():
             raise ValidationError("Only letters and numbers allowed")
+
+
+def validate_uppercase(value):
+    char: str
+    for char in value:
+        if char.isalpha() and char.islower():
+            raise ValidationError("Only upper case letters allowed")
 
 
 def zero_to_a_hundred(value):
@@ -52,4 +65,18 @@ def check_eleven_figures(number: str):
 
 def no_commas_allowed(comment: str):
     if "," in comment:
-        raise ValidationError("Commas are not permitted.")
+        raise ValidationError("Commas are not permitted")
+
+
+def check_date(date: datetime):
+    if datetime.today().date() < date:
+        raise ValidationError("Input date is in the future")
+
+
+def sclab_pool_validator(pools: str):
+    regex = r"^[1-9][0-9]{0,2}(\+[1-9][0-9]{0,2})*$"
+    if not re.search(regex, pools):
+        raise ValidationError(
+            "ScLab Pool(s) input format: "
+            "Integer number between 1-200 or multiple such numbers "
+            "separated by '+' (12+44+...)")

@@ -29,11 +29,11 @@ example_sample = [
     # tum
     "2", "15", "59", "Comment",
     # spl
-    "2023-12-17", "successful RNA", "panel",
+    "2023-12-17", "successful RNA", "Panel",
     # sclab
     "2023-12-17", "2023-12-17", "77",
     "45", "successful RNA", "ATAC",
-    "True", "5S9QY", "12345", "12345", "Comment",
+    "True", "122", "12345", "12345", "Comment",
     # spatial
     "Xenium", "Xenium failed", "2023-12-19",
     "SLIDEID981", "RUNID98124234432", "PANELID98124987412",
@@ -130,7 +130,8 @@ class FilteredDownloadView(LoginRequiredMixin, TemplateView):
                     b64encode(buffer.read()),
                     content_type=content_type,
                     headers={
-                        "Content-Disposition": f'attachment; filename="{file_name}"',
+                        "Content-Disposition":
+                        f'attachment; filename="{file_name}"',
                         "filename": file_name
                     },
                 )

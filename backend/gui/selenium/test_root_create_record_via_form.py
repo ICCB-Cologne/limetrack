@@ -88,7 +88,7 @@ class TestRootCreateRecordViaForm(BasicTestClass):
             RecordGenerator.random_corresponding_organoid_choice())
 
         self.driver.find_element(By.ID, "id_sclab_pool").send_keys(
-            RecordGenerator.random_string_of_length(5))
+            RecordGenerator.random_integer_from_0_to_100())
 
         self.driver.find_element(
             By.ID,

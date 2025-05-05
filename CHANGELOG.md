@@ -1,5 +1,14 @@
 ## Change Log
 
+### ❗️2025-05
+- **Updated data model**  
+    - **Please download the new template for your file uploads**
+    - The HistopathologicalSample model was updated and harmonized
+    - Some field names were altered
+    - New constraints and restrictions for inputs (e.g. future dates are forbidden now)
+    - Better readable error messages
+    
+
 ### 2025-04-17
 - **New**
     - Localisation choices "Ovary", "Adrenal gland" & "Pericardium"

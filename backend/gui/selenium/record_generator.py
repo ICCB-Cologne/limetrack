@@ -139,7 +139,7 @@ class RecordGenerator:
         rand = random.uniform(0.0, 1.0)
 
         start = str(datetime.date(1900, 1, 1))
-        end = str(datetime.date(3000, 1, 1))
+        end = str(datetime.datetime.today().date())
         time_format = "%Y-%m-%d"
         stime = time.mktime(time.strptime(start, time_format))
         etime = time.mktime(time.strptime(end, time_format))
