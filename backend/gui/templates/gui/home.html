@@ -36,7 +36,10 @@
                             <img class="img-fluid " src="{% static 'gui/img/logo_ume_uke.png' %}" width=80% alt="ECIP Logo">
                         </a>
                         <a  id="bioinfo" title="Bioinfo Analyses Docs" href="https://docs.google.com/spreadsheets/d/18K7ieTwHjgPgdKz5Al1ZDFSAR4GcVJJ_9GwcsJfxIjg" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1" onmouseover="show_infotext(this);" onmouseout="reset_infotext()">
-                            <i class="bi bi-google" style="font-size: 180%;" alt="Sample Tracking Tool Icon"%></i>
+                            <i class="bi bi-file-earmark-spreadsheet" style="font-size: 180%;" alt="Bioinfo Analyses Docs Icon"%></i>
+                        </a>
+                        <a  id="data-management" title="Data Management Docs" href="https://docs.google.com/document/d/1gZgJdXAoyJJO4qzAGiG6UjaLAXk5iyUU9DS-JTzCjw4/edit?tab=t.0#heading=h.c3ugf59g0kki" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1" onmouseover="show_infotext(this);" onmouseout="reset_infotext()">
+                            <i class="bi bi-hdd-network" style="font-size: 180%;" alt="Data Management Icon"%></i>
                         </a>
                         <a  id="sample-tracking" title="Sample Tracking Tool" href="sample_tracking/" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-square-md mt-1" onmouseover="show_infotext(this);" onmouseout="reset_infotext()">
                             <i class="bi bi-geo-alt-fill" style="font-size: 180%;" alt="Sample Tracking Tool Icon"%></i>
@@ -147,6 +150,9 @@
                 break;
             case "bioinfo":
                 infotext = "Google Docs for documentation of ongoing data analyses.";
+                break;
+            case "data-management":
+                infotext = "Google Docs for SATURN3 data management.";
                 break;
             default:
                 infotext = DEFAULT_INFOTEXT;
