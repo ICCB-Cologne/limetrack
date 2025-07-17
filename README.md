@@ -15,7 +15,7 @@ Users can submit data through a web form or by uploading CSV/Excel files. Once a
 **LiMeTrack** was originally developed for the multicenter [SATURN3 consortium](https://saturn3.org). To adapt the platform to other use cases, the code and data model must be customized accordingly. We are actively working on modularizing the data models to facilitate broader adaptability across research projects.
 
 <p align="center">
-  <img src="docs/images/LiMeTrack_GraphicalAbstract.png" alt="Overview" width="600"/>
+  <img src="docs/images/LiMeTrack_GraphicalAbstract_V2.png" alt="Overview" width="600"/>
 </p>
 
 ---
