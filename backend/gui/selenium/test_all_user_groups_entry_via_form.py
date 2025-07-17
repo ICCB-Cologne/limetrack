@@ -230,7 +230,7 @@ class TestAllUserGroupsForm(BasicTestClass):
         self.driver.find_element(
             By.ID,
             "id_lb_total_isolated_cfdna").send_keys(
-                RecordGenerator.random_integer_from_0_to_100())
+                RecordGenerator.random_decimal_2_digits_2_decimal())
 
         lb_status = self.driver.find_element(
             By.ID, "id_lb_status")
@@ -262,6 +262,11 @@ class TestAllUserGroupsForm(BasicTestClass):
                 RecordGenerator.random_scanalysis_choice())
 
         self.driver.find_element(
+            By.ID,
+            "id_s3_bucket_status").send_keys(
+                RecordGenerator.random_corresponding_organoid_choice())
+
+        self.driver.find_element(
             By.ID, "id_scrna_r1").send_keys("omics/schmomociks")
 
         self.driver.find_element(
@@ -287,6 +292,9 @@ class TestAllUserGroupsForm(BasicTestClass):
 
         self.driver.find_element(
             By.ID, "id_wgs_vcf").send_keys("omics/schmomociks")
+
+        self.driver.find_element(
+            By.ID, "id_wgs_ref").send_keys("omics/schmomociks")
 
         self.submit_record()
         self.check_submission()

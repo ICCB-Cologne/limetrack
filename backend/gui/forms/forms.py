@@ -145,9 +145,10 @@ class GroupFilterForm(forms.Form):
                                    required=False,
                                    label="ODCF")
 
-    scrnaseq = forms.BooleanField(initial=True,
-                                  required=False,
-                                  label="ScRNASeq")
+    scmultiome = forms.BooleanField(
+        initial=True,
+        required=False,
+        label="ScMultiome")
 
     wgs = forms.BooleanField(initial=True,
                              required=False,

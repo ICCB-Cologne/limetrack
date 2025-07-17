@@ -157,6 +157,10 @@ class RecordGenerator:
         return str(decimal.Decimal(random.randrange(0, 9999))/10)
 
     @staticmethod
+    def random_decimal_2_digits_2_decimal():
+        return str(decimal.Decimal(random.randrange(0, 9999))/100)
+
+    @staticmethod
     def random_integer_from_1_to_5():
         return str(random.choice(range(1, 6)))
 

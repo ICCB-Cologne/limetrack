@@ -45,11 +45,11 @@ example_sample = [
     "111", "sequencing successful",
     # ocdf
     "test", "2021-11-29",
-    "demultiplexed + QC",
+    "demultiplexed + QC", "True",
     "/omics/odcf/project/OE0130/saturn3-sc/example/example.fastq.gz",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
     "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
-    "/omics/odcf/example", "/omics/odcf/example"
+    "/omics/odcf/example", "/omics/odcf/example", "/omics/odcf/example",
     ]
 
 

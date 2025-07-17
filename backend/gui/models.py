@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from .utils import validators
+from django.utils.text import Truncator
 from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   SEX_CHOICES,
                                   TISSUE_TYPES, INTERVENTION_TYPES,
@@ -15,7 +16,8 @@ from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   SPATIAL_METHOD,
                                   SPATIAL_STATUS,
                                   SCANALYSIS_CHOICES,
-                                  LB_SEQUENCING_STATUS_CHOICES)
+                                  LB_SEQUENCING_STATUS_CHOICES,
+                                  YES_NO_CHOICES)
 
 CHARFIELD_MAXLEN = 200
 
@@ -31,7 +33,7 @@ end_of_model_section_dict = {
     "scopenlab": "sclab_comment",
     "spatial": "spatial_comment",
     "liquidbiopsy": "lb_status",
-    "omicspath": "wgs_vcf",
+    "omicspath": "wgs_ref",
 }
 
 
@@ -105,6 +107,12 @@ class HistopathologicalSample(models.Model):
             ("liquidbiopsy_fields", "LB fields permission"),
             ("omicspath_fields", "OMICS fields permission"),
         ]
+
+    # def save(self, *args, **kwargs):
+    #     exact_lb_total_isolated_cfdna = Truncator(
+    #         self.lb_total_isolated_cfdna).truncate_decimal(2)
+    #     self.lb_total_isolated_cfdna = exact_lb_total_isolated_cfdna
+    #     super().save(*args, **kwargs)
 
     # Section: Recruiter - 12 fields ###
 
@@ -371,8 +379,11 @@ class HistopathologicalSample(models.Model):
                                             validators=[validators.check_date])
 
     lb_total_isolated_cfdna = \
-        models.IntegerField(null=True, blank=True,
-                            verbose_name="LB Total Isolated cfDNA [ng]")
+        models.DecimalField(null=True, blank=True,
+                            verbose_name="LB Total Isolated cfDNA [ng]",
+                            max_digits=4, decimal_places=2,
+                            validators=[
+                                MinValueValidator(0, "Positive values only"),])
 
     lb_status = models.CharField(max_length=CHARFIELD_MAXLEN,
                                  blank=True, null=True,
@@ -399,6 +410,11 @@ class HistopathologicalSample(models.Model):
         null=True,
         verbose_name="ScAnalysis Status",
         choices=SCANALYSIS_CHOICES)
+
+    s3_bucket_status = models.BooleanField(
+        choices=YES_NO_CHOICES,
+        blank=True, null=True,
+        verbose_name="S3 Bucket Status")
 
     scrna_r1 = models.CharField(
         blank=True,
@@ -440,6 +456,10 @@ class HistopathologicalSample(models.Model):
     wgs_vcf = models.CharField(blank=True,
                                null=True,
                                verbose_name="WGS vcf")
+
+    wgs_ref = models.CharField(blank=True,
+                               null=True,
+                               verbose_name="WGS Reference")
 
     # Timestamp ###
 

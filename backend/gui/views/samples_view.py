@@ -36,10 +36,11 @@ app_log = logging.getLogger("s3sample")
 # that are not filtering model sections but
 # custom views of the table
 column_filters_no_group = {
-    "scrnaseq": ["sclab_pool", "scrna_r1", "scrna_r2",
-                 "scatac_r1", "scatac_r2", "scatac_i2"],
-    "wgs": ["wgs_r1", "wgs_r2", "wgs_bam", "wgs_vcf"],
-    "variantcalling": ["wgs_r1", "wgs_r2", "wgs_bam"]
+    "scmultiome": ["sclab_pool", "s3_bucket_status",
+                   "scrna_r1", "scrna_r2",
+                   "scatac_r1", "scatac_r2", "scatac_i2"],
+    "wgs": ["wgs_r1", "wgs_r2", "wgs_bam", "wgs_vcf", "wgs_ref"],
+    "variantcalling": ["wgs_r1", "wgs_r2", "wgs_bam", "wgs_ref"]
 }
 
 

@@ -129,6 +129,11 @@ CORRESPONDING_ORGANOID_CHOICES = [
     (False, "No"),
 ]
 
+YES_NO_CHOICES = [
+    (True, "Yes"),
+    (False, "No"),
+]
+
 ENTITY = [
     ("S3M", "M"),
     ("S3C", "C"),
