@@ -42,7 +42,7 @@ example_sample = [
     # lb
     "Plasma", "lb/panel/path1", "lb/panel/path2", "sWGS",
     "2023-12-17", "4.1", "2023-12-17",
-    "111", "sequencing successful",
+    "11.98", "sequencing successful",
     # ocdf
     "test", "2021-11-29",
     "demultiplexed + QC", "True",
