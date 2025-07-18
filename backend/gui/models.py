@@ -398,18 +398,19 @@ class HistopathologicalSample(models.Model):
         verbose_name="Request Execution of"
     )
 
-    cell_ranger_arc_run = models.DateField(
+    cell_ranger_arc_run = models.CharField(
         blank=True,
         null=True,
         verbose_name="Cellranger-arc Run",
-        validators=[validators.check_date]
+        # validators=[validators.check_date]
     )
 
     sc_analysis_status = models.CharField(
         blank=True,
         null=True,
         verbose_name="ScAnalysis Status",
-        choices=SCANALYSIS_CHOICES)
+        # choices=SCANALYSIS_CHOICES
+        )
 
     s3_bucket_status = models.BooleanField(
         choices=YES_NO_CHOICES,
@@ -425,6 +426,7 @@ class HistopathologicalSample(models.Model):
         blank=True,
         null=True,
         verbose_name="ScRNA R2")
+
     scatac_r1 = models.CharField(
         blank=True,
         null=True,
