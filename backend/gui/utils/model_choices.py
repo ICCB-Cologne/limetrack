@@ -9,6 +9,7 @@ LOCALISATION_CHOICE = [
     ("Liver", "Liver"),
     ("Lung", "Lung"),
     ("Lymph node", "Lymph node"),
+    ("Omentum", "Omentum"),
     ("Ovary", "Ovary"),
     ("Pancreas body", "Pancreas body"),
     ("Pancreas head", "Pancreas head"),
