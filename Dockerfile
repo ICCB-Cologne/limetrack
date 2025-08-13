@@ -10,7 +10,7 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesourc
 RUN apt update && apt install nodejs -y
 
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list
-RUN wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN wget -qO- https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor -o /usr/share/keyrings/yarnpkg-archive-keyring.gpg
 RUN apt update
 RUN apt upgrade -y
 RUN apt install -y yarn build-essential
