@@ -151,7 +151,8 @@ class UploadView(LoginRequiredMixin, TemplateView):
                 # as Boolean values in file upload
                 # TODO: probably can be deleted
                 if (field_name == "corresponding_organoid" or
-                        field_name == "sclab_sorting"):
+                        field_name == "sclab_sorting" or
+                        field_name == "s3_bucket_status"):
                     if type(value) is not str:
                         pass
                     elif value.lower() == "yes":
