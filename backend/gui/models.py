@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from .utils import validators
-from django.utils.text import Truncator
 from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   SEX_CHOICES,
                                   TISSUE_TYPES, INTERVENTION_TYPES,
@@ -15,7 +14,6 @@ from .utils.model_choices import (LOCALISATION_CHOICE, SITE_CHOICES,
                                   LB_STATUS_CHOICES,
                                   SPATIAL_METHOD,
                                   SPATIAL_STATUS,
-                                  SCANALYSIS_CHOICES,
                                   LB_SEQUENCING_STATUS_CHOICES,
                                   YES_NO_CHOICES)
 
