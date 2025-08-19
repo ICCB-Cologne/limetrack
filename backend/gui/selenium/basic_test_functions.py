@@ -32,6 +32,11 @@ class BasicTestClass():
         self.driver.quit()
 
     def delete_test_record(self):
+        self.wait.until(
+            lambda _: self.driver.find_element(
+                By.ID,
+                "all-samples-nav").is_displayed()
+        )
         self.driver.find_element(By.ID, "all-samples-nav").click()
         self.driver.find_element(By.ID,
                                  f"Delete {self.sat3_sample_code}").click()
