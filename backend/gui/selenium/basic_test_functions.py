@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
@@ -19,6 +20,7 @@ class BasicTestClass():
             raise
         self.driver = webdriver.Firefox(options=op)
         self.driver.get("http://0.0.0.0:8080/")
+        self.wait = WebDriverWait(self.driver, 2)
         self.vars = {}
         self.sat3_sample_code = ""
 
@@ -53,12 +55,19 @@ class BasicTestClass():
         logout.click()
 
     def submit_record(self):
+        self.wait.until(
+            lambda _: self.driver.find_element(By.ID,
+                                               "modalButton").is_displayed())
         self.driver.find_element(By.ID, "modalButton").click()
+        self.wait.until(
+            lambda _: self.driver.find_element(
+                By.CSS_SELECTOR,
+                ".modal-footer > .btn-primary").is_displayed())
         self.driver.find_element(
             By.CSS_SELECTOR, ".modal-footer > .btn-primary").click()
 
     def check_submission(self):
-        self.driver.save_screenshot("screenie.png")
+        # self.driver.save_screenshot("screenie.png")
         message_container = self.driver.find_element(By.CLASS_NAME, "messages")
         message = message_container.find_element(By.TAG_NAME, "li")
         assert (message.text == "Submission successful!")
