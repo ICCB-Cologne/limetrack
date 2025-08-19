@@ -32,17 +32,19 @@ class BasicTestClass():
         self.driver.quit()
 
     def delete_test_record(self):
+        # self.driver.save_screenshot("before_not_displaysesed.png")
         self.wait.until(
             lambda _: self.driver.find_element(
                 By.ID,
                 "all-samples-nav").is_displayed()
         )
+        # self.driver.save_screenshot("not_displaysesed.png")
         self.driver.find_element(By.ID, "all-samples-nav").click()
         self.driver.find_element(By.ID,
                                  f"Delete {self.sat3_sample_code}").click()
 
     def login(self, user, password):
-        self.driver.implicitly_wait(0.5)
+        self.driver.implicitly_wait(0.2)
         self.driver.set_window_size(50000, 30000)
         self.driver.find_element(By.ID, "id_user_name").send_keys(user)
         self.driver.find_element(By.ID, "id_password").send_keys(password)

@@ -243,5 +243,6 @@ class TestRootCreateRecordViaForm(BasicTestClass):
     def test_root_create_record_via_form(self):
         self.login("root", "root")
         self.create_full_record()
+        # self.driver.save_screenshot("fullformfilledout.png")
         self.submit_record()
         self.check_submission()
