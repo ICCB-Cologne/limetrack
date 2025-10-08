@@ -21,6 +21,7 @@ jobs:
       run: |
         rm backend/gui/migrations/*
         touch backend/gui/migrations/__init__.py
+        mkdir -p pg_data
     - name: Docker Compose
       run: docker compose -f docker-compose-actions.yml -f docker-compose-develop.yml up --remove-orphans --force-recreate -d
     - name: Install firefox

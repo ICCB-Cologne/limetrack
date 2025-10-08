@@ -24,16 +24,11 @@ services:
     image: postgres
     restart: unless-stopped
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - ./pg_data:/var/lib/postgresql/data:wr
     env_file:
       env/development.env
-    environment:
-      - PGDATA="/var/lib/postgresql/data/pgdata"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U admin -d saturn3samples" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
-volumes:
-  pg_data
