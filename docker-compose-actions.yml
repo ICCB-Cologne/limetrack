@@ -24,7 +24,7 @@ services:
     image: postgres
     restart: unless-stopped
     volumes:
-      - ./pg_data:/var/lib/postgresql/data:wr
+      - ./pg_data:/var/lib/postgresql/data
     env_file:
       env/development.env
     healthcheck:
