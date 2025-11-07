@@ -19,13 +19,13 @@ class BasicTestClass():
             print(f"Error setting up WebDriver: {e}")
             raise
         self.driver = webdriver.Firefox(options=op)
-        self.driver.get("http://0.0.0.0:8080/")
+        self.driver.get("http://localhost:8080/")
         self.wait = WebDriverWait(self.driver, 2)
         self.vars = {}
         self.sat3_sample_code = ""
 
     def teardown_method(self, method):
-        # self.driver.save_screenshot("test.png")
+        self.driver.save_screenshot("test.png")
         self.delete_test_record()
         self.logout()
         self.driver.close()
