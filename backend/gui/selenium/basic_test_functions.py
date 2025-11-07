@@ -25,7 +25,6 @@ class BasicTestClass():
         self.sat3_sample_code = ""
 
     def teardown_method(self, method):
-        self.driver.save_screenshot("test.png")
         self.delete_test_record()
         self.logout()
         self.driver.close()
@@ -33,6 +32,7 @@ class BasicTestClass():
 
     def delete_test_record(self):
         # self.driver.save_screenshot("before_not_displaysesed.png")
+        self.driver.implicitly_wait(0.2)
         self.wait.until(
             lambda _: self.driver.find_element(
                 By.ID,
