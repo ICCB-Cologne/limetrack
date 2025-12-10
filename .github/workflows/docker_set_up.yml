@@ -3,7 +3,7 @@ run-name: SetUp Sample Tracking Tool and Run Selenium Tests
 
 on:
   push:
-    branches: [ "main", "one_model_more_forms"]
+    branches: [ "main"]
   pull_request:
     branches: [ "main" ]
 
@@ -27,7 +27,7 @@ jobs:
       uses: browser-actions/setup-firefox@v1
     - name: Install geckodriver
       run: |
-        wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
+        wget https://github.com/mozilla/geckodriver/releases/download/v0.36.0/geckodriver-v0.36.0-linux32.tar.gz
         tar -xvzf geckodriver*
         chmod +x geckodriver
         export PATH=$PATH:./geckodriver
