@@ -1,5 +1,9 @@
 ## Change Log
 
+### 2025-12-11
+- **Bugfix**
+    - A full sample table download was not possible due to the large size of the data. Fixed.
+
 ### ❗️2025-07
 - **Updated data model**  
     - **Please download the new template for your file uploads**
