@@ -23,7 +23,7 @@ services:
     image: postgres
     restart: unless-stopped
     volumes:
-      - ./pg_data:/var/lib/postgresql/data
+      - ./pg_data:/var/lib/postgresql
     env_file:
       - path: env/development.env
         required: true
