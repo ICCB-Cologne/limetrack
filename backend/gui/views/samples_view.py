@@ -7,7 +7,8 @@ The 'get' as well as the 'post' function can accept
 group filters within the HttpRequest as input
 and return only the fields that belong to given groups.
 """
-
+import json
+import logging
 
 from ..forms.forms import (
     field_dict,
@@ -23,12 +24,7 @@ from django.http import (
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.shortcuts import render
-
-# from django.urls import reverse
-
 from typing import Any
-
-import logging
 
 app_log = logging.getLogger("s3sample")
 
@@ -61,20 +57,27 @@ field_dict_for_group_filters = {key: adapt_list_for_group_filter_display(
 
 
 class SomeSamplesView(LoginRequiredMixin, TemplateView):
-    def get(self, request, *args, **kwargs) -> HttpResponse:
-        import json
+    def get(self, request, *args, **kwargs):
+        offset = int(request.GET.get("offset", 0))
+        limit = 100
+        subset = slice(offset, offset + limit)
 
-        all_samples = HistopathologicalSample.objects.all()
-
+        samples = list(
+            HistopathologicalSample.objects.all()[subset]
+        )
         fields_and_values_list = [
-            [(str(field.verbose_name), str(getattr(instance, field.name)))
+            [(field.verbose_name, getattr(instance, field.name))
                 for field in instance._meta.fields]
-            for instance in all_samples
+            for instance in samples
         ]
-        print(fields_and_values_list)
 
-        response = HttpResponse(json.dumps(fields_and_values_list), content_type='application/json')
-        return response
+        has_more = len(fields_and_values_list) == limit
+        context = {
+            "samples": fields_and_values_list,
+            "next_offset": offset + limit if has_more else None,
+        }
+
+        return render(request, "gui/partials/table_row.html", context)
 
 
 class AllSamplesView(LoginRequiredMixin, TemplateView):
@@ -97,7 +100,8 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
             filtered_form = GroupFilterForm(request.GET)
             if filtered_form.is_valid():
                 fields_and_values_list = filter_table_with_group_filter(
-                    filtered_form.cleaned_data)
+                    filtered_form.cleaned_data
+                )
             filters = filtered_form
 
         context = {
@@ -125,7 +129,8 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         filtered_form = GroupFilterForm(post_data)
         if filtered_form.is_valid():
             fields_and_values_list = filter_table_with_group_filter(
-                filtered_form.cleaned_data)
+                filtered_form.cleaned_data
+            )
         filters = filtered_form
 
         context = {
@@ -137,13 +142,18 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         return render(request, template_name, context=context)
 
 
-def filter_table_with_group_filter(group_filter: dict[str, Any]):
+def filter_table_with_group_filter(
+    group_filter: dict[str, Any], subset: slice | None = None
+):
 
     # if recruiter_fields are filtered out,
     # we need to display sample code explicitly
     all_filters = ["id"] if group_filter["recruiter"] else ["id", "saturn3_sample_code"]
 
-    samples = HistopathologicalSample.objects.all()
+    if subset:
+        samples = HistopathologicalSample.objects.all()[subset]
+    else:
+        samples = HistopathologicalSample.objects.all()
 
     # this part is for displaying the table with one group filter only
     # in case some groups want an individual filtering of the columns
