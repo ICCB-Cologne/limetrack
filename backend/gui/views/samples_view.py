@@ -60,6 +60,23 @@ field_dict_for_group_filters = {key: adapt_list_for_group_filter_display(
     key, field_dict[key]) for key in field_dict} | column_filters_no_group
 
 
+class SomeSamplesView(LoginRequiredMixin, TemplateView):
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        import json
+
+        all_samples = HistopathologicalSample.objects.all()
+
+        fields_and_values_list = [
+            [(str(field.verbose_name), str(getattr(instance, field.name)))
+                for field in instance._meta.fields]
+            for instance in all_samples
+        ]
+        print(fields_and_values_list)
+
+        response = HttpResponse(json.dumps(fields_and_values_list), content_type='application/json')
+        return response
+
+
 class AllSamplesView(LoginRequiredMixin, TemplateView):
     def get(self, request: HttpRequest,
             *args: Any, **kwargs: Any) -> HttpResponse:

@@ -1,5 +1,9 @@
 {% extends './base.html' %}
 
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
+{% endblock %}
+
 {% block title %}
 Samples Overview
 {% endblock title %}
@@ -23,32 +27,32 @@ Samples Overview
       <div class="container-fluid">
         <div class="row mb-3">
           <div class="col auto border border-dark-subtle">
-            Filtered / Total number of samples: <span id="id-selected-samples"> {{samples|length}} </span> / {{samples|length}}   &nbsp; <i class="bi bi-dash-lg"></i> &nbsp; 
-            Filtered / Total number of patients: <span id="id-filtered-patient-number">  </span> / <span id="id-patient-number"> </span> 
+            Filtered / Total number of samples: <span id="id-selected-samples"> {{samples|length}} </span> / {{samples|length}}   &nbsp; <i class="bi bi-dash-lg"></i> &nbsp;
+            Filtered / Total number of patients: <span id="id-filtered-patient-number">  </span> / <span id="id-patient-number"> </span>
           </div>
         </div>
-        
+
 
         {% comment %} column filters {% endcomment %}
         <div class="row">
-          <div class="col-auto"> 
+          <div class="col-auto">
             <button type="button" class="btn btn-primary dropdown-toggle mr-1" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
               Filter columns
             </button>
             <button class="btn btn-primary"> Apply </button>
- 
+
               <ul class="dropdown-menu" id="id-group-filters">
-                <label class="dropdown-item"> 
+                <label class="dropdown-item">
                   <input type="checkbox" name="all" id="id_all_group_filters" checked="" onclick="selectAllFilters()">
                    Select all
                 </label>
                 {% for filter in filters %}
-                
-                  <label class="dropdown-item"> 
+
+                  <label class="dropdown-item">
                     {{filter}}
-                    {{filter.label}} 
+                    {{filter.label}}
                   </label>
-                
+
                 {% endfor %}
 
               </ul>
@@ -59,7 +63,7 @@ Samples Overview
             <div class="input-group">
               <label class="input-group-text" for="selectTableSearchColumn">Search</label>
               <select class="form-select" name="searchColumn" id="selectTableSearchColumn" aria-label="Example select with button addon">
-                
+
                 {% if samples.0 %}
                   {% for key, _ in samples.0 %}
                     {% if key and key != "ID" and key != "Created at" %}
@@ -90,12 +94,12 @@ Samples Overview
         {% comment %} Download buttons end {% endcomment %}
 
         </div>
-        
+
       </div>
-      
+
     </div>
 
-    
+
     {% comment %} SAMPLE TABLE {% endcomment %}
     <div class="tablediv">
       <form method="post" id="id-form">{% csrf_token %}</form>
@@ -113,7 +117,7 @@ Samples Overview
                     <button id="button for {{ key }}" class="btn btn-outline-dark btn-sm bg-light dropdown-toggle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"></button>
                   <form id="column form for {{key}}" action={% url "all_samples" %} method="get">
                     <ul id="dropdown for {{ key }}" class="dropdown-menu" style="max-height: 20vh; overflow-y: auto; position: absolute; z-index:10">
-                    </ul> 
+                    </ul>
                   </form>
                 </th>
                 {% endif %}
@@ -124,6 +128,7 @@ Samples Overview
           </tr>
         </thead>
 
+        {% comment %}
         <tbody id="data-rows">
           {% for item in samples %}
           <tr>
@@ -132,7 +137,6 @@ Samples Overview
                 {% if key == "ID" or key == "Created at" %}
                 <td hidden >{{ value }}</td>
                 {% else %}
-                  {% comment %} localize off is necessary to get the date format from the settings file {% endcomment %}
                   {% load l10n %}
                     {% localize off %}
                       <td>{{ value }}</td>
@@ -140,16 +144,24 @@ Samples Overview
                 {% endif %}
             {% endif %}
             {% endfor %}
-            {% comment %} Delete button {% endcomment %}
             <td>
               {% if 'gui.delete_histopathologicalsample' in user.get_all_permissions or user.get_user_name == "root"%}
               <button id="Delete {{item.5.1}}" type="button" onclick="deleteID({{ item.0.1 }}, '{{csrf_token}}' )">Delete</button>
               {% endif %}
             </td>
-            
           </tr>
           {% endfor %}
         </tbody>
+        {% endcomment %}
+
+        <div
+            hx-get="/some-samples"
+            hx-trigger="click"
+            hx-target="this"
+            hx-swap="outerHTML">
+            Click Me!
+        </div>
+
       </table>
     </div>
     <form  action={% url "filtered_download" %} method="get" id="filter-download">
@@ -190,7 +202,7 @@ Samples Overview
     }
   </script>
   <script src="{% static 'gui/sample_table_scripts/countPatients.js' %}"> </script>
-  
+
 {% endblock head_scripts %}
 
 
