@@ -105,50 +105,6 @@ def csv_template_download_excel(request: HttpRequest):
 class FilteredDownloadView(LoginRequiredMixin, TemplateView):
     def post(self,
              request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
-
-        print(len(json.loads(request.body)["samples"]))
-        
-        data = request.body
-        # data = request.POST.get("data")
-        file_type = request.GET.get("type", "CSV")
-        
-
-        if data:
-            samples_dict: dict = json.loads(data)
-            samples: list[dict] = samples_dict.get("samples")
-            df = pd.DataFrame.from_records(samples)
-            content_type = "text/csv;base64"
-
-            with BytesIO() as buffer:
-                file_name = "saturn3samples"
-
-                if file_type == "Excel":
-                    file_name += ".xlsx"
-                    content_type = "text/plain;base64"
-                    df.to_excel(buffer, index=False)
-
-                else:
-                    file_name += ".csv"
-                    df.to_csv(buffer, index=False)
-
-                buffer.seek(0)
-                response = HttpResponse(
-                    b64encode(buffer.read()),
-                    content_type=content_type,
-                    headers={
-                        "Content-Disposition":
-                        f'attachment; filename="{file_name}"',
-                        "filename": file_name
-                    },
-                )
-
-            return response
-
-        return HttpResponseRedirect("/samples/")
-
-class FilteredDownloadViewOld(LoginRequiredMixin, TemplateView):
-    def post(self,
-             request: HttpRequest) -> HttpResponse | HttpResponseRedirect:
         data = request.POST.get("data")
         file_type = request.GET.get("type", "CSV")
 
