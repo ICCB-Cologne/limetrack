@@ -21,18 +21,15 @@ Samples Overview
     </div>
 
     <form action={% url "all_samples" %} method="get" enctype="multipart/form-data" id="column-filter">
-        {% csrf_token %}
-
+      {% csrf_token %}
       {% comment %} Counters above sample table {% endcomment %}
       <div class="container-fluid">
         <div class="row mb-3">
           <div class="col auto border border-dark-subtle">
-            Filtered / Total number of samples: <span id="id-selected-samples"> {{samples|length}} </span> / {{samples|length}}   &nbsp; <i class="bi bi-dash-lg"></i> &nbsp;
-            Filtered / Total number of patients: <span id="id-filtered-patient-number">  </span> / <span id="id-patient-number"> </span>
+            Filtered / Total number of samples: <span id="id-selected-samples"> {{num_samples}} </span> / {{num_samples}}   &nbsp; <i class="bi bi-dash-lg"></i> &nbsp;
+            Filtered / Total number of patients: <span id="id-filtered-patient-number"> {{num_patients}} </span> / <span id="id-patient-number"> {{num_patients}}</span>
           </div>
         </div>
-
-
         {% comment %} column filters {% endcomment %}
         <div class="row">
           <div class="col-auto">
@@ -40,46 +37,34 @@ Samples Overview
               Filter columns
             </button>
             <button class="btn btn-primary"> Apply </button>
-
               <ul class="dropdown-menu" id="id-group-filters">
                 <label class="dropdown-item">
                   <input type="checkbox" name="all" id="id_all_group_filters" checked="" onclick="selectAllFilters()">
                    Select all
                 </label>
                 {% for filter in filters %}
-
                   <label class="dropdown-item">
                     {{filter}}
                     {{filter.label}}
                   </label>
-
                 {% endfor %}
-
               </ul>
           </div>
 
-          {% comment %} Search bar {% endcomment %}
           <div class="col offset-sm-1">
             <div class="input-group">
               <label class="input-group-text" for="selectTableSearchColumn">Search</label>
               <select class="form-select" name="searchColumn" id="selectTableSearchColumn" aria-label="Example select with button addon">
-
-                {% if samples.0 %}
-                  {% for key, _ in samples.0 %}
-                    {% if key and key != "ID" and key != "Created at" %}
-                      <option value="{{ key }}" >{{ key }}</option>
-                    {% endif %}
-                  {% endfor %}
+              {% for key in column_names %}
+                {% if key and key != "ID" and key != "Created at" %}
+                  <option value="{{ key }}" >{{ key }}</option>
                 {% endif %}
+              {% endfor %}
               </select>
-              <input type="text" class="form-control" name="search" id="tableSearchInput" onkeyup="searchTable()" placeholder="Search ...">
+              <input type="text" class="form-control" name="search" id="tableSearchInput" onkeyup="searchTable()" onkeydown="return event.key !== 'Enter'" placeholder="Search ...">
             </div>
           </div>
-          {% comment %} End of search bar {% endcomment %}
-
-
     </form>
-        {% comment %} Download buttons {% endcomment %}
           <div class="col-auto">
             <div class="dropdown">
               <button id="download-dropdown-button" class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -91,26 +76,19 @@ Samples Overview
               </ul>
             </div>
           </div>
-        {% comment %} Download buttons end {% endcomment %}
-
         </div>
-
       </div>
-
     </div>
 
-
-    {% comment %} SAMPLE TABLE {% endcomment %}
+    {% comment %} Sample table {% endcomment %}
     <div class="tablediv">
       <form method="post" id="id-form">{% csrf_token %}</form>
-
       <table class="stripedtable" id="sampleTable">
         <thead>
           <tr id="head-row">
-            {% if samples.0 %}
-            {% for key, _ in samples.0 %}
-              {% if key %}
-                {% if key == "ID" or key == "Created at" %}
+            {% if num_samples > 0 %}
+            {% for key in column_names %}
+              {% if key and key == "ID" or key == "Created at" %}
                 <th hidden class="bg-light">{{ key }}</th>
                 {% else %}
                 <th name="{{key}}" class="bg-light"> {{ key }}
@@ -120,7 +98,6 @@ Samples Overview
                     </ul>
                   </form>
                 </th>
-                {% endif %}
               {% endif %}
             {% endfor %}
             <th>Action</th>
@@ -129,7 +106,7 @@ Samples Overview
         </thead>
 
         <tbody id="data-rows"
-               hx-get="{% url 'some_samples' %}?offset=0"
+               hx-get="{% url 'some_samples' %}?offset=0&column_names={{column_names}}"
                hx-trigger="load"
                hx-swap="innerHTML">
             <tr><td colspan="3" class="text-center">
@@ -150,9 +127,6 @@ Samples Overview
 
 {% endblock content %}
 
-
-
-
 {% block head_scripts%}
   {% load static %}
   <script src="{% static 'gui/sample_table_scripts/generateColumnsFilters.js' %}"></script>
@@ -162,6 +136,7 @@ Samples Overview
   <script src="{% static 'gui/sample_table_scripts/searchTable.js' %}"></script>
   <script src="{% static 'gui/sample_table_scripts/sortTable.js' %}"></script>
   <script src="{% static 'gui/sample_table_scripts/sortTableQuickly.js' %}"></script>
+  <script src="{% static 'gui/sample_table_scripts/countPatients.js' %}"> </script>
 
   <script>
     // check or uncheck all checkboxes of "filter columns" dropdown
@@ -178,29 +153,12 @@ Samples Overview
       }
     }
   </script>
-  <script src="{% static 'gui/sample_table_scripts/countPatients.js' %}"> </script>
-
 {% endblock head_scripts %}
-
 
 {% block body_scripts%}
   {% load static %}
     <script>
-      const tableHead = document.querySelector("#head-row")
-      let columnDropdownButtons = tableHead.querySelectorAll("button");
-      columnDropdownButtons.forEach(function(elem, index) {
-            getColumnValues(elem.id, index);
-        });
-    </script>
-
-    <script>
       var activeFilters = new Map()
       var activeSearchFilter = new Map()
     </script>
-
-    <script>
-      countPatients();
-    </script>
-  {% endblock body_scripts %}
-
-
+{% endblock body_scripts %}

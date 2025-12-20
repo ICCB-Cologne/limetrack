@@ -1,8 +1,8 @@
 {% for item in samples %}
 <tr>
-    {% for key, value in item %}
+    {% for key, value in item.items %}
         {% if key %}
-            {% if key == "ID" or key == "Created at" %}
+            {% if key == "id" or key == "created" %}
             <td hidden >{{ value }}</td>
             {% else %}
               {% load l10n %}
@@ -21,7 +21,7 @@
 {% endfor %}
 
 {% if next_offset %}
-<tr hx-get="{% url 'some_samples' %}?offset={{ next_offset }}"
+<tr hx-get="{% url 'some_samples' %}?offset={{next_offset}}&column_names={{column_names}}"
     hx-trigger="load"
     hx-swap="outerHTML">
     <td colspan="3" class="text-center text-muted">
@@ -31,4 +31,13 @@
         Loading more rows...
     </td>
 </tr>
+{% else %}
+  {% load static %}
+    <script>
+      const tableHead = document.querySelector("#head-row")
+      let columnDropdownButtons = tableHead.querySelectorAll("button");
+      columnDropdownButtons.forEach(function(elem, index) {
+            getColumnValues(elem.id, index);
+        });
+    </script>
 {% endif %}
