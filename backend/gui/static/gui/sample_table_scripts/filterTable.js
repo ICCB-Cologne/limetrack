@@ -19,8 +19,8 @@ function updateActiveFilters(id) {
   // get all unchecked inputs of the column
   for (let input of inputs) {
     if (input.checked == false) {
-      let value = input.parentNode.innerText || input.parentNode.textContent;
-      checkedInputs.push(value.slice(1));
+      let value =  input.parentNode.textContent || input.parentNode.innerText;
+      checkedInputs.push(value.trim());
     }
   }
   for (let i = 0; i < ths.length; i++) {
@@ -54,8 +54,11 @@ function filterTable() {
     // check every column, that has active column filters
     for (let idx of indexes) {
       td = tr[i].getElementsByTagName("td")[idx];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
+      if (td) {        
+        txtValue = td.textContent || td.innerText;  
+        if (txtValue !== "") {
+          txtValue = txtValue.trim()
+        }
         if (activeFilters.has(idx)) {
           if (activeFilters.get(idx).indexOf(txtValue) < 0) {
             tr[i].style.display = "";
