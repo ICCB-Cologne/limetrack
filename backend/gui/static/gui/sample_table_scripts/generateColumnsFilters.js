@@ -9,8 +9,11 @@ function getColumnValues(id, index) {
   let columnNumber = index + 1;
   const columnSet = new Set();
   for (let i = 0; i < numberOfRows; i++) {
-    var value = allRows[i].children[columnNumber].innerHTML;
-    columnSet.add(value);
+    var value = allRows[i].children[columnNumber];
+    if (value !== undefined && value.tagName === "TD") {
+      const content = value.innerHTML;
+      columnSet.add(content);
+    }
   }
 
   const column = [];

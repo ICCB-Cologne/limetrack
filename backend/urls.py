@@ -16,7 +16,10 @@ Including another URLconf
 """
 from backend.gui.views.upload_users_bulk import UsersBulkView
 from backend.gui.views.dashboard_view import DashboardView
-from backend.gui.views.samples_view import AllSamplesView
+from backend.gui.views.samples_view import (
+    AllSamplesView,
+    SomeSamplesView,
+)
 from backend.gui.views.upload_view import UploadView
 from django.contrib.auth import views as auth_views
 from backend.gui.views.home_view import HomeView
@@ -42,6 +45,7 @@ urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("admin/", admin.site.urls),
     path("samples/", AllSamplesView.as_view(), name="all_samples"),
+    path("some-samples/", SomeSamplesView.as_view(), name="some_samples"),
     path("filtered_download/", FilteredDownloadView.as_view(), name="filtered_download"),
     path("csv_template_csv/", csv_template_download_csv, name="csv_template_csv"),
     path("csv_template_excel/", csv_template_download_excel, name="csv_template_excel"),

@@ -1,3 +1,9 @@
+import logging
+import json
+import csv
+
+import pandas as pd
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
     HttpRequest,
@@ -12,10 +18,6 @@ from io import BytesIO
 from ..forms.forms import (
     all_field_verbose_names,
 )
-import pandas as pd
-import logging
-import json
-import csv
 
 app_log = logging.getLogger("s3sample")
 

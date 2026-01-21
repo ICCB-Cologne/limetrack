@@ -55,7 +55,8 @@ function table_to_json(tablename) {
     json_buffer.push(record);
   }
 
-  return JSON.stringify(json_buffer);
+  const json_data = JSON.stringify(json_buffer);
+  return json_data;
 }
 
 function download(filename, type, text) {
@@ -74,8 +75,8 @@ function download(filename, type, text) {
   document.body.removeChild(element);
 }
 
-function downloadWithFilter(type) {
-  let data = table_to_json("sampleTable");
+function downloadWithFilter(type, input_data) {
+  const json_data = table_to_json("sampleTable");
 
   let request = $.ajax({
     type: "POST",
@@ -83,13 +84,13 @@ function downloadWithFilter(type) {
     data: {
       csrfmiddlewaretoken: document.getElementsByName("csrfmiddlewaretoken")[0]
         .value,
-      data: data,
+      data: json_data,
     },
     dataType: "text",
-    success: (data, status, xhr) => {
+    success: (_data, _status, xhr) => {
       let filename = xhr.getResponseHeader("filename");
       download(filename, type, xhr.responseText);
     },
-    error: (e) => console.log(e),
+    error: (e) => console.log("`downloadWithFilter' failed", e),
   });
 }

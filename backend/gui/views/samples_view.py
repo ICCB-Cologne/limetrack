@@ -7,7 +7,8 @@ The 'get' as well as the 'post' function can accept
 group filters within the HttpRequest as input
 and return only the fields that belong to given groups.
 """
-
+import ast
+import logging
 
 from ..forms.forms import (
     field_dict,
@@ -15,6 +16,7 @@ from ..forms.forms import (
 )
 from ..models import HistopathologicalSample
 
+from django.db.models.functions import Substr
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import (
@@ -23,18 +25,12 @@ from django.http import (
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.shortcuts import render
-
-# from django.urls import reverse
-
 from typing import Any
-
-import logging
 
 app_log = logging.getLogger("s3sample")
 
-# lists of data fields for the column filters
-# that are not filtering model sections but
-# custom views of the table
+# Lists of data fields for the column filters that are not filtering model
+# sections but custom views of the table.
 column_filters_no_group = {
     "scmultiome": ["sclab_pool", "s3_bucket_status",
                    "scrna_r1", "scrna_r2",
@@ -60,40 +56,81 @@ field_dict_for_group_filters = {key: adapt_list_for_group_filter_display(
     key, field_dict[key]) for key in field_dict} | column_filters_no_group
 
 
+class SomeSamplesView(LoginRequiredMixin, TemplateView):
+    def get(self, request, *args, **kwargs):
+        column_names = ast.literal_eval(
+            request.GET.get("column_names")
+        )
+
+        limit = 100
+        offset = int(request.GET.get("offset", 0))
+        subset = slice(offset, offset + limit)
+
+        verbose_to_field = {
+            field.verbose_name: field.name
+            for field in HistopathologicalSample._meta.get_fields()
+            if hasattr(field, "verbose_name")
+        }
+
+        field_names = [
+            verbose_to_field[cn] for cn in column_names
+        ]
+        samples = list(
+            HistopathologicalSample.objects.values(*field_names)[subset]
+        )
+        has_more = len(samples) == limit
+
+        print(type(samples))
+
+        context = {
+            "samples": samples,
+            "next_offset": offset + limit if has_more else None,
+            "column_names": column_names,
+        }
+
+        return render(request, "gui/partials/table_row.html", context)
+
+
 class AllSamplesView(LoginRequiredMixin, TemplateView):
-    def get(self, request: HttpRequest,
-            *args: Any, **kwargs: Any) -> HttpResponse:
+    def get(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         template_name = "gui/all_samples.html"
+        column_names = []
+        num_samples = HistopathologicalSample.objects.count()
+        num_patients = HistopathologicalSample.objects.annotate(
+            patient_code=Substr("saturn3_sample_code", 4, 5)
+        ).values("patient_code").distinct().count()
 
         if len(request.GET) == 0:
-            samples = HistopathologicalSample.objects.all()
-            fields_and_values_list = [
-                [(field.verbose_name, getattr(instance, field.name))
-                    for field in instance._meta.fields]
-                for instance in samples
-            ]
+            if num_samples > 0:
+                first_sample = HistopathologicalSample.objects.first()
+                column_names = [
+                    field.verbose_name
+                    for field in first_sample._meta.fields
+                ]
             filters = GroupFilterForm()
-
-        # check which groups are checked in the filter form
-        # and then only display
         else:
             filtered_form = GroupFilterForm(request.GET)
             if filtered_form.is_valid():
-                fields_and_values_list = filter_table_with_group_filter(
-                    filtered_form.cleaned_data)
+                column_names = get_filtered_column_names(
+                    filtered_form.cleaned_data
+                )
             filters = filtered_form
 
         context = {
-            "samples": fields_and_values_list,
+            "num_samples": num_samples,
+            "num_patients": num_patients,
+            "column_names": column_names,
             "filters": filters,
-            "user": request.user  # user, not username because we
-                                  # need to check the user's attributes
+            "user": request.user
         }
         return render(request, template_name, context=context)
 
     @method_decorator(requires_csrf_token)
-    def post(self, request: HttpRequest,
-             *args: Any, **kwargs: Any) -> HttpResponse:
+    def post(
+        self, request: HttpRequest, *args: Any, **kwargs: Any
+    ) -> HttpResponse:
         template_name = "gui/all_samples.html"
         post_data = request.POST
         delete_id = int(post_data["id"])
@@ -106,50 +143,54 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
                 f"{delete_instance.saturn3_sample_code}")
 
         filtered_form = GroupFilterForm(post_data)
+        num_samples = HistopathologicalSample.objects.count()
+        num_patients = HistopathologicalSample.objects.annotate(
+            patient_code=Substr("saturn3_sample_code", 4, 5)
+        ).values("patient_code").distinct().count()
+
+        column_names = []
         if filtered_form.is_valid():
-            fields_and_values_list = filter_table_with_group_filter(
-                filtered_form.cleaned_data)
+            column_names = get_filtered_column_names(
+                filtered_form.cleaned_data
+            )
         filters = filtered_form
 
         context = {
-            "samples": fields_and_values_list,
+            "column_names": column_names,
+            "num_samples": num_samples,
+            "num_patients": num_patients,
             "filters": filters,
-            "user": request.user  # user, not username because we
-                                  # need to check the user's attributes
+            "user": request.user
         }
         return render(request, template_name, context=context)
 
 
-def filter_table_with_group_filter(group_filter: dict[str, Any]):
+def get_filtered_column_names(group_filter: dict[str, Any]):
+    if HistopathologicalSample.objects.count() == 0:
+        return []
 
-    # if recruiter_fields are filtered out,
-    # we need to display sample code explicitly
-    all_filters = ["id"] if group_filter["recruiter"] else ["id", "saturn3_sample_code"]
+    # If recruiter_fields are filtered out, we need to display sample code
+    # explicitly.
+    all_filters = (
+        ["id"] if group_filter["recruiter"] else ["id", "saturn3_sample_code"]
+    )
+    first_sample = HistopathologicalSample.objects.first()
 
-    samples = HistopathologicalSample.objects.all()
-
-    # this part is for displaying the table with one group filter only
-    # in case some groups want an individual filtering of the columns
+    # This part is for displaying the table with one group filter only
+    # in case some groups want an individual filtering of the columns.
     if sum(list(group_filter.values())) == 1:
         for group in field_dict_for_group_filters:
             if group_filter[group]:
                 all_filters += field_dict_for_group_filters[group]
-        fields_and_values_list = []
-        for instance in samples:
-            instance_list = []
-            for field_name in all_filters:
-                instance_list.append(
-                    (instance._meta.get_field(field_name).verbose_name,
-                     getattr(instance, field_name)))
-            fields_and_values_list.append(instance_list)
     else:
         for group in group_filter:
             all_filters += field_dict_for_group_filters[group] \
                 if group_filter[group] else []
-        fields_and_values_list = [
-            [(field.verbose_name, getattr(instance, field.name))
-                if field.name in all_filters else (None, None)
-                for field in instance._meta.fields]
-            for instance in samples]
 
-    return fields_and_values_list
+    column_names = []
+    for field_name in all_filters:
+        column_names.append(
+            first_sample._meta.get_field(field_name).verbose_name
+        )
+
+    return column_names
