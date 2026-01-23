@@ -1,3 +1,5 @@
+const { log } = require("async");
+
 function countPatients() {
   var filteredPatientNumber;
   var patientNumber;
@@ -17,12 +19,16 @@ function countPatients() {
   const filteredPatients = new Set();
   const patients = new Set();
   for (let i = 0; i < allRows.length; i++) {
-    let patientID = allRows[i].children[columnNumber].innerHTML.slice(4, 9);
-    if (allRows[i].style.display != "none") {
-      filteredPatients.add(patientID);
+    if (allRows[i].children[columnNumber]){
+      let patientID = allRows[i].children[columnNumber].innerHTML.slice(4, 9);
+      if (allRows[i].style.display != "none") {
+        filteredPatients.add(patientID);
+      }
+      patients.add(patientID);
     }
-    patients.add(patientID);
-  }
+    }
+    
+
   filteredPatientNumber = document.getElementById("id-filtered-patient-number");
   filteredPatientNumber.innerHTML = filteredPatients.size;
   patientNumber = document.getElementById("id-patient-number");

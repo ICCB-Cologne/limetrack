@@ -38,8 +38,18 @@ class BasicTestClass():
                 By.ID,
                 "all-samples-nav").is_displayed()
         )
-        # self.driver.save_screenshot("not_displaysesed.png")
+        
         self.driver.find_element(By.ID, "all-samples-nav").click()
+        # this is for having a small table in order to easily find the delete button
+        self.driver.find_element(By.CSS_SELECTOR, ".mr-1").click()
+        self.driver.find_element(By.CSS_SELECTOR, "#id-group-filters > .dropdown-item:nth-child(1)").click()
+        self.driver.find_element(By.ID, "id_recruiter").click()
+        self.driver.find_element(By.CSS_SELECTOR, ".btn:nth-child(2)").click()
+        
+        self.wait.until(
+            lambda _: self.driver.find_element(
+                By.ID,
+                f"Delete {self.sat3_sample_code}").is_displayed())
         self.driver.find_element(By.ID,
                                  f"Delete {self.sat3_sample_code}").click()
 

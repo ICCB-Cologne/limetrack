@@ -80,7 +80,7 @@ class SomeSamplesView(LoginRequiredMixin, TemplateView):
         )
         has_more = len(samples) == limit
 
-        print(type(samples))
+        # print(type(samples))
 
         context = {
             "samples": samples,
@@ -99,7 +99,7 @@ class AllSamplesView(LoginRequiredMixin, TemplateView):
         column_names = []
         num_samples = HistopathologicalSample.objects.count()
         num_patients = HistopathologicalSample.objects.annotate(
-            patient_code=Substr("saturn3_sample_code", 4, 5)
+            patient_code=Substr("patient_identifier", 1, 5)
         ).values("patient_code").distinct().count()
 
         if len(request.GET) == 0:
@@ -189,8 +189,10 @@ def get_filtered_column_names(group_filter: dict[str, Any]):
 
     column_names = []
     for field_name in all_filters:
-        column_names.append(
-            first_sample._meta.get_field(field_name).verbose_name
-        )
+        column_name = first_sample._meta.get_field(field_name).verbose_name
+        if column_name not in column_names:
+            column_names.append(
+                column_name
+                )
 
     return column_names
