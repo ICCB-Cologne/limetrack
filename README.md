@@ -6,7 +6,7 @@
   <img src="docs/images/LiMeTrack_logo_no_text.png" alt="Logo" width="120"/>
 </p>
 
-**LiMeTrack** is a lightweight, modular biosample management platform designed to streamline centralized research data handling and sample tracking within biomedical research projects.
+**LiMeTrack** is a lightweight, modular biosample management platform designed to streamline centralized research data handling and sample tracking within biomedical research projects. 
 
 Key features include an intuitive, customizable interface for data entry and a real-time dashboard providing clear insight into sample and project status. LiMeTrack simplifies the generation and export of standardized sample sheets, enhancing the efficiency of downstream bioinformatics analyses and overall research workflows.
 By integrating robust data management with dynamic monitoring tools, LiMeTrack supports research transparency, promotes reproducibility, and ensures data integrity.
@@ -18,6 +18,7 @@ Users can submit data through a web form or by uploading CSV/Excel files. Once a
   <img src="docs/images/LiMeTrack_GraphicalAbstract.png" alt="Overview" width="600" max-width="20"/>
 </p>
 
+**Please  cite:** [medRxiv preprint](https://doi.org/10.1101/2025.09.01.25334868)
 ---
 
 ## Prerequisites
