@@ -1,5 +1,12 @@
 ## Change Log
 
+### 2026-02-04
+- **Enhancement**
+    - Reduced loading time in Samples Overview by loading samples in batches.
+- **Bugfix**
+    - Fixed incorrect display of the sample table when selecting column filters with overlapping columns.
+    - Fixed filtering of empty string values within a column.
+
 ### 2025-12-11
 - **Bugfix**
     - A full sample table download was not possible due to the large size of the data. Fixed.
