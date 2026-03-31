@@ -50,7 +50,7 @@ python-dotenv==1.0.1
 python-rapidjson==1.12
 pytz==2023.3.post1
 rcssmin==1.1.1
-requests==2.32.4
+requests==2.33.0
 rjsmin==1.2.1
 selenium==4.35.0
 setuptools==80.9.0
