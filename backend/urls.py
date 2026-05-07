@@ -39,7 +39,7 @@ from backend.gui.views.views import (
     SearchView, log_out
 )
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
@@ -55,6 +55,7 @@ urlpatterns = [
     path("imprint/", ImprintView.as_view(), name="imprint"),
     path("faqs/", FAQView.as_view(), name="faqs"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
+    path('dashboard/', include('django_plotly_dash.urls')),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", log_out, name="logout"),
     path("search/", SearchView.as_view(), name="search"),

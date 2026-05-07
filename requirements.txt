@@ -14,6 +14,7 @@ django-appconf==1.0.6
 django-compressor==4.4
 django-libsass==0.9
 django-markdownify==0.9.5
+django_plotly_dash==2.5.0
 django-tempus-dominus==5.1.2.17
 dnspython==2.7.0
 email_validator==2.2.0

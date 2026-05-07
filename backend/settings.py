@@ -90,7 +90,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "backend.gui",
     "tempus_dominus",
-    'markdownify.apps.MarkdownifyConfig'
+    'markdownify.apps.MarkdownifyConfig',
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
 ]
 
 TEMPUS_DOMINUS_DATE_FORMAT = "YYYY-MM-DD"
@@ -248,6 +249,9 @@ MARKDOWNIFY = {
         ]
     }
 }
+
+# for dash
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 FILE_TRACEBACK_DIR = "/tmp"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 2000000000
